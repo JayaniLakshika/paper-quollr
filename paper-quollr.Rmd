@@ -1,29 +1,41 @@
 ---
-title: "ToOoOlTiPs: An R Package for Customizable Tooltips in Interactive Graphics"
-date: "2022-11-09"
+title: "quollr: An R Package for Visalizing 2D Models in High Dimensional Space"
 abstract: >
   An abstract of less than 150 words.
 draft: true
 author:  
-  - name: Quietest Quokka
-    affiliation: University of Little Mates
-    address:
-    - Department of Letter Q
-    - Somewhere, Australia
-    url: https://www.britannica.com/animal/quokka
-    orcid: 0000-1721-1511-1101
-    email:  qquo@ulm.edu
-  - name: Bounciest Bilby
-    affiliation:
-    - University of Little Mates
-    - University of Aussie Animals
-    address:
-    - Department of Letter Q, Somewhere, Australia
-    - Department of Marsupials, Somewhere, Australia
-    url: https://www.britannica.com/animal/bilby
-    email: bbil@ulm.edu
-    orcid: 0000-0002-0912-0225
+  - name: Jayani P.G. Lakshika
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    url: https://jayanilakshika.netlify.app/
+    orcid: 0000-0002-6265-6481
+    email:  \email{jayani.piyadigamage@monash.edu}
+  - name: Dianne Cook
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    url: http://www.dicook.org/
+    email: dicook@monash.edu
+    orcid: 0000-0002-3813-7155
+  - name: Paul Harrison
+    affiliation: Monash University
+    address: MGBP, BDInstitute, VIC 3800 Australia
+    email: paul.harrison@monash.edu
+    orcid: 0000-0002-3980-268X
+  - name: Michael Lydeamore
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    email: michael.lydeamore@monash.edu
+    orcid: 0000-0001-6515-827X
+  - name: Thiyanga S. Talagala
+    affiliation: University of Sri Jayewardenepura
+    address: Department of Statistics, Gangodawila, Nugegoda 10100 Sri Lanka
+    url: https://thiyanga.netlify.app/
+    email: ttalagala@sjp.ac.lk
+    orcid: 0000-0002-0656-9789
 type: package
+preamble: >
+  \usepackage{amsmath}
+  \usepackage{array}
 output: 
   rjtools::rjournal_article:
     self_contained: yes
@@ -33,63 +45,47 @@ bibliography: RJreferences.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-library(plotly)
-library(ggplot2)
-library(palmerpenguins)
-library(kableExtra)
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE)
+
 ```
 
+```{r load-libraries}
+library(quollr)
+```
+ 
 # Introduction
 
-Interactive data graphics provides plots that allow users to interact them. One of the most basic types of interaction is through tooltips, where users are provided additional information about elements in the plot by moving the cursor over the plot.
+# Implementation
 
-This paper will first review some R packages on interactive graphics and their tooltip implementations. A new package \CRANpkg{ToOoOlTiPs} that provides customized tooltips for plot, is introduced. Some example plots will then be given to showcase how these tooltips help users to better read the graphics. 
+## Installation
 
-# Background
+The package can be installed from CRAN using 
 
-Some packages on interactive graphics include \CRANpkg{plotly} [@plotly] that interfaces with Javascript for web-based interactive graphics, \CRANpkg{crosstalk} [@crosstalk] that specializes cross-linking elements across individual graphics.  The recent R Journal paper \CRANpkg{tsibbletalk} [@RJ-2021-050] provides a good example of including interactive graphics into an article for the journal. It has both a set of linked plots, and also an animated gif example, illustrating linking between time series plots and feature summaries.
+> ```install.packages("quollr")```
 
-# Customizing tooltip design with \pkg{ToOoOlTiPs}
+and from GitHub using 
 
-\pkg{ToOoOlTiPs} is a packages for customizing tooltips in interactive graphics, it features these possibilities.
+> ```remotes::install_github("JayaniLakshika/quollr")```
 
-# A gallery of tooltips examples
+to install the development version.
 
-The \CRANpkg{palmerpenguins} data [@palmerpenguins]  features three penguin species which has a lovely illustration by Alison Horst in Figure \@ref(fig:penguins-alison). 
+## Web site
 
-```{r penguins-alison, out.width = "100%", out.height = "30%", fig.cap = "Artwork by \\@allison\\_horst", fig.alt="A picture of three different penguins with their species: Chinstrap, Gentoo, and Adelie. "}
-knitr::include_graphics("figures/penguins.png")
-```
+More documentation of the package can be found at the web site (need to add the link). 
 
-Table `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(tab:penguins-tab-interactive)', '\\@ref(tab:penguins-tab-static)'))` prints at the first few rows of the `penguins` data:
+## Data sets
 
-```{r penguins-tab-interactive, eval = knitr::is_html_output(), layout = "l-body-outset"}
-knitr::kable(head(penguins), format = "html", caption = "A basic table")
-```
+## Functions
 
-```{r penguins-tab-static, eval = knitr::is_latex_output()}
-knitr::kable(head(penguins), format = "latex", caption = "A basic table") %>% 
-  kableExtra::kable_styling(font_size = 7)
-```   
+## Tests
 
-Figure `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(fig:penguins-plotly)', '\\@ref(fig:penguins-ggplot)'))` shows an `r ifelse(knitr::is_html_output(), 'interactive', '')` plot of the penguins data, made using the `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\CRANpkg{plotly}', '\\CRANpkg{ggplot2}'))` package. 
+# Examples
 
-```{r penguins-plotly, echo = TRUE, fig.height = 5, fig.cap="A basic interactive plot made with the plotly package on palmer penguin data. Three species of penguins are plotted with bill depth on the x-axis and bill length on the y-axis. When hovering on a point, a tooltip will show the exact value of the bill depth and length for that point, along with the species name.", include=knitr::is_html_output(), eval=knitr::is_html_output(), fig.alt = "A scatterplot of bill length against bill depth, both measured in millimetre. The three species are shown in different colours and loosely forms three clusters. Adelie has small bill length and large bill depth, Gentoo has small bill depth but large bill length, and Chinstrap has relatively large bill depth and bill length."}
-p <- penguins %>% 
-  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, 
-             color = species)) + 
-  geom_point()
-ggplotly(p)
-```
+# Conclusion
 
-```{r penguins-ggplot, echo = TRUE, fig.height = 5, fig.cap="A basic non-interactive plot made with the ggplot2 package on palmer penguin data. Three species of penguins are plotted with bill depth on the x-axis and bill length on the y-axis. Visit the online article to access the interactive version made with the plotly package.", include=knitr::is_latex_output(), eval=knitr::is_latex_output()}
-penguins %>% 
-  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, 
-             color = species)) + 
-  geom_point()
-```
+# Acknowledgements
 
-# Summary
+This article is created using \CRANpkg{knitr} [@knitr] and \CRANpkg{rmarkdown} [@rmarkdown] in R with the `rjtools::rjournal_article` template. The source code for reproducing this paper can be found at: [https://github.com/JayaniLakshika/paper-quollr](https://github.com/JayaniLakshika/paper-quollr).
 
-We have displayed various tooltips that are available in the package \pkg{ToOoOlTiPs}. 
