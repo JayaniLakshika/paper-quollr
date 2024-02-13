@@ -5,7 +5,7 @@
 knitr::opts_chunk$set(echo = FALSE, 
                       warning = FALSE, 
                       message = FALSE)
-
+source("quollr_code.R", local = TRUE)
 
 
 ## ----load-libraries-----------------------------------------------------------
