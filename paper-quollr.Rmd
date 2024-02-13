@@ -57,27 +57,13 @@ library(quollr)
  
 # Introduction
 
-# Implementation
+# Methodology
 
-## Installation
+## Usage
 
-The package can be installed from CRAN using 
+dependancies
+basic example
 
-> ```install.packages("quollr")```
-
-and from GitHub using 
-
-> ```remotes::install_github("JayaniLakshika/quollr")```
-
-to install the development version.
-
-## Web site
-
-More documentation of the package can be found at the web site (need to add the link). 
-
-## Data sets
-
-## Functions
 
 ### Compute hexagonal bin configurations
 
@@ -96,7 +82,6 @@ More documentation of the package can be found at the web site (need to add the 
 #### Benchmark value to remove the low-density hexagons
 
 #### Benchmark value to remove the long edges
-
 
 ### Model function
 
