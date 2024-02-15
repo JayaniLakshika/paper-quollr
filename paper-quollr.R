@@ -22,6 +22,11 @@ training_data <- read_rds(file = "data/s_curve_noise_training.rds")
 s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
 
 
+## ----eval=FALSE---------------------------------------------------------------
+#> library(tools)
+#> package_dependencies("quollr")
+
+
 ## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", cell_area = 1)
 num_bins_x
@@ -344,6 +349,6 @@ trimesh_removed
 
 ## -----------------------------------------------------------------------------
 tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
-                          distance = distance, distance_col = distance)
+                          distance = distance, distance_col = "distance")
 tour1
 
