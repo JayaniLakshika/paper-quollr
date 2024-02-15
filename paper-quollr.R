@@ -2,12 +2,348 @@
 # Please edit paper-quollr.Rmd to modify this file
 
 ## ----setup, include=FALSE-----------------------------------------------------
-knitr::opts_chunk$set(echo = FALSE, 
-                      warning = FALSE, 
+knitr::opts_chunk$set(warning = FALSE, 
                       message = FALSE)
 source("quollr_code.R", local = TRUE)
 
 
 ## ----load-libraries-----------------------------------------------------------
-library(quollr)
+#library(quollr)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(ggbeeswarm)
+
+
+## -----------------------------------------------------------------------------
+#| echo: false
+
+training_data <- read_rds(file = "data/s_curve_noise_training.rds")
+s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
+
+
+## -----------------------------------------------------------------------------
+num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", cell_area = 1)
+num_bins_x
+
+
+## -----------------------------------------------------------------------------
+
+shape_val <- calculate_effective_shape_value(.data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2")
+shape_val
+
+
+## -----------------------------------------------------------------------------
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP2", y = "UMAP2", shape_val = 1.833091)
+num_bins_y
+
+
+## -----------------------------------------------------------------------------
+cell_area <- 1
+cell_diameter <- sqrt(2 * cell_area / sqrt(3))
+
+hex_size <- cell_diameter/2
+
+buffer_size <- hex_size/2
+
+x_bounds <- seq(min(s_curve_noise_umap[["UMAP1"]]) - buffer_size,
+                  max(s_curve_noise_umap[["UMAP1"]]) + buffer_size, length.out = num_bins_x)
+
+y_bounds <- seq(min(s_curve_noise_umap[["UMAP2"]]) - buffer_size,
+                max(s_curve_noise_umap[["UMAP2"]]) + buffer_size, length.out = num_bins_y)
+
+box_points <- expand.grid(x = x_bounds, y = y_bounds)
+
+ggplot() +
+  geom_point(data = box_points, aes(x = x, y = y), color = "red")
+
+
+
+## -----------------------------------------------------------------------------
+ box_points <- box_points |>
+    dplyr::arrange(x) |>
+    dplyr::group_by(x) |>
+    dplyr::group_modify(~ generate_even_y(.x)) |>
+    tibble::as_tibble()
+
+ggplot() +
+  geom_point(data = box_points,
+             aes(x = x, y = y, colour = as.factor(is_even)))
+
+
+## -----------------------------------------------------------------------------
+## Shift for even values in x-axis
+x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
+
+
+box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
+
+ggplot() +
+  geom_point(data = box_points, aes(x = x, y = y), color = "red")
+
+
+
+## -----------------------------------------------------------------------------
+all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
+                                                 x = "UMAP1", y = "UMAP2", 
+                                                 num_bins_x = num_bins_x, 
+                                                 num_bins_y = num_bins_y, 
+                                                 buffer_size = NA, hex_size = NA)
+
+glimpse(all_centroids_df)
+
+
+## -----------------------------------------------------------------------------
+hex_grid <- gen_hex_coordinates(all_centroids_df)
+glimpse(hex_grid)
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = all_centroids_df, aes(x = x, y = y), color = "red")
+
+
+## -----------------------------------------------------------------------------
+full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df)
+
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_text(data = full_grid_with_hexbin_id, aes(x = c_x, y = c_y, label = hexID))
+
+
+## -----------------------------------------------------------------------------
+full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+
+
+## -----------------------------------------------------------------------------
+s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_with_hexbin_id)
+
+
+## -----------------------------------------------------------------------------
+df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+
+
+## -----------------------------------------------------------------------------
+hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue")
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
+  geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
+
+
+
+## -----------------------------------------------------------------------------
+## To generate a data set with high-D and 2D training data
+df_all <- training_data |> dplyr::select(-ID) |>
+  dplyr::bind_cols(s_curve_noise_umap_with_id)
+
+## To generate averaged high-D data
+
+df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
+
+
+## -----------------------------------------------------------------------------
+df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
+  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
+  dplyr::distinct() |>
+  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
+  
+df_bin_centroids
+
+
+## -----------------------------------------------------------------------------
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
+
+
+## -----------------------------------------------------------------------------
+all_centroids_df_shift <- extract_coord_of_shifted_hex_grid(nldr_df = s_curve_noise_umap, 
+                                                 x = "UMAP1", y = "UMAP2", 
+                                                 num_bins_x = num_bins_x, 
+                                                 num_bins_y = num_bins_y,
+                                                 shift_x = 0.2690002, shift_y = 0.271183,
+                                                 buffer_size = NA, hex_size = NA)
+
+glimpse(all_centroids_df_shift)
+
+
+## -----------------------------------------------------------------------------
+hex_grid <- gen_hex_coordinates(all_centroids_df_shift)
+glimpse(hex_grid)
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = all_centroids_df_shift, aes(x = x, y = y), color = "red")
+
+
+## -----------------------------------------------------------------------------
+full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df_shift)
+
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_text(data = full_grid_with_hexbin_id, aes(x = c_x, y = c_y, label = hexID))
+
+
+## -----------------------------------------------------------------------------
+full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+
+
+## -----------------------------------------------------------------------------
+s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_with_hexbin_id)
+
+
+## -----------------------------------------------------------------------------
+df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+
+
+## -----------------------------------------------------------------------------
+hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue")
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
+  geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
+
+
+## -----------------------------------------------------------------------------
+df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
+  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
+  dplyr::distinct() |>
+  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
+
+df_bin_centroids
+
+
+## -----------------------------------------------------------------------------
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
+
+
+## ----eval=FALSE---------------------------------------------------------------
+#> bin_centroids_shift <- ggplot(data = hex_full_count_df, aes(x = c_x, y = c_y)) +
+#>   geom_point(color = "#bdbdbd") +
+#>   geom_point(data = shifted_hex_coord_df, aes(x = c_x, y = c_y), color = "#feb24c") +
+#>   coord_cartesian(xlim = c(-5, 8), ylim = c(-10, 10)) +
+#>   theme_void() +
+#>   theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+#>         axis.title.x = element_blank(), axis.title.y = element_blank(),
+#>         axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+#>         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+#>         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+#>         legend.title = element_text(size=8), #change legend title font size
+#>         legend.text = element_text(size=6)) +
+#>   guides(fill = guide_colourbar(title = "Standardized count")) +
+#>   annotate(geom = 'text', label = "a", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3)
+#> 
+#> hex_grid_shift <- ggplot(data = shifted_hex_coord_df, aes(x = x, y = y)) +
+#>   geom_polygon(fill = NA, color = "#feb24c", aes(group = polygon_id)) +
+#>   geom_polygon(data = hex_full_count_df, aes(x = x, y = y, group = polygon_id),
+#>                fill = NA, color = "#bdbdbd") +
+#>   coord_cartesian(xlim = c(-5, 8), ylim = c(-10, 10)) +
+#>   theme_void() +
+#>   theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+#>         axis.title.x = element_blank(), axis.title.y = element_blank(),
+#>         axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+#>         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+#>         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+#>         legend.title = element_text(size=8), #change legend title font size
+#>         legend.text = element_text(size=6)) +
+#>   guides(fill = guide_colourbar(title = "Standardized count")) +
+#>   annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3)
+#> 
+#> ## Before shift
+#> before_shift_plot <- ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
+#>   geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+#>   geom_text(aes(x = c_x, y = c_y, label = hexID), size = 2) +
+#>   scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
+#>   coord_equal() +
+#>   theme_void() +
+#>   theme(legend.position="bottom", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+#>         axis.title.x = element_blank(), axis.title.y = element_blank(),
+#>         axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+#>         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+#>         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+#>         legend.title = element_text(size=8), #change legend title font size
+#>         legend.text = element_text(size=6)) +
+#>   guides(fill = guide_colourbar(title = "Standardized count")) +
+#>   annotate(geom = 'text', label = "a", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3)
+#> 
+#> 
+#> ## After shift
+#> after_shift_plot <- ggplot(data = shifted_hex_coord_df, aes(x = x, y = y)) +
+#>   geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+#>   geom_text(aes(x = c_x, y = c_y, label = hexID), size = 2) +
+#>   scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
+#>   coord_equal() +
+#>   theme_void() +
+#>   theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+#>         axis.title.x = element_blank(), axis.title.y = element_blank(),
+#>         axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+#>         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+#>         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+#>         legend.title = element_text(size=8), #change legend title font size
+#>         legend.text = element_text(size=6)) +
+#>   guides(fill = guide_colourbar(title = "Standardized count")) +
+#>   annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3)
+#> 
+
+
+## -----------------------------------------------------------------------------
+## Compute 2D distances
+distance <- cal_2d_dist(.data = tr_from_to_df)
+
+## To plot the distribution of distance
+plot_dist <- function(distance_df){
+  distance_df$group <- "1"
+  dist_plot <- ggplot(distance_df, aes(x = group, y = distance)) +
+    geom_quasirandom()+
+    ylim(0, max(unlist(distance_df$distance))+ 0.5) + coord_flip()
+  return(dist_plot)
+}
+
+plot_dist(distance)
+
+benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+
+
+## -----------------------------------------------------------------------------
+trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
+  geom_point(size = 0.1) +
+  geom_trimesh() +
+  coord_equal()
+
+trimesh
+
+
+## -----------------------------------------------------------------------------
+trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
+                                triangular_object = tr1_object, distance_col = distance)
+
+trimesh_gr
+
+
+## -----------------------------------------------------------------------------
+trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
+                                     triangular_object = tr1_object, distance_col = distance)
+trimesh_removed
+
+
+## -----------------------------------------------------------------------------
+tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
+                          distance = distance, distance_col = distance)
+tour1
 

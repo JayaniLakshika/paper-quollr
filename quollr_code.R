@@ -1,6 +1,6 @@
-calculate_effective_x_bins <- function(.data, x = UMAP1, cell_area = 1){
+calculate_effective_x_bins <- function(.data, x = "UMAP1", cell_area = 1){
 
-  if (any(is.na(.data |> dplyr::pull({{ x }})))) {
+  if (anyNA(.data[[rlang::as_string(rlang::ensym(x))]])) {
     stop("NAs present")
   }
 
@@ -20,8 +20,28 @@ calculate_effective_x_bins <- function(.data, x = UMAP1, cell_area = 1){
   xwidth <- diff(range(.data |>
                          dplyr::pull({{ x }})))
 
-  num_bins <- ceiling(xwidth/cell_diameter)
-  #num_bins <- floor(xwidth/cell_diameter + 1.5001)
+  #num_bins <- ceiling(xwidth/cell_diameter)
+  num_bins <- floor(xwidth/cell_diameter + 1.5001)
+  num_bins
+
+}
+
+calculate_effective_y_bins <- function(.data, x = "UMAP2", y = "UMAP2", shape_val = NA){
+
+  if (anyNA(.data[[rlang::as_string(rlang::ensym(y))]])) {
+    stop("NAs present")
+  }
+
+  if (any(is.infinite(.data |> dplyr::pull({{ y }})))) {
+    stop("Inf present")
+  }
+
+  if (is.na(shape_val)) {
+    shape_val <- calculate_effective_shape_value(.data = .data, x = x, y = y)
+
+  }
+
+  num_bins <- 2 * floor(((num_bins_x - 1) * shape_val)/sqrt(3) + 1.5001)
   num_bins
 
 }
@@ -50,6 +70,194 @@ calculate_effective_shape_value <- function(.data, x = UMAP1, y = UMAP2){
   shape <- yheight/xwidth
   shape
 }
+
+
+# Function to generate even y-values for a given x-value
+generate_even_y <- function(data) {
+  data <- data |>
+    dplyr::arrange(y) |>
+    dplyr::mutate(is_even = ifelse(seq_along(y) %% 2 == 0, 1, 0))
+
+  return(data)
+}
+
+generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
+                                         num_bins_x, num_bins_y, buffer_size = NA, hex_size = NA){
+
+  ## If number of bins along the x-axis is not given
+  if (is.na(num_bins_x)) {
+    ## compute the number of bins along the x-axis
+    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x,
+                                             cell_area = 1)
+
+
+  }
+
+  ## If number of bins along the y-axis is not given
+  if (is.na(num_bins_y)) {
+    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, x = x, y = y)
+
+  }
+
+  ## hex size is not provided
+  if (is.na(hex_size)) {
+    ## To compute the diameter of the hexagon
+    cell_area <- 1
+    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
+
+    hex_size <- cell_diameter/2
+    message(paste0("hex_size set to ", hex_size, "."))
+
+  } else {
+
+    cell_area <- 1
+    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
+
+    ## hex size is cell_diameter
+    if (hex_size > (cell_diameter/2)) {
+      stop(paste0("Hex size exceeds than ", cell_diameter/2, ". Need to assign a value less than ", cell_diameter/2, "."))
+
+    }
+
+  }
+
+
+  ## Buffer size is not provided
+  if (is.na(buffer_size)) {
+    buffer_size <- hex_size/2
+    message(paste0("Buffer set to ", buffer_size, "."))
+
+  } else {
+
+    ## Buffer size is exceeds
+    if (buffer_size > (hex_size/2)) {
+      stop(paste0("Buffer exceeds than ", hex_size/2, ". Need to assign a value less than ", hex_size/2, "."))
+
+    }
+
+
+  }
+
+  ## Compute hex grid bound values along the x and y axis
+  x_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::ensym(x))]]) - buffer_size,
+                  max(nldr_df[[rlang::as_string(rlang::ensym(x))]]) + buffer_size, length.out = num_bins_x)
+  y_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::ensym(y))]]) - buffer_size,
+                  max(nldr_df[[rlang::as_string(rlang::ensym(y))]]) + buffer_size, length.out = num_bins_y)
+
+  ## Generate the all the hex box points
+  box_points <- expand.grid(x = x_bounds, y = y_bounds)
+
+  # For each x-value, generate even y-values
+  box_points <- box_points |>
+    dplyr::arrange(x) |>
+    dplyr::group_by(x) |>
+    dplyr::group_modify(~ generate_even_y(.x)) |>
+    tibble::as_tibble()
+
+  ## Shift the x values of the even rows
+  x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
+
+  box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
+
+  box_points <- box_points |>
+    dplyr::select(-is_even)
+
+  box_points
+
+}
+
+extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
+                                         num_bins_x, num_bins_y, shift_x = 0, shift_y = 0, buffer_size = NA, hex_size = NA){
+
+  ## If number of bins along the x-axis is not given
+  if (is.na(num_bins_x)) {
+    ## compute the number of bins along the x-axis
+    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x,
+                                             cell_area = 1)
+
+
+  }
+
+  ## If number of bins along the y-axis is not given
+  if (is.na(num_bins_y)) {
+    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, x = x, y = y)
+
+  }
+
+
+  ## hex size is not provided
+  if (is.na(hex_size)) {
+    ## To compute the diameter of the hexagon
+    cell_area <- 1
+    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
+
+    hex_size <- cell_diameter/2
+    message(paste0("hex_size set to ", hex_size, "."))
+
+  } else {
+
+    cell_area <- 1
+    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
+
+    ## hex size is cell_diameter
+    if (hex_size > (cell_diameter/2)) {
+      stop(paste0("Hex size exceeds than ", cell_diameter/2, ". Need to assign a value less than ", cell_diameter/2, "."))
+
+    }
+
+  }
+
+
+  ## Buffer size is not provided
+  if (is.na(buffer_size)) {
+    buffer_size <- hex_size/2
+    message(paste0("Buffer set to ", buffer_size, "."))
+
+  } else {
+
+    ## Buffer size is exceeds
+    if (buffer_size > (hex_size/2)) {
+      stop(paste0("Buffer exceeds than ", hex_size/2, ". Need to assign a value less than ", hex_size/2, "."))
+
+    }
+
+
+  }
+
+
+  ## Shift is not compatible
+  if ((abs(shift_x) > (cell_diameter)) | (abs(shift_y) > (cell_diameter))) {
+    stop(paste0("Shifted amount is not compatibel. Need to use a value less than or equal ", cell_diameter, "."))
+  }
+
+  x_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::ensym(x))]]) - buffer_size + shift_x,
+                  max(nldr_df[[rlang::as_string(rlang::ensym(x))]]) + buffer_size + shift_x, length.out = num_bins_x)
+  y_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::ensym(y))]]) - buffer_size + shift_y,
+                  max(nldr_df[[rlang::as_string(rlang::ensym(y))]]) + buffer_size + shift_y, length.out = num_bins_y)
+
+  box_points <- expand.grid(x = x_bounds, y = y_bounds)
+
+  # For each x-value, generate even y-values
+  box_points <- box_points |>
+    dplyr::arrange(x) |>
+    dplyr::group_by(x) |>
+    dplyr::group_modify(~ generate_even_y(.x)) |>
+    tibble::as_tibble()
+
+  ## Shift for even values in x-axis
+  x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
+
+
+  box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
+
+  box_points <- box_points |>
+    dplyr::select(-is_even)
+
+  box_points
+
+}
+
+
 
 extract_hexbin_centroids <- function(nldr_df, num_bins, shape_val = 1, x = UMAP1, y = UMAP2) {
 
@@ -221,52 +429,52 @@ remove_long_edges <- function(.data, benchmark_value, triangular_object,
 
 }
 
-generate_full_grid_centroids <- function(hexdf_data){
-
-  ## Generate initial grid
-  full_centroids1 <- tibble::as_tibble(expand.grid(x = seq(min(hexdf_data$x),max(hexdf_data$x), ggplot2::resolution(hexdf_data$x, FALSE) * 2), y = seq(min(hexdf_data$y),max(hexdf_data$y), ggplot2::resolution(hexdf_data$y, FALSE) * 2)))
-
-  ## Generate shifted grid
-  full_centroids2 <- tibble::tibble(x = full_centroids1$x + ggplot2::resolution(hexdf_data$x, FALSE), y = full_centroids1$y + ggplot2::resolution(hexdf_data$y, FALSE))
-
-  ## Combine all
-  full_centroids <- dplyr::bind_rows(full_centroids1, full_centroids2)
-
-  return(full_centroids)
-
-
-}
-
-full_hex_grid <- function(hexdf_data){
+# generate_full_grid_centroids <- function(hexdf_data){
+#
+#   ## Generate initial grid
+#   full_centroids1 <- tibble::as_tibble(expand.grid(x = seq(min(hexdf_data$x),max(hexdf_data$x), ggplot2::resolution(hexdf_data$x, FALSE) * 2), y = seq(min(hexdf_data$y),max(hexdf_data$y), ggplot2::resolution(hexdf_data$y, FALSE) * 2)))
+#
+#   ## Generate shifted grid
+#   full_centroids2 <- tibble::tibble(x = full_centroids1$x + ggplot2::resolution(hexdf_data$x, FALSE), y = full_centroids1$y + ggplot2::resolution(hexdf_data$y, FALSE))
+#
+#   ## Combine all
+#   full_centroids <- dplyr::bind_rows(full_centroids1, full_centroids2)
+#
+#   return(full_centroids)
+#
+#
+# }
+## Generate hexagonal coordinates by passing all the centroids
+gen_hex_coordinates <- function(all_centroids_df){
 
   ## Compute horizontal width of the hexagon
-  dx <- ggplot2::resolution(hexdf_data$x, FALSE)
+  dx <- (all_centroids_df$x[2] - all_centroids_df$x[1])
 
   ## Compute vertical width of the hexagon
   # Adjust for difference in width and height of regular hexagon. 1.15 adjusts
   # for the effect of the overlapping range in y-direction on the resolution
-  dy <- ggplot2::resolution(hexdf_data$y, FALSE) / sqrt(3) / 2 * 1.15
+  dy <- (all_centroids_df$y[2] - all_centroids_df$y[1])/ sqrt(3) / 2 * 1.15
 
   ## Obtain hexagon polygon coordinates
   hexC <- hexbin::hexcoords(dx, dy, n = 1) ## n: Number of hexagons repeat
 
   ## Obtain the number of hexagons in the full grid
-  n <- length(hexdf_data$x)
+  n <- length(all_centroids_df$x)
 
   ## Generate the size vector of the hexagons (since regular hexagons)
-  size <- rep(1, length(hexdf_data$x))
+  #size <- rep(1, length(all_centroids_df$x))
 
   ## Generate the coordinates for the hexagons
-  full_hex_coords <- tibble::tibble( x = rep.int(hexC$x, n) * rep(size, each = 6) + rep(hexdf_data$x, each = 6),
-                                     y = rep.int(hexC$y, n) * rep(size, each = 6) + rep(hexdf_data$y, each = 6),
-                                     id = rep(1:length(hexdf_data$x), each = 6))
+  hex_grid <- tibble::tibble( x = rep.int(hexC$x, n) + rep(all_centroids_df$x, each = 6),
+                              y = rep.int(hexC$y, n) + rep(all_centroids_df$y, each = 6),
+                              id = rep(1:length(all_centroids_df$x), each = 6))
 
-  return(full_hex_coords)
+  return(hex_grid)
 
 
 }
 
-map_hexbin_id <- function(full_centroid_df, df_bin_centroids) {
+map_hexbin_id <- function(full_centroid_df) {
 
   vec1 <- stats::setNames(rep("", 2), c("x", "y"))  ## Define column names
 
@@ -281,7 +489,7 @@ map_hexbin_id <- function(full_centroid_df, df_bin_centroids) {
     specific_y_val_df <- full_centroid_df |>
       dplyr::filter(y == sort(unique(full_centroid_df$y))[i])
 
-    ## orderd the x values
+    ## order the x values
     ordered_x_df <- specific_y_val_df |>
       dplyr::arrange(x)
 
@@ -298,15 +506,8 @@ map_hexbin_id <- function(full_centroid_df, df_bin_centroids) {
     dplyr::rename("c_x" = "x",
                   "c_y" = "y")
 
-  ## Join with centroid data set to extarct the count column
-  full_grid_with_hexbin_id <- dplyr::full_join(full_grid_with_hexbin_id, df_bin_centroids, by = c("hexID" = "hexID")) |>
-    dplyr::select(-c(x, y))
-
-  ## Compute the standardise count
-  full_grid_with_hexbin_id <- full_grid_with_hexbin_id |>
-    dplyr::mutate(std_counts = counts/max(counts, na.rm = TRUE))
-
   return(full_grid_with_hexbin_id)
+
 }
 
 map_polygon_id <- function(full_grid_with_hexbin_id, hex_grid) {
@@ -322,51 +523,102 @@ map_polygon_id <- function(full_grid_with_hexbin_id, hex_grid) {
 
     for (j in 1:length(unique(hex_grid$id))) {
 
-      ## Filter sepcific polygon
+      ## Filter specific polygon
       hex_grid_filtered <- hex_grid |>
         dplyr::filter(id == unique(hex_grid$id)[j])
 
       ## Check the centroid exists within the polygon
-      status_in_x_range <- dplyr::between(full_grid_with_hexbin_id_filtered$c_x, min(hex_grid_filtered$x), max(hex_grid_filtered$x))
-      status_in_y_range <- dplyr::between(full_grid_with_hexbin_id_filtered$c_y, min(hex_grid_filtered$y), max(hex_grid_filtered$y))
+      status_in_x_range <- dplyr::between(full_grid_with_hexbin_id_filtered$c_x,
+                                          min(hex_grid_filtered$x), max(hex_grid_filtered$x))
+      status_in_y_range <- dplyr::between(full_grid_with_hexbin_id_filtered$c_y,
+                                          min(hex_grid_filtered$y), max(hex_grid_filtered$y))
 
       if (any(status_in_x_range) & any(status_in_y_range)) {
 
         full_grid_with_hexbin_id_filtered <- full_grid_with_hexbin_id_filtered |>
           dplyr::mutate(polygon_id = j)
 
-        full_grid_with_polygon_id <- dplyr::bind_rows(full_grid_with_polygon_id, full_grid_with_hexbin_id_filtered)
+        full_grid_with_polygon_id <- dplyr::bind_rows(full_grid_with_polygon_id,
+                                                      full_grid_with_hexbin_id_filtered)
       }
     }
   }
 
   return(full_grid_with_polygon_id)
+
 }
 
-generate_full_grid_info <- function(df_bin_centroids) {
+assign_data <- function(nldr_df, full_grid_with_hexbin_id) {
 
-  ## generate all the centroids
-  full_centroid_df <- generate_full_grid_centroids(df_bin_centroids)
+  ## Compute distances between nldr coordinates and hex bin centroids
+  dist_df <- proxy::dist(as.matrix(nldr_df |>
+                                     dplyr::select(-ID)), as.matrix(full_grid_with_hexbin_id |>
+                                                                      dplyr::select(-hexID)), method = "Euclidean")
 
-  ## Map the hexgoanl ID to full centroid dataset
-  full_grid_with_hexbin_id <- map_hexbin_id(full_centroid_df, df_bin_centroids)
+  ## Columns that gives minimum distances
+  min_column <- apply(dist_df, 1, which.min)
 
-  ## Generate all coordinates of hexagons
-  hex_grid <- full_hex_grid(full_centroid_df)
+  nldr_df <- nldr_df |>
+    dplyr::mutate(hb_id = full_grid_with_hexbin_id$hexID[min_column])
 
-  ## Map the polygon ID to the hexagon coordinates
-  full_grid_with_polygon_id_df <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+  return(nldr_df)
 
-  full_grid_with_hexbin_id_rep <- full_grid_with_polygon_id_df |>
+}
+
+compute_std_counts <- function(nldr_df) {
+
+  df_with_std_counts <- nldr_df |>
+    dplyr::count(hb_id) |>
+    dplyr::mutate(std_counts = n/max(n, na.rm = TRUE)) |>
+    dplyr::select(-n)
+
+  return(df_with_std_counts)
+
+}
+
+generate_full_grid_info <- function(full_grid_with_polygon_id, df_with_std_counts, hex_grid) {
+
+  ## To assign standardize counts for hex bins
+  df_bin_centroids_all <- dplyr::left_join(full_grid_with_polygon_id, df_with_std_counts, by = c("hexID" = "hb_id"))
+
+  ## Since hexagon has 6 coordinates, need to repeat 6 times
+  df_bin_centroids_all_rep <- df_bin_centroids_all |>
     dplyr::slice(rep(1:dplyr::n(), each = 6)) |>
     dplyr::arrange(polygon_id)
 
-  ## Generate the dataset with polygon, and hexagon bin centroid coordinates
-  hex_full_count_df <- dplyr::bind_cols(hex_grid, full_grid_with_hexbin_id_rep)
+  ## Join with hexagonal coordinates
+  hex_full_count_df <- dplyr::bind_cols(hex_grid, df_bin_centroids_all_rep)
 
   return(hex_full_count_df)
 
+
 }
+
+
+# generate_full_grid_info <- function(df_bin_centroids) {
+#
+#   ## generate all the centroids
+#   full_centroid_df <- generate_full_grid_centroids(df_bin_centroids)
+#
+#   ## Map the hexgoanl ID to full centroid dataset
+#   full_grid_with_hexbin_id <- map_hexbin_id(full_centroid_df, df_bin_centroids)
+#
+#   ## Generate all coordinates of hexagons
+#   hex_grid <- full_hex_grid(full_centroid_df)
+#
+#   ## Map the polygon ID to the hexagon coordinates
+#   full_grid_with_polygon_id_df <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+#
+#   full_grid_with_hexbin_id_rep <- full_grid_with_polygon_id_df |>
+#     dplyr::slice(rep(1:dplyr::n(), each = 6)) |>
+#     dplyr::arrange(polygon_id)
+#
+#   ## Generate the dataset with polygon, and hexagon bin centroid coordinates
+#   hex_full_count_df <- dplyr::bind_cols(hex_grid, full_grid_with_hexbin_id_rep)
+#
+#   return(hex_full_count_df)
+#
+# }
 
 find_pts_in_hexbins <- function(full_grid_with_hexbin_id, nldr_data_with_hb_id) {
 
@@ -801,102 +1053,102 @@ find_low_density_hexagons <- function(df_bin_centroids_all, num_bins_x, df_bin_c
   return(remove_bins)
 }
 
-extract_coord_of_shifted_hex_grid <- function(nldr_data_with_hb_id, num_bins_x, hex_full_count_df, shift = NA) {
-
-  if (is.na(shift)) {
-    cell_diameter <- sqrt(2 * 1 / sqrt(3))
-    shift <- cell_diameter/2
-
-  }
-
-  ## Filter centroids with their hexIDs
-  hexbin_coord_all <- hex_full_count_df |>
-    dplyr::select(c_x, c_y, hexID) |>
-    dplyr::distinct()
-
-  hexbin_coord_all_new <- hexbin_coord_all |>
-    dplyr::mutate(c_x = c_x - shift,
-                  c_y = c_y - shift) |>
-    dplyr::rename(c("x" = "c_x",
-                    "y" = "c_y"))
-
-  ## Generate all coordinates of hexagons
-  hex_grid_new <- full_hex_grid(hexbin_coord_all_new)
-
-  hexbin_coord_all_new <- hexbin_coord_all_new |>
-    dplyr::rename(c("c_x" = "x",
-                    "c_y" = "y"))
-
-  ## Map the polygon ID to the hexagon coordinates
-  full_grid_with_polygon_id_df <- map_polygon_id(hexbin_coord_all_new, hex_grid_new)
-
-  full_grid_with_hexbin_id_rep <- full_grid_with_polygon_id_df |>
-    dplyr::slice(rep(1:dplyr::n(), each = 6)) |>
-    dplyr::arrange(polygon_id)
-
-  ## Generate the dataset with polygon, and hexagon bin centroid coordinates
-  hex_full_count_df_new <- dplyr::bind_cols(hex_grid_new, full_grid_with_hexbin_id_rep)
-
-  ## Datafarme to store new hexIDs
-  nldr_df_with_new_hexID <- data.frame(matrix(ncol = 0, nrow = 0))
-
-  for (i in 1:NROW(nldr_data_with_hb_id)) {
-
-    ## Select the nldr point
-    nldr_data_with_hb_id_spec <- nldr_data_with_hb_id |>
-      dplyr::filter(dplyr::row_number() == i)
-
-    ## Find nearest hexIDs
-    df_bin_centroids_coordinates_spec_bin_near1 <- hexbin_coord_all_new |>
-      dplyr::filter((hexID == nldr_data_with_hb_id_spec$hb_id[1]) |(hexID == (nldr_data_with_hb_id_spec$hb_id[1] + (num_bins_x + 1))) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] + num_bins_x)) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] - (num_bins_x + 1))) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] - num_bins_x)))
-
-    nldr_data_with_hb_id_spec <- nldr_data_with_hb_id_spec |>
-      dplyr::select(-ID) |>
-      dplyr::rename("x" = names(nldr_data_with_hb_id_spec)[1],
-                    "y" = names(nldr_data_with_hb_id_spec)[2])
-
-    df_bin_centroids_coordinates_spec_bin_near1 <- df_bin_centroids_coordinates_spec_bin_near1 |>
-      dplyr::rename("x" = "c_x",
-                    "y" = "c_y",
-                    "hb_id" = "hexID")
-
-    near_df_1 <- dplyr::bind_rows(nldr_data_with_hb_id_spec, df_bin_centroids_coordinates_spec_bin_near1)
-
-    ## Compute the distance from selected point to neighbouring centroids
-    near_df_1$distance <- lapply(seq(nrow(near_df_1)), function(x) {
-      start <- unlist(near_df_1[1, c("x","y")])
-      end <- unlist(near_df_1[x, c("x","y")])
-      sqrt(sum((start - end)^2))})
-
-    near_df_1$distance <- unlist(near_df_1$distance)
-
-    near_df_1 <- near_df_1 |>
-      dplyr::filter(dplyr::row_number() != 1) |>
-      dplyr::arrange(distance)
-
-    ## Select the most nearest centroid and assign the hexID of that centroid
-    nldr_data_with_hb_id_spec <- nldr_data_with_hb_id_spec |>
-      dplyr::select(-hb_id) |>
-      dplyr::mutate(hb_id = near_df_1$hb_id[1])
-
-    nldr_df_with_new_hexID <- dplyr::bind_rows(nldr_df_with_new_hexID, nldr_data_with_hb_id_spec)
-
-  }
-
-
-  ## Find counts within each hexagon
-  hb_id_with_counts <- nldr_df_with_new_hexID |>
-    dplyr::count(hb_id) |>
-    dplyr::mutate(counts = n,
-                  std_counts = n/max(n)) |>
-    dplyr::select(-n)
-
-  hex_full_count_df_new <- dplyr::left_join(hex_full_count_df_new, hb_id_with_counts,
-                                            by = c("hexID" = "hb_id"))
-
-  return(hex_full_count_df_new)
-
-}
+# extract_coord_of_shifted_hex_grid <- function(nldr_data_with_hb_id, num_bins_x, hex_full_count_df, shift = NA) {
+#
+#   if (is.na(shift)) {
+#     cell_diameter <- sqrt(2 * 1 / sqrt(3))
+#     shift <- cell_diameter/2
+#
+#   }
+#
+#   ## Filter centroids with their hexIDs
+#   hexbin_coord_all <- hex_full_count_df |>
+#     dplyr::select(c_x, c_y, hexID) |>
+#     dplyr::distinct()
+#
+#   hexbin_coord_all_new <- hexbin_coord_all |>
+#     dplyr::mutate(c_x = c_x - shift,
+#                   c_y = c_y - shift) |>
+#     dplyr::rename(c("x" = "c_x",
+#                     "y" = "c_y"))
+#
+#   ## Generate all coordinates of hexagons
+#   hex_grid_new <- full_hex_grid(hexbin_coord_all_new)
+#
+#   hexbin_coord_all_new <- hexbin_coord_all_new |>
+#     dplyr::rename(c("c_x" = "x",
+#                     "c_y" = "y"))
+#
+#   ## Map the polygon ID to the hexagon coordinates
+#   full_grid_with_polygon_id_df <- map_polygon_id(hexbin_coord_all_new, hex_grid_new)
+#
+#   full_grid_with_hexbin_id_rep <- full_grid_with_polygon_id_df |>
+#     dplyr::slice(rep(1:dplyr::n(), each = 6)) |>
+#     dplyr::arrange(polygon_id)
+#
+#   ## Generate the dataset with polygon, and hexagon bin centroid coordinates
+#   hex_full_count_df_new <- dplyr::bind_cols(hex_grid_new, full_grid_with_hexbin_id_rep)
+#
+#   ## Datafarme to store new hexIDs
+#   nldr_df_with_new_hexID <- data.frame(matrix(ncol = 0, nrow = 0))
+#
+#   for (i in 1:NROW(nldr_data_with_hb_id)) {
+#
+#     ## Select the nldr point
+#     nldr_data_with_hb_id_spec <- nldr_data_with_hb_id |>
+#       dplyr::filter(dplyr::row_number() == i)
+#
+#     ## Find nearest hexIDs
+#     df_bin_centroids_coordinates_spec_bin_near1 <- hexbin_coord_all_new |>
+#       dplyr::filter((hexID == nldr_data_with_hb_id_spec$hb_id[1]) |(hexID == (nldr_data_with_hb_id_spec$hb_id[1] + (num_bins_x + 1))) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] + num_bins_x)) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] - (num_bins_x + 1))) | (hexID == (nldr_data_with_hb_id_spec$hb_id[1] - num_bins_x)))
+#
+#     nldr_data_with_hb_id_spec <- nldr_data_with_hb_id_spec |>
+#       dplyr::select(-ID) |>
+#       dplyr::rename("x" = names(nldr_data_with_hb_id_spec)[1],
+#                     "y" = names(nldr_data_with_hb_id_spec)[2])
+#
+#     df_bin_centroids_coordinates_spec_bin_near1 <- df_bin_centroids_coordinates_spec_bin_near1 |>
+#       dplyr::rename("x" = "c_x",
+#                     "y" = "c_y",
+#                     "hb_id" = "hexID")
+#
+#     near_df_1 <- dplyr::bind_rows(nldr_data_with_hb_id_spec, df_bin_centroids_coordinates_spec_bin_near1)
+#
+#     ## Compute the distance from selected point to neighbouring centroids
+#     near_df_1$distance <- lapply(seq(nrow(near_df_1)), function(x) {
+#       start <- unlist(near_df_1[1, c("x","y")])
+#       end <- unlist(near_df_1[x, c("x","y")])
+#       sqrt(sum((start - end)^2))})
+#
+#     near_df_1$distance <- unlist(near_df_1$distance)
+#
+#     near_df_1 <- near_df_1 |>
+#       dplyr::filter(dplyr::row_number() != 1) |>
+#       dplyr::arrange(distance)
+#
+#     ## Select the most nearest centroid and assign the hexID of that centroid
+#     nldr_data_with_hb_id_spec <- nldr_data_with_hb_id_spec |>
+#       dplyr::select(-hb_id) |>
+#       dplyr::mutate(hb_id = near_df_1$hb_id[1])
+#
+#     nldr_df_with_new_hexID <- dplyr::bind_rows(nldr_df_with_new_hexID, nldr_data_with_hb_id_spec)
+#
+#   }
+#
+#
+#   ## Find counts within each hexagon
+#   hb_id_with_counts <- nldr_df_with_new_hexID |>
+#     dplyr::count(hb_id) |>
+#     dplyr::mutate(counts = n,
+#                   std_counts = n/max(n)) |>
+#     dplyr::select(-n)
+#
+#   hex_full_count_df_new <- dplyr::left_join(hex_full_count_df_new, hb_id_with_counts,
+#                                             by = c("hexID" = "hb_id"))
+#
+#   return(hex_full_count_df_new)
+#
+# }
 
 compute_aic <- function(p, total, num_bins, num_obs) {
   mse <- mean(total) / p
@@ -1024,3 +1276,141 @@ predict_2d_embeddings <- function(test_data, df_bin_centroids, df_bin, type_NLDR
 
 }
 
+geom_trimesh <- function(mapping = NULL, data = NULL, stat = "trimesh",
+                         position = "identity", show.legend = NA, na.rm = FALSE, inherit.aes = TRUE,
+                         ...) {
+  ggplot2::layer(data = data, mapping = mapping, stat = stat, geom = GeomTrimesh,
+                 position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+                 params = list(na.rm = na.rm, ...))
+}
+
+GeomTrimesh <- ggplot2::ggproto("GeomTrimesh",
+                                ggplot2::Geom,
+                                required_aes = c("x", "y", "xend", "yend"),
+                                default_aes = ggplot2::aes(
+                                  shape = 19,
+                                  linetype = 1,
+                                  linewidth = 0.5,
+                                  size = 0.5,
+                                  alpha = NA,
+                                  colour = "#33a02c"
+                                ),
+                                draw_key = ggplot2::draw_key_point,
+                                draw_panel = function(data, panel_scales, coord) {
+
+                                  vertices <- tibble::tibble(
+                                    x = data$x,
+                                    y = data$y,
+                                    colour = rep("#33a02c", nrow(data)),
+                                    shape = data$shape,
+                                    size = rep(2, nrow(data)),
+                                    fill = rep("#33a02c", nrow(data)),
+                                    alpha = data$alpha,
+                                    stroke = 0.5,
+                                    stringsAsFactors = FALSE
+                                  )
+
+                                  trimesh <- tibble::tibble(
+                                    x = data$x,
+                                    xend = data$xend,
+                                    y = data$y,
+                                    yend = data$yend,
+                                    PANEL = data$PANEL,
+                                    group = data$group,
+                                    size = data$size,
+                                    linetype = data$linetype,
+                                    linewidth = data$linewidth,
+                                    alpha = data$alpha,
+                                    colour = data$colour
+                                  )
+
+                                  ggplot2:::ggname(
+                                    "geom_trimesh",
+                                    grid::grobTree(
+                                      ggplot2::GeomSegment$draw_panel(trimesh, panel_scales, coord),
+                                      ggplot2::GeomPoint$draw_panel(vertices, panel_scales, coord)
+                                    )
+                                  )
+                                }
+)
+
+stat_trimesh <- function(mapping = NULL, data = NULL, geom = GeomTrimesh$default_aes(),
+                         position = "identity", show.legend = NA, outliers = TRUE, inherit.aes = TRUE,
+                         ...) {
+  ggplot2::layer(
+    stat = StatTrimesh,
+    data = data,
+    mapping = mapping,
+    geom = geom,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(outliers = outliers, ...)
+  )
+}
+
+StatTrimesh <- ggplot2::ggproto(
+  "StatTrimesh",
+  ggplot2::Stat,
+  compute_group = function(data, scales, outliers = TRUE) {
+    tr1 <- tripack::tri.mesh(data$x, data$y, duplicate = "remove")
+    tr_df <- tibble::tibble(x = tr1$x, y = tr1$y)  ## Create a dataframe with tri.mesh x and y coordinate values
+    tr_df <- tr_df |>
+      dplyr::mutate(ID = dplyr::row_number())  ## To add ID numbers, because to join with from and to points in tri$arcs
+
+    trang <- tripack::triangles(tr1)
+    trang <- tibble::as_tibble(trang)
+
+    tr_arcs_df1 <- tibble::tibble(from = trang$node1, to = trang$node2)  ## Create dataframe with from and to edges
+    tr_arcs_df2 <- tibble::tibble(from = trang$node1, to = trang$node3)
+    tr_arcs_df3 <- tibble::tibble(from = trang$node2, to = trang$node3)
+    tr_arcs_df <- dplyr::bind_rows(tr_arcs_df1, tr_arcs_df2, tr_arcs_df3)  ## Create dataframe with from and to edges
+
+    ## To obtain x and values of from to in a dataframe
+    vec <- stats::setNames(rep("", 6), c("from", "to", "x_from", "y_from",
+                                         "x_to", "y_to"))  ## Define column names
+    # Initialize an empty dataframe to store data in a specific
+    # format
+    tr_from_to_df_coord <- dplyr::bind_rows(vec)[0, ]
+    tr_from_to_df_coord <- tr_from_to_df_coord |>
+      dplyr::mutate_if(is.character, as.numeric)
+
+    for (i in 1:NROW(tr_arcs_df)) {
+      from_row <- tr_df |>
+        dplyr::filter(dplyr::row_number() == (tr_arcs_df |>
+                                                dplyr::pull(from) |>
+                                                dplyr::nth(i)))
+      to_row <- tr_df |>
+        dplyr::filter(dplyr::row_number() == (tr_arcs_df |>
+                                                dplyr::pull(to) |>
+                                                dplyr::nth(i)))
+      tr_from_to_df_coord <- tr_from_to_df_coord |>
+        tibble::add_row(from = from_row |>
+                          dplyr::pull(ID),
+                        to = to_row |>
+                          dplyr::pull(ID),
+                        x_from = from_row |>
+                          dplyr::pull(x),
+                        y_from = from_row |>
+                          dplyr::pull(y),
+                        x_to = to_row |>
+                          dplyr::pull(x),
+                        y_to = to_row |>
+                          dplyr::pull(y))  ## Add vector as an appending row to the dataframe
+    }
+
+    trimesh <- tibble::tibble(x = tr_from_to_df_coord$x_from,
+                              y = tr_from_to_df_coord$y_from,
+                              xend = tr_from_to_df_coord$x_to,
+                              yend = tr_from_to_df_coord$y_to,
+                              PANEL = as.factor(rep(1, nrow(tr_from_to_df_coord))),
+                              group = rep(-1, nrow(tr_from_to_df_coord)),
+                              size = rep(0.5, nrow(tr_from_to_df_coord)),
+                              linetype = rep(1, nrow(tr_from_to_df_coord)),
+                              linewidth = rep(0.5, nrow(tr_from_to_df_coord)),
+                              alpha = rep(NA, nrow(tr_from_to_df_coord)),
+                              colour = rep("#636363", nrow(tr_from_to_df_coord)))
+    trimesh
+  },
+  required_aes = c("x", "y")
+)
