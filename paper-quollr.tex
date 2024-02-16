@@ -16,6 +16,19 @@ library(readr)
 library(ggplot2)
 library(dplyr)
 library(ggbeeswarm)
+library(Rtsne)
+library(umap)
+library(phateR)
+library(reticulate)
+library(rsample)
+
+set.seed(20230531)
+
+use_python("~/miniforge3/envs/pcamp_env/bin/python")
+use_condaenv("pcamp_env")
+
+reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
+reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
 \end{verbatim}
 
 \hypertarget{introduction}{%
@@ -66,7 +79,7 @@ shape_val
 \end{verbatim}
 
 \begin{verbatim}
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP2", y = "UMAP2", shape_val = 1.833091)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2", shape_val = 1.833091, num_bins_x = num_bins_x)
 num_bins_y
 \end{verbatim}
 
@@ -700,8 +713,433 @@ tour1
 \hypertarget{tests}{%
 \subsection{Tests}\label{tests}}
 
-\hypertarget{examples}{%
-\section{Examples}\label{examples}}
+\hypertarget{application}{%
+\section{Application}\label{application}}
+
+\begin{verbatim}
+medlea_df <- read_csv("data/medlea_dataset.csv")
+names(medlea_df)[2:(NCOL(medlea_df) - 1)] <- paste0("x", 1:(NCOL(medlea_df) - 2))
+
+medlea_df <- medlea_df |> ## Since only contains zeros
+  select(-x10)
+
+#medlea_df[,2:(NCOL(medlea_df) - 1)] <- scale(medlea_df[,2:(NCOL(medlea_df) - 1)])
+
+calculate_pca <- function(feature_dataset, num_pcs){
+  pcaY_cal <- prcomp(feature_dataset, center = TRUE, scale = TRUE)
+  PCAresults <- data.frame(pcaY_cal$x[, 1:num_pcs])
+  summary_pca <- summary(pcaY_cal)
+  var_explained_df <- data.frame(PC= paste0("PC",1:50),
+                               var_explained=(pcaY_cal$sdev[1:50])^2/sum((pcaY_cal$sdev[1:50])^2))
+  return(list(prcomp_out = pcaY_cal,pca_components = PCAresults, summary = summary_pca, var_explained_pca  = var_explained_df))
+}
+features <- medlea_df[,2:(NCOL(medlea_df) - 1)]
+pca_ref_calc <- calculate_pca(features, 8) 
+pca_ref_calc$summary
+\end{verbatim}
+
+\begin{verbatim}
+#> Importance of components:
+#>                           PC1    PC2    PC3     PC4     PC5     PC6     PC7
+#> Standard deviation     3.1691 3.0609 2.7226 1.87967 1.71219 1.34192 1.27525
+#> Proportion of Variance 0.1969 0.1837 0.1453 0.06928 0.05748 0.03531 0.03189
+#> Cumulative Proportion  0.1969 0.3806 0.5260 0.59526 0.65274 0.68805 0.71993
+#>                            PC8     PC9    PC10    PC11    PC12    PC13   PC14
+#> Standard deviation     1.16992 1.13465 1.06628 1.03279 0.97899 0.96264 0.9528
+#> Proportion of Variance 0.02684 0.02524 0.02229 0.02091 0.01879 0.01817 0.0178
+#> Cumulative Proportion  0.74677 0.77202 0.79431 0.81522 0.83402 0.85219 0.8700
+#>                          PC15   PC16    PC17    PC18    PC19    PC20    PC21
+#> Standard deviation     0.9116 0.9090 0.79750 0.76725 0.72414 0.65310 0.61052
+#> Proportion of Variance 0.0163 0.0162 0.01247 0.01154 0.01028 0.00836 0.00731
+#> Cumulative Proportion  0.8863 0.9025 0.91496 0.92650 0.93678 0.94514 0.95245
+#>                          PC22    PC23    PC24    PC25    PC26   PC27    PC28
+#> Standard deviation     0.6019 0.55399 0.52293 0.46638 0.41959 0.3976 0.34697
+#> Proportion of Variance 0.0071 0.00602 0.00536 0.00426 0.00345 0.0031 0.00236
+#> Cumulative Proportion  0.9596 0.96557 0.97093 0.97520 0.97865 0.9818 0.98411
+#>                           PC29    PC30    PC31    PC32    PC33    PC34    PC35
+#> Standard deviation     0.33415 0.30618 0.29237 0.28458 0.26033 0.25420 0.22792
+#> Proportion of Variance 0.00219 0.00184 0.00168 0.00159 0.00133 0.00127 0.00102
+#> Cumulative Proportion  0.98630 0.98814 0.98982 0.99140 0.99273 0.99400 0.99502
+#>                           PC36    PC37    PC38   PC39    PC40    PC41    PC42
+#> Standard deviation     0.21644 0.20437 0.19127 0.1744 0.15586 0.15252 0.12519
+#> Proportion of Variance 0.00092 0.00082 0.00072 0.0006 0.00048 0.00046 0.00031
+#> Cumulative Proportion  0.99594 0.99676 0.99747 0.9981 0.99855 0.99900 0.99931
+#>                           PC43    PC44    PC45    PC46    PC47    PC48    PC49
+#> Standard deviation     0.10485 0.08598 0.08008 0.06491 0.04841 0.04094 0.03791
+#> Proportion of Variance 0.00022 0.00014 0.00013 0.00008 0.00005 0.00003 0.00003
+#> Cumulative Proportion  0.99952 0.99967 0.99980 0.99988 0.99992 0.99996 0.99999
+#>                           PC50    PC51
+#> Standard deviation     0.02347 0.01421
+#> Proportion of Variance 0.00001 0.00000
+#> Cumulative Proportion  1.00000 1.00000
+\end{verbatim}
+
+\begin{verbatim}
+var_explained_df <- pca_ref_calc$var_explained_pca
+data_pca <- pca_ref_calc$pca_components |>
+  mutate(ID = 1:NROW(pca_ref_calc$pca_components),
+         shape_label = medlea_df$Shape_label)
+
+var_explained_df |>
+  ggplot(aes(x = PC,y = var_explained, group = 1))+
+  geom_point(size=1)+
+  geom_line()+
+  labs(title="Scree plot: PCA on scaled data") +
+  scale_x_discrete(limits = paste0(rep("PC", 50), 1:50)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-40-1.pdf}
+
+\begin{verbatim}
+data_split <- initial_split(data_pca)
+training_data <- training(data_split) |>
+  arrange(ID)
+test_data <- testing(data_split) |>
+  arrange(ID)
+\end{verbatim}
+
+\begin{verbatim}
+UMAP_fit <- umap(training_data |> dplyr::select(-c(ID, shape_label)), n_neighbors = 37, n_components =  2)
+
+UMAP_data <- UMAP_fit$layout |>
+  as.data.frame()
+names(UMAP_data)[1:(ncol(UMAP_data))] <- paste0(rep("UMAP",(ncol(UMAP_data))), 1:(ncol(UMAP_data)))
+
+UMAP_data <- UMAP_data |>
+  mutate(ID = training_data$id)
+
+UMAP_data_with_label <- UMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+\end{verbatim}
+
+\begin{verbatim}
+UMAP_data_with_label |>
+    ggplot(aes(x = UMAP1,
+               y = UMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-42-1.pdf}
+
+\begin{verbatim}
+tSNE_data <- Fit_tSNE(training_data |> dplyr::select(-c(ID, shape_label)), opt_perplexity = calculate_effective_perplexity(training_data |> dplyr::select(-c(ID, shape_label))), with_seed = 20240110)
+
+tSNE_data <- tSNE_data |>
+  select(-ID) |>
+  mutate(ID = training_data$ID)
+
+tSNE_data_with_label <- tSNE_data |>
+  mutate(shape_label = training_data$shape_label)
+
+tSNE_data_with_label |>
+    ggplot(aes(x = tSNE1,
+               y = tSNE2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-43-1.pdf}
+
+\begin{verbatim}
+PHATE_data <- Fit_PHATE(training_data |> dplyr::select(-c(ID, shape_label)), knn = 5, with_seed = 20240110)
+\end{verbatim}
+
+\begin{verbatim}
+#> Calculating PHATE...
+#>   Running PHATE on 824 observations and 8 variables.
+#>   Calculating graph and diffusion operator...
+#>     Calculating KNN search...
+#>     Calculating affinities...
+#>   Calculated graph and diffusion operator in 0.01 seconds.
+#>   Calculating optimal t...
+#>     Automatically selected t = 22
+#>   Calculated optimal t in 0.39 seconds.
+#>   Calculating diffusion potential...
+#>   Calculated diffusion potential in 0.32 seconds.
+#>   Calculating metric MDS...
+#>   Calculated metric MDS in 8.83 seconds.
+#> Calculated PHATE in 9.55 seconds.
+\end{verbatim}
+
+\begin{verbatim}
+PHATE_data <- PHATE_data |>
+  select(PHATE1, PHATE2)
+PHATE_data <- PHATE_data |>
+  mutate(ID = training_data$ID)
+
+PHATE_data_with_label <- PHATE_data |>
+  mutate(shape_label = training_data$shape_label)
+
+PHATE_data_with_label |>
+    ggplot(aes(x = PHATE1,
+               y = PHATE2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-44-1.pdf}
+
+\begin{verbatim}
+tem_dir <- tempdir()
+
+Fit_TriMAP_data(training_data |> dplyr::select(-c(ID, shape_label)), tem_dir)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+
+Fit_TriMAP(as.integer(2), as.integer(5), as.integer(4), as.integer(3), path, path2)
+
+TriMAP_data <- read_csv(path2)
+TriMAP_data <- TriMAP_data |>
+  mutate(ID = training_data$ID)
+
+TriMAP_data_with_label <- TriMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+
+TriMAP_data_with_label |>
+    ggplot(aes(x = TriMAP1,
+               y = TriMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-45-1.pdf}
+
+\begin{verbatim}
+tem_dir <- tempdir()
+
+Fit_PacMAP_data(training_data |> dplyr::select(-c(ID, shape_label)), tem_dir)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+
+Fit_PaCMAP(as.integer(2), as.integer(10), "random", 0.9, as.integer(2), path, path2)
+
+PaCMAP_data <- read_csv(path2)
+PaCMAP_data <- PaCMAP_data |>
+  mutate(ID = training_data$ID)
+
+PaCMAP_data_with_label <- PaCMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+
+PaCMAP_data_with_label |>
+    ggplot(aes(x = PaCMAP1,
+               y = PaCMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-46-1.pdf}
+
+\begin{verbatim}
+num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", cell_area = 1)
+num_bins_x <- 13
+\end{verbatim}
+
+\begin{verbatim}
+shape_val <- calculate_effective_shape_value(.data = tSNE_data, x = "tSNE1", y = "tSNE2")
+shape_val
+\end{verbatim}
+
+\begin{verbatim}
+#> [1] 1.13882
+\end{verbatim}
+
+\begin{verbatim}
+num_bins_y <- calculate_effective_y_bins(.data = tSNE_data, x = "tSNE1", y = "tSNE2", shape_val = 0.8417289, num_bins_x = num_bins_x)
+num_bins_y
+\end{verbatim}
+
+\begin{verbatim}
+#> [1] 14
+\end{verbatim}
+
+\begin{verbatim}
+all_centroids_df <- generate_full_grid_centroids(nldr_df = tSNE_data, 
+                                                 x = "tSNE1", y = "tSNE2", 
+                                                 num_bins_x = num_bins_x, 
+                                                 num_bins_y = num_bins_y, 
+                                                 buffer_size = NA, hex_size = NA)
+
+
+hex_grid <- gen_hex_coordinates(all_centroids_df)
+
+full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df)
+
+full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+
+tSNE_data_with_id <- assign_data(tSNE_data, full_grid_with_hexbin_id)
+
+df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+
+hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
+
+ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
+  geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-50-1.pdf}
+
+\begin{verbatim}
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = tSNE_data, aes(x = tSNE1, y = tSNE2), color = "blue")
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-51-1.pdf}
+
+\begin{verbatim}
+df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
+  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
+  dplyr::distinct() |>
+  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
+
+df_bin_centroids
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 21 x 4
+#>        x     y hexID std_counts
+#>    <dbl> <dbl> <int>      <dbl>
+#>  1 -27.7 -34.8     1      0.286
+#>  2 -25.4 -30.1    14      0.286
+#>  3 -27.7 -25.4    27      0.286
+#>  4 -25.4 -20.7    40      0.286
+#>  5 -27.7 -16.0    53      0.429
+#>  6 -25.4 -11.3    66      0.143
+#>  7 -23.2 -34.8     2      0.857
+#>  8 -20.9 -30.1    15      0.429
+#>  9 -23.2 -25.4    28      1    
+#> 10 -20.9 -20.7    41      0.714
+#> # i 11 more rows
+\end{verbatim}
+
+\begin{verbatim}
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
+\end{verbatim}
+
+\begin{verbatim}
+## To generate a data set with high-D and 2D training data
+df_all <- training_data |> dplyr::select(-c(ID, shape_label)) |>
+  dplyr::bind_cols(tSNE_data_with_id)
+
+## To generate averaged high-D data
+
+df_bin <- avg_highD_data(.data = df_all, column_start_text = "PC") ## Need to pass ID column name
+\end{verbatim}
+
+\begin{verbatim}
+## Compute 2D distances
+distance <- cal_2d_dist(.data = tr_from_to_df)
+
+plot_dist(distance)
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-55-1.pdf}
+
+\begin{verbatim}
+benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+\end{verbatim}
+
+\begin{verbatim}
+trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
+  geom_point(size = 0.1) +
+  geom_trimesh() +
+  coord_equal()
+
+trimesh
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-56-1.pdf}
+
+\begin{verbatim}
+trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
+                                triangular_object = tr1_object, distance_col = distance)
+
+trimesh_gr
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-57-1.pdf}
+
+\begin{verbatim}
+trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
+                                     triangular_object = tr1_object, distance_col = distance)
+trimesh_removed
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-58-1.pdf}
+
+\begin{verbatim}
+tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
+                          distance = distance, distance_col = "distance", column_start_text = "PC")
+tour1
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}

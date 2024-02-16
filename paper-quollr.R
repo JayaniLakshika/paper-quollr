@@ -5,6 +5,7 @@
 knitr::opts_chunk$set(warning = FALSE, 
                       message = FALSE)
 source("quollr_code.R", local = TRUE)
+source("nldr_code.R", local = TRUE)
 
 
 ## ----load-libraries-----------------------------------------------------------
@@ -13,6 +14,20 @@ library(readr)
 library(ggplot2)
 library(dplyr)
 library(ggbeeswarm)
+library(Rtsne)
+library(umap)
+library(phateR)
+library(reticulate)
+library(rsample)
+
+set.seed(20230531)
+
+use_python("~/miniforge3/envs/pcamp_env/bin/python")
+use_condaenv("pcamp_env")
+
+reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
+reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
+
 
 
 ## -----------------------------------------------------------------------------
@@ -39,7 +54,7 @@ shape_val
 
 
 ## -----------------------------------------------------------------------------
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP2", y = "UMAP2", shape_val = 1.833091)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2", shape_val = 1.833091, num_bins_x = num_bins_x)
 num_bins_y
 
 
@@ -350,5 +365,318 @@ trimesh_removed
 ## -----------------------------------------------------------------------------
 tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
                           distance = distance, distance_col = "distance")
+tour1
+
+
+## -----------------------------------------------------------------------------
+medlea_df <- read_csv("data/medlea_dataset.csv")
+names(medlea_df)[2:(NCOL(medlea_df) - 1)] <- paste0("x", 1:(NCOL(medlea_df) - 2))
+
+medlea_df <- medlea_df |> ## Since only contains zeros
+  select(-x10)
+
+#medlea_df[,2:(NCOL(medlea_df) - 1)] <- scale(medlea_df[,2:(NCOL(medlea_df) - 1)])
+
+calculate_pca <- function(feature_dataset, num_pcs){
+  pcaY_cal <- prcomp(feature_dataset, center = TRUE, scale = TRUE)
+  PCAresults <- data.frame(pcaY_cal$x[, 1:num_pcs])
+  summary_pca <- summary(pcaY_cal)
+  var_explained_df <- data.frame(PC= paste0("PC",1:50),
+                               var_explained=(pcaY_cal$sdev[1:50])^2/sum((pcaY_cal$sdev[1:50])^2))
+  return(list(prcomp_out = pcaY_cal,pca_components = PCAresults, summary = summary_pca, var_explained_pca  = var_explained_df))
+}
+features <- medlea_df[,2:(NCOL(medlea_df) - 1)]
+pca_ref_calc <- calculate_pca(features, 8) 
+pca_ref_calc$summary
+
+var_explained_df <- pca_ref_calc$var_explained_pca
+data_pca <- pca_ref_calc$pca_components |>
+  mutate(ID = 1:NROW(pca_ref_calc$pca_components),
+         shape_label = medlea_df$Shape_label)
+
+var_explained_df |>
+  ggplot(aes(x = PC,y = var_explained, group = 1))+
+  geom_point(size=1)+
+  geom_line()+
+  labs(title="Scree plot: PCA on scaled data") +
+  scale_x_discrete(limits = paste0(rep("PC", 50), 1:50)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+data_split <- initial_split(data_pca)
+training_data <- training(data_split) |>
+  arrange(ID)
+test_data <- testing(data_split) |>
+  arrange(ID)
+
+
+## -----------------------------------------------------------------------------
+UMAP_fit <- umap(training_data |> dplyr::select(-c(ID, shape_label)), n_neighbors = 37, n_components =  2)
+
+UMAP_data <- UMAP_fit$layout |>
+  as.data.frame()
+names(UMAP_data)[1:(ncol(UMAP_data))] <- paste0(rep("UMAP",(ncol(UMAP_data))), 1:(ncol(UMAP_data)))
+
+UMAP_data <- UMAP_data |>
+  mutate(ID = training_data$id)
+
+UMAP_data_with_label <- UMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+
+
+## -----------------------------------------------------------------------------
+UMAP_data_with_label |>
+    ggplot(aes(x = UMAP1,
+               y = UMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+
+
+## -----------------------------------------------------------------------------
+tSNE_data <- Fit_tSNE(training_data |> dplyr::select(-c(ID, shape_label)), opt_perplexity = calculate_effective_perplexity(training_data |> dplyr::select(-c(ID, shape_label))), with_seed = 20240110)
+
+tSNE_data <- tSNE_data |>
+  select(-ID) |>
+  mutate(ID = training_data$ID)
+
+tSNE_data_with_label <- tSNE_data |>
+  mutate(shape_label = training_data$shape_label)
+
+tSNE_data_with_label |>
+    ggplot(aes(x = tSNE1,
+               y = tSNE2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+
+
+## -----------------------------------------------------------------------------
+PHATE_data <- Fit_PHATE(training_data |> dplyr::select(-c(ID, shape_label)), knn = 5, with_seed = 20240110)
+PHATE_data <- PHATE_data |>
+  select(PHATE1, PHATE2)
+PHATE_data <- PHATE_data |>
+  mutate(ID = training_data$ID)
+
+PHATE_data_with_label <- PHATE_data |>
+  mutate(shape_label = training_data$shape_label)
+
+PHATE_data_with_label |>
+    ggplot(aes(x = PHATE1,
+               y = PHATE2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+
+
+## -----------------------------------------------------------------------------
+tem_dir <- tempdir()
+
+Fit_TriMAP_data(training_data |> dplyr::select(-c(ID, shape_label)), tem_dir)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_TriMAP_values.csv")
+
+Fit_TriMAP(as.integer(2), as.integer(5), as.integer(4), as.integer(3), path, path2)
+
+TriMAP_data <- read_csv(path2)
+TriMAP_data <- TriMAP_data |>
+  mutate(ID = training_data$ID)
+
+TriMAP_data_with_label <- TriMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+
+TriMAP_data_with_label |>
+    ggplot(aes(x = TriMAP1,
+               y = TriMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+
+
+
+## -----------------------------------------------------------------------------
+tem_dir <- tempdir()
+
+Fit_PacMAP_data(training_data |> dplyr::select(-c(ID, shape_label)), tem_dir)
+
+path <- file.path(tem_dir, "df_2_without_class.csv")
+path2 <- file.path(tem_dir, "dataset_3_PaCMAP_values.csv")
+
+Fit_PaCMAP(as.integer(2), as.integer(10), "random", 0.9, as.integer(2), path, path2)
+
+PaCMAP_data <- read_csv(path2)
+PaCMAP_data <- PaCMAP_data |>
+  mutate(ID = training_data$ID)
+
+PaCMAP_data_with_label <- PaCMAP_data |>
+  mutate(shape_label = training_data$shape_label)
+
+PaCMAP_data_with_label |>
+    ggplot(aes(x = PaCMAP1,
+               y = PaCMAP2, color = shape_label))+
+    geom_point(alpha=0.5) +
+    coord_equal() +
+    theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold")) + #ggtitle("(a)") +
+  theme_linedraw() +
+    theme(legend.position = "none", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+              axis.title.x = element_blank(), axis.title.y = element_blank(),
+              axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+              axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=5), #change legend title font size
+        legend.text = element_text(size=4),
+         legend.key.height = unit(0.25, 'cm'),
+         legend.key.width = unit(0.25, 'cm')) +
+  scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
+
+
+## -----------------------------------------------------------------------------
+num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", cell_area = 1)
+num_bins_x <- 13
+
+
+## -----------------------------------------------------------------------------
+shape_val <- calculate_effective_shape_value(.data = tSNE_data, x = "tSNE1", y = "tSNE2")
+shape_val
+
+
+## -----------------------------------------------------------------------------
+num_bins_y <- calculate_effective_y_bins(.data = tSNE_data, x = "tSNE1", y = "tSNE2", shape_val = 0.8417289, num_bins_x = num_bins_x)
+num_bins_y
+
+
+## -----------------------------------------------------------------------------
+all_centroids_df <- generate_full_grid_centroids(nldr_df = tSNE_data, 
+                                                 x = "tSNE1", y = "tSNE2", 
+                                                 num_bins_x = num_bins_x, 
+                                                 num_bins_y = num_bins_y, 
+                                                 buffer_size = NA, hex_size = NA)
+
+
+hex_grid <- gen_hex_coordinates(all_centroids_df)
+
+full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df)
+
+full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
+
+tSNE_data_with_id <- assign_data(tSNE_data, full_grid_with_hexbin_id)
+
+df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+
+hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
+
+ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
+  geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
+
+
+## -----------------------------------------------------------------------------
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = tSNE_data, aes(x = tSNE1, y = tSNE2), color = "blue")
+
+
+## -----------------------------------------------------------------------------
+df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
+  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
+  dplyr::distinct() |>
+  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
+
+df_bin_centroids
+
+
+## -----------------------------------------------------------------------------
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
+
+
+## -----------------------------------------------------------------------------
+## To generate a data set with high-D and 2D training data
+df_all <- training_data |> dplyr::select(-c(ID, shape_label)) |>
+  dplyr::bind_cols(tSNE_data_with_id)
+
+## To generate averaged high-D data
+
+df_bin <- avg_highD_data(.data = df_all, column_start_text = "PC") ## Need to pass ID column name
+
+
+## -----------------------------------------------------------------------------
+## Compute 2D distances
+distance <- cal_2d_dist(.data = tr_from_to_df)
+
+plot_dist(distance)
+
+benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+
+
+## -----------------------------------------------------------------------------
+trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
+  geom_point(size = 0.1) +
+  geom_trimesh() +
+  coord_equal()
+
+trimesh
+
+
+## -----------------------------------------------------------------------------
+trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
+                                triangular_object = tr1_object, distance_col = distance)
+
+trimesh_gr
+
+
+## -----------------------------------------------------------------------------
+trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
+                                     triangular_object = tr1_object, distance_col = distance)
+trimesh_removed
+
+
+## -----------------------------------------------------------------------------
+tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
+                          distance = distance, distance_col = "distance", column_start_text = "PC")
 tour1
 

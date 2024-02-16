@@ -26,7 +26,7 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", cell_area = 1){
 
 }
 
-calculate_effective_y_bins <- function(.data, x = "UMAP2", y = "UMAP2", shape_val = NA){
+calculate_effective_y_bins <- function(.data, x = "UMAP2", y = "UMAP2", shape_val = NA, num_bins_x){
 
   if (anyNA(.data[[rlang::as_string(rlang::ensym(y))]])) {
     stop("NAs present")
@@ -303,6 +303,8 @@ triangulate_bin_centroids <- function(.data, x, y){
 }
 
 generate_edge_info <- function(triangular_object) {
+
+
   # Create a data frame with x and y coordinate values from the triangular object
   tr_df <- tibble::tibble(x = triangular_object$x, y = triangular_object$y)
   tr_df <- tr_df |> dplyr::mutate(ID = dplyr::row_number())  # Add ID numbers for joining with from and to points in tr_arcs
@@ -346,6 +348,8 @@ generate_edge_info <- function(triangular_object) {
   }
 
   return(tr_from_to_df_coord)
+
+
 }
 
 cal_2d_dist <- function(.data, start_x = "x_from", start_y = "y_from", end_x = "x_to",
@@ -374,11 +378,11 @@ colour_long_edges <- function(.data, benchmark_value, triangular_object, distanc
 
   # Filter and label small and long edges
   distance_df_small_edges <- .data |>
-    dplyr::filter({{ distance_col }} < benchmark_value) |>
+    dplyr::filter((!!as.name(distance_col)) < benchmark_value) |>
     dplyr::mutate(type = "small_edges")
 
   distance_df_long_edges <- .data |>
-    dplyr::filter({{ distance_col }} >= benchmark_value) |>
+    dplyr::filter((!!as.name(distance_col)) >= benchmark_value) |>
     dplyr::mutate(type = "long_edges")
 
   # Combine small and long edges
@@ -410,11 +414,7 @@ remove_long_edges <- function(.data, benchmark_value, triangular_object,
 
   # Filter small edges
   distance_df_small_edges <- .data |>
-    dplyr::filter({
-      {
-        distance_col
-      }
-    } < benchmark_value)
+    dplyr::filter((!!as.name(distance_col)) < benchmark_value)
 
   # Merge edge information with distance data
   tr_from_to_df_coord_with_group <- merge(tr_from_to_df_coord, distance_df_small_edges,
@@ -765,11 +765,11 @@ weighted_highD_data <- function(training_data, nldr_df_with_id, hb_object, colum
 }
 
 show_langevitour <- function(df, df_b, df_b_with_center_data, benchmark_value = NA,
-                             distance_df, distance_col, use_default_benchmark_val = FALSE) {
+                             distance_df, distance_col, use_default_benchmark_val = FALSE, column_start_text = "x") {
 
   ### Define type column
   df <- df |>
-    dplyr::select(tidyselect::starts_with("x")) |>
+    dplyr::select(tidyselect::starts_with(column_start_text)) |>
     dplyr::mutate(type = "data") ## original dataset
 
   df_b <- df_b |>
