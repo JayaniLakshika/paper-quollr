@@ -1,4 +1,4 @@
-calculate_effective_x_bins <- function(.data, x = "UMAP1", cell_area = 1){
+calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA){
 
   if (anyNA(.data[[rlang::as_string(rlang::ensym(x))]])) {
     stop("NAs present")
@@ -8,25 +8,33 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", cell_area = 1){
     stop("Inf present")
   }
 
-  if ((cell_area <= 0) || (is.infinite(cell_area))) {
-    stop("Invalid cell area value")
 
+
+  if (is.na(hex_size)) {
+    cell_area <- 1
+
+    ## To compute the radius of the hexagon outer circle
+    hex_size <- sqrt(2 * cell_area / sqrt(3))
+
+  } else {
+    if ((hex_size <= 0) || (is.infinite(hex_size))) {
+      stop("Invalid hex size value")
+
+    }
   }
-
-  ## To compute the diameter of the hexagon
-  cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
   ## To compute the range along x-axis
   xwidth <- diff(range(.data |>
                          dplyr::pull({{ x }})))
 
-  #num_bins <- ceiling(xwidth/cell_diameter)
-  num_bins <- floor(xwidth/cell_diameter + 1.5001)
+  horizontal_spacing <- sqrt(3) * hex_size
+
+  num_bins <- ceiling(xwidth/horizontal_spacing)
   num_bins
 
 }
 
-calculate_effective_y_bins <- function(.data, x = "UMAP2", y = "UMAP2", shape_val = NA, num_bins_x){
+calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA){
 
   if (anyNA(.data[[rlang::as_string(rlang::ensym(y))]])) {
     stop("NAs present")
@@ -36,13 +44,29 @@ calculate_effective_y_bins <- function(.data, x = "UMAP2", y = "UMAP2", shape_va
     stop("Inf present")
   }
 
-  if (is.na(shape_val)) {
-    shape_val <- calculate_effective_shape_value(.data = .data, x = x, y = y)
+  if (is.na(hex_size)) {
+    cell_area <- 1
 
+    ## To compute the radius of the hexagon outer circle
+    hex_size <- sqrt(2 * cell_area / sqrt(3))
+
+  } else {
+    if ((hex_size <= 0) || (is.infinite(hex_size))) {
+      stop("Invalid hex size value")
+
+    }
   }
 
-  num_bins <- 2 * floor(((num_bins_x - 1) * shape_val)/sqrt(3) + 1.5001)
+
+  ## To compute the range along x-axis
+  ywidth <- diff(range(.data |>
+                         dplyr::pull({{ y }})))
+
+  vertical_spacing <- 3 * hex_size/2
+
+  num_bins <- ceiling(ywidth/vertical_spacing)
   num_bins
+
 
 }
 
@@ -87,15 +111,14 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   ## If number of bins along the x-axis is not given
   if (is.na(num_bins_x)) {
     ## compute the number of bins along the x-axis
-    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x,
-                                             cell_area = 1)
+    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x, hex_size = NA)
 
 
   }
 
   ## If number of bins along the y-axis is not given
   if (is.na(num_bins_y)) {
-    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, x = x, y = y)
+    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, y = y, hex_size = NA)
 
   }
 
@@ -103,21 +126,19 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   if (is.na(hex_size)) {
     ## To compute the diameter of the hexagon
     cell_area <- 1
-    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
-    hex_size <- cell_diameter/2
+    hex_size <- sqrt(2 * cell_area / sqrt(3))
     message(paste0("hex_size set to ", hex_size, "."))
 
   } else {
 
     cell_area <- 1
-    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
-    ## hex size is cell_diameter
-    if (hex_size > (cell_diameter/2)) {
-      stop(paste0("Hex size exceeds than ", cell_diameter/2, ". Need to assign a value less than ", cell_diameter/2, "."))
-
-    }
+    # ## hex size is cell_diameter
+    # if (hex_size > (sqrt(2 * cell_area / sqrt(3)))) {
+    #   stop(paste0("Hex size exceeds than ", sqrt(2 * cell_area / sqrt(3)), ". Need to assign a value less than ", sqrt(2 * cell_area / sqrt(3)), "."))
+    #
+    # }
 
   }
 
@@ -172,15 +193,14 @@ extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   ## If number of bins along the x-axis is not given
   if (is.na(num_bins_x)) {
     ## compute the number of bins along the x-axis
-    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x,
-                                             cell_area = 1)
+    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x, hex_size = NA)
 
 
   }
 
   ## If number of bins along the y-axis is not given
   if (is.na(num_bins_y)) {
-    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, x = x, y = y)
+    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, y = y, hex_size = NA)
 
   }
 
@@ -189,19 +209,17 @@ extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   if (is.na(hex_size)) {
     ## To compute the diameter of the hexagon
     cell_area <- 1
-    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
-    hex_size <- cell_diameter/2
+    hex_size <- sqrt(2 * cell_area / sqrt(3))
     message(paste0("hex_size set to ", hex_size, "."))
 
   } else {
 
     cell_area <- 1
-    cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
     ## hex size is cell_diameter
-    if (hex_size > (cell_diameter/2)) {
-      stop(paste0("Hex size exceeds than ", cell_diameter/2, ". Need to assign a value less than ", cell_diameter/2, "."))
+    if (hex_size > (sqrt(2 * cell_area / sqrt(3)))) {
+      stop(paste0("Hex size exceeds than ", sqrt(2 * cell_area / sqrt(3)), ". Need to assign a value less than ", sqrt(2 * cell_area / sqrt(3)), "."))
 
     }
 
@@ -223,6 +241,8 @@ extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
 
   }
+
+  cell_diameter <- hex_size * 2
 
 
   ## Shift is not compatible
@@ -445,29 +465,92 @@ remove_long_edges <- function(.data, benchmark_value, triangular_object,
 #
 # }
 ## Generate hexagonal coordinates by passing all the centroids
-gen_hex_coordinates <- function(all_centroids_df){
+gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
 
-  ## Compute horizontal width of the hexagon
+  # angle_rad_vec <- c()
+  #
+  # for (i in 1:6) {
+  #   angle_deg <- 60 * i - 30
+  #   angle_rad = pi / 180 * angle_deg
+  #
+  #   angle_rad_vec <- append(angle_rad_vec, angle_rad)
+  # }
+
+  ## hex size is not provided
+  if (is.na(hex_size)) {
+    ## To compute the diameter of the hexagon
+    cell_area <- 1
+
+    hex_size <- sqrt(2 * cell_area / sqrt(3))
+    message(paste0("hex_size set to ", hex_size, "."))
+
+  } else {
+
+    # cell_area <- 1
+    #
+    # ## hex size is cell_diameter
+    # if (hex_size > (sqrt(2 * cell_area / sqrt(3)))) {
+    #   stop(paste0("Hex size exceeds than ", sqrt(2 * cell_area / sqrt(3)), ". Need to assign a value less than ", sqrt(2 * cell_area / sqrt(3)), "."))
+    #
+    # }
+
+  }
+
+  #angle_rad_vec <- c(0.5235988, 1.5707963, 2.6179939, 3.6651914, 4.7123890, 5.7595865)
+
+  # x_add_factor <- sqrt(3)/2 * (hex_size + hex_size/2)  * cos(angle_rad_vec)
+  # y_add_factor <- 3/4 * (hex_size + hex_size/2) * sin(angle_rad_vec)
+
+  # min_value_x <- min(s_curve_noise_umap$UMAP1)
+  # max_value_x <- max(s_curve_noise_umap$UMAP1)
+  # min_value_y <- min(s_curve_noise_umap$UMAP2)
+  # max_value_y <- max(s_curve_noise_umap$UMAP2)
+
   dx <- (all_centroids_df$x[2] - all_centroids_df$x[1])
-
-  ## Compute vertical width of the hexagon
-  # Adjust for difference in width and height of regular hexagon. 1.15 adjusts
-  # for the effect of the overlapping range in y-direction on the resolution
   dy <- (all_centroids_df$y[2] - all_centroids_df$y[1])/ sqrt(3) / 2 * 1.15
 
-  ## Obtain hexagon polygon coordinates
-  hexC <- hexbin::hexcoords(dx, dy, n = 1) ## n: Number of hexagons repeat
+  x_add_factor <- c(dx, dx, 0, -dx, -dx, 0)
+  y_add_factor <- c(dy, -dy, -2 * dy, -dy, dy, 2 * dy)
 
-  ## Obtain the number of hexagons in the full grid
-  n <- length(all_centroids_df$x)
+  # min_value_x <- min(s_curve_noise_umap$UMAP1)
+  # max_value_x <- max(s_curve_noise_umap$UMAP1)
+  # min_value_y <- min(s_curve_noise_umap$UMAP2)
+  # max_value_y <- max(s_curve_noise_umap$UMAP2)
+  #
+  # buffer_size <- hex_size/2
+  #
+  # # Adjust the range of values along the x and y axes with the buffer size
+  # x_range_adjusted <- c(min_value_x - buffer_size, max_value_x + buffer_size)
+  # y_range_adjusted <- c(min_value_y - buffer_size, max_value_y + buffer_size)
+  #
+  # # Calculate the spacing between centroids in each direction
+  # x_spacing <- (x_range_adjusted[2] - x_range_adjusted[1]) / num_bins_x
+  # y_spacing <- (y_range_adjusted[2] - y_range_adjusted[1]) / num_bins_y
+  #
+  # x_add_factor <- x_spacing  * cos(angle_rad_vec)
+  # y_add_factor <- y_spacing * sin(angle_rad_vec)
 
-  ## Generate the size vector of the hexagons (since regular hexagons)
-  #size <- rep(1, length(all_centroids_df$x))
+  all_centroids_df_rep <- all_centroids_df |>
+    dplyr::mutate(id = 1:NROW(all_centroids_df)) |>
+    dplyr::slice(rep(1:n(), each = 6))
 
-  ## Generate the coordinates for the hexagons
-  hex_grid <- tibble::tibble( x = rep.int(hexC$x, n) + rep(all_centroids_df$x, each = 6),
-                              y = rep.int(hexC$y, n) + rep(all_centroids_df$y, each = 6),
-                              id = rep(1:length(all_centroids_df$x), each = 6))
+  all_centroids_df_rep_split <- all_centroids_df_rep |>
+    dplyr::group_by(id) |>
+    dplyr::group_split()
+
+  hex_grid <- data.frame(matrix(ncol = 0, nrow = 0))
+
+  for (id_split in all_centroids_df_rep_split) {
+
+    hex_coord_spec <- tibble::tibble(x = id_split$x + x_add_factor ,
+                                     y = id_split$y + y_add_factor,
+                                     id = id_split$id)
+
+    hex_grid <- bind_rows(hex_grid, hex_coord_spec)
+
+
+  }
+
 
   return(hex_grid)
 
@@ -847,8 +930,7 @@ fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
   ## If number of bins along the x-axis is not given
   if (is.na(num_bins_x)) {
     ## compute the number of bins along the x-axis
-    num_bins_x <- calculate_effective_x_bins(.data = nldr_df_with_id, x = x,
-                                             cell_area = cell_area)
+    num_bins_x <- calculate_effective_x_bins(.data = nldr_df_with_id, x = x, hex_size = NA)
 
 
   }
@@ -856,7 +938,7 @@ fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
   ## If shape parameter is not given
   if (is.na(shape_val)) {
     ## compute shape parameter
-    shape_val <- calculate_effective_shape_value(.data = nldr_df_with_id, x = x, y = y)
+    shape_val <- calculate_effective_shape_value(.data = nldr_df_with_id, y = y, hex_size = NA)
 
   }
 

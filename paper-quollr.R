@@ -43,26 +43,19 @@ s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
 
 
 ## -----------------------------------------------------------------------------
-num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", cell_area = 1)
+num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", hex_size = NA)
 num_bins_x
 
 
 ## -----------------------------------------------------------------------------
-
-shape_val <- calculate_effective_shape_value(.data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2")
-shape_val
-
-
-## -----------------------------------------------------------------------------
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2", shape_val = 1.833091, num_bins_x = num_bins_x)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, y = "UMAP2", hex_size = NA)
 num_bins_y
 
 
 ## -----------------------------------------------------------------------------
 cell_area <- 1
-cell_diameter <- sqrt(2 * cell_area / sqrt(3))
 
-hex_size <- cell_diameter/2
+hex_size <- sqrt(2 * cell_area / sqrt(3))
 
 buffer_size <- hex_size/2
 
@@ -114,7 +107,7 @@ glimpse(all_centroids_df)
 
 
 ## -----------------------------------------------------------------------------
-hex_grid <- gen_hex_coordinates(all_centroids_df)
+hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = NA)
 glimpse(hex_grid)
 
 
@@ -323,6 +316,19 @@ tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 
 
 ## -----------------------------------------------------------------------------
+## As an option first quantile considered as a default
+benchmark_to_rm_lwd_hex <- quantile(df_bin_centroids$std_counts)[2] + 0.01
+
+## To identify low density hexagons
+df_bin_centroids_low <- df_bin_centroids |>
+  dplyr::filter(std_counts <= benchmark_to_rm_lwd_hex)
+
+## To identify low-density hexagons needed to remove by investigating neighbouring mean density
+identify_rm_bins <- find_low_density_hexagons(df_bin_centroids_all = df_bin_centroids, num_bins_x = num_bins_x,
+                     df_bin_centroids_low = df_bin_centroids_low)
+
+
+## -----------------------------------------------------------------------------
 ## Compute 2D distances
 distance <- cal_2d_dist(.data = tr_from_to_df)
 
@@ -338,6 +344,7 @@ plot_dist <- function(distance_df){
 plot_dist(distance)
 
 benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+benchmark <- 3
 
 
 ## -----------------------------------------------------------------------------
@@ -351,15 +358,25 @@ trimesh
 
 ## -----------------------------------------------------------------------------
 trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = distance)
+                                triangular_object = tr1_object, distance_col = "distance")
 
 trimesh_gr
 
 
 ## -----------------------------------------------------------------------------
 trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = distance)
+                                     triangular_object = tr1_object, distance_col = "distance")
 trimesh_removed
+
+
+## -----------------------------------------------------------------------------
+## To generate a data set with high-D and 2D training data
+df_all <- training_data |> dplyr::select(-ID) |>
+  dplyr::bind_cols(s_curve_noise_umap_with_id)
+
+## To generate averaged high-D data
+
+df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
 
 
 ## -----------------------------------------------------------------------------
@@ -575,17 +592,11 @@ PaCMAP_data_with_label |>
 
 
 ## -----------------------------------------------------------------------------
-num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", cell_area = 1)
-num_bins_x <- 13
+num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", hex_size = NA)
 
 
 ## -----------------------------------------------------------------------------
-shape_val <- calculate_effective_shape_value(.data = tSNE_data, x = "tSNE1", y = "tSNE2")
-shape_val
-
-
-## -----------------------------------------------------------------------------
-num_bins_y <- calculate_effective_y_bins(.data = tSNE_data, x = "tSNE1", y = "tSNE2", shape_val = 0.8417289, num_bins_x = num_bins_x)
+num_bins_y <- calculate_effective_y_bins(.data = tSNE_data, y = "tSNE2", hex_size = NA)
 num_bins_y
 
 
@@ -605,7 +616,7 @@ full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
 
 tSNE_data_with_id <- assign_data(tSNE_data, full_grid_with_hexbin_id)
 
-df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+df_with_std_counts <- compute_std_counts(nldr_df = tSNE_data_with_id)
 
 hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
 
@@ -664,14 +675,14 @@ trimesh
 
 ## -----------------------------------------------------------------------------
 trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = distance)
+                                triangular_object = tr1_object, distance_col = "distance")
 
 trimesh_gr
 
 
 ## -----------------------------------------------------------------------------
 trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = distance)
+                                     triangular_object = tr1_object, distance_col = "distance")
 trimesh_removed
 
 
