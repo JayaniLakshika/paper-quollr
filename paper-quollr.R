@@ -43,6 +43,32 @@ s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
 
 
 ## -----------------------------------------------------------------------------
+
+min_value_x <- min(s_curve_noise_umap$UMAP1)
+max_value_x <- max(s_curve_noise_umap$UMAP1)
+min_value_y <- min(s_curve_noise_umap$UMAP2)
+max_value_y <- max(s_curve_noise_umap$UMAP2)
+
+# Calculate the maximum span along x and y axes
+x_span <- max_value_x - min_value_x
+y_span <- max_value_y - min_value_y
+
+hex_size <- min(x_span, y_span)/5.5
+
+num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", hex_size = hex_size)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, y = "UMAP2", hex_size = hex_size)
+
+all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
+                                                 x = "UMAP1", y = "UMAP2", 
+                                                 num_bins_x = num_bins_x, 
+                                                 num_bins_y = num_bins_y, 
+                                                 buffer_size = NA, hex_size = hex_size)
+hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = hex_size)
+ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
+  geom_point(data = all_centroids_df, aes(x = x, y = y), color = "red")
+
+
+## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", hex_size = NA)
 num_bins_x
 
