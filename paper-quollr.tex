@@ -12,6 +12,8 @@ An abstract of less than 150 words.
 
 \begin{verbatim}
 #library(quollr)
+library(knitr)
+library(kableExtra)
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -43,7 +45,7 @@ reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_Tr
 \begin{itemize}
 \tightlist
 \item
-  dependancies
+  dependencies
 \end{itemize}
 
 \begin{verbatim}
@@ -55,14 +57,43 @@ package_dependencies("quollr")
 \tightlist
 \item
   basic example
-  --\textgreater{}
 \end{itemize}
+
+\hypertarget{datasets}{%
+\subsubsection{Datasets}\label{datasets}}
+
+The \texttt{quollr} package comes with several data sets that load with the package. These are described in Table \ref{tab:datasets-tb-pdf}.
+
+\begin{table}
+
+\caption{\label{tab:datasets-tb-pdf}quollr datasets}
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
+\toprule
+data & explanation\\
+\midrule
+s\_curve\_noise & Simulated 3D S-curve data with additional four noise dimensions.\\
+s\_curve\_noise\_training & Training data derived from S-curve data.\\
+s\_curve\_noise\_test & Test data derived from S-curve data.\\
+s\_curve\_noise\_umap & UMAP 2D embedding data of S-curve data (n\_neighbors: 15, min\_dist: 0.1).\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+--\textgreater{}
 
 \hypertarget{compute-hexagonal-bin-configurations}{%
 \subsubsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
 
+Hexagonal binning is a powerful technique for visualizing the density of data points in a 2-d space. Unlike traditional rectangular bins, hexagonal bins offer several advantages, including a more uniform representation of density and reduced visual bias. However, to effectively do the hexagonal binning, it's essential to compute the appropriate configurations based on the characteristics of the dataset.
+
+Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the \texttt{calculate\_effective\_x\_bins()} and \texttt{calculate\_effective\_y\_bins()} functions use a hexagon size of 1.07457. However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
+
+The hexagon size directly affects the number of bins generated. A higher hexagonal size will result in fewer bins, while a lower hexagonal size will lead to more bins. Therefore, there's always a trade-off depending on the dataset used. Users should consider their specific data characteristics when selecting the hexagon size.
+
 \begin{verbatim}
-num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", hex_size = NA)
+num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, 
+                                         x = "UMAP1", hex_size = NA)
 num_bins_x
 \end{verbatim}
 
@@ -71,7 +102,8 @@ num_bins_x
 \end{verbatim}
 
 \begin{verbatim}
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, y = "UMAP2", hex_size = NA)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, 
+                                         y = "UMAP2", hex_size = NA)
 num_bins_y
 \end{verbatim}
 
@@ -118,7 +150,7 @@ ggplot() +
   geom_point(data = box_points, aes(x = x, y = y), color = "red")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-7-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -138,7 +170,7 @@ ggplot() +
              aes(x = x, y = y, colour = as.factor(is_even)))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-8-1.pdf}
 
 \begin{itemize}
 \tightlist
@@ -157,7 +189,7 @@ ggplot() +
   geom_point(data = box_points, aes(x = x, y = y), color = "red")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 \begin{verbatim}
 all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
@@ -216,7 +248,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_point(data = all_centroids_df, aes(x = x, y = y), color = "red")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-12-1.pdf}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -244,7 +276,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_text(data = full_grid_with_hexbin_id, aes(x = c_x, y = c_y, label = hexID))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-12-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-13-1.pdf}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -333,7 +365,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-17-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf}
 
 \begin{verbatim}
 ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
@@ -342,7 +374,7 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf}
 
 \hypertarget{buffer-size}{%
 \paragraph{Buffer size}\label{buffer-size}}
@@ -361,22 +393,6 @@ Overall, including a buffer when generating hexagonal bins helps to produce more
 
 \hypertarget{construct-the-2d-model-with-different-options}{%
 \subsubsection{Construct the 2D model with different options}\label{construct-the-2d-model-with-different-options}}
-
-\hypertarget{construct-the-high-d-model-with-different-options}{%
-\subsubsection{Construct the high-D model with different options}\label{construct-the-high-d-model-with-different-options}}
-
-\begin{verbatim}
-## To generate a data set with high-D and 2D training data
-df_all <- training_data |> dplyr::select(-ID) |>
-  dplyr::bind_cols(s_curve_noise_umap_with_id)
-
-## To generate averaged high-D data
-
-df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
-\end{verbatim}
-
-\hypertarget{generate-the-triangular-mesh}{%
-\subsubsection{Generate the triangular mesh}\label{generate-the-triangular-mesh}}
 
 \begin{verbatim}
 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
@@ -403,8 +419,24 @@ df_bin_centroids
 #> 12  2.9928798  4.5524384    28     0.4375
 \end{verbatim}
 
+\hypertarget{construct-the-high-d-model-with-different-options}{%
+\subsubsection{Construct the high-D model with different options}\label{construct-the-high-d-model-with-different-options}}
+
 \begin{verbatim}
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+## To generate a data set with high-D and 2D training data
+df_all <- training_data |> dplyr::select(-ID) |>
+  dplyr::bind_cols(s_curve_noise_umap_with_id)
+
+## To generate averaged high-D data
+
+df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
+\end{verbatim}
+
+\hypertarget{generate-the-triangular-mesh}{%
+\subsubsection{Generate the triangular mesh}\label{generate-the-triangular-mesh}}
+
+\begin{verbatim}
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 \end{verbatim}
 
@@ -439,8 +471,8 @@ glimpse(all_centroids_df_shift)
 \begin{verbatim}
 #> Rows: 32
 #> Columns: 2
-#> $ x <dbl> -3.5386425, -2.4052221, -3.5386425, -2.4052221, -3.5386425, -2.40522~
-#> $ y <dbl> -6.0086424, -4.2032651, -2.3978878, -0.5925105, 1.2128668, 3.0182441~
+#> $ x <dbl> -3.8076427, -2.6742223, -3.8076427, -2.6742223, -3.8076427, -2.67422~
+#> $ y <dbl> -6.2798254, -4.4744481, -2.6690708, -0.8636935, 0.9416838, 2.7470611~
 \end{verbatim}
 
 \begin{verbatim}
@@ -451,8 +483,8 @@ glimpse(hex_grid)
 \begin{verbatim}
 #> Rows: 192
 #> Columns: 3
-#> $ x  <dbl> -2.405222, -2.405222, -3.538643, -4.672063, -4.672063, -3.538643, -~
-#> $ y  <dbl> -5.409299776, -6.607985117, -7.207327787, -6.607985117, -5.40929977~
+#> $ x  <dbl> -2.674222, -2.674222, -3.807643, -4.941063, -4.941063, -3.807643, -~
+#> $ y  <dbl> -5.6804828, -6.8791681, -7.4785108, -6.8791681, -5.6804828, -5.0811~
 #> $ id <int> 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4~
 \end{verbatim}
 
@@ -461,7 +493,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_point(data = all_centroids_df_shift, aes(x = x, y = y), color = "red")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \begin{verbatim}
 full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df_shift)
@@ -470,7 +502,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_text(data = full_grid_with_hexbin_id, aes(x = c_x, y = c_y, label = hexID))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf}
 
 \begin{verbatim}
 full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
@@ -493,7 +525,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \begin{verbatim}
 ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
@@ -502,7 +534,7 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-32-1.pdf}
 
 \begin{verbatim}
 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
@@ -515,23 +547,22 @@ df_bin_centroids
 
 \begin{verbatim}
 #>             x          y hexID std_counts
-#> 1  -3.5386425 -6.0086424     1 0.21428571
-#> 2  -2.4052221 -4.2032651     5 1.00000000
-#> 3  -1.2718017 -6.0086424     2 0.42857143
-#> 4  -0.1383812 -4.2032651     6 0.07142857
-#> 5  -1.2718017 -2.3978878    10 0.21428571
-#> 6  -0.1383812 -0.5925105    14 0.50000000
-#> 7   0.9950392 -2.3978878    11 0.28571429
-#> 8   2.1284596 -0.5925105    15 0.14285714
-#> 9   0.9950392  1.2128668    19 0.64285714
-#> 10  2.1284596  3.0182441    23 0.35714286
-#> 11  0.9950392  4.8236214    27 1.00000000
-#> 12  2.1284596  6.6289988    31 0.07142857
-#> 13  3.2618800  4.8236214    28 0.42857143
+#> 1  -2.6742223 -4.4744481     5     1.0000
+#> 2  -1.5408019 -6.2798254     2     0.3125
+#> 3  -0.4073814 -4.4744481     6     0.0625
+#> 4  -1.5408019 -2.6690708    10     0.2500
+#> 5  -0.4073814 -0.8636935    14     0.5000
+#> 6   0.7260390 -2.6690708    11     0.1250
+#> 7   1.8594594 -0.8636935    15     0.1875
+#> 8   0.7260390  0.9416838    19     0.6250
+#> 9   1.8594594  2.7470611    23     0.2500
+#> 10  0.7260390  4.5524384    27     0.5625
+#> 11  1.8594594  6.3578158    31     0.3750
+#> 12  2.9928798  4.5524384    28     0.4375
 \end{verbatim}
 
 \begin{verbatim}
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 \end{verbatim}
 
@@ -624,7 +655,7 @@ identify_rm_bins <- find_low_density_hexagons(df_bin_centroids_all = df_bin_cent
 
 \begin{verbatim}
 ## Compute 2D distances
-distance <- cal_2d_dist(.data = tr_from_to_df)
+distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
 
 ## To plot the distribution of distance
 plot_dist <- function(distance_df){
@@ -638,64 +669,57 @@ plot_dist <- function(distance_df){
 plot_dist(distance)
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 \begin{verbatim}
-benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
-benchmark <- 3
+benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
+benchmark
+\end{verbatim}
+
+\begin{verbatim}
+#> [1] 2.603
+\end{verbatim}
+
+\begin{verbatim}
+benchmark <- 5
 \end{verbatim}
 
 \hypertarget{model-function}{%
 \subsubsection{Model function}\label{model-function}}
 
-\hypertarget{predict-2d-embeddings}{%
-\subsubsection{Predict 2D embeddings}\label{predict-2d-embeddings}}
-
-\hypertarget{compute-residuals}{%
-\subsubsection{Compute residuals}\label{compute-residuals}}
-
-\hypertarget{visualizations}{%
-\subsubsection{Visualizations}\label{visualizations}}
-
-\hypertarget{geom_trimesh}{%
-\paragraph{geom\_trimesh}\label{geom_trimesh}}
+\texttt{fit\_high\_d\_model()} function is used to generate the 2D model and the high-D model.
 
 \begin{verbatim}
-trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
-  geom_point(size = 0.1) +
-  geom_trimesh() +
-  coord_equal()
-
-trimesh
+fit_high_d_model(training_data = training_data, nldr_df_with_id = s_curve_noise_umap, x = "UMAP1",
+                             y = "UMAP1", num_bins_x = NA, num_bins_y = NA,
+                             hex_size = NA, buffer_size = NA,
+                             is_bin_centroid = TRUE,
+                             is_rm_lwd_hex = FALSE,
+                             benchmark_to_rm_lwd_hex = NA,
+                             is_avg_high_d = TRUE, column_start_text = "x")
 \end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf}
-
-\hypertarget{coloured_long_edges}{%
-\paragraph{coloured\_long\_edges}\label{coloured_long_edges}}
 
 \begin{verbatim}
-trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = "distance")
-
-trimesh_gr
+#> $df_bin
+#> # A tibble: 6 x 8
+#>   hb_id     x1    x2     x3        x4        x5        x6        x7
+#>   <int>  <dbl> <dbl>  <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+#> 1     1 -0.470 0.473 -1.75   0.00121   0.00244  -0.0314   -0.000525
+#> 2     2  0.170 1.23  -1.76   0.00610  -0.00313   0.00286  -0.00123 
+#> 3     6  0.760 1.19  -0.407 -0.000154  0.00342   0.0219    0.000410
+#> 4    11 -0.452 1.17   0.294  0.00414  -0.000295  0.00334   0.00207 
+#> 5    14 -0.613 1.69   1.79   0.0119   -0.00418  -0.000519 -0.00251 
+#> 6    15  0.366 0.999  1.70  -0.00115   0.00375  -0.00747  -0.000931
+#> 
+#> $df_bin_centroids
+#>            x         y hexID std_counts
+#> 1 -3.8076427 -3.807643     1 0.41666667
+#> 2 -1.5408019 -3.807643     2 0.62500000
+#> 3 -0.4073814 -1.540802     6 0.41666667
+#> 4 -0.4073814  2.992880    14 0.08333333
+#> 5  0.7260390  0.726039    11 0.58333333
+#> 6  1.8594594  2.992880    15 1.00000000
 \end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf}
-
-\hypertarget{remove-long-edges}{%
-\paragraph{remove long edges}\label{remove-long-edges}}
-
-\begin{verbatim}
-trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = "distance")
-trimesh_removed
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-39-1.pdf}
-
-\hypertarget{show_langevitour}{%
-\paragraph{show\_langevitour}\label{show_langevitour}}
 
 \begin{verbatim}
 ## To generate a data set with high-D and 2D training data
@@ -707,13 +731,123 @@ df_all <- training_data |> dplyr::select(-ID) |>
 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
 \end{verbatim}
 
+\hypertarget{predict-2d-embeddings}{%
+\subsubsection{Predict 2D embeddings}\label{predict-2d-embeddings}}
+
+To predict the 2D embeddings for a new data point using the trained high-D model, we follow a series of steps outlined below:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Compute high-dimensional Euclidean distance}: Calculate the Euclidean distance between each new data point and the lift model's coordinates in the high-dimensional space. This distance metric helps identify the nearest lift model coordinates to each new data point.
+\item
+  \textbf{Find the nearest lift model coordinates}: Determine the lift model's high-dimensional coordinates that are closest to each new data point based on the computed distances. This step helps establish a correspondence between the new data points and the lift model's representation in the high-dimensional space.
+\item
+  \textbf{Map the hexagonal bin ID}: Assign each new data point to a hexagonal bin based on its nearest lift model coordinates. This mapping ensures that each data point is associated with a specific region in the hexagonal grid representation of the high-dimensional space.
+\item
+  \textbf{Map the hexagonal bin centroid coordinates in 2D}: Transform the hexagonal bin centroid coordinates from the high-dimensional space to the 2D embedding space using the trained lift model. This mapping provides the 2D embeddings for the new data points, allowing them to be visualized and analyzed in a lower-dimensional space.
+\end{enumerate}
+
+The \texttt{predict\_2d\_embeddings()} function is used to predict 2D embeddings for a new data point. The inputs for the function are test data, bin centroid coordinates in 2D, lifting model coordinates in high-D, and the type of the NLDR technique. The output contains the predicted 2D embeddings along with the predicted hexagonal id and the ID of the test data.
+
 \begin{verbatim}
-tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
-                          distance = distance, distance_col = "distance")
+pred_df_test <- predict_2d_embeddings(test_data = training_data,
+df_bin_centroids = df_bin_centroids, df_bin = df_bin, type_NLDR = "UMAP")
+
+glimpse(pred_df_test)
+\end{verbatim}
+
+\begin{verbatim}
+#> Rows: 75
+#> Columns: 4
+#> $ pred_UMAP_1 <dbl> -2.6742223, 1.8594594, 0.7260390, -1.5408019, -1.5408019, ~
+#> $ pred_UMAP_2 <dbl> -4.4744481, -0.8636935, 0.9416838, -6.2798254, -2.6690708,~
+#> $ ID          <int> 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 17, 19, 20, 21~
+#> $ pred_hb_id  <int> 5, 15, 19, 2, 10, 31, 15, 11, 15, 28, 11, 5, 28, 5, 11, 23~
+\end{verbatim}
+
+\hypertarget{making-summaries}{%
+\subsubsection{Making summaries}\label{making-summaries}}
+
+There are two important summaries that should be made when constructing the model on a dataset using a specific NLDR technique, the Mean Square Error (MSE) and Akaike Information Criterion (AIC) which measure prediction accuracy. The function that perform the summaries called \texttt{generate\_eval\_df()}. The output of this function is a list which contains MSE and AIC. The code below uses \texttt{generate\_eval\_df()} to find the MSE and the AIC values for the model constructed on UMAP 2D embeddings generated from the \texttt{s\_curve\_noise} training data.
+
+\begin{verbatim}
+generate_summary(test_data = training_data, prediction_df = pred_df_test,
+                 df_bin = df_bin, col_start = "x")
+\end{verbatim}
+
+\begin{verbatim}
+#> $mse
+#> [1] 0.2983091
+#> 
+#> $aic
+#> [1] -467.0531
+\end{verbatim}
+
+\hypertarget{visualizations}{%
+\subsubsection{Visualizations}\label{visualizations}}
+
+We use static visualizations to understand the model constructed in 2D. On the other hand, dynamic visualization is used to see how the model looks in high-D space.
+
+\hypertarget{static-visualizations}{%
+\paragraph{Static visualizations}\label{static-visualizations}}
+
+Static visualizations main involves two types of results. One is the triangulation and the other is the long edge removal. Both types of visualizations provide ggplot objects.
+
+\begin{itemize}
+\item
+  Triangulation result: To visualize the results of triangulation, we input a dataset containing hexagonal bin centroid coordinates where 2D embedding data exists. \texttt{geom\_trimesh()} is used to visualize this result.
+\item
+  Long edge removal: The long edge removal process involves identifying and removing long edges from the triangular mesh. Table shows the main arguments of the functions. We offer two functions for visualizing this process:
+\item
+  \texttt{colour\_long\_edges()}: This function colors the long edges within the triangular mesh by red.
+\item
+  \texttt{remove\_long\_edges()}: After identifying long edges, this function draws the triangular mesh without the long edges.
+\end{itemize}
+
+\hypertarget{dynamic-visaulizations}{%
+\paragraph{Dynamic visaulizations}\label{dynamic-visaulizations}}
+
+The \texttt{show\_langevitour()} function enables dynamic visualization of the 2D model alongside the high-dimensional (high-D) data in its original space. This visualization is facilitated by langevitour object, allowing users to interactively explore the relationship between the 2D embeddings and the underlying high-dimensional data. The main arguments are shown in Table
+
+\begin{verbatim}
+trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
+  geom_point(size = 0.1) +
+  geom_trimesh() +
+  coord_equal()
+
+trimesh
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-42-1.pdf}
+
+\begin{verbatim}
+trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+
+trimesh_gr
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-43-1.pdf}
+
+\begin{verbatim}
+trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+trimesh_removed
+\end{verbatim}
+
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-44-1.pdf}
+
+\begin{verbatim}
+tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, 
+                          benchmark_value = benchmark,
+                          distance = distance, distance_col = "distance", 
+                          use_default_benchmark_val = FALSE, 
+                          column_start_text = "x")
 tour1
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-45-1.pdf}
 
 \hypertarget{tests}{%
 \subsection{Tests}\label{tests}}
@@ -796,7 +930,7 @@ var_explained_df |>
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-42-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-46-1.pdf}
 
 \begin{verbatim}
 data_split <- initial_split(data_pca)
@@ -840,7 +974,7 @@ UMAP_data_with_label |>
   scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-44-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-48-1.pdf}
 
 \begin{verbatim}
 tSNE_data <- Fit_tSNE(training_data |> dplyr::select(-c(ID, shape_label)), opt_perplexity = calculate_effective_perplexity(training_data |> dplyr::select(-c(ID, shape_label))), with_seed = 20240110)
@@ -871,7 +1005,7 @@ tSNE_data_with_label |>
   scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-45-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \begin{verbatim}
 PHATE_data <- Fit_PHATE(training_data |> dplyr::select(-c(ID, shape_label)), knn = 5, with_seed = 20240110)
@@ -886,12 +1020,12 @@ PHATE_data <- Fit_PHATE(training_data |> dplyr::select(-c(ID, shape_label)), knn
 #>   Calculated graph and diffusion operator in 0.01 seconds.
 #>   Calculating optimal t...
 #>     Automatically selected t = 22
-#>   Calculated optimal t in 0.26 seconds.
+#>   Calculated optimal t in 2.20 seconds.
 #>   Calculating diffusion potential...
-#>   Calculated diffusion potential in 0.36 seconds.
+#>   Calculated diffusion potential in 0.44 seconds.
 #>   Calculating metric MDS...
-#>   Calculated metric MDS in 8.01 seconds.
-#> Calculated PHATE in 8.64 seconds.
+#>   Calculated metric MDS in 20.54 seconds.
+#> Calculated PHATE in 23.19 seconds.
 \end{verbatim}
 
 \begin{verbatim}
@@ -922,7 +1056,7 @@ PHATE_data_with_label |>
   scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-46-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \begin{verbatim}
 tem_dir <- tempdir()
@@ -960,7 +1094,7 @@ TriMAP_data_with_label |>
   scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \begin{verbatim}
 tem_dir <- tempdir()
@@ -998,10 +1132,15 @@ PaCMAP_data_with_label |>
   scale_color_manual(values=c("#b15928", "#1f78b4", "#cab2d6", "#ccebc5", "#fb9a99", "#e31a1c", "#6a3d9a", "#ff7f00", "#ffed6f", "#fdbf6f", "#ffff99", "#a6cee3", "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#b2df8a", "#bc80bd", "#33a02c", "#ccebc5", "#ffed6f", "#000000", "#bdbdbd"))
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-48-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \begin{verbatim}
 num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", hex_size = NA)
+num_bins_x
+\end{verbatim}
+
+\begin{verbatim}
+#> [1] 29
 \end{verbatim}
 
 \begin{verbatim}
@@ -1035,298 +1174,25 @@ hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_
 
 ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID), size = 2) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{verbatim}
 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
   geom_point(data = tSNE_data, aes(x = tSNE1, y = tSNE2), color = "blue")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-56-1.pdf}
 
 \begin{verbatim}
-df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
-  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
-  dplyr::distinct() |>
-  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
-
-df_bin_centroids
+df_bin_centroids <- extract_hexbin_centroids(hex_full_count_df)
 \end{verbatim}
 
 \begin{verbatim}
-#>               x             y hexID std_counts
-#> 1   -26.9783746  -3.336399929   552     0.6875
-#> 2   -25.0331153  -3.336399929   553     0.3750
-#> 3   -26.0057449  -1.663988875   582     0.2500
-#> 4   -23.0878560  -6.681222036   496     0.5625
-#> 5   -24.0604856  -5.008810982   525     0.3125
-#> 6   -23.0878560  -3.336399929   554     0.3125
-#> 7   -24.0604856  -1.663988875   583     0.1875
-#> 8   -23.0878560   0.008422179   612     0.0625
-#> 9   -22.1152263  -8.353633090   468     0.0625
-#> 10  -22.1152263  -5.008810982   526     0.0625
-#> 11  -19.1973374 -13.370866252   382     0.0625
-#> 12  -19.1973374  16.732532718   904     0.1250
-#> 13  -19.1973374  20.077354826   962     0.1250
-#> 14  -17.2520781 -13.370866252   383     0.1875
-#> 15  -18.2247077 -11.698455198   412     0.2500
-#> 16  -17.2520781  16.732532718   905     0.1250
-#> 17  -18.2247077  18.404943772   934     0.6875
-#> 18  -17.2520781  20.077354826   963     0.1875
-#> 19  -16.2794484 -18.388099413   297     0.6250
-#> 20  -15.3068188 -16.715688359   326     0.2500
-#> 21  -16.2794484 -15.043277306   355     0.3750
-#> 22  -14.3341891 -18.388099413   298     0.0625
-#> 23  -13.3615595 -16.715688359   327     0.1875
-#> 24  -14.3341891 -15.043277306   356     0.0625
-#> 25  -14.3341891  -5.008810982   530     0.0625
-#> 26  -13.3615595  -3.336399929   559     0.3125
-#> 27  -13.3615595  20.077354826   965     0.2500
-#> 28  -14.3341891  21.749765879   994     0.0625
-#> 29  -13.3615595  23.422176933  1023     0.5000
-#> 30  -12.3889298  -8.353633090   473     0.1875
-#> 31  -12.3889298  -5.008810982   531     0.0625
-#> 32  -11.4163002  -3.336399929   560     0.1250
-#> 33  -12.3889298  -1.663988875   589     0.1250
-#> 34  -12.3889298  18.404943772   937     0.0625
-#> 35  -11.4163002  20.077354826   966     0.5625
-#> 36  -12.3889298  21.749765879   995     0.1875
-#> 37  -11.4163002  23.422176933  1024     0.1875
-#> 38  -12.3889298  25.094587987  1053     0.3125
-#> 39  -11.4163002  26.766999041  1082     0.0625
-#> 40   -9.4710409 -13.370866252   387     0.1875
-#> 41  -10.4436705 -11.698455198   416     0.2500
-#> 42   -9.4710409 -10.026044144   445     0.2500
-#> 43  -10.4436705  -8.353633090   474     0.2500
-#> 44   -9.4710409  -6.681222036   503     0.0625
-#> 45   -9.4710409   6.698066395   735     0.1875
-#> 46   -9.4710409  10.042888502   793     0.0625
-#> 47   -9.4710409  16.732532718   909     0.0625
-#> 48  -10.4436705  18.404943772   938     0.3125
-#> 49   -9.4710409  20.077354826   967     0.2500
-#> 50  -10.4436705  21.749765879   996     0.2500
-#> 51   -9.4710409  23.422176933  1025     0.1875
-#> 52  -10.4436705  25.094587987  1054     0.1875
-#> 53   -9.4710409  26.766999041  1083     0.1875
-#> 54   -7.5257816 -20.060510467   272     0.3750
-#> 55   -8.4984112 -18.388099413   301     0.0625
-#> 56   -7.5257816 -16.715688359   330     0.1250
-#> 57   -8.4984112 -15.043277306   359     0.3125
-#> 58   -7.5257816 -13.370866252   388     0.2500
-#> 59   -8.4984112 -11.698455198   417     0.1875
-#> 60   -7.5257816 -10.026044144   446     0.4375
-#> 61   -8.4984112  -8.353633090   475     0.3750
-#> 62   -7.5257816  -6.681222036   504     0.3125
-#> 63   -8.4984112  -5.008810982   533     0.0625
-#> 64   -7.5257816  -3.336399929   562     0.1250
-#> 65   -7.5257816   0.008422179   620     0.1875
-#> 66   -7.5257816   3.353244287   678     0.1250
-#> 67   -8.4984112   5.025655341   707     0.1250
-#> 68   -8.4984112   8.370477449   765     0.3750
-#> 69   -7.5257816  10.042888502   794     0.0625
-#> 70   -8.4984112  18.404943772   939     0.1250
-#> 71   -7.5257816  20.077354826   968     0.1250
-#> 72   -8.4984112  21.749765879   997     0.1875
-#> 73   -7.5257816  23.422176933  1026     0.1250
-#> 74   -6.5531519 -18.388099413   302     0.1250
-#> 75   -5.5805223 -16.715688359   331     0.1250
-#> 76   -6.5531519 -15.043277306   360     0.3125
-#> 77   -5.5805223 -13.370866252   389     0.3125
-#> 78   -6.5531519 -11.698455198   418     0.0625
-#> 79   -5.5805223 -10.026044144   447     0.1875
-#> 80   -6.5531519  -8.353633090   476     0.3750
-#> 81   -5.5805223  -6.681222036   505     0.1250
-#> 82   -6.5531519  -5.008810982   534     0.1875
-#> 83   -6.5531519  -1.663988875   592     0.0625
-#> 84   -5.5805223   0.008422179   621     0.0625
-#> 85   -6.5531519   5.025655341   708     0.1875
-#> 86   -5.5805223   6.698066395   737     0.2500
-#> 87   -6.5531519   8.370477449   766     0.0625
-#> 88   -5.5805223  10.042888502   795     0.3125
-#> 89   -5.5805223  13.387710610   853     0.0625
-#> 90   -5.5805223  16.732532718   911     0.1250
-#> 91   -6.5531519  18.404943772   940     0.1250
-#> 92   -3.6352630 -16.715688359   332     0.1875
-#> 93   -4.6078926 -15.043277306   361     0.1875
-#> 94   -3.6352630 -13.370866252   390     0.1250
-#> 95   -4.6078926 -11.698455198   419     0.1875
-#> 96   -3.6352630 -10.026044144   448     0.1875
-#> 97   -4.6078926  -8.353633090   477     0.3125
-#> 98   -3.6352630  -6.681222036   506     0.3125
-#> 99   -4.6078926  -5.008810982   535     0.1250
-#> 100  -3.6352630   0.008422179   622     0.2500
-#> 101  -3.6352630   6.698066395   738     0.2500
-#> 102  -4.6078926   8.370477449   767     0.1250
-#> 103  -3.6352630  10.042888502   796     0.1875
-#> 104  -4.6078926  11.715299556   825     0.0625
-#> 105  -3.6352630  13.387710610   854     0.2500
-#> 106  -4.6078926  15.060121664   883     0.1250
-#> 107  -1.6900037 -33.439798898    43     0.0625
-#> 108  -2.6626333 -18.388099413   304     0.0625
-#> 109  -1.6900037 -16.715688359   333     0.1250
-#> 110  -2.6626333 -15.043277306   362     0.2500
-#> 111  -1.6900037 -13.370866252   391     0.3125
-#> 112  -2.6626333 -11.698455198   420     0.1250
-#> 113  -1.6900037 -10.026044144   449     0.2500
-#> 114  -2.6626333  -8.353633090   478     0.2500
-#> 115  -1.6900037  -6.681222036   507     0.3750
-#> 116  -2.6626333  -5.008810982   536     0.1250
-#> 117  -2.6626333  -1.663988875   594     0.4375
-#> 118  -2.6626333   5.025655341   710     0.1250
-#> 119  -1.6900037  10.042888502   797     0.0625
-#> 120  -2.6626333  11.715299556   826     0.4375
-#> 121  -1.6900037  13.387710610   855     0.1250
-#> 122  -2.6626333  15.060121664   884     0.0625
-#> 123   0.2552556 -33.439798898    44     1.0000
-#> 124   0.2552556 -13.370866252   392     0.1875
-#> 125  -0.7173740 -11.698455198   421     0.1250
-#> 126   0.2552556 -10.026044144   450     0.1250
-#> 127  -0.7173740  -8.353633090   479     0.0625
-#> 128  -0.7173740   1.680833233   653     0.0625
-#> 129   0.2552556   3.353244287   682     0.5000
-#> 130  -0.7173740   5.025655341   711     0.3125
-#> 131  -0.7173740   8.370477449   769     0.1875
-#> 132   0.2552556  10.042888502   798     0.2500
-#> 133  -0.7173740  11.715299556   827     0.1250
-#> 134  -0.7173740  15.060121664   885     0.1875
-#> 135   0.2552556  16.732532718   914     0.1875
-#> 136   1.2278853 -35.112209952    16     0.0625
-#> 137   2.2005149 -33.439798898    45     0.3750
-#> 138   1.2278853 -31.767387844    74     0.0625
-#> 139   2.2005149 -30.094976790   103     0.6250
-#> 140   1.2278853 -28.422565737   132     0.0625
-#> 141   2.2005149 -26.750154683   161     0.1250
-#> 142   1.2278853 -25.077743629   190     0.0625
-#> 143   2.2005149 -23.405332575   219     0.1250
-#> 144   1.2278853 -21.732921521   248     0.0625
-#> 145   1.2278853 -18.388099413   306     0.0625
-#> 146   2.2005149 -16.715688359   335     0.0625
-#> 147   1.2278853 -15.043277306   364     0.3125
-#> 148   1.2278853   1.680833233   654     0.3750
-#> 149   2.2005149   3.353244287   683     0.1875
-#> 150   1.2278853   5.025655341   712     0.2500
-#> 151   2.2005149   6.698066395   741     0.1250
-#> 152   1.2278853   8.370477449   770     0.0625
-#> 153   2.2005149  10.042888502   799     0.1875
-#> 154   1.2278853  11.715299556   828     0.3750
-#> 155   2.2005149  13.387710610   857     0.1875
-#> 156   1.2278853  15.060121664   886     0.3750
-#> 157   2.2005149  16.732532718   915     0.1875
-#> 158   1.2278853  18.404943772   944     0.0625
-#> 159   3.1731446 -31.767387844    75     0.0625
-#> 160   4.1457742 -30.094976790   104     0.2500
-#> 161   3.1731446 -28.422565737   133     0.3750
-#> 162   3.1731446 -25.077743629   191     0.6875
-#> 163   4.1457742 -23.405332575   220     0.0625
-#> 164   3.1731446  -8.353633090   481     0.1250
-#> 165   3.1731446   1.680833233   655     0.1875
-#> 166   3.1731446   5.025655341   713     0.0625
-#> 167   3.1731446   8.370477449   771     0.1250
-#> 168   4.1457742  10.042888502   800     0.1250
-#> 169   3.1731446  11.715299556   829     0.1875
-#> 170   4.1457742  13.387710610   858     0.1250
-#> 171   3.1731446  15.060121664   887     0.1250
-#> 172   5.1184039 -25.077743629   192     0.1250
-#> 173   6.0910335   0.008422179   627     0.1250
-#> 174   6.0910335   3.353244287   685     0.0625
-#> 175   6.0910335   6.698066395   743     0.1250
-#> 176   6.0910335  10.042888502   801     0.1250
-#> 177   6.0910335  13.387710610   859     0.1250
-#> 178   8.0362928   0.008422179   628     0.0625
-#> 179   7.0636632   1.680833233   657     0.1250
-#> 180   8.0362928   3.353244287   686     0.3125
-#> 181   7.0636632   5.025655341   715     0.2500
-#> 182   8.0362928   6.698066395   744     0.1250
-#> 183   7.0636632   8.370477449   773     0.0625
-#> 184   8.0362928  10.042888502   802     0.3125
-#> 185   7.0636632  11.715299556   831     0.0625
-#> 186   8.0362928  13.387710610   860     0.0625
-#> 187   7.0636632  15.060121664   889     0.2500
-#> 188   8.0362928  16.732532718   918     0.1875
-#> 189   7.0636632  18.404943772   947     0.0625
-#> 190   9.9815521   0.008422179   629     0.0625
-#> 191   9.0089225   1.680833233   658     0.1250
-#> 192   9.9815521   3.353244287   687     0.1250
-#> 193   9.0089225   5.025655341   716     0.1250
-#> 194   9.9815521   6.698066395   745     0.1250
-#> 195   9.0089225   8.370477449   774     0.1875
-#> 196   9.9815521  10.042888502   803     0.1875
-#> 197   9.0089225  11.715299556   832     0.2500
-#> 198   9.9815521  13.387710610   861     0.0625
-#> 199   9.0089225  15.060121664   890     0.2500
-#> 200   9.9815521  16.732532718   919     0.0625
-#> 201  11.9268114   0.008422179   630     0.1250
-#> 202  10.9541818   1.680833233   659     0.3125
-#> 203  11.9268114   3.353244287   688     0.2500
-#> 204  11.9268114   6.698066395   746     0.1875
-#> 205  11.9268114  10.042888502   804     0.0625
-#> 206  10.9541818  11.715299556   833     0.1875
-#> 207  11.9268114  13.387710610   862     0.1250
-#> 208  10.9541818  15.060121664   891     0.1875
-#> 209  13.8720707  -3.336399929   573     0.2500
-#> 210  12.8994411  -1.663988875   602     0.1250
-#> 211  13.8720707   0.008422179   631     0.0625
-#> 212  12.8994411   1.680833233   660     0.1250
-#> 213  13.8720707   3.353244287   689     0.1250
-#> 214  12.8994411   5.025655341   718     0.2500
-#> 215  12.8994411   8.370477449   776     0.0625
-#> 216  13.8720707  10.042888502   805     0.2500
-#> 217  12.8994411  11.715299556   834     0.3750
-#> 218  13.8720707  13.387710610   863     0.1250
-#> 219  12.8994411  15.060121664   892     0.3750
-#> 220  14.8447004  -5.008810982   545     0.4375
-#> 221  15.8173300  -3.336399929   574     0.1250
-#> 222  15.8173300   0.008422179   632     0.3750
-#> 223  14.8447004   5.025655341   719     0.1875
-#> 224  14.8447004   8.370477449   777     0.0625
-#> 225  15.8173300  10.042888502   806     0.1250
-#> 226  14.8447004  11.715299556   835     0.2500
-#> 227  14.8447004  15.060121664   893     0.0625
-#> 228  16.7899597  -5.008810982   546     0.0625
-#> 229  17.7625893  -3.336399929   575     0.0625
-#> 230  16.7899597  -1.663988875   604     0.1875
-#> 231  17.7625893   0.008422179   633     0.2500
-#> 232  17.7625893   3.353244287   691     0.1250
-#> 233  16.7899597   5.025655341   720     0.0625
-#> 234  17.7625893   6.698066395   749     0.0625
-#> 235  17.7625893  10.042888502   807     0.0625
-#> 236  16.7899597  11.715299556   836     0.0625
-#> 237  19.7078486  -3.336399929   576     0.1250
-#> 238  18.7352190  -1.663988875   605     0.3750
-#> 239  19.7078486   0.008422179   634     0.2500
-#> 240  18.7352190   1.680833233   663     0.4375
-#> 241  19.7078486   3.353244287   692     0.3125
-#> 242  18.7352190   5.025655341   721     0.0625
-#> 243  19.7078486   6.698066395   750     0.2500
-#> 244  18.7352190   8.370477449   779     0.1875
-#> 245  19.7078486  10.042888502   808     0.1875
-#> 246  20.6804783  -1.663988875   606     0.3125
-#> 247  21.6531079   0.008422179   635     0.0625
-#> 248  20.6804783   1.680833233   664     0.1875
-#> 249  21.6531079   3.353244287   693     0.2500
-#> 250  21.6531079   6.698066395   751     0.2500
-#> 251  20.6804783   8.370477449   780     0.1875
-#> 252  21.6531079  10.042888502   809     0.5000
-#> 253  20.6804783  11.715299556   838     0.0625
-#> 254  22.6257376  -1.663988875   607     0.1250
-#> 255  23.5983672   0.008422179   636     0.1875
-#> 256  22.6257376   1.680833233   665     0.0625
-#> 257  23.5983672   3.353244287   694     0.1875
-#> 258  23.5983672   6.698066395   752     0.1875
-#> 259  22.6257376   8.370477449   781     0.1250
-#> 260  24.5709969   1.680833233   666     0.3750
-#> 261  24.5709969   5.025655341   724     0.1875
-#> 262  25.5436265   6.698066395   753     0.0625
-#> 263  24.5709969   8.370477449   782     0.2500
-#> 264  26.5162562   1.680833233   667     0.1875
-\end{verbatim}
-
-\begin{verbatim}
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 \end{verbatim}
 
@@ -1342,15 +1208,15 @@ df_bin <- avg_highD_data(.data = df_all, column_start_text = "PC") ## Need to pa
 
 \begin{verbatim}
 ## Compute 2D distances
-distance <- cal_2d_dist(.data = tr_from_to_df)
+distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
 
 plot_dist(distance)
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \begin{verbatim}
-benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
 \end{verbatim}
 
 \begin{verbatim}
@@ -1362,24 +1228,24 @@ trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
 trimesh
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{verbatim}
-trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = "distance")
+trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
 
 trimesh_gr
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 \begin{verbatim}
-trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = "distance")
+trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
 trimesh_removed
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-59-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{verbatim}
 tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
@@ -1387,7 +1253,7 @@ tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = be
 tour1
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-60-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}

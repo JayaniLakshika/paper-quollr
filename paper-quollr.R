@@ -10,6 +10,8 @@ source("nldr_code.R", local = TRUE)
 
 ## ----load-libraries-----------------------------------------------------------
 #library(quollr)
+library(knitr)
+library(kableExtra)
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -34,12 +36,38 @@ reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_Tr
 #| echo: false
 
 training_data <- read_rds(file = "data/s_curve_noise_training.rds")
+test_data <- read_rds(file = "data/s_curve_noise_test.rds")
+
+s_curve_noise <- read_rds(file = "data/s_curve_noise.rds")
 s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
 
 
 ## ----eval=FALSE---------------------------------------------------------------
 #> library(tools)
 #> package_dependencies("quollr")
+
+
+## ----echo=FALSE---------------------------------------------------------------
+datasets_tb <- tibble(dt = c("s_curve_noise",
+                             "s_curve_noise_training", 
+                             "s_curve_noise_test", 
+                             "s_curve_noise_umap"), 
+                      text = c("Simulated 3D S-curve data with additional four noise dimensions.",
+                               "Training data derived from S-curve data.", 
+                               "Test data derived from S-curve data.", 
+                               "UMAP 2D embedding data of S-curve data (n_neighbors: 15, min_dist: 0.1)."))
+
+
+## ----datasets-tb-html, eval=is_html_output(), echo=FALSE----------------------
+#> datasets_tb |>
+#>   kable(caption = "quollr datasets", col.names = c("data", "explanation"))
+
+
+## ----datasets-tb-pdf, eval=is_latex_output(), echo=FALSE----------------------
+datasets_tb |>
+  kable(caption = "quollr datasets", format="latex", col.names = c("data", "explanation"), booktabs = T)  |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "8cm")
 
 
 ## -----------------------------------------------------------------------------
@@ -69,12 +97,14 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 
 
 ## -----------------------------------------------------------------------------
-num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, x = "UMAP1", hex_size = NA)
+num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap, 
+                                         x = "UMAP1", hex_size = NA)
 num_bins_x
 
 
 ## -----------------------------------------------------------------------------
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, y = "UMAP2", hex_size = NA)
+num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap, 
+                                         y = "UMAP2", hex_size = NA)
 num_bins_y
 
 
@@ -179,6 +209,15 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
 
 
 ## -----------------------------------------------------------------------------
+df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
+  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
+  dplyr::distinct() |>
+  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
+  
+df_bin_centroids
+
+
+## -----------------------------------------------------------------------------
 ## To generate a data set with high-D and 2D training data
 df_all <- training_data |> dplyr::select(-ID) |>
   dplyr::bind_cols(s_curve_noise_umap_with_id)
@@ -189,16 +228,7 @@ df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pas
 
 
 ## -----------------------------------------------------------------------------
-df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
-  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
-  dplyr::distinct() |>
-  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
-  
-df_bin_centroids
-
-
-## -----------------------------------------------------------------------------
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 
 
@@ -258,6 +288,7 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
 
 
+
 ## -----------------------------------------------------------------------------
 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
   dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
@@ -268,7 +299,7 @@ df_bin_centroids
 
 
 ## -----------------------------------------------------------------------------
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 
 
@@ -356,7 +387,7 @@ identify_rm_bins <- find_low_density_hexagons(df_bin_centroids_all = df_bin_cent
 
 ## -----------------------------------------------------------------------------
 ## Compute 2D distances
-distance <- cal_2d_dist(.data = tr_from_to_df)
+distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
 
 ## To plot the distribution of distance
 plot_dist <- function(distance_df){
@@ -369,30 +400,19 @@ plot_dist <- function(distance_df){
 
 plot_dist(distance)
 
-benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
-benchmark <- 3
+benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
+benchmark
+benchmark <- 5
 
 
 ## -----------------------------------------------------------------------------
-trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
-  geom_point(size = 0.1) +
-  geom_trimesh() +
-  coord_equal()
-
-trimesh
-
-
-## -----------------------------------------------------------------------------
-trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = "distance")
-
-trimesh_gr
-
-
-## -----------------------------------------------------------------------------
-trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = "distance")
-trimesh_removed
+fit_high_d_model(training_data = training_data, nldr_df_with_id = s_curve_noise_umap, x = "UMAP1",
+                             y = "UMAP1", num_bins_x = NA, num_bins_y = NA,
+                             hex_size = NA, buffer_size = NA,
+                             is_bin_centroid = TRUE,
+                             is_rm_lwd_hex = FALSE,
+                             benchmark_to_rm_lwd_hex = NA,
+                             is_avg_high_d = TRUE, column_start_text = "x")
 
 
 ## -----------------------------------------------------------------------------
@@ -406,8 +426,45 @@ df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pas
 
 
 ## -----------------------------------------------------------------------------
-tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, benchmark_value = benchmark,
-                          distance = distance, distance_col = "distance")
+pred_df_test <- predict_2d_embeddings(test_data = training_data,
+df_bin_centroids = df_bin_centroids, df_bin = df_bin, type_NLDR = "UMAP")
+
+glimpse(pred_df_test)
+
+
+## -----------------------------------------------------------------------------
+generate_summary(test_data = training_data, prediction_df = pred_df_test,
+                 df_bin = df_bin, col_start = "x")
+
+
+## -----------------------------------------------------------------------------
+trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
+  geom_point(size = 0.1) +
+  geom_trimesh() +
+  coord_equal()
+
+trimesh
+
+
+## -----------------------------------------------------------------------------
+trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+
+trimesh_gr
+
+
+## -----------------------------------------------------------------------------
+trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+trimesh_removed
+
+
+## -----------------------------------------------------------------------------
+tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, 
+                          benchmark_value = benchmark,
+                          distance = distance, distance_col = "distance", 
+                          use_default_benchmark_val = FALSE, 
+                          column_start_text = "x")
 tour1
 
 
@@ -619,6 +676,7 @@ PaCMAP_data_with_label |>
 
 ## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = tSNE_data, x = "tSNE1", hex_size = NA)
+num_bins_x
 
 
 ## -----------------------------------------------------------------------------
@@ -648,7 +706,7 @@ hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_
 
 ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID), size = 2) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff")
 
 
@@ -658,16 +716,11 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 
 
 ## -----------------------------------------------------------------------------
-df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
-  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
-  dplyr::distinct() |>
-  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
-
-df_bin_centroids
+df_bin_centroids <- extract_hexbin_centroids(hex_full_count_df)
 
 
 ## -----------------------------------------------------------------------------
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x, y)
+tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
 tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 
 
@@ -683,11 +736,11 @@ df_bin <- avg_highD_data(.data = df_all, column_start_text = "PC") ## Need to pa
 
 ## -----------------------------------------------------------------------------
 ## Compute 2D distances
-distance <- cal_2d_dist(.data = tr_from_to_df)
+distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
 
 plot_dist(distance)
 
-benchmark <- find_benchmark_value(.data = distance, distance_col = "distance")
+benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
 
 
 ## -----------------------------------------------------------------------------
@@ -700,15 +753,15 @@ trimesh
 
 
 ## -----------------------------------------------------------------------------
-trimesh_gr <- colour_long_edges(.data = distance, benchmark_value = benchmark,
-                                triangular_object = tr1_object, distance_col = "distance")
+trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
 
 trimesh_gr
 
 
 ## -----------------------------------------------------------------------------
-trimesh_removed <- remove_long_edges(.data = distance, benchmark_value = benchmark,
-                                     triangular_object = tr1_object, distance_col = "distance")
+trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
+                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
 trimesh_removed
 
 
