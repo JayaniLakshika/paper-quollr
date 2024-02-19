@@ -246,20 +246,34 @@ extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
   ## Shift the x values of the even rows
   if (length(x_bounds) == 1) {
-    ## If there is only one bin
-    x_shift <- 0
 
-  } else {
+    if (length(y_bounds) == 1) {
+      ## If there is only one bin
+
+      box_points <- tibble::tibble(x = mean(nldr_df[[rlang::as_string(rlang::sym(x))]]),
+                                   y = mean(nldr_df[[rlang::as_string(rlang::sym(y))]]))
+
+    } else {
+      ## If there is only one bin along x-axis
+      x_shift <- 0
+
+      box_points <- box_points |>
+        dplyr::select(-is_even)
+
+    }
+
+
+  } else{
 
     x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
 
+    box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
+
+    box_points <- box_points |>
+      dplyr::select(-is_even)
+
   }
 
-
-  box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
-
-  box_points <- box_points |>
-    dplyr::select(-is_even)
 
   box_points
 
@@ -408,21 +422,6 @@ remove_long_edges <- function(distance_edges, benchmark_value, tr_from_to_df_coo
 
 }
 
-# generate_full_grid_centroids <- function(hexdf_data){
-#
-#   ## Generate initial grid
-#   full_centroids1 <- tibble::as_tibble(expand.grid(x = seq(min(hexdf_data$x),max(hexdf_data$x), ggplot2::resolution(hexdf_data$x, FALSE) * 2), y = seq(min(hexdf_data$y),max(hexdf_data$y), ggplot2::resolution(hexdf_data$y, FALSE) * 2)))
-#
-#   ## Generate shifted grid
-#   full_centroids2 <- tibble::tibble(x = full_centroids1$x + ggplot2::resolution(hexdf_data$x, FALSE), y = full_centroids1$y + ggplot2::resolution(hexdf_data$y, FALSE))
-#
-#   ## Combine all
-#   full_centroids <- dplyr::bind_rows(full_centroids1, full_centroids2)
-#
-#   return(full_centroids)
-#
-#
-# }
 ## Generate hexagonal coordinates by passing all the centroids
 gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
 
@@ -455,10 +454,10 @@ gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
   # min_value_y <- min(s_curve_noise_umap$UMAP2)
   # max_value_y <- max(s_curve_noise_umap$UMAP2)
 
-  if (NROW(all_centroids_df) == 1) {
+  if ((length(unique(all_centroids_df$x)) == 1) || (length(unique(all_centroids_df$y)) == 1)) {
 
     dx <- hex_size
-    dy <- hex_size/ sqrt(3) / 2 * 1.15
+    dy <- hex_size * 1.15
 
   } else {
 
