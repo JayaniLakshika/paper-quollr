@@ -179,8 +179,6 @@ num_bins_y
 
 ### Generate full hex grid
 
-
-
 Generating full hexagonal grid contains main three steps:
 
 1. Generate all the hexagonal bin centroids
@@ -689,6 +687,8 @@ tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids,
                           column_start_text = "x")
 tour1
 ```
+
+### Find non-empty bins
 
 ## Tests
 

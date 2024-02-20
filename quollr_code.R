@@ -177,7 +177,8 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 }
 
 extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
-                                         num_bins_x, num_bins_y, shift_x = 0, shift_y = 0, buffer_size = NA, hex_size = NA){
+                                         num_bins_x, num_bins_y, shift_x = 0, shift_y = 0,
+                                         buffer_size = NA, hex_size = NA){
 
   ## hex size is not provided
   if (is.na(hex_size)) {
@@ -966,7 +967,10 @@ fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
                              is_bin_centroid = TRUE,
                              is_rm_lwd_hex = FALSE,
                              benchmark_to_rm_lwd_hex = NA,
-                             is_avg_high_d = TRUE, column_start_text = "x") {
+                             is_avg_high_d = TRUE, column_start_text = "x",
+                             is_shift_origin = FALSE,
+                             shift_x = NA, shift_y = NA
+                             ) {
 
   ## hex size is not provided
   if (is.na(hex_size)) {
@@ -1009,13 +1013,26 @@ fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
   }
 
   ### Generate the full grid
+  ## If shift happen or not
+  if (isTRUE(is_shift_origin)) {
 
-  all_centroids_df <- generate_full_grid_centroids(nldr_df = nldr_df_with_id,
-                                                   x = x, y = y,
-                                                   num_bins_x = num_bins_x,
-                                                   num_bins_y = num_bins_y,
-                                                   buffer_size = buffer_size, hex_size = hex_size)
+    all_centroids_df <- extract_coord_of_shifted_hex_grid(nldr_df = nldr_df_with_id,
+                                                          x = x, y = y,
+                                                          num_bins_x = num_bins_x,
+                                                          num_bins_y = num_bins_y,
+                                                          shift_x = shift_x, shift_y = shift_y,
+                                                          buffer_size = buffer_size, hex_size = hex_size)
 
+  } else {
+
+    all_centroids_df <- generate_full_grid_centroids(nldr_df = nldr_df_with_id,
+                                                     x = x, y = y,
+                                                     num_bins_x = num_bins_x,
+                                                     num_bins_y = num_bins_y,
+                                                     buffer_size = buffer_size, hex_size = hex_size)
+
+
+  }
 
   hex_grid <- gen_hex_coordinates(all_centroids_df,
                                   hex_size = hex_size)
