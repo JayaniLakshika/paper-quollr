@@ -81,8 +81,7 @@ generate_even_y <- function(data) {
 }
 
 generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
-                                         num_bins_x, num_bins_y, buffer_x = NA,
-                                         buffer_y = NA, hex_size = NA){
+                                         num_bins_x, num_bins_y, buffer_size = NA, hex_size = NA){
 
   ## hex size is not provided
   if (is.na(hex_size)) {
@@ -112,72 +111,65 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
 
   ## Buffer size is not provided
-  if (is.na(buffer_x)) {
-
-    #buffer_x <- (sqrt(3) * hex_size)*0.2
-    #buffer_x <- 0
-    # buffer_x <- min(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - sqrt(3) * hex_size/2,
-    #                 max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + sqrt(3) * hex_size/2)
-    buffer_x <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(x))]]))
-
-    message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
+  if (is.na(buffer_size)) {
+    buffer_size <- hex_size/2
+    message(paste0("Buffer set to ", buffer_size, "."))
 
   } else {
 
     ## Buffer size is exceeds
-    if (buffer_x > (sqrt(3) * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ". Need to assign a value less than ", sqrt(3) * hex_size, "."))
+    if (buffer_size > (hex_size/2)) {
+      stop(paste0("Buffer exceeds than ", hex_size/2, ". Need to assign a value less than ", hex_size/2, "."))
 
     }
 
 
   }
 
-  ## Buffer size is not provided
-  if (is.na(buffer_y)) {
+  ## Compute hex grid bound values along the x and y axis
+  x_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_size,
+                  max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + buffer_size, length.out = num_bins_x)
+  y_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_size,
+                  max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + buffer_size, length.out = num_bins_y)
 
-    #buffer_y <- 3*(1.5 * hex_size/2)/2
-    #buffer_y <- 0
-    # buffer_y <- max(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
-    #                 max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + 1.5 * hex_size/2)
-    buffer_y <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(y))]]))
+  ## Generate the all the hex box points
+  box_points <- expand.grid(x = x_bounds, y = y_bounds)
 
-    message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
+  # For each x-value, generate even y-values
+  box_points <- box_points |>
+    dplyr::arrange(x) |>
+    dplyr::group_by(x) |>
+    dplyr::group_modify(~ generate_even_y(.x)) |>
+    tibble::as_tibble()
 
-  } else {
+  ## Shift the x values of the even rows
+  if (length(x_bounds) == 1) {
 
-    ## Buffer size is exceeds
-    if (buffer_y > (1.5 * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ". Need to assign a value less than ", 1.5 * hex_size, "."))
+    if (length(y_bounds) == 1) {
+      ## If there is only one bin
+
+      box_points <- tibble::tibble(x = mean(nldr_df[[rlang::as_string(rlang::sym(x))]]),
+                                   y = mean(nldr_df[[rlang::as_string(rlang::sym(y))]]))
+
+    } else {
+      ## If there is only one bin along x-axis
+      x_shift <- 0
+
+      box_points <- box_points |>
+        dplyr::select(-is_even)
 
     }
 
 
-  }
+  } else{
 
+    x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
 
+    box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
 
-  # Calculate horizontal and vertical spacing
-  dx <- sqrt(3) * hex_size
-  dy <- 1.5 * hex_size
+    box_points <- box_points |>
+      dplyr::select(-is_even)
 
-  # Define starting point
-  x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_x
-  y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_y
-
-  # Initialize grid to store hexagon coordinates
-  box_points <- data.frame(x = numeric(0), y = numeric(0))
-
-  # Generate hexagon grid
-  for (i in 1:num_bins_y) {
-    for (j in 1:num_bins_x) {
-      x <- x_start + j * dx
-      y <- y_start + i * dy
-      if (i %% 2 == 0) {  # Adjust for even columns
-        x <- x + dx / 2
-      }
-      box_points <- rbind(box_points, data.frame(x = x, y = y))
-    }
   }
 
   box_points
@@ -185,8 +177,8 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 }
 
 extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
-                                         num_bins_x, num_bins_y, shift_x = 0, shift_y = 0,
-                                         buffer_size = NA, hex_size = NA){
+                                              num_bins_x, num_bins_y, shift_x = 0, shift_y = 0,
+                                              buffer_size = NA, hex_size = NA){
 
   ## hex size is not provided
   if (is.na(hex_size)) {
@@ -420,7 +412,7 @@ remove_long_edges <- function(distance_edges, benchmark_value, tr_from_to_df_coo
 
   # Merge edge information with distance data
   tr_from_to_df_coord <- dplyr::inner_join(tr_from_to_df_coord, distance_df_small_edges,
-                                          by = c("from", "to"))
+                                           by = c("from", "to"))
 
 
   ## Create the triangular mesh plot after removing the long edges
@@ -470,8 +462,8 @@ gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
 
   } else {
 
-    dx <- (all_centroids_df$x[2] - all_centroids_df$x[1])/2
-    dy <- (unique(all_centroids_df$y)[2] - unique(all_centroids_df$y)[1])/ sqrt(3) / 2 * 1.15
+    dx <- (all_centroids_df$x[2] - all_centroids_df$x[1])
+    dy <- (all_centroids_df$y[2] - all_centroids_df$y[1])/ sqrt(3) / 2 * 1.15
 
 
   }
@@ -971,14 +963,14 @@ show_langevitour <- function(df, df_b, df_b_with_center_data, benchmark_value = 
 
 fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
                              y = "UMAP1", num_bins_x = NA, num_bins_y = NA,
-                             hex_size = NA, buffer_x = NA, buffer_y = NA,
+                             hex_size = NA, buffer_size = NA,
                              is_bin_centroid = TRUE,
                              is_rm_lwd_hex = FALSE,
                              benchmark_to_rm_lwd_hex = NA,
                              is_avg_high_d = TRUE, column_start_text = "x",
                              is_shift_origin = FALSE,
                              shift_x = NA, shift_y = NA
-                             ) {
+) {
 
   ## hex size is not provided
   if (is.na(hex_size)) {
@@ -1039,7 +1031,7 @@ fit_high_d_model <- function(training_data, nldr_df_with_id, x = "UMAP1",
                                                      x = x, y = y,
                                                      num_bins_x = num_bins_x,
                                                      num_bins_y = num_bins_y,
-                                                     buffer_x = buffer_x, buffer_y = buffer_y, hex_size = hex_size)
+                                                     buffer_size = buffer_size, hex_size = hex_size)
 
 
   }
@@ -1171,7 +1163,7 @@ find_benchmark_value <- function(distance_edges, distance_col) {
   if (is.na(benchmark_value)) {
     ## first quartile used as the default
     benchmark_value <- stats::quantile(distance_edges$distance,
-                                               probs = c(0,0.25,0.5,0.75,1), names = FALSE)[2]
+                                       probs = c(0,0.25,0.5,0.75,1), names = FALSE)[2]
 
   }
 
@@ -1270,7 +1262,7 @@ generate_summary <- function(test_data, prediction_df, df_bin, col_start = "x") 
   row_wise_total_error <- rowSums(summary_df[, error_cols, drop = FALSE])
 
   aic <-  compute_aic((NCOL(df_bin) - 1), row_wise_total_error,
-                    NROW(df_bin), NROW(training_data))
+                      NROW(df_bin), NROW(training_data))
   mse <-  mean(row_wise_total_error)
 
   return(list(mse = mse, aic = aic))
