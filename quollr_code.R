@@ -1,4 +1,4 @@
-calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA){
+calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA, buffer_x = NA){
 
   if (anyNA(.data[[rlang::as_string(rlang::ensym(x))]])) {
     stop("NAs present")
@@ -23,18 +23,28 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA){
     }
   }
 
+  if (is.na(buffer_x)) {
+    #buffer_x <- sqrt(3) * hex_size/2
+    # buffer_x <- min(min(.data[[rlang::as_string(rlang::sym(x))]]) - sqrt(3) * hex_size/2,
+    #                 max(.data[[rlang::as_string(rlang::sym(x))]]) + sqrt(3) * hex_size/2,
+    #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") - (sqrt(3) * hex_size/2),
+    #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") +
+    #                   (sqrt(3) * hex_size/2))
+    buffer_x <- sqrt(3) * hex_size/2
+  }
+
   ## To compute the range along x-axis
   xwidth <- diff(range(.data |>
-                         dplyr::pull({{ x }})))
+                         dplyr::pull({{ x }})))  + buffer_x
 
-  horizontal_spacing <- sqrt(3) * hex_size
+  horizontal_spacing <- (sqrt(3) * hex_size)
 
   num_bins <- ceiling(xwidth/horizontal_spacing)
   num_bins
 
 }
 
-calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA){
+calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer_y = NA){
 
   if (anyNA(.data[[rlang::as_string(rlang::ensym(y))]])) {
     stop("NAs present")
@@ -57,12 +67,24 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA){
     }
   }
 
+  if (is.na(buffer_y)) {
+
+    #buffer_y <- 1.5 * hex_size/2
+    # buffer_y <- min(min(.data[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
+    #                 max(.data[[rlang::as_string(rlang::sym(y))]]) + 1.5 * hex_size/2,
+    #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") - (1.5 * hex_size/2),
+    #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") +
+    #                   (1.5 * hex_size/2))
+    buffer_y <- 1.5 * hex_size/2
+  }
+
+
 
   ## To compute the range along x-axis
   ywidth <- diff(range(.data |>
-                         dplyr::pull({{ y }})))
+                         dplyr::pull({{ y }})))  + buffer_y
 
-  vertical_spacing <- 3 * hex_size/2
+  vertical_spacing <- (3 * hex_size/2)
 
   num_bins <- ceiling(ywidth/vertical_spacing)
   num_bins
@@ -70,18 +92,9 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA){
 
 }
 
-
-# Function to generate even y-values for a given x-value
-generate_even_y <- function(data) {
-  data <- data |>
-    dplyr::arrange(y) |>
-    dplyr::mutate(is_even = ifelse(seq_along(y) %% 2 == 0, 1, 0))
-
-  return(data)
-}
-
 generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
-                                         num_bins_x, num_bins_y, buffer_x = NA,
+                                         num_bins_x, num_bins_y, x_start = NA,
+                                         y_start = NA, buffer_x = NA,
                                          buffer_y = NA, hex_size = NA){
 
   ## hex size is not provided
@@ -115,10 +128,11 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   if (is.na(buffer_x)) {
 
     #buffer_x <- (sqrt(3) * hex_size)*0.2
-    #buffer_x <- 0
+    buffer_x <- 0
+    #buffer_x <- (sqrt(3) * hex_size)/2
     # buffer_x <- min(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - sqrt(3) * hex_size/2,
     #                 max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + sqrt(3) * hex_size/2)
-    buffer_x <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(x))]]))
+    #buffer_x <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(x))]]))
 
     message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
 
@@ -126,7 +140,8 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
     ## Buffer size is exceeds
     if (buffer_x > (sqrt(3) * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ". Need to assign a value less than ", sqrt(3) * hex_size, "."))
+      stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ".
+                  Need to assign a value less than ", sqrt(3) * hex_size, "."))
 
     }
 
@@ -137,10 +152,11 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   if (is.na(buffer_y)) {
 
     #buffer_y <- 3*(1.5 * hex_size/2)/2
-    #buffer_y <- 0
-    # buffer_y <- max(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
+    buffer_y <- 0
+    #buffer_y <- 1.5 * hex_size/2
+    # buffer_y <- min(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
     #                 max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + 1.5 * hex_size/2)
-    buffer_y <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(y))]]))
+    #buffer_y <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(y))]]))
 
     message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
 
@@ -148,22 +164,33 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
     ## Buffer size is exceeds
     if (buffer_y > (1.5 * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ". Need to assign a value less than ", 1.5 * hex_size, "."))
+      stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ".
+                  Need to assign a value less than ", 1.5 * hex_size, "."))
 
     }
 
 
   }
 
+  ## If x_start and y_start not define
+  if (is.na(x_start)) {
+
+    # Define starting point
+    x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_x
+
+  }
+
+  if (is.na(y_start)) {
+    # Define starting point
+    y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_y
+
+
+  }
 
 
   # Calculate horizontal and vertical spacing
   dx <- sqrt(3) * hex_size
   dy <- 1.5 * hex_size
-
-  # Define starting point
-  x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_x
-  y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_y
 
   # Initialize grid to store hexagon coordinates
   box_points <- data.frame(x = numeric(0), y = numeric(0))
@@ -171,12 +198,36 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   # Generate hexagon grid
   for (i in 1:num_bins_y) {
     for (j in 1:num_bins_x) {
-      x <- x_start + j * dx
-      y <- y_start + i * dy
-      if (i %% 2 == 0) {  # Adjust for even columns
-        x <- x + dx / 2
+
+      if (i == 1) {
+
+        y <- y_start
+
+        if (j == 1) {
+
+          x <- x_start
+
+        } else {
+
+          x <- x_start + (j - 1) * dx
+          if (i %% 2 == 0) {  # Adjust for even rows
+            x <- x + dx / 2
+          }
+
+        }
+
+      } else {
+
+        x <- x_start + (j - 1) * dx
+        y <- y_start + (i - 1) * dy
+        if (i %% 2 == 0) {  # Adjust for even rows
+          x <- x + dx / 2
+        }
+
       }
+
       box_points <- rbind(box_points, data.frame(x = x, y = y))
+
     }
   }
 
@@ -509,9 +560,12 @@ gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
 
   for (id_split in all_centroids_df_rep_split) {
 
-    hex_coord_spec <- tibble::tibble(x = id_split$x + x_add_factor ,
+    hex_coord_spec <- tibble::tibble(c_x = id_split$x,
+                                     c_y = id_split$y,
+                                     x = id_split$x + x_add_factor ,
                                      y = id_split$y + y_add_factor,
-                                     id = id_split$id)
+                                     id = id_split$id,
+                                     hexID = id_split$id)
 
     hex_grid <- bind_rows(hex_grid, hex_coord_spec)
 
@@ -631,18 +685,10 @@ compute_std_counts <- function(nldr_df) {
 
 }
 
-generate_full_grid_info <- function(full_grid_with_polygon_id, df_with_std_counts, hex_grid) {
+generate_full_grid_info <- function(hex_grid, df_with_std_counts) {
 
   ## To assign standardize counts for hex bins
-  df_bin_centroids_all <- dplyr::left_join(full_grid_with_polygon_id, df_with_std_counts, by = c("hexID" = "hb_id"))
-
-  ## Since hexagon has 6 coordinates, need to repeat 6 times
-  df_bin_centroids_all_rep <- df_bin_centroids_all |>
-    dplyr::slice(rep(1:dplyr::n(), each = 6)) |>
-    dplyr::arrange(polygon_id)
-
-  ## Join with hexagonal coordinates
-  hex_full_count_df <- dplyr::bind_cols(hex_grid, df_bin_centroids_all_rep)
+  hex_full_count_df <- dplyr::left_join(hex_grid, df_with_std_counts, by = c("hexID" = "hb_id"))
 
   return(hex_full_count_df)
 

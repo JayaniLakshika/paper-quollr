@@ -101,13 +101,13 @@ datasets_tb |>
 ## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
                                          x = "UMAP1", hex_size = 0.2)
-num_bins_x
+num_bins_x 
 
 
 ## -----------------------------------------------------------------------------
 num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
                                          y = "UMAP2", hex_size = 0.2)
-num_bins_y
+num_bins_y 
 
 
 ## -----------------------------------------------------------------------------
@@ -115,6 +115,7 @@ all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap,
                                                  x = "UMAP1", y = "UMAP2", 
                                                  num_bins_x = num_bins_x, 
                                                  num_bins_y = num_bins_y, 
+                                                 x_start = NA, y_start = NA, 
                                                  buffer_x = NA, buffer_y = NA, 
                                                  hex_size = 0.2)
 
@@ -128,24 +129,22 @@ glimpse(hex_grid)
 
 ## -----------------------------------------------------------------------------
 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_point(data = all_centroids_df, aes(x = x, y = y), color = "red") +
+  geom_point(aes(x = c_x, y = c_y), color = "red") +
   coord_fixed()
 
 
 ## -----------------------------------------------------------------------------
-full_grid_with_hexbin_id <- map_hexbin_id(all_centroids_df)
+full_grid_centroids_with_hexbin_id <- hex_grid |>
+  dplyr::select("c_x", "c_y", "hexID") |>
+    dplyr::distinct() 
 
 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_text(data = full_grid_with_hexbin_id, aes(x = c_x, y = c_y, label = hexID)) +
+  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
   coord_fixed()
 
 
 ## -----------------------------------------------------------------------------
-full_grid_with_polygon_id <- map_polygon_id(full_grid_with_hexbin_id, hex_grid)
-
-
-## -----------------------------------------------------------------------------
-s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_with_hexbin_id)
+s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_centroids_with_hexbin_id)
 
 
 ## -----------------------------------------------------------------------------
@@ -153,7 +152,7 @@ df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
 
 
 ## -----------------------------------------------------------------------------
-hex_full_count_df <- generate_full_grid_info(full_grid_with_polygon_id, df_with_std_counts, hex_grid)
+hex_full_count_df <- generate_full_grid_info(hex_grid, df_with_std_counts)
 
 
 ## -----------------------------------------------------------------------------
@@ -164,7 +163,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 
 ## -----------------------------------------------------------------------------
 ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = polygon_id, fill = std_counts)) +
+  geom_polygon(color = "black", aes(group = id, fill = std_counts)) +
   geom_text(aes(x = c_x, y = c_y, label = hexID)) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
   coord_fixed()
