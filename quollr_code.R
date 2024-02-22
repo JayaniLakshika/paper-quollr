@@ -11,10 +11,11 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA, buffer
 
 
   if (is.na(hex_size)) {
-    cell_area <- 1
-
-    ## To compute the radius of the hexagon outer circle
-    hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    # cell_area <- 1
+    #
+    # ## To compute the radius of the hexagon outer circle
+    # hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    hex_size <- 0.2
 
   } else {
     if ((hex_size <= 0) || (is.infinite(hex_size))) {
@@ -30,14 +31,25 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA, buffer
     #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") - (sqrt(3) * hex_size/2),
     #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") +
     #                   (sqrt(3) * hex_size/2))
-    buffer_x <- sqrt(3) * hex_size/2
+    buffer_x <- sqrt(3) * hex_size
+    message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
+  } else {
+
+    ## Buffer size is exceeds
+    if (buffer_x > (sqrt(3) * hex_size)) {
+      stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ".
+                  Need to assign a value less than ", sqrt(3) * hex_size, "."))
+
+    }
+
+
   }
 
   ## To compute the range along x-axis
   xwidth <- diff(range(.data |>
                          dplyr::pull({{ x }})))  + buffer_x
 
-  horizontal_spacing <- (sqrt(3) * hex_size)
+  horizontal_spacing <- sqrt(3) * hex_size
 
   num_bins <- ceiling(xwidth/horizontal_spacing)
   num_bins
@@ -55,10 +67,11 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer
   }
 
   if (is.na(hex_size)) {
-    cell_area <- 1
-
-    ## To compute the radius of the hexagon outer circle
-    hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    # cell_area <- 1
+    #
+    # ## To compute the radius of the hexagon outer circle
+    # hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    hex_size <- 0.2
 
   } else {
     if ((hex_size <= 0) || (is.infinite(hex_size))) {
@@ -75,7 +88,16 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer
     #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") - (1.5 * hex_size/2),
     #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") +
     #                   (1.5 * hex_size/2))
-    buffer_y <- 1.5 * hex_size/2
+    buffer_y <- 1.5 * hex_size
+    message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
+  } else {
+
+    ## Buffer size is exceeds
+    if (buffer_y > (1.5 * hex_size)) {
+      stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ".
+                  Need to assign a value less than ", 1.5 * hex_size, "."))
+
+    }
   }
 
 
@@ -84,7 +106,7 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer
   ywidth <- diff(range(.data |>
                          dplyr::pull({{ y }})))  + buffer_y
 
-  vertical_spacing <- (3 * hex_size/2)
+  vertical_spacing <- 3 * hex_size/2
 
   num_bins <- ceiling(ywidth/vertical_spacing)
   num_bins
@@ -94,15 +116,15 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer
 
 generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
                                          num_bins_x, num_bins_y, x_start = NA,
-                                         y_start = NA, buffer_x = NA,
-                                         buffer_y = NA, hex_size = NA){
+                                         y_start = NA, hex_size = NA){
 
   ## hex size is not provided
   if (is.na(hex_size)) {
     ## To compute the diameter of the hexagon
-    cell_area <- 1
-
-    hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    # cell_area <- 1
+    #
+    # hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    hex_size <- 0.2
     message(paste0("hex_size set to ", hex_size, "."))
 
   }
@@ -124,65 +146,65 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
 
 
-  ## Buffer size is not provided
-  if (is.na(buffer_x)) {
-
-    #buffer_x <- (sqrt(3) * hex_size)*0.2
-    buffer_x <- 0
-    #buffer_x <- (sqrt(3) * hex_size)/2
-    # buffer_x <- min(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - sqrt(3) * hex_size/2,
-    #                 max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + sqrt(3) * hex_size/2)
-    #buffer_x <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(x))]]))
-
-    message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
-
-  } else {
-
-    ## Buffer size is exceeds
-    if (buffer_x > (sqrt(3) * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ".
-                  Need to assign a value less than ", sqrt(3) * hex_size, "."))
-
-    }
-
-
-  }
-
-  ## Buffer size is not provided
-  if (is.na(buffer_y)) {
-
-    #buffer_y <- 3*(1.5 * hex_size/2)/2
-    buffer_y <- 0
-    #buffer_y <- 1.5 * hex_size/2
-    # buffer_y <- min(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
-    #                 max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + 1.5 * hex_size/2)
-    #buffer_y <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(y))]]))
-
-    message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
-
-  } else {
-
-    ## Buffer size is exceeds
-    if (buffer_y > (1.5 * hex_size)) {
-      stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ".
-                  Need to assign a value less than ", 1.5 * hex_size, "."))
-
-    }
-
-
-  }
+  # ## Buffer size is not provided
+  # if (is.na(buffer_x)) {
+  #
+  #   #buffer_x <- (sqrt(3) * hex_size)*0.2
+  #   buffer_x <- 0
+  #   #buffer_x <- (sqrt(3) * hex_size)/2
+  #   # buffer_x <- min(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - sqrt(3) * hex_size/2,
+  #   #                 max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + sqrt(3) * hex_size/2)
+  #   #buffer_x <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(x))]]))
+  #
+  #   message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
+  #
+  # } else {
+  #
+  #   ## Buffer size is exceeds
+  #   if (buffer_x > (sqrt(3) * hex_size)) {
+  #     stop(paste0("Buffer along the y-axis exceeds than ", sqrt(3) * hex_size, ".
+  #                 Need to assign a value less than ", sqrt(3) * hex_size, "."))
+  #
+  #   }
+  #
+  #
+  # }
+  #
+  # ## Buffer size is not provided
+  # if (is.na(buffer_y)) {
+  #
+  #   #buffer_y <- 3*(1.5 * hex_size/2)/2
+  #   buffer_y <- 0
+  #   #buffer_y <- 1.5 * hex_size/2
+  #   # buffer_y <- min(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - 1.5 * hex_size/2,
+  #   #                 max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + 1.5 * hex_size/2)
+  #   #buffer_y <- hex_size/diff(range(nldr_df[[rlang::as_string(rlang::sym(y))]]))
+  #
+  #   message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
+  #
+  # } else {
+  #
+  #   ## Buffer size is exceeds
+  #   if (buffer_y > (1.5 * hex_size)) {
+  #     stop(paste0("Buffer along the y-axis exceeds than ", 1.5 * hex_size, ".
+  #                 Need to assign a value less than ", 1.5 * hex_size, "."))
+  #
+  #   }
+  #
+  #
+  # }
 
   ## If x_start and y_start not define
   if (is.na(x_start)) {
 
     # Define starting point
-    x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_x
+    x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]])
 
   }
 
   if (is.na(y_start)) {
     # Define starting point
-    y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_y
+    y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]])
 
 
   }
@@ -234,112 +256,6 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   box_points
 
 }
-
-extract_coord_of_shifted_hex_grid <- function(nldr_df, x = "UMAP1", y = "UMAP2",
-                                         num_bins_x, num_bins_y, shift_x = 0, shift_y = 0,
-                                         buffer_size = NA, hex_size = NA){
-
-  ## hex size is not provided
-  if (is.na(hex_size)) {
-    ## To compute the diameter of the hexagon
-    cell_area <- 1
-
-    hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
-    message(paste0("hex_size set to ", hex_size, "."))
-
-  }
-
-  ## If number of bins along the x-axis is not given
-  if (is.na(num_bins_x)) {
-    ## compute the number of bins along the x-axis
-    num_bins_x <- calculate_effective_x_bins(.data = nldr_df, x = x, hex_size = hex_size)
-
-
-  }
-
-  ## If number of bins along the y-axis is not given
-  if (is.na(num_bins_y)) {
-    num_bins_y <- calculate_effective_y_bins(.data = nldr_df, y = y, hex_size = hex_size)
-
-  }
-
-
-
-
-  ## Buffer size is not provided
-  if (is.na(buffer_size)) {
-    buffer_size <- hex_size/2
-    message(paste0("Buffer set to ", buffer_size, "."))
-
-  } else {
-
-    ## Buffer size is exceeds
-    if (buffer_size > (hex_size/2)) {
-      stop(paste0("Buffer exceeds than ", hex_size/2, ". Need to assign a value less than ", hex_size/2, "."))
-
-    }
-
-
-  }
-
-  cell_diameter <- hex_size * 2
-
-
-  ## Shift is not compatible
-  if ((abs(shift_x) > (cell_diameter)) | (abs(shift_y) > (cell_diameter))) {
-    stop(paste0("Shifted amount is not compatibel. Need to use a value less than or equal ", cell_diameter, "."))
-  }
-
-  x_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - buffer_size,
-                  max(nldr_df[[rlang::as_string(rlang::sym(x))]]) + buffer_size, length.out = num_bins_x)
-  y_bounds <- seq(min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - buffer_size,
-                  max(nldr_df[[rlang::as_string(rlang::sym(y))]]) + buffer_size, length.out = num_bins_y)
-
-  box_points <- expand.grid(x = x_bounds, y = y_bounds)
-
-  # For each x-value, generate even y-values
-  box_points <- box_points |>
-    dplyr::arrange(x) |>
-    dplyr::group_by(x) |>
-    dplyr::group_modify(~ generate_even_y(.x)) |>
-    tibble::as_tibble()
-
-  ## Shift the x values of the even rows
-  if (length(x_bounds) == 1) {
-
-    if (length(y_bounds) == 1) {
-      ## If there is only one bin
-
-      box_points <- tibble::tibble(x = mean(nldr_df[[rlang::as_string(rlang::sym(x))]]),
-                                   y = mean(nldr_df[[rlang::as_string(rlang::sym(y))]]))
-
-    } else {
-      ## If there is only one bin along x-axis
-      x_shift <- 0
-
-      box_points <- box_points |>
-        dplyr::select(-is_even)
-
-    }
-
-
-  } else{
-
-    x_shift <- unique(box_points$x)[2] - unique(box_points$x)[1]
-
-    box_points$x <- box_points$x + x_shift/2 * ifelse(box_points$is_even == 1, 1, 0)
-
-    box_points <- box_points |>
-      dplyr::select(-is_even)
-
-  }
-
-
-  box_points
-
-}
-
-
 
 extract_hexbin_centroids <- function(hex_full_count_df) {
 

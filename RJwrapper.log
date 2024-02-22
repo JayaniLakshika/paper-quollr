@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 19:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 19:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -947,19 +947,19 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 99.
 [2]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 195.
+(Font)              scaled to size 9.37807pt on input line 194.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 195.
+(Font)              scaled to size 7.29405pt on input line 194.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 195.
+(Font)              scaled to size 5.21004pt on input line 194.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 195.
+(Font)              scaled to size 9.37807pt on input line 194.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 195.
+(Font)              scaled to size 7.29405pt on input line 194.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 195.
+(Font)              scaled to size 5.21004pt on input line 194.
 
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 224--224
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 223--223
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
@@ -970,10 +970,10 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf
-  used on input line 226.
+  used on input line 225.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
 [3]
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 236--236
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 235--235
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
@@ -984,16 +984,16 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf
-  used on input line 238.
+  used on input line 237.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
 [4 <./paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>]
-Overfull \hbox (42.29317pt too wide) in paragraph at lines 257--257
+Overfull \hbox (42.29317pt too wide) in paragraph at lines 256--256
 []\T1/zi4/m/n/9 s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, f
 ull_grid_centroids_with_hexbin_id)[] 
  []
 
 
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 301--301
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 300--300
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
@@ -1004,7 +1004,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf
-  used on input line 303.
+  used on input line 302.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
 [5 <./paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>]
 <paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=101, 303.1325pt x 3
@@ -1013,17 +1013,17 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf
-  used on input line 313.
+  used on input line 312.
 (pdftex.def)             Requested size: 303.13176pt x 313.16922pt.
 [6 <./paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf> <./paper-quollr_f
 iles/figure-latex/unnamed-chunk-16-1.pdf>]
-Overfull \hbox (22.4pt too wide) in paragraph at lines 340--340
+Overfull \hbox (22.4pt too wide) in paragraph at lines 339--339
 []\T1/zi4/m/n/9 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_c
 ount_df[["std_counts"]]), ] |>[] 
  []
 
 
-Overfull \hbox (20.83876pt too wide) in paragraph at lines 369--369
+Overfull \hbox (20.83876pt too wide) in paragraph at lines 368--368
 []\T1/zi4/m/n/9 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x
 ") ## Need to pass ID column name[] 
  []
@@ -1035,15 +1035,15 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf
-  used on input line 418.
+  used on input line 417.
 (pdftex.def)             Requested size: 457.7089pt x 313.16922pt.
 
-Overfull \hbox (74.37032pt too wide) in paragraph at lines 418--419
+Overfull \hbox (74.37032pt too wide) in paragraph at lines 417--418
 [][] 
  []
 
 
-Overfull \hbox (20.83876pt too wide) in paragraph at lines 442--442
+Overfull \hbox (20.83876pt too wide) in paragraph at lines 441--441
 []\T1/zi4/m/n/9 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x
 ") ## Need to pass ID column name[] 
  []
@@ -1055,7 +1055,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf
-  used on input line 532.
+  used on input line 531.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 <paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf, id=165, 285.065pt x 31
 3.17pt>
@@ -1063,10 +1063,10 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf
-  used on input line 541.
+  used on input line 540.
 (pdftex.def)             Requested size: 285.0643pt x 313.16922pt.
 [10 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
-Overfull \hbox (13.2106pt too wide) in paragraph at lines 547--547
+Overfull \hbox (13.2106pt too wide) in paragraph at lines 546--546
 []\T1/zi4/m/n/9 trimesh_removed <- remove_long_edges(distance_edges = distance,
  benchmark_value = benchmark,[] 
  []
@@ -1077,7 +1077,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf
-  used on input line 549.
+  used on input line 548.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 [11 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf> <./paper-quollr_
 files/figure-latex/unnamed-chunk-26-1.pdf>]
@@ -1087,20 +1087,20 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf
-  used on input line 560.
+  used on input line 559.
 (pdftex.def)             Requested size: 710.65326pt x 618.30849pt.
 
-Overfull \hbox (327.31468pt too wide) in paragraph at lines 560--561
+Overfull \hbox (327.31468pt too wide) in paragraph at lines 559--560
 [][] 
  []
 
 [12 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 607.
+(Font)              using `T1/zi4/m/n' instead on input line 606.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 617.
+(Font)              scaled to size 9.18004pt on input line 616.
 ) [13] (./RJwrapper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -1111,7 +1111,7 @@ Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 Here is how much of TeX's memory you used:
  27247 strings out of 476025
  499524 string characters out of 5790017
- 1867388 words of memory out of 5000000
+ 1866388 words of memory out of 5000000
  46945 multiletter control sequences out of 15000+600000
  552709 words of font info for 214 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1122,7 +1122,7 @@ mr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (13 pages, 177382 bytes).
+Output written on RJwrapper.pdf (13 pages, 177362 bytes).
 PDF statistics:
  290 PDF objects out of 1000 (max. 8388607)
  233 compressed objects within 3 object streams

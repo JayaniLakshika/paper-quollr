@@ -116,7 +116,6 @@ all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap,
                                                  num_bins_x = num_bins_x, 
                                                  num_bins_y = num_bins_y, 
                                                  x_start = NA, y_start = NA, 
-                                                 buffer_x = NA, buffer_y = NA, 
                                                  hex_size = 0.2)
 
 glimpse(all_centroids_df)
