@@ -438,9 +438,10 @@ gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
   ## hex size is not provided
   if (is.na(hex_size)) {
     ## To compute the diameter of the hexagon
-    cell_area <- 1
-
-    hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    # cell_area <- 1
+    #
+    # hex_size <- sqrt(2 * cell_area / (3 *sqrt(3)))
+    hex_size <- 0.2
     message(paste0("hex_size set to ", hex_size, "."))
 
   }
@@ -519,105 +520,30 @@ gen_hex_coordinates <- function(all_centroids_df, hex_size = NA){
 
 }
 
-map_hexbin_id <- function(full_centroid_df) {
+assign_data <- function(nldr_df, hex_grid) {
 
-  # Create an empty tibble to store all centroids with their coordinates
-  full_grid_with_hexbin_id <- tibble::tibble(x = numeric(), y = numeric())
-
-  # Iterate over unique y values
-  unique_y <- sort(unique(full_centroid_df$y))
-
-  for(y_val in unique_y){
-
-    ## Filter the data set with specific y value
-    specific_y_val_df <- full_centroid_df |>
-      dplyr::filter(y == y_val) |>
-      dplyr::arrange(x) ## ordered the x values
-
-    full_grid_with_hexbin_id <- dplyr::bind_rows(full_grid_with_hexbin_id, specific_y_val_df)
-
-  }
-
-  ## Add the column with hexagonal bin ID
-  full_grid_with_hexbin_id <- full_grid_with_hexbin_id |>
-    dplyr::mutate(hexID = dplyr::row_number())
-
-  ## Rename columns
-  full_grid_with_hexbin_id <- full_grid_with_hexbin_id |>
-    dplyr::rename("c_x" = "x",
-                  "c_y" = "y")
-
-  return(full_grid_with_hexbin_id)
-
-
-}
-
-map_polygon_id <- function(full_grid_with_hexbin_id, hex_grid) {
-
-  ## Define a dataset to store polygon id
-  full_grid_with_polygon_id <- data.frame(matrix(ncol = 0, nrow = 0))
-
-  unique_hex_id <- unique(full_grid_with_hexbin_id$hexID)
-  unique_poly_id <- unique(hex_grid$id)
-
-  for (hb_id_spec in unique_hex_id) {
-
-    ## Filter specific hexagon
-    full_grid_with_hexbin_id_filtered <- full_grid_with_hexbin_id |>
-      filter(hexID == hb_id_spec)
-
-    for (poly_id_spec in unique_poly_id) {
-
-      ## Filter specific polygon
-      hex_grid_filtered <- hex_grid |>
-        filter(id == poly_id_spec)
-
-      # Compute the range for x and y coordinates of hex grid
-      x_range <- range(hex_grid_filtered$x)
-      y_range <- range(hex_grid_filtered$y)
-
-      # Check if each coordinate falls within the range
-      status_in_x_range <- full_grid_with_hexbin_id_filtered$c_x >= x_range[1] &
-        full_grid_with_hexbin_id_filtered$c_x <= x_range[2]
-      status_in_y_range <- full_grid_with_hexbin_id_filtered$c_y >= y_range[1] &
-        full_grid_with_hexbin_id_filtered$c_y <= y_range[2]
-
-      # Filter rows where both x and y coordinates are within the range
-      filtered_rows <- full_grid_with_hexbin_id_filtered |>
-        filter(status_in_x_range & status_in_y_range)
-
-      # Add polygon ID to the filtered rows
-      filtered_rows <- mutate(filtered_rows, polygon_id = poly_id_spec)
-
-      # Append filtered rows to the dataset
-      full_grid_with_polygon_id <- bind_rows(full_grid_with_polygon_id, filtered_rows)
-    }
-  }
-
-  return(full_grid_with_polygon_id)
-}
-
-
-assign_data <- function(nldr_df, full_grid_with_hexbin_id) {
+  full_grid_centroids_with_hexbin_id <- hex_grid |>
+    dplyr::select("c_x", "c_y", "hexID") |>
+    dplyr::distinct()
 
   ## Compute distances between nldr coordinates and hex bin centroids
   dist_df <- proxy::dist(as.matrix(nldr_df |>
-                                     dplyr::select(-ID)), as.matrix(full_grid_with_hexbin_id |>
+                                     dplyr::select(-ID)), as.matrix(full_grid_centroids_with_hexbin_id |>
                                                                       dplyr::select(-hexID)), method = "Euclidean")
 
   ## Columns that gives minimum distances
   min_column <- apply(dist_df, 1, which.min)
 
   nldr_df <- nldr_df |>
-    dplyr::mutate(hb_id = full_grid_with_hexbin_id$hexID[min_column])
+    dplyr::mutate(hb_id = full_grid_centroids_with_hexbin_id$hexID[min_column])
 
   return(nldr_df)
 
 }
 
-compute_std_counts <- function(nldr_df) {
+compute_std_counts <- function(nldr_df_with_hex_id) {
 
-  df_with_std_counts <- nldr_df |>
+  df_with_std_counts <- nldr_df_with_hex_id |>
     dplyr::count(hb_id) |>
     dplyr::mutate(std_counts = n/max(n, na.rm = TRUE)) |>
     dplyr::select(-n)
@@ -626,7 +552,11 @@ compute_std_counts <- function(nldr_df) {
 
 }
 
-generate_full_grid_info <- function(hex_grid, df_with_std_counts) {
+generate_full_grid_info <- function(nldr_df, hex_grid) {
+
+  nldr_with_hex_id <- assign_data(nldr_df, hex_grid)
+
+  df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = nldr_with_hex_id)
 
   ## To assign standardize counts for hex bins
   hex_full_count_df <- dplyr::left_join(hex_grid, df_with_std_counts, by = c("hexID" = "hb_id"))

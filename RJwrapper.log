@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 20:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 22:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -866,60 +866,60 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (36.1794pt too wide) in paragraph at lines 34--34
-[]\T1/zi4/m/n/9 reticulate::source_python(paste0(here::here(), "/scripts/functi
-on_scripts/Fit_PacMAP_code.py"))[] 
+Overfull \hbox (43.8263pt too wide) in paragraph at lines 34--34
+[]\T1/zi4/m/n/9 # reticulate::source_python(paste0(here::here(), "/scripts/func
+tion_scripts/Fit_PacMAP_code.py"))[] 
  []
 
 
-Overfull \hbox (36.1794pt too wide) in paragraph at lines 34--34
-[]\T1/zi4/m/n/9 reticulate::source_python(paste0(here::here(), "/scripts/functi
-on_scripts/Fit_TriMAP_code.py"))[] 
+Overfull \hbox (43.8263pt too wide) in paragraph at lines 34--34
+[]\T1/zi4/m/n/9 # reticulate::source_python(paste0(here::here(), "/scripts/func
+tion_scripts/Fit_TriMAP_code.py"))[] 
  []
 
 
-Overfull \hbox (366.63213pt too wide) in paragraph at lines 58--58
+Overfull \hbox (366.63213pt too wide) in paragraph at lines 61--61
 []\T1/zi4/m/n/9 s_curve_noise_umap$UMAP2 <- ((s_curve_noise_umap$UMAP2 - min(s_
 curve_noise_umap$UMAP2))/(max(s_curve_noise_umap$UMAP2) - min(s_curve_noise_uma
 p$UMAP2))) * (y_max - y_min)[] 
  []
 
 
-Overfull \hbox (137.14091pt too wide) in paragraph at lines 62--62
+Overfull \hbox (137.14091pt too wide) in paragraph at lines 65--65
 []\T1/zi4/m/n/9 # s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)] <- scal
 e(s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)])[] 
  []
 
 LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 7
-6.
+9.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
 ) [1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr
 /local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 {/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}]
-LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 9
-9.
+LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 1
+02.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1ppl.fd
 File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
 )
 LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
-99.
+102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
-99.
+102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
-99.
+102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
-99.
+102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
@@ -928,59 +928,60 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 99.
+(Font)              scaled to size 10.42007pt on input line 102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 99.
+(Font)              scaled to size 7.91925pt on input line 102.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 99.
+(Font)              scaled to size 6.25204pt on input line 102.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 99.
+(Font)              scaled to size 10.42007pt on input line 102.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 99.
+(Font)              scaled to size 7.91925pt on input line 102.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 99.
+(Font)              scaled to size 6.25204pt on input line 102.
 [2]
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 198--198
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 201--201
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf, id=66, 232.87pt x 313.
+<paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf, id=65, 232.87pt x 313.
 17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf
-  used on input line 200.
+  used on input line 203.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
 
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 210--210
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 209--209
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf, id=67, 232.87pt x 313.
+[3 <./paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf, id=79, 232.87pt x 313.
 17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf
-  used on input line 212.
+  used on input line 211.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
-[3 <./paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>]
-Overfull \hbox (42.29317pt too wide) in paragraph at lines 231--231
-[]\T1/zi4/m/n/9 s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, f
-ull_grid_centroids_with_hexbin_id)[] 
+
+Overfull \hbox (8.62996pt too wide) in paragraph at lines 249--249
+[]\T1/zi4/m/n/9 df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = 
+s_curve_noise_umap_with_id)[] 
  []
 
 
-Overfull \hbox (72.84328pt too wide) in paragraph at lines 275--275
+Overfull \hbox (72.84328pt too wide) in paragraph at lines 274--274
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
 = "white", color = "black", aes(group = id)) +[] 
  []
@@ -991,7 +992,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf
-  used on input line 277.
+  used on input line 276.
 (pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
 [4 <./paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>]
 <paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=95, 303.1325pt x 31
@@ -1000,17 +1001,17 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf
-  used on input line 287.
+  used on input line 286.
 (pdftex.def)             Requested size: 303.13176pt x 313.16922pt.
 [5 <./paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf> <./paper-quollr_f
 iles/figure-latex/unnamed-chunk-16-1.pdf>]
-Overfull \hbox (22.4pt too wide) in paragraph at lines 314--314
+Overfull \hbox (22.4pt too wide) in paragraph at lines 313--313
 []\T1/zi4/m/n/9 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_c
 ount_df[["std_counts"]]), ] |>[] 
  []
 
 
-Overfull \hbox (20.83876pt too wide) in paragraph at lines 341--341
+Overfull \hbox (20.83876pt too wide) in paragraph at lines 340--340
 []\T1/zi4/m/n/9 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x
 ") ## Need to pass ID column name[] 
  []
@@ -1022,15 +1023,15 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf
-  used on input line 390.
+  used on input line 389.
 (pdftex.def)             Requested size: 457.7089pt x 313.16922pt.
 
-Overfull \hbox (74.37032pt too wide) in paragraph at lines 390--391
+Overfull \hbox (74.37032pt too wide) in paragraph at lines 389--390
 [][] 
  []
 
 
-Overfull \hbox (20.83876pt too wide) in paragraph at lines 418--418
+Overfull \hbox (20.83876pt too wide) in paragraph at lines 417--417
 []\T1/zi4/m/n/9 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x
 ") ## Need to pass ID column name[] 
  []
@@ -1042,7 +1043,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf
-  used on input line 508.
+  used on input line 507.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 <paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf, id=159, 285.065pt x 31
 3.17pt>
@@ -1050,10 +1051,10 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf
-  used on input line 517.
+  used on input line 516.
 (pdftex.def)             Requested size: 285.0643pt x 313.16922pt.
 [9 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
-Overfull \hbox (13.2106pt too wide) in paragraph at lines 523--523
+Overfull \hbox (13.2106pt too wide) in paragraph at lines 522--522
 []\T1/zi4/m/n/9 trimesh_removed <- remove_long_edges(distance_edges = distance,
  benchmark_value = benchmark,[] 
  []
@@ -1064,7 +1065,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf
-  used on input line 525.
+  used on input line 524.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 [10 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf> <./paper-quollr_
 files/figure-latex/unnamed-chunk-26-1.pdf>]
@@ -1074,32 +1075,32 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf
-  used on input line 536.
+  used on input line 535.
 (pdftex.def)             Requested size: 710.65326pt x 618.30849pt.
 
-Overfull \hbox (327.31468pt too wide) in paragraph at lines 536--537
+Overfull \hbox (327.31468pt too wide) in paragraph at lines 535--536
 [][] 
  []
 
 [11 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 555.
+(Font)              scaled to size 9.37807pt on input line 554.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 555.
+(Font)              scaled to size 7.29405pt on input line 554.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 555.
+(Font)              scaled to size 5.21004pt on input line 554.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 555.
+(Font)              scaled to size 9.37807pt on input line 554.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 555.
+(Font)              scaled to size 7.29405pt on input line 554.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 555.
+(Font)              scaled to size 5.21004pt on input line 554.
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 583.
+(Font)              using `T1/zi4/m/n' instead on input line 582.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 593.
+(Font)              scaled to size 9.18004pt on input line 592.
 ) [12] (./RJwrapper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -1110,7 +1111,7 @@ Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 Here is how much of TeX's memory you used:
  27239 strings out of 476025
  499467 string characters out of 5790017
- 1868388 words of memory out of 5000000
+ 1865388 words of memory out of 5000000
  46945 multiletter control sequences out of 15000+600000
  551374 words of font info for 208 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1119,7 +1120,7 @@ Here is how much of TeX's memory you used:
 a-zi4r.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.
 pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></u
 sr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (12 pages, 158842 bytes).
+Output written on RJwrapper.pdf (12 pages, 158717 bytes).
 PDF statistics:
  275 PDF objects out of 1000 (max. 8388607)
  223 compressed objects within 3 object streams

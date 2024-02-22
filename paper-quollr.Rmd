@@ -67,11 +67,11 @@ library(rsample)
 
 set.seed(20230531)
 
-use_python("~/miniforge3/envs/pcamp_env/bin/python")
-use_condaenv("pcamp_env")
-
-reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
-reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
+# use_python("~/miniforge3/envs/pcamp_env/bin/python")
+# use_condaenv("pcamp_env")
+# 
+# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
+# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
 
 ```
 
@@ -92,17 +92,20 @@ s_curve_noise_umap$UMAP1 <- rescale(s_curve_noise_umap$UMAP1)
 y_min <- -sqrt(3)/2
 y_max <- sqrt(3)/2
 
+# y_min <- 0
+# y_max <- sqrt(3)/2
+
 s_curve_noise_umap$UMAP2 <- ((s_curve_noise_umap$UMAP2 - min(s_curve_noise_umap$UMAP2))/(max(s_curve_noise_umap$UMAP2) - min(s_curve_noise_umap$UMAP2))) * (y_max - y_min)
 
 # Define the desired size of the hexagons
 hex_size <- 0.2
 
 # Compute the horizontal spacing (dx) and vertical spacing (dy) between hexagon centers
-dx <- sqrt(3) * hex_size
-dy <- 1.5 * hex_size 
+# dx <- sqrt(3) * hex_size
+# dy <- 1.5 * hex_size 
 
-x_length <- 1
-y_length_scaled <- diff(range(s_curve_noise_umap$UMAP2))
+# x_length <- 1
+# y_length_scaled <- diff(range(s_curve_noise_umap$UMAP2))
 
 # Compute the number of bins along the x-axis and y-axis
 # num_bins_x <- ceiling(x_length / dx)
@@ -209,10 +212,6 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 ```
 
 ```{r}
-full_grid_centroids_with_hexbin_id <- hex_grid |>
-  dplyr::select("c_x", "c_y", "hexID") |>
-    dplyr::distinct() 
-
 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
   geom_text(aes(x = c_x, y = c_y, label = hexID)) +
   coord_fixed()
@@ -225,7 +224,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 - Find the hexagonal centroid that have the minimum distance
 
 ```{r}
-s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_centroids_with_hexbin_id)
+s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
 ```
 
 6. Compute standardized counts
@@ -235,7 +234,7 @@ s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, full_grid_centroid
 - Compute standardise count by dividing the counts by the maximum
 
 ```{r}
-df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
+df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = s_curve_noise_umap_with_id)
 ```
 
 7. Extract full grid info
@@ -245,7 +244,7 @@ df_with_std_counts <- compute_std_counts(nldr_df = s_curve_noise_umap_with_id)
 - Join with the hexagonal coordinates
 
 ```{r}
-hex_full_count_df <- generate_full_grid_info(hex_grid, df_with_std_counts)
+hex_full_count_df <- generate_full_grid_info(nldr_df = s_curve_noise_umap, hex_grid)
 ```
 
 
