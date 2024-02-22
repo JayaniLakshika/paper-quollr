@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 19:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 19:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1043,7 +1043,7 @@ Overfull \hbox (74.37032pt too wide) in paragraph at lines 417--418
  []
 
 
-Overfull \hbox (20.83876pt too wide) in paragraph at lines 441--441
+Overfull \hbox (20.83876pt too wide) in paragraph at lines 445--445
 []\T1/zi4/m/n/9 df_bin <- avg_highD_data(.data = df_all, column_start_text = "x
 ") ## Need to pass ID column name[] 
  []
@@ -1055,7 +1055,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf
-  used on input line 531.
+  used on input line 535.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 <paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf, id=165, 285.065pt x 31
 3.17pt>
@@ -1063,10 +1063,10 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf
-  used on input line 540.
+  used on input line 544.
 (pdftex.def)             Requested size: 285.0643pt x 313.16922pt.
 [10 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
-Overfull \hbox (13.2106pt too wide) in paragraph at lines 546--546
+Overfull \hbox (13.2106pt too wide) in paragraph at lines 550--550
 []\T1/zi4/m/n/9 trimesh_removed <- remove_long_edges(distance_edges = distance,
  benchmark_value = benchmark,[] 
  []
@@ -1077,7 +1077,7 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf
-  used on input line 548.
+  used on input line 552.
 (pdftex.def)             Requested size: 194.727pt x 313.16922pt.
 [11 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf> <./paper-quollr_
 files/figure-latex/unnamed-chunk-26-1.pdf>]
@@ -1087,20 +1087,20 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf
-  used on input line 559.
+  used on input line 563.
 (pdftex.def)             Requested size: 710.65326pt x 618.30849pt.
 
-Overfull \hbox (327.31468pt too wide) in paragraph at lines 559--560
+Overfull \hbox (327.31468pt too wide) in paragraph at lines 563--564
 [][] 
  []
 
 [12 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 606.
+(Font)              using `T1/zi4/m/n' instead on input line 610.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 616.
+(Font)              scaled to size 9.18004pt on input line 620.
 ) [13] (./RJwrapper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -1115,14 +1115,14 @@ Here is how much of TeX's memory you used:
  46945 multiletter control sequences out of 15000+600000
  552709 words of font info for 214 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 117i,11n,131p,1006b,895s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,1006b,896s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/inconsolata/Inconsolat
 a-zi4r.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (13 pages, 177361 bytes).
+Output written on RJwrapper.pdf (13 pages, 177411 bytes).
 PDF statistics:
  290 PDF objects out of 1000 (max. 8388607)
  233 compressed objects within 3 object streams

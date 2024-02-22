@@ -211,6 +211,8 @@ plot_dist(distance)
 benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
 benchmark
 
+benchmark <- 0.75
+
 
 ## -----------------------------------------------------------------------------
 ## To generate a data set with high-D and 2D training data
