@@ -198,8 +198,7 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
   if (is.na(x_start)) {
 
     # Define starting point
-    x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]])
-    message(paste0("x_start set to ", x_start, "."))
+    x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - (sqrt(3) * hex_size/2)
 
   } else {
     max_x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) + (sqrt(3) * hex_size)
@@ -215,7 +214,8 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
   if (is.na(y_start)) {
     # Define starting point
-    y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]])
+    y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]]) - (1.5 * hex_size/2)
+
     message(paste0("y_start set to ", y_start, "."))
 
 

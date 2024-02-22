@@ -182,14 +182,6 @@ Generating full hexagonal grid contains main three steps:
 
 1. Generate all the hexagonal bin centroids
 
-Steps:
-
-- First compute hex grid bound values along the x and y axis and generate the all the points within the hex box
-
-- Second for each x-value, find which y values are in the even row
-
-- Then, shift the x values of the even rows 
-
 
 ```{r}
 all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
@@ -204,16 +196,6 @@ glimpse(all_centroids_df)
 
 2. Generate hexagonal coordinates
 
-Steps:
-- Compute horizontal width of the hexagon
-
-- Compute vertical width of the hexagon and multiply by a factor for overlapping ($sqrt(3) / 2 * 1.15$)
-
-- Obtain hexagon polygon coordinates
-
-- Obtain the number of hexagons in the full grid
-
-- Generate the coordinates for the hexagons
 
 ```{r}
 hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = 0.2)
