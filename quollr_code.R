@@ -199,12 +199,37 @@ generate_full_grid_centroids <- function(nldr_df, x = "UMAP1", y = "UMAP2",
 
     # Define starting point
     x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]])
+    message(paste0("x_start set to ", x_start, "."))
+
+  } else {
+    max_x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) + (sqrt(3) * hex_size)
+    min_x_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - (sqrt(3) * hex_size)
+
+    if ((x_start < min_x_start) | (x_start > max_x_start)){
+      stop(paste0("x_start value is not compatible.
+                  Need to use a value betweeen ", min_x_start," and ", max_x_start,"."))
+
+    }
 
   }
 
   if (is.na(y_start)) {
     # Define starting point
     y_start <- min(nldr_df[[rlang::as_string(rlang::sym(y))]])
+    message(paste0("y_start set to ", y_start, "."))
+
+
+  } else {
+
+    max_y_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) + (1.5 * hex_size)
+    min_y_start <- min(nldr_df[[rlang::as_string(rlang::sym(x))]]) - (1.5 * hex_size)
+
+    if ((y_start < min_y_start) | (xy_start > max_y_start)){
+      stop(paste0("y_start value is not compatible.
+                  Need to use a value betweeen ", min_y_start," and ", max_y_start,"."))
+
+    }
+
 
 
   }
