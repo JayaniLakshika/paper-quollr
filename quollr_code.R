@@ -31,7 +31,7 @@ calculate_effective_x_bins <- function(.data, x = "UMAP1", hex_size = NA, buffer
     #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") - (sqrt(3) * hex_size/2),
     #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP2), "UMAP1"] |> dplyr::pull("UMAP1") +
     #                   (sqrt(3) * hex_size/2))
-    buffer_x <- sqrt(3) * hex_size
+    buffer_x <- sqrt(3) * hex_size * 1.5
     message(paste0("Buffer along the x-axis set to ", buffer_x, "."))
   } else {
 
@@ -88,7 +88,7 @@ calculate_effective_y_bins <- function(.data, y = "UMAP2", hex_size = NA, buffer
     #                 s_curve_noise_umap[which.min(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") - (1.5 * hex_size/2),
     #                 s_curve_noise_umap[which.max(s_curve_noise_umap$UMAP1), "UMAP2"] |> dplyr::pull("UMAP2") +
     #                   (1.5 * hex_size/2))
-    buffer_y <- 1.5 * hex_size
+    buffer_y <- 1.5 * hex_size * 1.5
     message(paste0("Buffer along the y-axis set to ", buffer_y, "."))
   } else {
 

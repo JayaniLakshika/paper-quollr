@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  22 FEB 2024 22:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  23 FEB 2024 08:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -951,14 +951,14 @@ Overfull \hbox (72.84328pt too wide) in paragraph at lines 201--201
 = "white", color = "black", aes(group = id)) +[] 
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf, id=65, 232.87pt x 313.
+<paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf, id=65, 248.93pt x 313.
 17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf
   used on input line 203.
-(pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
+(pdftex.def)             Requested size: 248.92938pt x 313.16922pt.
 
 Overfull \hbox (72.84328pt too wide) in paragraph at lines 209--209
 []\T1/zi4/m/n/9 ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill 
@@ -966,14 +966,14 @@ Overfull \hbox (72.84328pt too wide) in paragraph at lines 209--209
  []
 
 [3 <./paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf, id=79, 232.87pt x 313.
+<paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf, id=79, 248.93pt x 313.
 17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf
   used on input line 211.
-(pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
+(pdftex.def)             Requested size: 248.92938pt x 313.16922pt.
 
 Overfull \hbox (8.62996pt too wide) in paragraph at lines 249--249
 []\T1/zi4/m/n/9 df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = 
@@ -986,23 +986,23 @@ Overfull \hbox (72.84328pt too wide) in paragraph at lines 274--274
 = "white", color = "black", aes(group = id)) +[] 
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf, id=80, 232.87pt x 313.
+<paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf, id=80, 248.93pt x 313.
 17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf
   used on input line 276.
-(pdftex.def)             Requested size: 232.86942pt x 313.16922pt.
+(pdftex.def)             Requested size: 248.92938pt x 313.16922pt.
 [4 <./paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=95, 303.1325pt x 31
-3.17pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=95, 318.18875pt x 3
+13.17pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type
  pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf
   used on input line 286.
-(pdftex.def)             Requested size: 303.13176pt x 313.16922pt.
+(pdftex.def)             Requested size: 318.18796pt x 313.16922pt.
 [5 <./paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf> <./paper-quollr_f
 iles/figure-latex/unnamed-chunk-16-1.pdf>]
 Overfull \hbox (22.4pt too wide) in paragraph at lines 313--313
@@ -1120,7 +1120,7 @@ Here is how much of TeX's memory you used:
 a-zi4r.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.
 pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></u
 sr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (12 pages, 158708 bytes).
+Output written on RJwrapper.pdf (12 pages, 160887 bytes).
 PDF statistics:
  275 PDF objects out of 1000 (max. 8388607)
  223 compressed objects within 3 object streams
