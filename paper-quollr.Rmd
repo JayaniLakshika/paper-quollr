@@ -177,6 +177,10 @@ knitr::include_graphics("figures/hex_size_img.png")
 knitr::include_graphics("figures/spacing_img.png")
 ```
 
+```{r buffer-img, out.width = "100%", out.height = "100%", fig.cap = "Buffer parameters", fig.alt="Buffer parameters", echo=FALSE}
+knitr::include_graphics("figures/buffer_img.png")
+```
+
 ### Number of bins along the x-axis ($b_1$)
 
 In the process of computing hexagonal bin configurations, the first step involves determining the number of bins along the x-axis. This begins with the initialization of parameters such as the hexagonal size ($s$) and the buffer along the x-axis. Subsequently, the range of the first 2D embedding component ($r_1$) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the x-axis is $\sqrt{3} * s * 1.5$. Next, the horizontal spacing ($h$) between hexagons is computed based on the hexagon size. Finally, the number of bins along the x-axis is computed based on the adjusted range ($r_1 + buffer_{x}$) and the horizontal spacing ($h$).

@@ -109,6 +109,10 @@ knitr::include_graphics("figures/hex_size_img.png")
 knitr::include_graphics("figures/spacing_img.png")
 
 
+## ----buffer-img, out.width = "100%", out.height = "100%", fig.cap = "Buffer parameters", fig.alt="Buffer parameters", echo=FALSE----
+knitr::include_graphics("figures/buffer_img.png")
+
+
 ## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
                                          x = "UMAP1", hex_size = 0.2)
