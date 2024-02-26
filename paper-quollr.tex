@@ -111,14 +111,40 @@ s\_curve\_noise\_umap & UMAP 2D embedding data of S-curve data (n\_neighbors: 15
 \end{tabular}
 \end{table}
 
+\hypertarget{preprocessing}{%
+\subsection{Preprocessing}\label{preprocessing}}
+
+In the preprocessing stage, we aim to prepare our data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. To achieve this, we implement two key scaling steps. Firstly, we scale the first 2D embedding component to range between \(0\) and \(1\), ensuring that all data points fall within this normalized interval. Secondly, we scale the second 2D embedding component to range between \(-\frac{\sqrt{3}}{2}\) and \(\frac{\sqrt{3}}{2}\). This adjustment helps maintain the necessary symmetry and spacing required for regular hexagons.
+
 \hypertarget{compute-hexagonal-bin-configurations}{%
-\subsubsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
+\subsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
 
 Hexagonal binning is a powerful technique for visualizing the density of data points in a 2-d space. Unlike traditional rectangular bins, hexagonal bins offer several advantages, including a more uniform representation of density and reduced visual bias. However, to effectively do the hexagonal binning, it's essential to compute the appropriate configurations based on the characteristics of the dataset.
 
-Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the \texttt{calculate\_effective\_x\_bins()} and \texttt{calculate\_effective\_y\_bins()} functions use a hexagon size of 1.07457. However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
+Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the \texttt{calculate\_effective\_x\_bins()} and \texttt{calculate\_effective\_y\_bins()} functions use a hexagon size of \(0.2\). However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
 
 The hexagon size directly affects the number of bins generated. A higher hexagonal size will result in fewer bins, while a lower hexagonal size will lead to more bins. Therefore, there's always a trade-off depending on the dataset used. Users should consider their specific data characteristics when selecting the hexagon size.
+
+\begin{figure}
+\includegraphics[width=1\linewidth,height=1\textheight]{figures/hex_size_img} \caption{Hexagonal size parameter}\label{fig:hex-size-img}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1\linewidth,height=1\textheight]{figures/spacing_img} \caption{Horizontal and vertical spacing parameters}\label{fig:spacing-img}
+\end{figure}
+
+\hypertarget{number-of-bins-along-the-x-axis-b_1}{%
+\subsubsection{\texorpdfstring{Number of bins along the x-axis (\(b_1\))}{Number of bins along the x-axis (b\_1)}}\label{number-of-bins-along-the-x-axis-b_1}}
+
+In the process of computing hexagonal bin configurations, the first step involves determining the number of bins along the x-axis. This begins with the initialization of parameters such as the hexagonal size (\(s\)) and the buffer along the x-axis. Subsequently, the range of the first 2D embedding component (\(r_1\)) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the x-axis is \(\sqrt{3} * s * 1.5\). Next, the horizontal spacing (\(h\)) between hexagons is computed based on the hexagon size. Finally, the number of bins along the x-axis is computed based on the adjusted range (\(r_1 + buffer_{x}\)) and the horizontal spacing (\(h\)).
+
+\[
+h = \sqrt{3} * s
+\]\{\#eq-equation3\}
+
+\[
+ b_1 = \frac{r_1 + buffer_{x}}{h}
+\]\{\#eq-equation4\}
 
 \begin{verbatim}
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
@@ -129,6 +155,19 @@ num_bins_x
 \begin{verbatim}
 #> [1] 5
 \end{verbatim}
+
+\hypertarget{number-of-bins-along-the-y-axis-b_2}{%
+\subsubsection{\texorpdfstring{Number of bins along the y-axis (\(b_2\))}{Number of bins along the y-axis (b\_2)}}\label{number-of-bins-along-the-y-axis-b_2}}
+
+In the process of computing hexagonal bin configurations, the second step involves determining the number of bins along the y-axis. This begins with the initialization of parameters such as the hexagonal size and the buffer along the y-axis. Subsequently, the range of the second 2D embedding component (\(r_2\)) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the y-axis is \(1.5 * s * 1.5\). Next, the vertical spacing (\(v\)) between hexagons is computed based on the hexagon size. Finally, the number of bins along the y-axis is computed based on the adjusted range (\(r_2 + buffer_{y}\)) and the vertical spacing (\(v\)).
+
+\[
+v = 1.5 * s
+\]\{\#eq-equation5\}
+
+\[
+ b_2 = \frac{r_2 + buffer_{y}}{v}
+\]\{\#eq-equation6\}
 
 \begin{verbatim}
 num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
@@ -143,7 +182,7 @@ num_bins_y
 \hypertarget{generate-full-hex-grid}{%
 \subsubsection{Generate full hex grid}\label{generate-full-hex-grid}}
 
-Generating full hexagonal grid contains main three steps:
+Generating full hexagonal grid contains main four steps:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -151,6 +190,20 @@ Generating full hexagonal grid contains main three steps:
 \item
   Generate all the hexagonal bin centroids
 \end{enumerate}
+
+The default \(x_{start}\) and \(y_{start}\) can be defined as:
+
+\[
+x_{start} = min(emb_1) - \frac{\sqrt{3} * s}{2}
+\]\{\#eq-equation7\}
+
+\[
+y_{start} = min(emb_2) - \frac{1.5 * s}{2}
+\]\{\#eq-equation8\}
+
+\begin{figure}
+\includegraphics[width=1\linewidth,height=1\textheight]{figures/workflow_all_centroids} \caption{Workflow of generating hexagonal bin centroids}\label{fig:gen-fullcentroids}
+\end{figure}
 
 \begin{verbatim}
 all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
@@ -177,6 +230,22 @@ glimpse(all_centroids_df)
 \item
   Generate hexagonal coordinates
 \end{enumerate}
+
+\[
+dx = \frac{x_{(2)} - x_{(1)}}{2}
+\]\{\#eq-equation9\}
+
+\[
+dy = \frac{2*(y_{(2)} - y_{(1)}) * 1.15}{\sqrt{3}}
+\]\{\#eq-equation10\}
+
+\begin{figure}
+\includegraphics[width=1\linewidth,height=1\textheight]{figures/hex_coordinates_img} \caption{Hexagon coordinates}\label{fig:hex-coordinates}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1\linewidth,height=1\textheight]{figures/workflow_all_coordinates} \caption{Workflow of generating hexagon coordinates}\label{fig:gen-allcoordinates}
+\end{figure}
 
 \begin{verbatim}
 hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = 0.2)
@@ -212,7 +281,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
+\setcounter{enumi}{2}
 \tightlist
 \item
   Assign data into hexagons
@@ -231,10 +300,10 @@ s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{5}
+\setcounter{enumi}{3}
 \tightlist
 \item
-  Compute standardized counts
+  Compute standardized counts within each hexagon
 \end{enumerate}
 
 \begin{itemize}
@@ -247,21 +316,6 @@ s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
 \begin{verbatim}
 df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = s_curve_noise_umap_with_id)
 \end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{6}
-\tightlist
-\item
-  Extract full grid info
-\end{enumerate}
-
-\begin{itemize}
-\item
-  Assign standardize counts for hex bins
-\item
-  Join with the hexagonal coordinates
-\end{itemize}
 
 \begin{verbatim}
 hex_full_count_df <- generate_full_grid_info(nldr_df = s_curve_noise_umap, hex_grid)
@@ -284,24 +338,7 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
 \end{verbatim}
 
 \includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf}
-
-\hypertarget{buffer-size}{%
-\paragraph{Buffer size}\label{buffer-size}}
-
-When generating hexagonal bins in R, a buffer is often included to ensure that the data points are evenly distributed within the bins and to prevent edge effects. The buffer helps in two main ways:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \textbf{Preventing Edge Effects}: Without a buffer, the outermost data points might fall near the boundary of the hexagonal grid, leading to incomplete bins or uneven distribution of data. By adding a buffer, you create a margin around the outer edges of the grid, ensuring that all data points are fully enclosed within the bins.
-\item
-  \textbf{Ensuring Even Distribution}: The buffer allows for a smoother transition between adjacent bins. This helps in cases where data points are not perfectly aligned with the grid lines, ensuring that each data point is assigned to the nearest bin without bias towards any specific direction.
-\end{enumerate}
-
-Overall, including a buffer when generating hexagonal bins helps to produce more accurate and robust binning results, particularly when dealing with real-world data that may have irregular distributions or boundary effects.
-
-\hypertarget{construct-the-2d-model-with-different-options}{%
-\subsubsection{Construct the 2D model with different options}\label{construct-the-2d-model-with-different-options}}
+\#\#\# Construct the 2D model with different options
 
 \begin{verbatim}
 df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
@@ -349,20 +386,6 @@ tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 
 \hypertarget{compute-parameter-defaults}{%
 \subsubsection{Compute parameter defaults}\label{compute-parameter-defaults}}
-
-\hypertarget{shift-the-hexagonal-grid-origin}{%
-\paragraph{Shift the hexagonal grid origin}\label{shift-the-hexagonal-grid-origin}}
-
-If shift\_x happen to the positive direction of x it should input as a positive value, if not other way
-If shift\_y happen to the positive direction of y it should input as a positive value, if not other way
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Assign shift along the x and y axis (limited the amount should less than the cell\_diameter)
-\item
-  Generate bounds with shift origin
-\end{enumerate}
 
 \hypertarget{benchmark-value-to-remove-the-low-density-hexagons}{%
 \paragraph{Benchmark value to remove the low-density hexagons}\label{benchmark-value-to-remove-the-low-density-hexagons}}

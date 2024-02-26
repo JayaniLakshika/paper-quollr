@@ -157,21 +157,56 @@ datasets_tb |>
   column_spec(1, width = "4cm") |>
   column_spec(2, width = "8cm")
 ```
+## Preprocessing
 
+In the preprocessing stage, we aim to prepare our data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. To achieve this, we implement two key scaling steps. Firstly, we scale the first 2D embedding component to range between $0$ and $1$, ensuring that all data points fall within this normalized interval. Secondly, we scale the second 2D embedding component to range between $-\frac{\sqrt{3}}{2}$ and $\frac{\sqrt{3}}{2}$. This adjustment helps maintain the necessary symmetry and spacing required for regular hexagons. 
 
-### Compute hexagonal bin configurations
+## Compute hexagonal bin configurations
 
 Hexagonal binning is a powerful technique for visualizing the density of data points in a 2-d space. Unlike traditional rectangular bins, hexagonal bins offer several advantages, including a more uniform representation of density and reduced visual bias. However, to effectively do the hexagonal binning, it's essential to compute the appropriate configurations based on the characteristics of the dataset. 
 
-Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the `calculate_effective_x_bins()` and `calculate_effective_y_bins()` functions use a hexagon size of 1.07457. However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
+Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the `calculate_effective_x_bins()` and `calculate_effective_y_bins()` functions use a hexagon size of $0.2$. However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
 
 The hexagon size directly affects the number of bins generated. A higher hexagonal size will result in fewer bins, while a lower hexagonal size will lead to more bins. Therefore, there's always a trade-off depending on the dataset used. Users should consider their specific data characteristics when selecting the hexagon size.
+
+```{r hex-size-img, out.width = "100%", out.height = "100%", fig.cap = "Hexagonal size parameter", fig.alt="Hexagonal size parameter", echo=FALSE}
+knitr::include_graphics("figures/hex_size_img.png")
+```
+
+```{r spacing-img, out.width = "100%", out.height = "100%", fig.cap = "Horizontal and vertical spacing parameters", fig.alt="Horizontal and vertical spacing parameters", echo=FALSE}
+knitr::include_graphics("figures/spacing_img.png")
+```
+
+### Number of bins along the x-axis ($b_1$)
+
+In the process of computing hexagonal bin configurations, the first step involves determining the number of bins along the x-axis. This begins with the initialization of parameters such as the hexagonal size ($s$) and the buffer along the x-axis. Subsequently, the range of the first 2D embedding component ($r_1$) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the x-axis is $\sqrt{3} * s * 1.5$. Next, the horizontal spacing ($h$) between hexagons is computed based on the hexagon size. Finally, the number of bins along the x-axis is computed based on the adjusted range ($r_1 + buffer_{x}$) and the horizontal spacing ($h$).
+
+$$
+h = \sqrt{3} * s
+$${#eq-equation3}
+
+$$
+ b_1 = \frac{r_1 + buffer_{x}}{h}
+$${#eq-equation4}
+
 
 ```{r}
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
                                          x = "UMAP1", hex_size = 0.2)
 num_bins_x 
 ```
+
+### Number of bins along the y-axis ($b_2$)
+
+In the process of computing hexagonal bin configurations, the second step involves determining the number of bins along the y-axis. This begins with the initialization of parameters such as the hexagonal size and the buffer along the y-axis. Subsequently, the range of the second 2D embedding component ($r_2$) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the y-axis is $1.5 * s * 1.5$. Next, the vertical spacing ($v$) between hexagons is computed based on the hexagon size. Finally, the number of bins along the y-axis is computed based on the adjusted range ($r_2 + buffer_{y}$) and the vertical spacing ($v$).
+
+$$
+v = 1.5 * s
+$${#eq-equation5}
+
+$$
+ b_2 = \frac{r_2 + buffer_{y}}{v}
+$${#eq-equation6}
 
 ```{r}
 num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
@@ -181,9 +216,23 @@ num_bins_y
 
 ### Generate full hex grid
 
-Generating full hexagonal grid contains main three steps:
+Generating full hexagonal grid contains main four steps:
 
 1. Generate all the hexagonal bin centroids
+
+The default $x_{start}$ and $y_{start}$ can be defined as:
+
+$$
+x_{start} = min(emb_1) - \frac{\sqrt{3} * s}{2}
+$${#eq-equation7}
+
+$$
+y_{start} = min(emb_2) - \frac{1.5 * s}{2}
+$${#eq-equation8}
+
+```{r gen-fullcentroids, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagonal bin centroids", fig.alt="Workflow of generating hexagonal bin centroids", echo=FALSE}
+knitr::include_graphics("figures/workflow_all_centroids.png")
+```
 
 
 ```{r}
@@ -199,6 +248,22 @@ glimpse(all_centroids_df)
 
 2. Generate hexagonal coordinates
 
+$$
+dx = \frac{x_{(2)} - x_{(1)}}{2}
+$${#eq-equation9}
+
+
+$$
+dy = \frac{2*(y_{(2)} - y_{(1)}) * 1.15}{\sqrt{3}}
+$${#eq-equation10}
+
+```{r hex-coordinates, out.width = "100%", out.height = "100%", fig.cap = "Hexagon coordinates", fig.alt="Hexagon coordinates", echo=FALSE}
+knitr::include_graphics("figures/hex_coordinates_img.png")
+```
+
+```{r gen-allcoordinates, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagon coordinates", fig.alt="Workflow of generating hexagon coordinates", echo=FALSE}
+knitr::include_graphics("figures/workflow_all_coordinates.png")
+```
 
 ```{r}
 hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = 0.2)
@@ -217,7 +282,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
   coord_fixed()
 ```
 
-5. Assign data into hexagons
+3. Assign data into hexagons
 
 - Compute distances between nldr coordinates and hex bin centroids
 
@@ -227,7 +292,7 @@ ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color 
 s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
 ```
 
-6. Compute standardized counts
+4. Compute standardized counts within each hexagon
 
 - Compute number of data points within each hexagon
 
@@ -237,11 +302,6 @@ s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
 df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = s_curve_noise_umap_with_id)
 ```
 
-7. Extract full grid info
-
-- Assign standardize counts for hex bins
-
-- Join with the hexagonal coordinates
 
 ```{r}
 hex_full_count_df <- generate_full_grid_info(nldr_df = s_curve_noise_umap, hex_grid)
@@ -262,7 +322,7 @@ ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
   coord_fixed()
 
 ```
-
+<!--
 #### Buffer size
 
 When generating hexagonal bins in R, a buffer is often included to ensure that the data points are evenly distributed within the bins and to prevent edge effects. The buffer helps in two main ways:
@@ -272,7 +332,7 @@ When generating hexagonal bins in R, a buffer is often included to ensure that t
 2. **Ensuring Even Distribution**: The buffer allows for a smoother transition between adjacent bins. This helps in cases where data points are not perfectly aligned with the grid lines, ensuring that each data point is assigned to the nearest bin without bias towards any specific direction.
 
 Overall, including a buffer when generating hexagonal bins helps to produce more accurate and robust binning results, particularly when dealing with real-world data that may have irregular distributions or boundary effects.
-
+-->
 ### Construct the 2D model with different options
 
 ```{r}
@@ -304,15 +364,6 @@ tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
 ```
 
 ### Compute parameter defaults
-
-#### Shift the hexagonal grid origin
-
-If shift_x happen to the positive direction of x it should input as a positive value, if not other way
-If shift_y happen to the positive direction of y it should input as a positive value, if not other way
-
-1. Assign shift along the x and y axis (limited the amount should less than the cell_diameter)
-
-2. Generate bounds with shift origin
 
 #### Benchmark value to remove the low-density hexagons
 

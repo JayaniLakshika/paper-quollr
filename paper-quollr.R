@@ -101,6 +101,14 @@ datasets_tb |>
   column_spec(2, width = "8cm")
 
 
+## ----hex-size-img, out.width = "100%", out.height = "100%", fig.cap = "Hexagonal size parameter", fig.alt="Hexagonal size parameter", echo=FALSE----
+knitr::include_graphics("figures/hex_size_img.png")
+
+
+## ----spacing-img, out.width = "100%", out.height = "100%", fig.cap = "Horizontal and vertical spacing parameters", fig.alt="Horizontal and vertical spacing parameters", echo=FALSE----
+knitr::include_graphics("figures/spacing_img.png")
+
+
 ## -----------------------------------------------------------------------------
 num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
                                          x = "UMAP1", hex_size = 0.2)
@@ -113,6 +121,10 @@ num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
 num_bins_y 
 
 
+## ----gen-fullcentroids, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagonal bin centroids", fig.alt="Workflow of generating hexagonal bin centroids", echo=FALSE----
+knitr::include_graphics("figures/workflow_all_centroids.png")
+
+
 ## -----------------------------------------------------------------------------
 all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
                                                  x = "UMAP1", y = "UMAP2", 
@@ -122,6 +134,14 @@ all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap,
                                                  hex_size = 0.2)
 
 glimpse(all_centroids_df)
+
+
+## ----hex-coordinates, out.width = "100%", out.height = "100%", fig.cap = "Hexagon coordinates", fig.alt="Hexagon coordinates", echo=FALSE----
+knitr::include_graphics("figures/hex_coordinates_img.png")
+
+
+## ----gen-allcoordinates, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagon coordinates", fig.alt="Workflow of generating hexagon coordinates", echo=FALSE----
+knitr::include_graphics("figures/workflow_all_coordinates.png")
 
 
 ## -----------------------------------------------------------------------------
