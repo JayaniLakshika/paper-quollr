@@ -11,57 +11,13 @@ An abstract of less than 150 words.
 }
 
 \begin{verbatim}
-#library(quollr)
+library(quollr)
+library(tibble)
 library(knitr)
 library(kableExtra)
-library(readr)
 library(ggplot2)
-library(dplyr)
-library(ggbeeswarm)
-library(Rtsne)
-library(umap)
-library(phateR)
-library(reticulate)
-library(rsample)
 
 set.seed(20230531)
-
-# use_python("~/miniforge3/envs/pcamp_env/bin/python")
-# use_condaenv("pcamp_env")
-# 
-# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
-# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
-\end{verbatim}
-
-\begin{verbatim}
-library(scales)
-s_curve_noise_umap$UMAP1 <- rescale(s_curve_noise_umap$UMAP1)
-
-y_min <- -sqrt(3)/2
-y_max <- sqrt(3)/2
-
-# y_min <- 0
-# y_max <- sqrt(3)/2
-
-s_curve_noise_umap$UMAP2 <- ((s_curve_noise_umap$UMAP2 - min(s_curve_noise_umap$UMAP2))/(max(s_curve_noise_umap$UMAP2) - min(s_curve_noise_umap$UMAP2))) * (y_max - y_min)
-
-# Define the desired size of the hexagons
-hex_size <- 0.2
-
-# Compute the horizontal spacing (dx) and vertical spacing (dy) between hexagon centers
-# dx <- sqrt(3) * hex_size
-# dy <- 1.5 * hex_size 
-
-# x_length <- 1
-# y_length_scaled <- diff(range(s_curve_noise_umap$UMAP2))
-
-# Compute the number of bins along the x-axis and y-axis
-# num_bins_x <- ceiling(x_length / dx)
-# num_bins_y <- ceiling(y_length_scaled / dy)
-\end{verbatim}
-
-\begin{verbatim}
-# s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)] <- scale(s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)])
 \end{verbatim}
 
 \hypertarget{introduction}{%
@@ -74,18 +30,8 @@ hex_size <- 0.2
 \subsection{Usage}\label{usage}}
 
 \begin{itemize}
-\tightlist
 \item
   dependencies
-\end{itemize}
-
-\begin{verbatim}
-library(tools)
-package_dependencies("quollr")
-\end{verbatim}
-
-\begin{itemize}
-\tightlist
 \item
   basic example
 \end{itemize}
@@ -107,6 +53,9 @@ s\_curve\_noise & Simulated 3D S-curve data with additional four noise dimension
 s\_curve\_noise\_training & Training data derived from S-curve data.\\
 s\_curve\_noise\_test & Test data derived from S-curve data.\\
 s\_curve\_noise\_umap & UMAP 2D embedding data of S-curve data (n\_neighbors: 15, min\_dist: 0.1).\\
+s\_curve\_noise\_umap\_predict & Predicted UMAP 2D embedding data of S-curve data\\
+\addlinespace
+s\_curve\_noise\_umap\_scaled & Scaled UMAP 2D embedding data of S-curve data\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -114,390 +63,92 @@ s\_curve\_noise\_umap & UMAP 2D embedding data of S-curve data (n\_neighbors: 15
 \hypertarget{preprocessing}{%
 \subsection{Preprocessing}\label{preprocessing}}
 
-In the preprocessing stage, we aim to prepare our data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. To achieve this, we implement two key scaling steps. Firstly, we scale the first 2D embedding component to range between \(0\) and \(1\), ensuring that all data points fall within this normalized interval. Secondly, we scale the second 2D embedding component to range between \(-\frac{\sqrt{3}}{2}\) and \(\frac{\sqrt{3}}{2}\). This adjustment helps maintain the necessary symmetry and spacing required for regular hexagons.
+In the preprocessing stage, we aim to prepare our data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. To achieve this, we implement two key scaling steps. Firstly, we scale the first 2D embedding component to range between \(0\) and \(1\), ensuring that all data points fall within this normalized interval. Secondly, we scale the second 2D embedding component to range between \(0\) and \(y_{max}\). This adjustment helps maintain the necessary symmetry and spacing required for regular hexagons.
+
+\begin{equation}\label{eq:aspect_ratio}
+ar = \frac{r_2}{r_1} \tag{1}
+\end{equation}
+
+\begin{equation}\label{eq:y_max}
+y_{max} = ceiling(\frac{ar}{hr}) * hr \tag{2}
+\end{equation}
+
+\begin{verbatim}
+scaled_data <- gen_scaled_data(data = s_curve_noise_umap, x = "UMAP1", 
+                y = "UMAP2", hex_ratio = NA)
+glimpse(scaled_data)
+\end{verbatim}
+
+\begin{verbatim}
+#> List of 2
+#>  $ scaled_UMAP1: num [1:75] 0.0804 0.7386 0.8399 0.1672 0.2629 ...
+#>  $ scaled_UMAP2: num [1:75] 0.366 1.1464 1.2392 0.0494 0.4556 ...
+\end{verbatim}
+
+\hypertarget{construct-the-2d-model}{%
+\subsection{Construct the 2D model}\label{construct-the-2d-model}}
 
 \hypertarget{compute-hexagonal-bin-configurations}{%
-\subsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
+\subsubsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
 
-Hexagonal binning is a powerful technique for visualizing the density of data points in a 2-d space. Unlike traditional rectangular bins, hexagonal bins offer several advantages, including a more uniform representation of density and reduced visual bias. However, to effectively do the hexagonal binning, it's essential to compute the appropriate configurations based on the characteristics of the dataset.
-
-Before computing hexagonal bin configurations, we need to determine the range of data along the x and y axes to establish the boundary for hexagonal binning. Additionally, choosing an appropriate hexagon size (the radius of the outer circle) is essential. By default, the \texttt{calculate\_effective\_x\_bins()} and \texttt{calculate\_effective\_y\_bins()} functions use a hexagon size of \(0.2\). However, users can adjust the hexagon size to fit the data range and achieve regular hexagons without overlapping.
-
-The hexagon size directly affects the number of bins generated. A higher hexagonal size will result in fewer bins, while a lower hexagonal size will lead to more bins. Therefore, there's always a trade-off depending on the dataset used. Users should consider their specific data characteristics when selecting the hexagon size.
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/hex_size_img} \caption{Hexagonal size parameter}\label{fig:hex-size-img}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/spacing_img} \caption{Horizontal and vertical spacing parameters}\label{fig:spacing-img}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/buffer_img} \caption{Buffer parameters}\label{fig:buffer-img}
-\end{figure}
-
-\hypertarget{number-of-bins-along-the-x-axis-b_1}{%
-\subsubsection{\texorpdfstring{Number of bins along the x-axis (\(b_1\))}{Number of bins along the x-axis (b\_1)}}\label{number-of-bins-along-the-x-axis-b_1}}
-
-In the process of computing hexagonal bin configurations, the first step involves determining the number of bins along the x-axis. This begins with the initialization of parameters such as the hexagonal size (\(s\)) and the buffer along the x-axis. Subsequently, the range of the first 2D embedding component (\(r_1\)) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the x-axis is \(\sqrt{3} * s * 1.5\). Next, the horizontal spacing (\(h\)) between hexagons is computed based on the hexagon size. Finally, the number of bins along the x-axis is computed based on the adjusted range (\(r_1 + buffer_{x}\)) and the horizontal spacing (\(h\)).
-
-\[
-h = \sqrt{3} * s
-\]\{\#eq-equation3\}
-
-\[
- b_1 = \frac{r_1 + buffer_{x}}{h}
-\]\{\#eq-equation4\}
-
-\begin{verbatim}
-num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
-                                         x = "UMAP1", hex_size = 0.2)
-num_bins_x 
-\end{verbatim}
-
-\begin{verbatim}
-#> [1] 5
-\end{verbatim}
-
-\hypertarget{number-of-bins-along-the-y-axis-b_2}{%
-\subsubsection{\texorpdfstring{Number of bins along the y-axis (\(b_2\))}{Number of bins along the y-axis (b\_2)}}\label{number-of-bins-along-the-y-axis-b_2}}
-
-In the process of computing hexagonal bin configurations, the second step involves determining the number of bins along the y-axis. This begins with the initialization of parameters such as the hexagonal size and the buffer along the y-axis. Subsequently, the range of the second 2D embedding component (\(r_2\)) is calculated to ensure comprehensive coverage of the data. This range is then adjusted by incorporating the buffer amount, effectively expanding the boundary to accommodate potential outliers or edge cases. The default buffer amount along the y-axis is \(1.5 * s * 1.5\). Next, the vertical spacing (\(v\)) between hexagons is computed based on the hexagon size. Finally, the number of bins along the y-axis is computed based on the adjusted range (\(r_2 + buffer_{y}\)) and the vertical spacing (\(v\)).
-
-\[
-v = 1.5 * s
-\]\{\#eq-equation5\}
-
-\[
- b_2 = \frac{r_2 + buffer_{y}}{v}
-\]\{\#eq-equation6\}
-
-\begin{verbatim}
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
-                                         y = "UMAP2", hex_size = 0.2)
-num_bins_y 
-\end{verbatim}
-
-\begin{verbatim}
-#> [1] 8
-\end{verbatim}
-
-\hypertarget{generate-full-hex-grid}{%
-\subsubsection{Generate full hex grid}\label{generate-full-hex-grid}}
-
-Generating full hexagonal grid contains main four steps:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Generate all the hexagonal bin centroids
-\end{enumerate}
-
-The default \(x_{start}\) and \(y_{start}\) can be defined as:
-
-\[
-x_{start} = min(emb_1) - \frac{\sqrt{3} * s}{2}
-\]\{\#eq-equation7\}
-
-\[
-y_{start} = min(emb_2) - \frac{1.5 * s}{2}
-\]\{\#eq-equation8\}
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/workflow_all_centroids} \caption{Workflow of generating hexagonal bin centroids}\label{fig:gen-fullcentroids}
-\end{figure}
-
-\begin{verbatim}
-all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
-                                                 x = "UMAP1", y = "UMAP2", 
-                                                 num_bins_x = num_bins_x, 
-                                                 num_bins_y = num_bins_y, 
-                                                 x_start = NA, y_start = NA, 
-                                                 hex_size = 0.2)
-
-glimpse(all_centroids_df)
-\end{verbatim}
-
-\begin{verbatim}
-#> Rows: 40
-#> Columns: 2
-#> $ x <dbl> -0.1732051, 0.1732051, 0.5196152, 0.8660254, 1.2124356, 0.0000000, 0~
-#> $ y <dbl> -0.15, -0.15, -0.15, -0.15, -0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.4~
-\end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  Generate hexagonal coordinates
-\end{enumerate}
-
-\[
-dx = \frac{x_{(2)} - x_{(1)}}{2}
-\]\{\#eq-equation9\}
-
-\[
-dy = \frac{2*(y_{(2)} - y_{(1)}) * 1.15}{\sqrt{3}}
-\]\{\#eq-equation10\}
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/hex_coordinates_img} \caption{Hexagon coordinates}\label{fig:hex-coordinates}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=1\linewidth,height=1\textheight]{figures/workflow_all_coordinates} \caption{Workflow of generating hexagon coordinates}\label{fig:gen-allcoordinates}
-\end{figure}
-
-\begin{verbatim}
-hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = 0.2)
-glimpse(hex_grid)
-\end{verbatim}
-
-\begin{verbatim}
-#> Rows: 240
-#> Columns: 6
-#> $ c_x   <dbl> -0.1732051, -0.1732051, -0.1732051, -0.1732051, -0.1732051, -0.1~
-#> $ c_y   <dbl> -0.15, -0.15, -0.15, -0.15, -0.15, -0.15, -0.15, -0.15, -0.15, -~
-#> $ x     <dbl> 0.0000000, 0.0000000, -0.1732051, -0.3464102, -0.3464102, -0.173~
-#> $ y     <dbl> -0.05040708, -0.24959292, -0.34918584, -0.24959292, -0.05040708,~
-#> $ id    <int> 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4~
-#> $ hexID <int> 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4~
-\end{verbatim}
-
-\begin{verbatim}
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_point(aes(x = c_x, y = c_y), color = "red") +
-  coord_fixed()
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-10-1.pdf}
-
-\begin{verbatim}
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
-  coord_fixed()
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-11-1.pdf}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\tightlist
-\item
-  Assign data into hexagons
-\end{enumerate}
-
-\begin{itemize}
-\item
-  Compute distances between nldr coordinates and hex bin centroids
-\item
-  Find the hexagonal centroid that have the minimum distance
-\end{itemize}
-
-\begin{verbatim}
-s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
-\end{verbatim}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  Compute standardized counts within each hexagon
-\end{enumerate}
-
-\begin{itemize}
-\item
-  Compute number of data points within each hexagon
-\item
-  Compute standardise count by dividing the counts by the maximum
-\end{itemize}
-
-\begin{verbatim}
-df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = s_curve_noise_umap_with_id)
-\end{verbatim}
-
-\begin{verbatim}
-hex_full_count_df <- generate_full_grid_info(nldr_df = s_curve_noise_umap, hex_grid)
-\end{verbatim}
-
-\begin{verbatim}
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue") +
-  coord_fixed()
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf}
-
-\begin{verbatim}
-ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = id, fill = std_counts)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-  coord_fixed()
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf}
-\#\#\# Construct the 2D model with different options
-
-\begin{verbatim}
-df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
-  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
-  dplyr::distinct() |>
-  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
-  
-df_bin_centroids
-\end{verbatim}
-
-\begin{verbatim}
-#>            x     y hexID std_counts
-#> 1  0.1732051 -0.15     2  0.2352941
-#> 2  0.0000000  0.15     6  0.5294118
-#> 3  0.3464102  0.15     7  0.4117647
-#> 4  0.1732051  0.45    12  0.1764706
-#> 5  0.5196152  0.45    13  0.3529412
-#> 6  0.6928203  0.75    18  0.7058824
-#> 7  0.8660254  1.05    24  0.4705882
-#> 8  0.6928203  1.35    28  0.2941176
-#> 9  1.0392305  1.35    29  0.2352941
-#> 10 0.8660254  1.65    34  1.0000000
-\end{verbatim}
-
-\hypertarget{construct-the-high-d-model-with-different-options}{%
-\subsubsection{Construct the high-D model with different options}\label{construct-the-high-d-model-with-different-options}}
-
-\begin{verbatim}
-## To generate a data set with high-D and 2D training data
-df_all <- training_data |> dplyr::select(-ID) |>
-  dplyr::bind_cols(s_curve_noise_umap_with_id)
-
-## To generate averaged high-D data
-
-df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
-\end{verbatim}
-
-\hypertarget{generate-the-triangular-mesh}{%
-\subsubsection{Generate the triangular mesh}\label{generate-the-triangular-mesh}}
-
-\begin{verbatim}
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
-tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
-\end{verbatim}
-
-\hypertarget{compute-parameter-defaults}{%
-\subsubsection{Compute parameter defaults}\label{compute-parameter-defaults}}
-
-\hypertarget{benchmark-value-to-remove-the-low-density-hexagons}{%
-\paragraph{Benchmark value to remove the low-density hexagons}\label{benchmark-value-to-remove-the-low-density-hexagons}}
-
-\hypertarget{benchmark-value-to-remove-the-long-edges}{%
-\paragraph{Benchmark value to remove the long edges}\label{benchmark-value-to-remove-the-long-edges}}
-
-\begin{verbatim}
-## Compute 2D distances
-distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
-
-## To plot the distribution of distance
-plot_dist <- function(distance_df){
-  distance_df$group <- "1"
-  dist_plot <- ggplot(distance_df, aes(x = group, y = distance)) +
-    geom_quasirandom()+
-    ylim(0, max(unlist(distance_df$distance))+ 0.5) + coord_flip()
-  return(dist_plot)
-}
-
-plot_dist(distance)
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf}
-
-\begin{verbatim}
-benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
-benchmark
-\end{verbatim}
-
-\begin{verbatim}
-#> [1] 0.6
-\end{verbatim}
-
-\begin{verbatim}
-benchmark <- 0.75
-\end{verbatim}
+\hypertarget{construct-the-high-d-model}{%
+\subsection{Construct the high-D model}\label{construct-the-high-d-model}}
 
 \hypertarget{model-function}{%
-\subsubsection{Model function}\label{model-function}}
+\subsection{Model function}\label{model-function}}
 
-\texttt{fit\_high\_d\_model()} function is used to generate the 2D model and the high-D model.
+The \texttt{fit\_highd\_model()} function is used to generate both the 2D and high-D models.
 
 \begin{verbatim}
-## To generate a data set with high-D and 2D training data
-df_all <- training_data |> dplyr::select(-ID) |>
-  dplyr::bind_cols(s_curve_noise_umap_with_id)
-
-## To generate averaged high-D data
-
-df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
+fit_highd_model(training_data = s_curve_noise_training, x = "UMAP1", y = "UMAP2",
+nldr_df_with_id = s_curve_noise_umap_scaled, col_start_2d = "UMAP", col_start_highd = "x")
 \end{verbatim}
+
+\begin{verbatim}
+#> $df_bin
+#> # A tibble: 10 x 8
+#>    hb_id       x1     x2     x3        x4        x5       x6        x7
+#>    <dbl>    <dbl>  <dbl>  <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+#>  1     2 -0.637   1.74   -1.76   0.00953  -0.00143  -0.0117  -0.00152 
+#>  2     6 -0.498   0.524  -1.73  -0.000237  0.00234  -0.0297  -0.000242
+#>  3     7  0.294   1.40   -1.88   0.00890  -0.00803  -0.0123  -0.00120 
+#>  4    12  0.309   0.0421 -1.83   0.00656   0.00823   0.00489 -0.00389 
+#>  5    13  0.868   0.747  -0.781 -0.00408   0.000857  0.0248   0.00170 
+#>  6    18  0.357   1.27   -0.169  0.00607   0.00124   0.0152   0.00204 
+#>  7    24 -0.792   1.25    0.514 -0.000777  0.000464  0.00602  0.000371
+#>  8    28 -0.597   1.19    1.77   0.000240 -0.00417  -0.0185  -0.000786
+#>  9    29 -0.00544 0.211   1.92   0.00116   0.00266   0.00949 -0.00209 
+#> 10    34  0.622   1.21    1.64  -0.000560  0.00540  -0.00741 -0.000886
+#> 
+#> $df_bin_centroids
+#>    hexID       c_x   c_y std_counts
+#> 1      2 0.1732051 -0.15  0.2352941
+#> 2      6 0.0000000  0.15  0.5294118
+#> 3      7 0.3464102  0.15  0.4117647
+#> 4     12 0.1732051  0.45  0.1764706
+#> 5     13 0.5196152  0.45  0.3529412
+#> 6     18 0.6928203  0.75  0.7058824
+#> 7     24 0.8660254  1.05  0.4705882
+#> 8     28 0.6928203  1.35  0.2941176
+#> 9     29 1.0392305  1.35  0.2352941
+#> 10    34 0.8660254  1.65  1.0000000
+\end{verbatim}
+
+\hypertarget{model-summaries}{%
+\subsection{Model summaries}\label{model-summaries}}
 
 \hypertarget{predict-2d-embeddings}{%
 \subsubsection{Predict 2D embeddings}\label{predict-2d-embeddings}}
 
-To predict the 2D embeddings for a new data point using the trained high-D model, we follow a series of steps outlined below:
+There are some of NLDR techniques that don't give any functions for predictions. In that sense our methodology facilitates to compute 2D embedding with our workflow.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \textbf{Compute high-dimensional Euclidean distance}: Calculate the Euclidean distance between each new data point and the lift model's coordinates in the high-dimensional space. This distance metric helps identify the nearest lift model coordinates to each new data point.
-\item
-  \textbf{Find the nearest lift model coordinates}: Determine the lift model's high-dimensional coordinates that are closest to each new data point based on the computed distances. This step helps establish a correspondence between the new data points and the lift model's representation in the high-dimensional space.
-\item
-  \textbf{Map the hexagonal bin ID}: Assign each new data point to a hexagonal bin based on its nearest lift model coordinates. This mapping ensures that each data point is associated with a specific region in the hexagonal grid representation of the high-dimensional space.
-\item
-  \textbf{Map the hexagonal bin centroid coordinates in 2D}: Transform the hexagonal bin centroid coordinates from the high-dimensional space to the 2D embedding space using the trained lift model. This mapping provides the 2D embeddings for the new data points, allowing them to be visualized and analyzed in a lower-dimensional space.
-\end{enumerate}
+\hypertarget{goodness-of-fit-statistics}{%
+\subsubsection{Goodness of fit statistics}\label{goodness-of-fit-statistics}}
 
-The \texttt{predict\_2d\_embeddings()} function is used to predict 2D embeddings for a new data point. The inputs for the function are test data, bin centroid coordinates in 2D, lifting model coordinates in high-D, and the type of the NLDR technique. The output contains the predicted 2D embeddings along with the predicted hexagonal id and the ID of the test data.
-
-\begin{verbatim}
-pred_df_test <- predict_2d_embeddings(test_data = training_data,
-df_bin_centroids = df_bin_centroids, df_bin = df_bin, type_NLDR = "UMAP")
-
-glimpse(pred_df_test)
-\end{verbatim}
-
-\begin{verbatim}
-#> Rows: 75
-#> Columns: 4
-#> $ pred_UMAP_1 <dbl> 0.1732051, 0.6928203, 0.8660254, 0.1732051, 0.1732051, 0.8~
-#> $ pred_UMAP_2 <dbl> 0.45, 0.75, 1.05, -0.15, 0.45, 1.65, 0.75, 0.75, 0.75, 1.6~
-#> $ ID          <int> 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 17, 19, 20, 21~
-#> $ pred_hb_id  <int> 12, 18, 24, 2, 12, 34, 18, 18, 18, 34, 18, 12, 29, 6, 18, ~
-\end{verbatim}
-
-\hypertarget{making-summaries}{%
-\subsubsection{Making summaries}\label{making-summaries}}
-
-There are two important summaries that should be made when constructing the model on a dataset using a specific NLDR technique, the Mean Square Error (MSE) and Akaike Information Criterion (AIC) which measure prediction accuracy. The function that perform the summaries called \texttt{generate\_eval\_df()}. The output of this function is a list which contains MSE and AIC. The code below uses \texttt{generate\_eval\_df()} to find the MSE and the AIC values for the model constructed on UMAP 2D embeddings generated from the \texttt{s\_curve\_noise} training data.
-
-\begin{verbatim}
-generate_summary(test_data = training_data, prediction_df = pred_df_test,
-                 df_bin = df_bin, col_start = "x")
-\end{verbatim}
-
-\begin{verbatim}
-#> $mse
-#> [1] 0.3229922
-#> 
-#> $aic
-#> [1] -453.3167
-\end{verbatim}
+There are two Goodness of fit statistics were produced. MSE and AIC which interpret the model accuracy.
 
 \hypertarget{visualizations}{%
-\subsubsection{Visualizations}\label{visualizations}}
+\subsection{Visualizations}\label{visualizations}}
 
 We use static visualizations to understand the model constructed in 2D. On the other hand, dynamic visualization is used to see how the model looks in high-D space.
 
@@ -517,52 +168,120 @@ Static visualizations main involves two types of results. One is the triangulati
   \texttt{remove\_long\_edges()}: After identifying long edges, this function draws the triangular mesh without the long edges.
 \end{itemize}
 
+\ref{tab:lgvis-tb-pdf}
+
+\begin{table}
+
+\caption{\label{tab:lgvis-tb-pdf}The main arguments for `vis\_lg\_mesh()` and `vis\_rmlg\_mesh()`}
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
+\toprule
+argument & explanation\\
+\midrule
+.data & The data frame containing the edge information.\\
+benchmark\_value & The threshold value to determine long edges.\\
+triangular\_object & The triangular object containing the mesh information.\\
+distance\_col & The column name in `.data` representing the distances.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \hypertarget{dynamic-visaulizations}{%
 \paragraph{Dynamic visaulizations}\label{dynamic-visaulizations}}
 
-The \texttt{show\_langevitour()} function enables dynamic visualization of the 2D model alongside the high-dimensional (high-D) data in its original space. This visualization is facilitated by langevitour object, allowing users to interactively explore the relationship between the 2D embeddings and the underlying high-dimensional data. The main arguments are shown in Table
+The \texttt{show\_langevitour()} function enables dynamic visualization of the 2D model alongside the high-dimensional (high-D) data in its original space. This visualization is facilitated by langevitour object, allowing users to interactively explore the relationship between the 2D embeddings and the underlying high-dimensional data. The main arguments are shown in Table \ref{tab:dyvis-tb-pdf}.
+
+\begin{table}
+
+\caption{\label{tab:dyvis-tb-pdf}The main arguments for `show\_langevitour()`}
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
+\toprule
+argument & explanation\\
+\midrule
+df & A data frame containing the high-dimensional data.\\
+df\_b & A data frame containing the high-dimensional coordinates of bin centroids/means.\\
+df\_b\_with\_center\_data & The dataset with hexbin centroids/ means.\\
+benchmark\_value & The benchmark value used to remove long edges (optional).\\
+distance\_df & The distance dataframe.\\
+\addlinespace
+distance\_col & The name of the distance column.\\
+use\_default\_benchmark\_val & Logical, indicating whether to use default benchmark value  to remove long edges(default is FALSE).\\
+column\_start\_text & The text that begin the column name of the high-dimensional data.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{distance-with-bin-means}{%
+\subsection{Distance with bin means}\label{distance-with-bin-means}}
 
 \begin{verbatim}
-trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
-  geom_point(size = 0.1) +
-  geom_trimesh() +
-  coord_equal()
+bin_list <- calc_bins(data = s_curve_noise_umap_scaled, 
+                      x = "UMAP1", y = "UMAP2", 
+                      hex_size = NA, buffer_x = NA, 
+                      buffer_y = NA)
+num_bins_x <- bin_list$num_x
+num_bins_y <- bin_list$num_y
 
-trimesh
+hb_obj <- hex_binning(data = s_curve_noise_umap_scaled, 
+                      x = "UMAP1", y = "UMAP2", 
+                      num_bins_x = num_bins_x, num_bins_y = num_bins_y, 
+                      x_start = NA, y_start = NA, 
+                      buffer_x = NA, buffer_y = NA, 
+                      hex_size = NA, col_start = "UMAP")
+
+
+all_centroids_df <- as.data.frame(do.call(cbind, hb_obj$centroids))
+counts_df <- as.data.frame(do.call(cbind, hb_obj$std_cts))
+nldr_df_with_hex_id <- as.data.frame(do.call(cbind, hb_obj$data_hb_id))
+
+## To obtain bin centroids
+df_bin_centroids <- extract_hexbin_mean(nldr_df_with_hex_id = nldr_df_with_hex_id,
+                                             counts_df = counts_df)
+
+df_all <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), nldr_df_with_hex_id)
+
+ggplot() + 
+  geom_trimesh(data = df_bin_centroids, mapping = aes(x = c_x, y = c_y)) +
+  coord_fixed()
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 \begin{verbatim}
-trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
-                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+tr1_object <- tri_bin_centroids(hex_df = df_bin_centroids, x = "c_x", y = "c_y")
+tr_from_to_df <- gen_edges(tri_object = tr1_object)
+distance_df <- cal_2d_dist(tr_coord_df = tr_from_to_df, 
+                           start_x = "x_from", start_y = "y_from", 
+                           end_x = "x_to", end_y = "y_to", 
+                           select_vars = c("from", "to", "distance"))
 
-trimesh_gr
+
+## averaged high-D data
+df_bin <- weighted_highD_data(training_data = s_curve_noise_training, nldr_df_with_hex_id = nldr_df_with_hex_id, column_start_text = "x")
+
+vis_lg_mesh(distance_edges = distance_df, benchmark_value = 1,
+tr_coord_df = tr_from_to_df, distance_col = "distance")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-2.pdf}
 
 \begin{verbatim}
-trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
-                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
-trimesh_removed
+vis_rmlg_mesh(distance_edges = distance_df, benchmark_value = 1,
+tr_coord_df = tr_from_to_df, distance_col = "distance")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-3.pdf}
 
 \begin{verbatim}
-tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, 
-                          benchmark_value = benchmark,
-                          distance = distance, distance_col = "distance", 
-                          use_default_benchmark_val = FALSE, 
-                          column_start_text = "x")
-tour1
+show_langevitour(df = df_all, df_b = df_bin, 
+                 df_b_with_center_data = df_bin_centroids, 
+                 benchmark_value = 1, distance = distance_df, 
+                 distance_col = "distance", 
+                 use_default_benchmark_val = FALSE, col_start = "x")
 \end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf}
-
-\hypertarget{find-non-empty-bins}{%
-\subsubsection{Find non-empty bins}\label{find-non-empty-bins}}
+\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-4.pdf}
 
 \hypertarget{tests}{%
 \subsection{Tests}\label{tests}}

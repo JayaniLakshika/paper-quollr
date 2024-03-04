@@ -4,89 +4,32 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(warning = FALSE, 
                       message = FALSE)
-source("quollr_code.R", local = TRUE)
-source("nldr_code.R", local = TRUE)
+
 
 
 ## ----load-libraries-----------------------------------------------------------
-#library(quollr)
+library(quollr)
+library(tibble)
 library(knitr)
 library(kableExtra)
-library(readr)
 library(ggplot2)
-library(dplyr)
-library(ggbeeswarm)
-library(Rtsne)
-library(umap)
-library(phateR)
-library(reticulate)
-library(rsample)
 
 set.seed(20230531)
-
-# use_python("~/miniforge3/envs/pcamp_env/bin/python")
-# use_condaenv("pcamp_env")
-# 
-# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_PacMAP_code.py"))
-# reticulate::source_python(paste0(here::here(), "/scripts/function_scripts/Fit_TriMAP_code.py"))
-
-
-
-## -----------------------------------------------------------------------------
-#| echo: false
-
-training_data <- read_rds(file = "data/s_curve_noise_training.rds")
-test_data <- read_rds(file = "data/s_curve_noise_test.rds")
-
-s_curve_noise <- read_rds(file = "data/s_curve_noise.rds")
-s_curve_noise_umap <- read_rds(file = "data/s_curve_noise_umap.rds")
-
-
-## -----------------------------------------------------------------------------
-library(scales)
-s_curve_noise_umap$UMAP1 <- rescale(s_curve_noise_umap$UMAP1)
-
-y_min <- -sqrt(3)/2
-y_max <- sqrt(3)/2
-
-# y_min <- 0
-# y_max <- sqrt(3)/2
-
-s_curve_noise_umap$UMAP2 <- ((s_curve_noise_umap$UMAP2 - min(s_curve_noise_umap$UMAP2))/(max(s_curve_noise_umap$UMAP2) - min(s_curve_noise_umap$UMAP2))) * (y_max - y_min)
-
-# Define the desired size of the hexagons
-hex_size <- 0.2
-
-# Compute the horizontal spacing (dx) and vertical spacing (dy) between hexagon centers
-# dx <- sqrt(3) * hex_size
-# dy <- 1.5 * hex_size 
-
-# x_length <- 1
-# y_length_scaled <- diff(range(s_curve_noise_umap$UMAP2))
-
-# Compute the number of bins along the x-axis and y-axis
-# num_bins_x <- ceiling(x_length / dx)
-# num_bins_y <- ceiling(y_length_scaled / dy)
-
-
-## -----------------------------------------------------------------------------
-# s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)] <- scale(s_curve_noise_umap[,1:(NCOL(s_curve_noise_umap) - 1)])
-
-
-## ----eval=FALSE---------------------------------------------------------------
-#> library(tools)
-#> package_dependencies("quollr")
 
 
 ## ----echo=FALSE---------------------------------------------------------------
 datasets_tb <- tibble(dt = c("s_curve_noise",
                              "s_curve_noise_training", 
                              "s_curve_noise_test", 
-                             "s_curve_noise_umap"), 
+                             "s_curve_noise_umap",
+                             "s_curve_noise_umap_predict",
+                             "s_curve_noise_umap_scaled"), 
                       text = c("Simulated 3D S-curve data with additional four noise dimensions.",
                                "Training data derived from S-curve data.", 
                                "Test data derived from S-curve data.", 
-                               "UMAP 2D embedding data of S-curve data (n_neighbors: 15, min_dist: 0.1)."))
+                               "UMAP 2D embedding data of S-curve data (n_neighbors: 15, min_dist: 0.1).",
+                               "Predicted UMAP 2D embedding data of S-curve data",
+                               "Scaled UMAP 2D embedding data of S-curve data"))
 
 
 ## ----datasets-tb-html, eval=is_html_output(), echo=FALSE----------------------
@@ -101,191 +44,239 @@ datasets_tb |>
   column_spec(2, width = "8cm")
 
 
-## ----hex-size-img, out.width = "100%", out.height = "100%", fig.cap = "Hexagonal size parameter", fig.alt="Hexagonal size parameter", echo=FALSE----
-knitr::include_graphics("figures/hex_size_img.png")
-
-
-## ----spacing-img, out.width = "100%", out.height = "100%", fig.cap = "Horizontal and vertical spacing parameters", fig.alt="Horizontal and vertical spacing parameters", echo=FALSE----
-knitr::include_graphics("figures/spacing_img.png")
-
-
-## ----buffer-img, out.width = "100%", out.height = "100%", fig.cap = "Buffer parameters", fig.alt="Buffer parameters", echo=FALSE----
-knitr::include_graphics("figures/buffer_img.png")
+## -----------------------------------------------------------------------------
+scaled_data <- gen_scaled_data(data = s_curve_noise_umap, x = "UMAP1", 
+                y = "UMAP2", hex_ratio = NA)
+glimpse(scaled_data)
 
 
 ## -----------------------------------------------------------------------------
-num_bins_x <- calculate_effective_x_bins(.data = s_curve_noise_umap,
-                                         x = "UMAP1", hex_size = 0.2)
-num_bins_x 
+fit_highd_model(training_data = s_curve_noise_training, x = "UMAP1", y = "UMAP2",
+nldr_df_with_id = s_curve_noise_umap_scaled, col_start_2d = "UMAP", col_start_highd = "x")
 
 
-## -----------------------------------------------------------------------------
-num_bins_y <- calculate_effective_y_bins(.data = s_curve_noise_umap,
-                                         y = "UMAP2", hex_size = 0.2)
-num_bins_y 
+## ----echo=FALSE---------------------------------------------------------------
+lg_vis_tb <- tibble(dt = c(".data", 
+                           "benchmark_value", 
+                           "triangular_object", 
+                           "distance_col"), 
+                    text = c("The data frame containing the edge information.",
+                             "The threshold value to determine long edges.", 
+                             "The triangular object containing the mesh information.", 
+                             "The column name in `.data` representing the distances."))
 
 
-## ----gen-fullcentroids, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagonal bin centroids", fig.alt="Workflow of generating hexagonal bin centroids", echo=FALSE----
-knitr::include_graphics("figures/workflow_all_centroids.png")
+## ----lgvis-tb-html, eval=is_html_output(), echo=FALSE-------------------------
+#> lg_vis_tb |>
+#>   kable(caption = "The main arguments for `vis_lg_mesh()` and `vis_rmlg_mesh()`", col.names = c("argument", "explanation"))
 
 
-## -----------------------------------------------------------------------------
-all_centroids_df <- generate_full_grid_centroids(nldr_df = s_curve_noise_umap, 
-                                                 x = "UMAP1", y = "UMAP2", 
-                                                 num_bins_x = num_bins_x, 
-                                                 num_bins_y = num_bins_y, 
-                                                 x_start = NA, y_start = NA, 
-                                                 hex_size = 0.2)
-
-glimpse(all_centroids_df)
+## ----lgvis-tb-pdf, eval=is_latex_output(), echo=FALSE-------------------------
+lg_vis_tb |>
+  kable(caption = "The main arguments for `vis\\_lg\\_mesh()` and `vis\\_rmlg\\_mesh()`", format="latex", col.names = c("argument", "explanation"), booktabs = T)  |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "8cm")
 
 
-## ----hex-coordinates, out.width = "100%", out.height = "100%", fig.cap = "Hexagon coordinates", fig.alt="Hexagon coordinates", echo=FALSE----
-knitr::include_graphics("figures/hex_coordinates_img.png")
+## ----echo=FALSE---------------------------------------------------------------
+dyn_vis_tb <- tibble(dt = c("df", 
+                            "df_b", 
+                            "df_b_with_center_data", 
+                            "benchmark_value",
+                            "distance_df",
+                            "distance_col",
+                            "use_default_benchmark_val",
+                            "column_start_text"), 
+                     text = c("A data frame containing the high-dimensional data.",
+                              "A data frame containing the high-dimensional coordinates of bin centroids/means.",
+                              "The dataset with hexbin centroids/ means.", 
+                              "The benchmark value used to remove long edges (optional).", 
+                              "The distance dataframe.",
+                              "The name of the distance column.",
+                              "Logical, indicating whether to use default benchmark value  to remove long edges(default is FALSE).",
+                              "The text that begin the column name of the high-dimensional data."))
 
 
-## ----gen-allcoordinates, out.width = "100%", out.height = "100%", fig.cap = "Workflow of generating hexagon coordinates", fig.alt="Workflow of generating hexagon coordinates", echo=FALSE----
-knitr::include_graphics("figures/workflow_all_coordinates.png")
+## ----dyvis-tb-html, eval=is_html_output(), echo=FALSE-------------------------
+#> dyn_vis_tb |>
+#>   kable(caption = "The main arguments for `show_langevitour()`", col.names = c("argument", "explanation"))
 
 
-## -----------------------------------------------------------------------------
-hex_grid <- gen_hex_coordinates(all_centroids_df, hex_size = 0.2)
-glimpse(hex_grid)
+## ----dyvis-tb-pdf, eval=is_latex_output(), echo=FALSE-------------------------
+dyn_vis_tb |>
+  kable(caption = "The main arguments for `show\\_langevitour()`", format="latex", col.names = c("argument", "explanation"), booktabs = T)  |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "8cm")
 
 
-## -----------------------------------------------------------------------------
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_point(aes(x = c_x, y = c_y), color = "red") +
-  coord_fixed()
+## ----echo=FALSE---------------------------------------------------------------
+compute_weights <- function(nldr_df_with_hex_id) {
 
+  ## To get the 2D embeddings average of each bin
+  bin_val_hexagons <- nldr_df_with_hex_id |>
+    dplyr::group_by(hb_id) |>
+    dplyr::summarise(dplyr::across(tidyselect::everything(), mean))
 
-## -----------------------------------------------------------------------------
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
-  coord_fixed()
+  ## Rename columns of averaged 2D embeddings
+  names(bin_val_hexagons) <- c("hb_id", paste0("avg_", tolower(names(nldr_df_with_hex_id)[1:2])))
 
+  ## To calculate distances from average point
+  nldr_with_avg_all <- dplyr::inner_join(bin_val_hexagons , nldr_df_with_hex_id,
+                                         by = c("hb_id" = "hb_id"))
 
-## -----------------------------------------------------------------------------
-s_curve_noise_umap_with_id <- assign_data(s_curve_noise_umap, hex_grid)
+  col_names <- c(names(bin_val_hexagons), names(nldr_df_with_hex_id)[1:2], "distance")
 
+  ## Initialize the vectors to store data
+  hexids <- integer(0)
+  emb1_vec <- numeric(0)
+  emb2_vec <- numeric(0)
+  weight_vec <- numeric(0)
 
-## -----------------------------------------------------------------------------
-df_with_std_counts <- compute_std_counts(nldr_df_with_hex_id = s_curve_noise_umap_with_id)
+  for(hb_id in unique(nldr_with_avg_all$hb_id)){
 
+    ## These are the weights for weighted mean
+    weighted_mean_df <- nldr_with_avg_all |>
+      dplyr::filter(hb_id == hb_id) |>
+      cal_2d_dist(start_x = col_names[2], start_y = col_names[3], end_x = col_names[4],
+                  end_y = col_names[5], select_vars = col_names)
 
-## -----------------------------------------------------------------------------
-hex_full_count_df <- generate_full_grid_info(nldr_df = s_curve_noise_umap, hex_grid)
+    hexids <- c(hexids, weighted_mean_df$hb_id)
+    emb1_vec <- c(emb1_vec, weighted_mean_df[[rlang::as_string(rlang::sym(col_names[4]))]])
+    emb2_vec <- c(emb2_vec, weighted_mean_df[[rlang::as_string(rlang::sym(col_names[5]))]])
+    weight_vec <- c(weight_vec, 1/ (weighted_mean_df$distance + 0.05))
 
+  }
 
-## -----------------------------------------------------------------------------
-ggplot(data = hex_grid, aes(x = x, y = y)) + geom_polygon(fill = "white", color = "black", aes(group = id)) +
-  geom_point(data = s_curve_noise_umap, aes(x = UMAP1, y = UMAP2), color = "blue") +
-  coord_fixed()
+  weight_list <- list(hb_id = hexids, emb1_vec = emb1_vec, emb2_vec = emb2_vec,
+                      weight_vec = weight_vec)
+  names(weight_list) <- c("hb_id", names(nldr_df_with_hex_id)[1:2], "weights")
 
+  return(weight_list)
 
-## -----------------------------------------------------------------------------
-ggplot(data = hex_full_count_df, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = id, fill = std_counts)) +
-  geom_text(aes(x = c_x, y = c_y, label = hexID)) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-  coord_fixed()
-
-
-
-## -----------------------------------------------------------------------------
-df_bin_centroids <- hex_full_count_df[complete.cases(hex_full_count_df[["std_counts"]]), ] |>
-  dplyr::select("c_x", "c_y", "hexID", "std_counts") |>
-  dplyr::distinct() |>
-  dplyr::rename(c("x" = "c_x", "y" = "c_y"))
-  
-df_bin_centroids
-
-
-## -----------------------------------------------------------------------------
-## To generate a data set with high-D and 2D training data
-df_all <- training_data |> dplyr::select(-ID) |>
-  dplyr::bind_cols(s_curve_noise_umap_with_id)
-
-## To generate averaged high-D data
-
-df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
-
-
-## -----------------------------------------------------------------------------
-tr1_object <- triangulate_bin_centroids(df_bin_centroids, x = "x", y = "y")
-tr_from_to_df <- generate_edge_info(triangular_object = tr1_object)
-
-
-## -----------------------------------------------------------------------------
-## Compute 2D distances
-distance <- cal_2d_dist(tr_from_to_df_coord = tr_from_to_df)
-
-## To plot the distribution of distance
-plot_dist <- function(distance_df){
-  distance_df$group <- "1"
-  dist_plot <- ggplot(distance_df, aes(x = group, y = distance)) +
-    geom_quasirandom()+
-    ylim(0, max(unlist(distance_df$distance))+ 0.5) + coord_flip()
-  return(dist_plot)
 }
 
-plot_dist(distance)
 
-benchmark <- find_benchmark_value(distance_edges = distance, distance_col = "distance")
-benchmark
+## ----echo=FALSE---------------------------------------------------------------
+weighted_highD_data <- function(training_data, nldr_df_with_hex_id,
+                                column_start_text = "x") {
+  ## Remove ID column from training data
+  training_data <- training_data |>
+    dplyr::select(-ID)
 
-benchmark <- 0.75
+  ## Join training data with 2D embeddings
+  df_all <- dplyr::bind_cols(training_data, nldr_df_with_hex_id)
+
+  ## To obtain weights corresponding to 2D embeddings
+  weight_df <- as.data.frame(do.call(cbind,
+                                     compute_weights(nldr_df_with_hex_id = nldr_df_with_hex_id)))
+
+  ## Initialize the columns that need to use for joining
+  joined_col_names <- names(nldr_df_with_hex_id)[1:2]
+
+  ## To join the training data, 2D embeddings and weights
+  weighted_mean_all <- dplyr::inner_join(df_all, weight_df,
+                                         by = c("hb_id" = "hb_id",
+                                                stats::setNames(joined_col_names,
+                                                                joined_col_names)))
+  ## List to store weighted means
+  weighted_mean_df_list <- list()
+
+  for (j in 1:NCOL(training_data)) {
+
+    ## To compute weighted mean across all high-D coordinates
+    weighted_mean_df_list[[j]] <- weighted_mean_all |>
+      dplyr::select(hb_id, names(training_data)[j], weights) |>
+      dplyr::group_by(hb_id) |>
+      dplyr::summarise(dplyr::across(names(training_data)[j], ~ weighted.mean(., weights)))
+
+  }
+
+  ## To combine the elements given in the list
+  weighted_mean <- Reduce(function(dtf1,dtf2) dplyr::full_join(dtf1,dtf2,by="hb_id"),
+                          weighted_mean_df_list)
+
+
+  ## Column names start with x
+  weighted_mean <- weighted_mean |>
+    dplyr::select(hb_id, tidyselect::starts_with(column_start_text))
+
+  return(weighted_mean)
+}
+
+
+## ----echo=FALSE---------------------------------------------------------------
+
+extract_hexbin_mean <- function(nldr_df_with_hex_id, counts_df) {
+
+  ## To arrange the hexagon IDs
+  counts_df <- counts_df |>
+    dplyr::arrange(hb_id)
+
+  ## To compute hexagonal bin means
+  hex_mean_df <- nldr_df_with_hex_id |>
+    dplyr::group_by(hb_id) |>
+    dplyr::summarise(dplyr::across(tidyselect::everything(), mean)) |>
+    dplyr::arrange(hb_id) |>
+    dplyr::filter(hb_id %in% counts_df$hb_id) |>
+    dplyr::mutate(std_counts = counts_df$std_counts)
+
+  ## Rename columns
+  names(hex_mean_df) <- c("hexID", "c_x", "c_y", "std_counts")
+
+  return(hex_mean_df)
+}
 
 
 ## -----------------------------------------------------------------------------
-## To generate a data set with high-D and 2D training data
-df_all <- training_data |> dplyr::select(-ID) |>
-  dplyr::bind_cols(s_curve_noise_umap_with_id)
+bin_list <- calc_bins(data = s_curve_noise_umap_scaled, 
+                      x = "UMAP1", y = "UMAP2", 
+                      hex_size = NA, buffer_x = NA, 
+                      buffer_y = NA)
+num_bins_x <- bin_list$num_x
+num_bins_y <- bin_list$num_y
 
-## To generate averaged high-D data
-
-df_bin <- avg_highD_data(.data = df_all, column_start_text = "x") ## Need to pass ID column name
-
-
-## -----------------------------------------------------------------------------
-pred_df_test <- predict_2d_embeddings(test_data = training_data,
-df_bin_centroids = df_bin_centroids, df_bin = df_bin, type_NLDR = "UMAP")
-
-glimpse(pred_df_test)
-
-
-## -----------------------------------------------------------------------------
-generate_summary(test_data = training_data, prediction_df = pred_df_test,
-                 df_bin = df_bin, col_start = "x")
+hb_obj <- hex_binning(data = s_curve_noise_umap_scaled, 
+                      x = "UMAP1", y = "UMAP2", 
+                      num_bins_x = num_bins_x, num_bins_y = num_bins_y, 
+                      x_start = NA, y_start = NA, 
+                      buffer_x = NA, buffer_y = NA, 
+                      hex_size = NA, col_start = "UMAP")
 
 
-## -----------------------------------------------------------------------------
-trimesh <- ggplot(df_bin_centroids, aes(x = x, y = y)) +
-  geom_point(size = 0.1) +
-  geom_trimesh() +
-  coord_equal()
+all_centroids_df <- as.data.frame(do.call(cbind, hb_obj$centroids))
+counts_df <- as.data.frame(do.call(cbind, hb_obj$std_cts))
+nldr_df_with_hex_id <- as.data.frame(do.call(cbind, hb_obj$data_hb_id))
 
-trimesh
+## To obtain bin centroids
+df_bin_centroids <- extract_hexbin_mean(nldr_df_with_hex_id = nldr_df_with_hex_id,
+                                             counts_df = counts_df)
+
+df_all <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), nldr_df_with_hex_id)
+
+ggplot() + 
+  geom_trimesh(data = df_bin_centroids, mapping = aes(x = c_x, y = c_y)) +
+  coord_fixed()
+
+tr1_object <- tri_bin_centroids(hex_df = df_bin_centroids, x = "c_x", y = "c_y")
+tr_from_to_df <- gen_edges(tri_object = tr1_object)
+distance_df <- cal_2d_dist(tr_coord_df = tr_from_to_df, 
+                           start_x = "x_from", start_y = "y_from", 
+                           end_x = "x_to", end_y = "y_to", 
+                           select_vars = c("from", "to", "distance"))
 
 
-## -----------------------------------------------------------------------------
-trimesh_gr <- colour_long_edges(distance_edges = distance, benchmark_value = benchmark,
-                                tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
+## averaged high-D data
+df_bin <- weighted_highD_data(training_data = s_curve_noise_training, nldr_df_with_hex_id = nldr_df_with_hex_id, column_start_text = "x")
 
-trimesh_gr
+vis_lg_mesh(distance_edges = distance_df, benchmark_value = 1,
+tr_coord_df = tr_from_to_df, distance_col = "distance")
 
+vis_rmlg_mesh(distance_edges = distance_df, benchmark_value = 1,
+tr_coord_df = tr_from_to_df, distance_col = "distance")
 
-## -----------------------------------------------------------------------------
-trimesh_removed <- remove_long_edges(distance_edges = distance, benchmark_value = benchmark,
-                                     tr_from_to_df_coord = tr_from_to_df, distance_col = "distance")
-trimesh_removed
-
-
-## -----------------------------------------------------------------------------
-tour1 <- show_langevitour(df_all, df_bin, df_bin_centroids, 
-                          benchmark_value = benchmark,
-                          distance = distance, distance_col = "distance", 
-                          use_default_benchmark_val = FALSE, 
-                          column_start_text = "x")
-tour1
+show_langevitour(df = df_all, df_b = df_bin, 
+                 df_b_with_center_data = df_bin_centroids, 
+                 benchmark_value = 1, distance = distance_df, 
+                 distance_col = "distance", 
+                 use_default_benchmark_val = FALSE, col_start = "x")
 
