@@ -81,10 +81,12 @@ The development version can be installed from GitHub:
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`.
 
-<!-- add about main function to gen 2D and highD models-->
-## Constructing the 2D model
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
+<!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
+
+## Constructing the 2D model
 
 ### Preprocessing
 <!--Discuss scaling the NLDR data-->
@@ -95,7 +97,16 @@ The function `gen_scaled_data()` is used to prepare the NLDR data to fit within 
 
 ### Binning data 
 
+The mains steps for the hexagonal binning algorithm can be executed by the main function `hex_binning()`, or can be run separately for more flexibility.
 <!-- add about main function for hexagonal bining-->
+
+**Step 1: Compute hexagonal grid configurations**
+
+**Step 2: Generate the hexagonal bin centroids**
+
+**Step 3: Create the hexagonal grid**
+
+**Step 4: Assign NLDR data to hexagons**
 
 ### Obtain bin centroids/ means
 

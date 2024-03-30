@@ -2615,15 +2615,21 @@ font-size: 20px;
 <p>The development version can be installed from GitHub:</p>
 <p><code>devtools::install_github(&quot;JayaniLakshika/quollr&quot;)</code></p>
 <p>The following demonstration of the package’s functionality assumes <code>quollr</code> has been loaded. We also want to load the built-in data sets <code>s_curve_noise_training</code> and <code>s_curve_noise_umap</code>.</p>
+<p>The mains steps for the algorithm can be executed by the main function <code>fit_highd_model()</code>, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using <code>is_bin_centroid</code> argument.</p>
 <!-- add about main function to gen 2D and highD models-->
-<h3 data-number="3.1" id="constructing-the-2d-model"><span class="header-section-number">3.1</span> Constructing the 2D model</h3>
 <!--Discuss the model can be generated with bin centroids or bin means-->
+<h3 data-number="3.1" id="constructing-the-2d-model"><span class="header-section-number">3.1</span> Constructing the 2D model</h3>
 <h4 class="unnumbered" data-number="3.1.1" id="preprocessing">Preprocessing</h4>
 <!--Discuss scaling the NLDR data-->
 <p>The function <code>gen_scaled_data()</code> is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization.</p>
 <!-- add plot before and after scaling NLDR data-->
 <h4 class="unnumbered" data-number="3.1.2" id="binning-data">Binning data</h4>
-<!-- add about main function for hexagonal bining-->
+<p>The mains steps for the hexagonal binning algorithm can be executed by the main function <code>hex_binning()</code>, or can be run separately for more flexibility.
+<!-- add about main function for hexagonal bining--></p>
+<p><strong>Step 1: Compute hexagonal grid configurations</strong></p>
+<p><strong>Step 2: Generate the hexagonal bin centroids</strong></p>
+<p><strong>Step 3: Create the hexagonal grid</strong></p>
+<p><strong>Step 4: Assign NLDR data to hexagons</strong></p>
 <h4 class="unnumbered" data-number="3.1.3" id="obtain-bin-centroids-means">Obtain bin centroids/ means</h4>
 <p>To obtain hexagonal bin centroids, <code>extract_hexbin_centroids()</code>is used. The function <code>extract_hexbin_mean()</code> is used to obtain average within each hexagon.</p>
 <h4 class="unnumbered" data-number="3.1.4" id="triangulate-bin-centroids-means">Triangulate bin centroids/ means</h4>

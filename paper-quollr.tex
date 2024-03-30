@@ -39,6 +39,8 @@ The development version can be installed from GitHub:
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{s\_curve\_noise\_training} and \texttt{s\_curve\_noise\_umap}.
 
+The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using \texttt{is\_bin\_centroid} argument.
+
 \hypertarget{constructing-the-2d-model}{%
 \subsection{Constructing the 2D model}\label{constructing-the-2d-model}}
 
@@ -49,6 +51,16 @@ The function \texttt{gen\_scaled\_data()} is used to prepare the NLDR data to fi
 
 \hypertarget{binning-data}{%
 \subsubsection{Binning data}\label{binning-data}}
+
+The mains steps for the hexagonal binning algorithm can be executed by the main function \texttt{hex\_binning()}, or can be run separately for more flexibility.
+
+\textbf{Step 1: Compute hexagonal grid configurations}
+
+\textbf{Step 2: Generate the hexagonal bin centroids}
+
+\textbf{Step 3: Create the hexagonal grid}
+
+\textbf{Step 4: Assign NLDR data to hexagons}
 
 \hypertarget{obtain-bin-centroids-means}{%
 \subsubsection{Obtain bin centroids/ means}\label{obtain-bin-centroids-means}}
