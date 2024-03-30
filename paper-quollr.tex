@@ -1,5 +1,5 @@
 % !TeX root = RJwrapper.tex
-\title{quollr: An R Package for Visalizing 2D Models in High Dimensional Space}
+\title{quollr: An R Package for Visualizing 2D Models from Nonlinear Dimension Reductions in High Dimensional Space}
 
 
 \author{by Jayani P.G. Lakshika, Dianne Cook, Paul Harrison, Michael Lydeamore, and Thiyanga S. Talagala}
@@ -26,262 +26,54 @@ set.seed(20230531)
 \hypertarget{methodology}{%
 \section{Methodology}\label{methodology}}
 
-\hypertarget{usage}{%
-\subsection{Usage}\label{usage}}
+\hypertarget{implementation}{%
+\section{Implementation}\label{implementation}}
 
-\begin{itemize}
-\item
-  dependencies
-\item
-  basic example
-\end{itemize}
+The package can be installed from CRAN:
 
-\hypertarget{datasets}{%
-\subsubsection{Datasets}\label{datasets}}
+\texttt{install.packages("quollr")}
 
-The \texttt{quollr} package comes with several data sets that load with the package. These are described in Table \ref{tab:datasets-tb-pdf}.
+The development version can be installed from GitHub:
 
-\begin{table}
+\texttt{devtools::install\_github("JayaniLakshika/quollr")}
 
-\caption{\label{tab:datasets-tb-pdf}quollr datasets}
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
-\toprule
-data & explanation\\
-\midrule
-s\_curve\_noise & Simulated 3D S-curve data with additional four noise dimensions.\\
-s\_curve\_noise\_training & Training data derived from S-curve data.\\
-s\_curve\_noise\_test & Test data derived from S-curve data.\\
-s\_curve\_noise\_umap & UMAP 2D embedding data of S-curve data (n\_neighbors: 15, min\_dist: 0.1).\\
-s\_curve\_noise\_umap\_predict & Predicted UMAP 2D embedding data of S-curve data\\
-\addlinespace
-s\_curve\_noise\_umap\_scaled & Scaled UMAP 2D embedding data of S-curve data\\
-\bottomrule
-\end{tabular}
-\end{table}
+The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{s\_curve\_noise\_training} and \texttt{s\_curve\_noise\_umap}.
+
+\hypertarget{constructing-the-2d-model}{%
+\subsection{Constructing the 2D model}\label{constructing-the-2d-model}}
 
 \hypertarget{preprocessing}{%
-\subsection{Preprocessing}\label{preprocessing}}
+\subsubsection{Preprocessing}\label{preprocessing}}
 
-In the preprocessing stage, we aim to prepare our data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. To achieve this, we implement two key scaling steps. Firstly, we scale the first 2D embedding component to range between \(0\) and \(1\), ensuring that all data points fall within this normalized interval. Secondly, we scale the second 2D embedding component to range between \(0\) and \(y_{max}\). This adjustment helps maintain the necessary symmetry and spacing required for regular hexagons.
+\hypertarget{binning-data}{%
+\subsubsection{Binning data}\label{binning-data}}
 
-\begin{equation}\label{eq:aspect_ratio}
-ar = \frac{r_2}{r_1} \tag{1}
-\end{equation}
+\hypertarget{obtain-bin-centroids-means}{%
+\subsubsection{Obtain bin centroids/ means}\label{obtain-bin-centroids-means}}
 
-\begin{equation}\label{eq:y_max}
-y_{max} = ceiling(\frac{ar}{hr}) * hr \tag{2}
-\end{equation}
+\hypertarget{triangulate-bin-centroids-means}{%
+\subsubsection{Triangulate bin centroids/ means}\label{triangulate-bin-centroids-means}}
 
-\begin{verbatim}
-scaled_data <- gen_scaled_data(data = s_curve_noise_umap, x = "UMAP1", 
-                y = "UMAP2", hex_ratio = NA)
-glimpse(scaled_data)
-\end{verbatim}
+\hypertarget{lifting-the-model-into-high-dimensions}{%
+\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}}
 
-\begin{verbatim}
-#> List of 2
-#>  $ scaled_UMAP1: num [1:75] 0.0804 0.7386 0.8399 0.1672 0.2629 ...
-#>  $ scaled_UMAP2: num [1:75] 0.366 1.1464 1.2392 0.0494 0.4556 ...
-\end{verbatim}
+\hypertarget{tuning-model-parameters}{%
+\subsection{Tuning model parameters}\label{tuning-model-parameters}}
 
-\hypertarget{construct-the-2d-model}{%
-\subsection{Construct the 2D model}\label{construct-the-2d-model}}
-
-\hypertarget{compute-hexagonal-bin-configurations}{%
-\subsubsection{Compute hexagonal bin configurations}\label{compute-hexagonal-bin-configurations}}
-
-\hypertarget{construct-the-high-d-model}{%
-\subsection{Construct the high-D model}\label{construct-the-high-d-model}}
-
-\hypertarget{model-function}{%
-\subsection{Model function}\label{model-function}}
-
-The \texttt{fit\_highd\_model()} function is used to generate both the 2D and high-D models.
-
-\begin{verbatim}
-fit_highd_model(training_data = s_curve_noise_training, x = "UMAP1", y = "UMAP2",
-nldr_df_with_id = s_curve_noise_umap_scaled, col_start_2d = "UMAP", col_start_highd = "x")
-\end{verbatim}
-
-\begin{verbatim}
-#> $df_bin
-#> # A tibble: 10 x 8
-#>    hb_id       x1     x2     x3        x4        x5       x6        x7
-#>    <dbl>    <dbl>  <dbl>  <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
-#>  1     2 -0.637   1.74   -1.76   0.00953  -0.00143  -0.0117  -0.00152 
-#>  2     6 -0.498   0.524  -1.73  -0.000237  0.00234  -0.0297  -0.000242
-#>  3     7  0.294   1.40   -1.88   0.00890  -0.00803  -0.0123  -0.00120 
-#>  4    12  0.309   0.0421 -1.83   0.00656   0.00823   0.00489 -0.00389 
-#>  5    13  0.868   0.747  -0.781 -0.00408   0.000857  0.0248   0.00170 
-#>  6    18  0.357   1.27   -0.169  0.00607   0.00124   0.0152   0.00204 
-#>  7    24 -0.792   1.25    0.514 -0.000777  0.000464  0.00602  0.000371
-#>  8    28 -0.597   1.19    1.77   0.000240 -0.00417  -0.0185  -0.000786
-#>  9    29 -0.00544 0.211   1.92   0.00116   0.00266   0.00949 -0.00209 
-#> 10    34  0.622   1.21    1.64  -0.000560  0.00540  -0.00741 -0.000886
-#> 
-#> $df_bin_centroids
-#>    hexID       c_x   c_y std_counts
-#> 1      2 0.1732051 -0.15  0.2352941
-#> 2      6 0.0000000  0.15  0.5294118
-#> 3      7 0.3464102  0.15  0.4117647
-#> 4     12 0.1732051  0.45  0.1764706
-#> 5     13 0.5196152  0.45  0.3529412
-#> 6     18 0.6928203  0.75  0.7058824
-#> 7     24 0.8660254  1.05  0.4705882
-#> 8     28 0.6928203  1.35  0.2941176
-#> 9     29 1.0392305  1.35  0.2352941
-#> 10    34 0.8660254  1.65  1.0000000
-\end{verbatim}
-
-\hypertarget{model-summaries}{%
-\subsection{Model summaries}\label{model-summaries}}
-
-\hypertarget{predict-2d-embeddings}{%
-\subsubsection{Predict 2D embeddings}\label{predict-2d-embeddings}}
-
-There are some of NLDR techniques that don't give any functions for predictions. In that sense our methodology facilitates to compute 2D embedding with our workflow.
-
-\hypertarget{goodness-of-fit-statistics}{%
-\subsubsection{Goodness of fit statistics}\label{goodness-of-fit-statistics}}
-
-There are two Goodness of fit statistics were produced. MSE and AIC which interpret the model accuracy.
+\hypertarget{compute-mse}{%
+\subsection{Compute MSE}\label{compute-mse}}
 
 \hypertarget{visualizations}{%
 \subsection{Visualizations}\label{visualizations}}
 
-We use static visualizations to understand the model constructed in 2D. On the other hand, dynamic visualization is used to see how the model looks in high-D space.
+\hypertarget{d-model-visualization}{%
+\subsubsection{2D model visualization}\label{d-model-visualization}}
 
-\hypertarget{static-visualizations}{%
-\paragraph{Static visualizations}\label{static-visualizations}}
+\hypertarget{p-d-model-visualization}{%
+\subsubsection{p-D model visualization}\label{p-d-model-visualization}}
 
-Static visualizations main involves two types of results. One is the triangulation and the other is the long edge removal. Both types of visualizations provide ggplot objects.
-
-\begin{itemize}
-\item
-  Triangulation result: To visualize the results of triangulation, we input a dataset containing hexagonal bin centroid coordinates where 2D embedding data exists. \texttt{geom\_trimesh()} is used to visualize this result.
-\item
-  Long edge removal: The long edge removal process involves identifying and removing long edges from the triangular mesh. Table shows the main arguments of the functions. We offer two functions for visualizing this process:
-\item
-  \texttt{colour\_long\_edges()}: This function colors the long edges within the triangular mesh by red.
-\item
-  \texttt{remove\_long\_edges()}: After identifying long edges, this function draws the triangular mesh without the long edges.
-\end{itemize}
-
-\ref{tab:lgvis-tb-pdf}
-
-\begin{table}
-
-\caption{\label{tab:lgvis-tb-pdf}The main arguments for `vis\_lg\_mesh()` and `vis\_rmlg\_mesh()`}
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
-\toprule
-argument & explanation\\
-\midrule
-.data & The data frame containing the edge information.\\
-benchmark\_value & The threshold value to determine long edges.\\
-triangular\_object & The triangular object containing the mesh information.\\
-distance\_col & The column name in `.data` representing the distances.\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\hypertarget{dynamic-visaulizations}{%
-\paragraph{Dynamic visaulizations}\label{dynamic-visaulizations}}
-
-The \texttt{show\_langevitour()} function enables dynamic visualization of the 2D model alongside the high-dimensional (high-D) data in its original space. This visualization is facilitated by langevitour object, allowing users to interactively explore the relationship between the 2D embeddings and the underlying high-dimensional data. The main arguments are shown in Table \ref{tab:dyvis-tb-pdf}.
-
-\begin{table}
-
-\caption{\label{tab:dyvis-tb-pdf}The main arguments for `show\_langevitour()`}
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
-\toprule
-argument & explanation\\
-\midrule
-df & A data frame containing the high-dimensional data.\\
-df\_b & A data frame containing the high-dimensional coordinates of bin centroids/means.\\
-df\_b\_with\_center\_data & The dataset with hexbin centroids/ means.\\
-benchmark\_value & The benchmark value used to remove long edges (optional).\\
-distance\_df & The distance dataframe.\\
-\addlinespace
-distance\_col & The name of the distance column.\\
-use\_default\_benchmark\_val & Logical, indicating whether to use default benchmark value  to remove long edges(default is FALSE).\\
-column\_start\_text & The text that begin the column name of the high-dimensional data.\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\hypertarget{distance-with-bin-means}{%
-\subsection{Distance with bin means}\label{distance-with-bin-means}}
-
-\begin{verbatim}
-bin_list <- calc_bins(data = s_curve_noise_umap_scaled, 
-                      x = "UMAP1", y = "UMAP2", 
-                      hex_size = NA, buffer_x = NA, 
-                      buffer_y = NA)
-num_bins_x <- bin_list$num_x
-num_bins_y <- bin_list$num_y
-
-hb_obj <- hex_binning(data = s_curve_noise_umap_scaled, 
-                      x = "UMAP1", y = "UMAP2", 
-                      num_bins_x = num_bins_x, num_bins_y = num_bins_y, 
-                      x_start = NA, y_start = NA, 
-                      buffer_x = NA, buffer_y = NA, 
-                      hex_size = NA, col_start = "UMAP")
-
-
-all_centroids_df <- as.data.frame(do.call(cbind, hb_obj$centroids))
-counts_df <- as.data.frame(do.call(cbind, hb_obj$std_cts))
-nldr_df_with_hex_id <- as.data.frame(do.call(cbind, hb_obj$data_hb_id))
-
-## To obtain bin centroids
-df_bin_centroids <- extract_hexbin_mean(nldr_df_with_hex_id = nldr_df_with_hex_id,
-                                             counts_df = counts_df)
-
-df_all <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), nldr_df_with_hex_id)
-
-ggplot() + 
-  geom_trimesh(data = df_bin_centroids, mapping = aes(x = c_x, y = c_y)) +
-  coord_fixed()
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-1.pdf}
-
-\begin{verbatim}
-tr1_object <- tri_bin_centroids(hex_df = df_bin_centroids, x = "c_x", y = "c_y")
-tr_from_to_df <- gen_edges(tri_object = tr1_object)
-distance_df <- cal_2d_dist(tr_coord_df = tr_from_to_df, 
-                           start_x = "x_from", start_y = "y_from", 
-                           end_x = "x_to", end_y = "y_to", 
-                           select_vars = c("from", "to", "distance"))
-
-
-## averaged high-D data
-df_bin <- weighted_highD_data(training_data = s_curve_noise_training, nldr_df_with_hex_id = nldr_df_with_hex_id, column_start_text = "x")
-
-vis_lg_mesh(distance_edges = distance_df, benchmark_value = 1,
-tr_coord_df = tr_from_to_df, distance_col = "distance")
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-2.pdf}
-
-\begin{verbatim}
-vis_rmlg_mesh(distance_edges = distance_df, benchmark_value = 1,
-tr_coord_df = tr_from_to_df, distance_col = "distance")
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-3.pdf}
-
-\begin{verbatim}
-show_langevitour(df = df_all, df_b = df_bin, 
-                 df_b_with_center_data = df_bin_centroids, 
-                 benchmark_value = 1, distance = distance_df, 
-                 distance_col = "distance", 
-                 use_default_benchmark_val = FALSE, col_start = "x")
-\end{verbatim}
-
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-4.pdf}
+\hypertarget{prediction}{%
+\subsection{Prediction}\label{prediction}}
 
 \hypertarget{tests}{%
 \subsection{Tests}\label{tests}}
