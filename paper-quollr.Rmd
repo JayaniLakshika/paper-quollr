@@ -119,10 +119,10 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 ```{r}
 
 ## Decide by looking at MSE plot
-num_bins_x_s_curve <- 6
+num_bins_x_s_curve <- 8
 num_bins_y_s_curve <- 14
-hex_size_s_curve <- 0.13
-hb_obj_s_curve <- hex_binning(data = s_curve_noise_umap, x = "UMAP1", 
+hex_size_s_curve <- 0.1
+hb_obj_s_curve <- hex_binning(data = s_curve_noise_umap_scaled, x = "UMAP1", 
                       y = "UMAP2", num_bins_x = num_bins_x_s_curve, 
                       num_bins_y = num_bins_y_s_curve, x_start = NA, y_start = NA, 
                       buffer_x = NA, buffer_y = NA, hex_size = hex_size_s_curve, col_start = "UMAP")
@@ -136,12 +136,8 @@ df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df,
                                              counts_df = counts_df)
 ## remove low-density hexagons
 hex_grid_with_counts <- dplyr::left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hb_id"))
-hex_full_count_df_loop2 <- hex_grid_with_counts |>
-  dplyr::mutate(type = if_else(std_counts <= 0.2, "low", "high"))
-hex_full_count_df_filtered <- df_bin_centroids |>
-  dplyr::mutate(type = if_else(std_counts <= 0.2, "low", "high")) |>
-  dplyr::filter(type == "low")
-p2_n <-  ggplot(data = hex_full_count_df_loop2, aes(x = x, y = y)) +
+
+p2_n <-  ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
   geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
   #geom_point(data = UMAP_data, aes(x = UMAP1, y = UMAP2), alpha = 0.5) +
   scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
@@ -157,24 +153,7 @@ vjust = -0.5),
         legend.text = element_text(size=6)) +
   guides(fill = guide_colourbar(title = "Standardized count")) #+
   #annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3) 
-p2_n_rm <-  ggplot(data = hex_full_count_df_loop2, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-  geom_text(data = hex_full_count_df_filtered, color = "red", aes(x = c_x, y = c_y, group = hexID, label = "X",
-size = 0.5)) +
-  #geom_point(data = UMAP_data, aes(x = UMAP1, y = UMAP2), alpha = 0.5) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
-  #coord_cartesian(xlim =c(-5, 7), ylim = c(-10, 10)) +
-  theme_void() +
-  theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
-vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
-        legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) +
-  guides(fill = guide_colourbar(title = "Standardized count")) #+
-  #annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3) 
+
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
 #   geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
 #   geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
@@ -183,7 +162,7 @@ vjust = -0.5),
 umap_data_with_hb_id <- as.data.frame(do.call(cbind, hb_obj_s_curve$data_hb_id))
   
 model_object <- fit_highd_model( training_data = s_curve_noise_training, 
-                                 nldr_df_with_id = s_curve_noise_umap, 
+                                 nldr_df_with_id = s_curve_noise_umap_scaled, 
                                  x = "UMAP1", y = "UMAP2", 
                                  num_bins_x = num_bins_x_s_curve, 
                                  num_bins_y = num_bins_y_s_curve, 
@@ -196,22 +175,22 @@ model_object <- fit_highd_model( training_data = s_curve_noise_training,
                                  col_start_highd = "x")
 df_bin_centroids_s_curve <- model_object$df_bin_centroids
 df_bin_s_curve <- model_object$df_bin
-cell_count_plot <- ggplot(df_bin_centroids_s_curve, aes(x = reorder(as.factor(hexID), -std_counts), y =
-std_counts)) +
-  geom_quasirandom() + xlab("hexagonal id") + ylab("Standardized cell count") +
-  geom_hline(yintercept = 0.2, colour = "#de2d26") +
-  theme(axis.text = element_text(size = 5),
-        axis.title = element_text(size = 7),
-        axis.text.x = element_text(angle = 90))
-benchmark_value_rm_lwd <- stats::quantile(df_bin_centroids_s_curve$std_counts, 
-                probs = c(0,0.25,0.5,0.75,1), names = FALSE)[2]
-df_bin_centroids_low <- df_bin_centroids_s_curve |>
-  dplyr::filter(std_counts <= benchmark_value_rm_lwd)
-identify_rm_bins <- find_low_dens_hex(df_bin_centroids_all = df_bin_centroids_s_curve, 
-                                      num_bins_x = num_bins_x_s_curve, 
-                                      df_bin_centroids_low = df_bin_centroids_low)
-df_bin_centroids_s_curve <- df_bin_centroids_s_curve |>
-  dplyr::filter(!(hexID %in% identify_rm_bins))
+# cell_count_plot <- ggplot(df_bin_centroids_s_curve, aes(x = reorder(as.factor(hexID), -std_counts), y =
+# std_counts)) +
+#   geom_quasirandom() + xlab("hexagonal id") + ylab("Standardized cell count") +
+#   geom_hline(yintercept = 0.2, colour = "#de2d26") +
+#   theme(axis.text = element_text(size = 5),
+#         axis.title = element_text(size = 7),
+#         axis.text.x = element_text(angle = 90))
+# benchmark_value_rm_lwd <- stats::quantile(df_bin_centroids_s_curve$std_counts, 
+#                 probs = c(0,0.25,0.5,0.75,1), names = FALSE)[2]
+# df_bin_centroids_low <- df_bin_centroids_s_curve |>
+#   dplyr::filter(std_counts <= benchmark_value_rm_lwd)
+# identify_rm_bins <- find_low_dens_hex(df_bin_centroids_all = df_bin_centroids_s_curve, 
+#                                       num_bins_x = num_bins_x_s_curve, 
+#                                       df_bin_centroids_low = df_bin_centroids_low)
+# df_bin_centroids_s_curve <- df_bin_centroids_s_curve |>
+#   dplyr::filter(!(hexID %in% identify_rm_bins))
 pcentroid_plot_s_curve <- ggplot(data = hex_grid, aes(x = x, y = y)) +
   geom_polygon(fill = "white", color = "black", aes(group = hex_poly_id)) +
   geom_point(data = df_bin_centroids_s_curve, aes(x = c_x, y = c_y), color = "#33a02c") +
@@ -223,26 +202,7 @@ pcentroid_plot_s_curve <- ggplot(data = hex_grid, aes(x = x, y = y)) +
         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) 
-rm_centroid_df <- df_bin_centroids_low |> 
-  dplyr::filter(hexID %in% identify_rm_bins)
-p2_n_rm_correct <- ggplot(data = hex_full_count_df_loop2, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-  geom_text(data = hex_full_count_df_filtered[6, ], color = "red", aes(x = c_x, y = c_y, group = hexID, label =
-"X", size = 0.5)) +
-  #geom_point(data = UMAP_data, aes(x = UMAP1, y = UMAP2), alpha = 0.5) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
-  #coord_cartesian(xlim =c(-5, 7), ylim = c(-10, 10)) +
-  theme_void() +
-  theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
-vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
-        legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) +
-  guides(fill = guide_colourbar(title = "Standardized count")) #+
-  #annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3) 
+
 ## Triangulate bin centroids
 tr1_object_s_curve <- tri_bin_centroids(df_bin_centroids_s_curve, x = "c_x", y = "c_y")
 tr_from_to_df_s_curve <- gen_edges(tri_object = tr1_object_s_curve)
@@ -255,6 +215,7 @@ distance_s_curve <- cal_2d_dist(tr_coord_df = tr_from_to_df_s_curve,
 # distance_plot
 ## To find the benchmark value
 benchmark_s_curve <- find_lg_benchmark(distance_edges = distance_s_curve, distance_col = "distance")
+benchmark_s_curve <- 0.5
 #distance_plot <- plot_dist(distance_s_curve) +
 #   geom_hline(yintercept = benchmark_s_curve, linetype="solid",
 #                color = "red", size=0.8, alpha = 0.5) +
@@ -311,6 +272,11 @@ The mains steps for the hexagonal binning algorithm can be executed by the main 
 **Step 3: Create the hexagonal grid**
 
 **Step 4: Assign NLDR data to hexagons**
+
+```{r}
+
+
+```
 
 ### Obtain bin centroids/ means
 
