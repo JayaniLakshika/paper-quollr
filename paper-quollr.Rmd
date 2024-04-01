@@ -103,6 +103,8 @@ theme_set(theme_linedraw() +
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
+The paper is organized as follows. Section **Methodology** details the main steps of the algorithm. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study clustering data set in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
+
 # Methodology
 
 <!--explain algorithm steps in summary-->
@@ -264,8 +266,7 @@ trimesh_colored_s_curve_umap <- trimesh_colored_s_curve_umap +
   annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) +
   labs(colour = "")
 
-trimesh_removed_s_curve_umap <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value =
-benchmark_s_curve, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
+trimesh_removed_s_curve_umap <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value = benchmark_s_curve, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
 trimesh_removed_s_curve_umap <- trimesh_removed_s_curve_umap +
   theme_linedraw() +
   theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
@@ -274,6 +275,26 @@ trimesh_removed_s_curve_umap <- trimesh_removed_s_curve_umap +
         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   annotate(geom = 'text', label = 'c', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
+
+trimesh_removed_s_curve_umap_0.3 <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value = 0.3, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
+trimesh_removed_s_curve_umap_0.3 <- trimesh_removed_s_curve_umap_0.3 +
+  theme_linedraw() +
+  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
+
+trimesh_removed_s_curve_umap_0.8 <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value = 0.8, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
+trimesh_removed_s_curve_umap_0.8 <- trimesh_removed_s_curve_umap_0.8 +
+  theme_linedraw() +
+  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
 
 df_all_s_curve <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), umap_data_with_hb_id)
 
@@ -418,6 +439,8 @@ df_bin <- avg_highd_data(data = df_all, col_start = "x")
 
 ## Model parameters
 
+<!--discuss about default settings-->
+
 Mainly there are two model parameter need to consider: benchmark value to remove the low-density hexagons, and benchmark value to remove the long edges. `find_low_dens_hex()` is used to find the hexagons which contains less number of points by considering the density of their neighboring points as well. In here, user can first decide which are the low-density hexagons and pass them to this function to check whether these removal of low-density hexagons can affect the model fit by looking at the the neighbors. On the other hand, `find_lg_benchmark()` function is used to compute the threshold for removing long edges.
 
 ```{r, echo=TRUE, eval=FALSE}
@@ -497,12 +520,19 @@ The package provides four basic visualizations which includes three visualizatio
 ### 2D model visualization
 
 <!--2D model vis: triangular mesh, colored trimesh, removed edge trimesh-->
-To visualize the 2D model, mainly three functions are used. As shown in Figure \@ref(fig:mesh-plots)a, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \@ref(fig:mesh-plots)b, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed 2D model which is the 2D model after removing the long edges (see Figure \@ref(fig:mesh-plots)c). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in 2D.
+To visualize the 2D model, mainly three functions are used. As shown in Figure \@ref(fig:mesh-plots)a, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \@ref(fig:mesh-plots)b, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed 2D model which is the 2D model after removing the long edges (see Figure \@ref(fig:mesh-plots)c). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in 2D. Using small value of `benchmark_value`, will produce a triangular mesh with missing data structure; for example `benchmark_value = 0.3` shows two clusters rather than continuous structure, while `benchmark_value = 0.8` creates long edges and mislead the data structure in $p-D$ space.
 
 ```{r mesh-plots, out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."}
 
 trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
   plot_layout(ncol = 3) &
+  theme(plot.tag = element_text(size = 8))
+```
+
+```{r mesh-diffplots, out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space with different benchmark value applied to remove long edges: (a) benchmark_value = 0.3, and (b) benchmark_value = 0.8. Small benchmark values will generate misleading data structures in 2D space, while; large bechmark value will generate more long edges in $p-D$ and miinterpret the $p-D$ data structure."}
+
+trimesh_removed_s_curve_umap_0.3 + trimesh_removed_s_curve_umap_0.8 +
+  plot_layout(ncol = 2) &
   theme(plot.tag = element_text(size = 8))
 ```
 
