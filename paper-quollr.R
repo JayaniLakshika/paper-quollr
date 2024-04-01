@@ -16,6 +16,7 @@ library(kableExtra)
 library(ggplot2)
 library(dplyr)
 library(ggbeeswarm)
+library(patchwork)
 
 set.seed(20240110)
 
@@ -68,11 +69,23 @@ df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df,
 ## remove low-density hexagons
 hex_grid_with_counts <- dplyr::left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hb_id"))
 
-p2_n <-  ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-  #geom_point(data = UMAP_data, aes(x = UMAP1, y = UMAP2), alpha = 0.5) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
-  #coord_cartesian(xlim =c(-5, 7), ylim = c(-10, 10)) +
+centroid_plot <- ggplot(data = all_centroids_df, aes(x = c_x, y = c_y)) +
+  geom_point(color = "#33a02c") +
+  coord_fixed() +
+  theme_void() +
+  theme(plot.title = element_text(size = 7, hjust = 0.5,
+vjust = -0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=8), #change legend title font size
+        legend.text = element_text(size=6)) 
+
+full_grid <- ggplot(data = hex_grid, aes(x = x, y = y)) +
+  geom_polygon(fill = "#ffffff", color = "black", aes(group = hex_poly_id)) +
+  geom_point(data = all_centroids_df, aes(x = c_x, y = c_y), color = "#33a02c") +
+  coord_fixed() +
   theme_void() +
   theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
 vjust = -0.5),
@@ -81,15 +94,23 @@ vjust = -0.5),
         axis.text.y = element_blank(), axis.ticks.y = element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
         legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) +
-  guides(fill = guide_colourbar(title = "Standardized count")) #+
-  #annotate(geom = 'text', label = "b", x = -Inf, y = Inf, hjust = -0.3, vjust = 1, size = 3) 
+        legend.text = element_text(size=6)) 
 
-# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-#   geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
-#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-#   coord_fixed()
+std_pts_grid <-  ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
+  geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
+  geom_point(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2), color = "black", alpha = 1) +
+  scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
+  coord_fixed() +
+  theme_void() +
+  theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
+vjust = -0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
+        legend.title = element_text(size=8), #change legend title font size
+        legend.text = element_text(size=6)) 
+
 umap_data_with_hb_id <- as.data.frame(do.call(cbind, hb_obj_s_curve$data_hb_id))
   
 model_object <- fit_highd_model( training_data = s_curve_noise_training, 
@@ -106,33 +127,8 @@ model_object <- fit_highd_model( training_data = s_curve_noise_training,
                                  col_start_highd = "x")
 df_bin_centroids_s_curve <- model_object$df_bin_centroids
 df_bin_s_curve <- model_object$df_bin
-# cell_count_plot <- ggplot(df_bin_centroids_s_curve, aes(x = reorder(as.factor(hexID), -std_counts), y =
-# std_counts)) +
-#   geom_quasirandom() + xlab("hexagonal id") + ylab("Standardized cell count") +
-#   geom_hline(yintercept = 0.2, colour = "#de2d26") +
-#   theme(axis.text = element_text(size = 5),
-#         axis.title = element_text(size = 7),
-#         axis.text.x = element_text(angle = 90))
-# benchmark_value_rm_lwd <- stats::quantile(df_bin_centroids_s_curve$std_counts, 
-#                 probs = c(0,0.25,0.5,0.75,1), names = FALSE)[2]
-# df_bin_centroids_low <- df_bin_centroids_s_curve |>
-#   dplyr::filter(std_counts <= benchmark_value_rm_lwd)
-# identify_rm_bins <- find_low_dens_hex(df_bin_centroids_all = df_bin_centroids_s_curve, 
-#                                       num_bins_x = num_bins_x_s_curve, 
-#                                       df_bin_centroids_low = df_bin_centroids_low)
-# df_bin_centroids_s_curve <- df_bin_centroids_s_curve |>
-#   dplyr::filter(!(hexID %in% identify_rm_bins))
-pcentroid_plot_s_curve <- ggplot(data = hex_grid, aes(x = x, y = y)) +
-  geom_polygon(fill = "white", color = "black", aes(group = hex_poly_id)) +
-  geom_point(data = df_bin_centroids_s_curve, aes(x = c_x, y = c_y), color = "#33a02c") +
-  coord_equal() +
-  theme_linedraw() +
-  theme(legend.position = "bottom", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) 
+
+
 
 ## Triangulate bin centroids
 tr1_object_s_curve <- tri_bin_centroids(df_bin_centroids_s_curve, x = "c_x", y = "c_y")
@@ -142,22 +138,26 @@ distance_s_curve <- cal_2d_dist(tr_coord_df = tr_from_to_df_s_curve,
                              start_x = "x_from", start_y = "y_from", 
                              end_x = "x_to", end_y = "y_to", 
                              select_vars = c("from", "to", "distance"))
-# 
-# distance_plot
+
 ## To find the benchmark value
 benchmark_s_curve <- find_lg_benchmark(distance_edges = distance_s_curve, distance_col = "distance")
 benchmark_s_curve <- 0.5
-#distance_plot <- plot_dist(distance_s_curve) +
-#   geom_hline(yintercept = benchmark_s_curve, linetype="solid",
-#                color = "red", size=0.8, alpha = 0.5) +
-#  ylab(expression(d^{(2)})) +
-#  theme(axis.text = element_text(size = 5),
-#        axis.title = element_text(size = 12))
-# ggplot() +
-# geom_trimesh(data = df_bin_centroids_pbmc, mapping = aes(x = c_x, y = c_y))
-trimesh_s_curve_umap <- vis_lg_mesh(distance_edges = distance_s_curve, benchmark_value = benchmark_s_curve,
-tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
-trimesh_s_curve_umap <- trimesh_s_curve_umap +
+
+trimesh_s_curve <- ggplot(df_bin_centroids_s_curve, aes(x = c_x, y = c_y)) +
+  geom_trimesh() +
+  theme_linedraw() +
+  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) +
+  labs(colour = "")
+
+trimesh_colored_s_curve_umap <- vis_lg_mesh(distance_edges = distance_s_curve, benchmark_value = benchmark_s_curve,
+tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance") 
+
+trimesh_colored_s_curve_umap <- trimesh_colored_s_curve_umap +
   theme_linedraw() +
   theme(legend.position = "bottom", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
         axis.title.x = element_blank(), axis.title.y = element_blank(),
@@ -166,6 +166,7 @@ trimesh_s_curve_umap <- trimesh_s_curve_umap +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) +
   labs(colour = "")
+
 trimesh_removed_s_curve_umap <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value =
 benchmark_s_curve, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
 trimesh_removed_s_curve_umap <- trimesh_removed_s_curve_umap +
@@ -179,12 +180,80 @@ trimesh_removed_s_curve_umap <- trimesh_removed_s_curve_umap +
 
 df_all_s_curve <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), umap_data_with_hb_id)
 
-show_langevitour(df_all_s_curve, df_bin_s_curve, df_bin_centroids_s_curve, benchmark_s_curve, distance_s_curve, "distance", col_start = "x")
+# show_langevitour(df_all_s_curve, df_bin_s_curve, df_bin_centroids_s_curve, benchmark_s_curve, distance_s_curve, "distance", col_start = "x")
+
+### Define type column
+df <- df_all_s_curve |>
+  dplyr::select(tidyselect::starts_with("x")) |>
+  dplyr::mutate(type = "data") ## original dataset
+
+df_b <- df_bin_s_curve |>
+  dplyr::filter(hb_id %in% df_bin_centroids_s_curve$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b <- df_b[match(df_bin_centroids_s_curve$hexID, df_b$hb_id),] |>
+  dplyr::select(-hb_id)
+df_exe <- dplyr::bind_rows(df_b, df)
+## Set the maximum difference as the criteria
+distance_df_small_edges <- distance_s_curve |>
+  dplyr::filter(distance < benchmark_s_curve)
+## Since erase brushing is considerd.
+tour <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = distance_df_small_edges$from,
+                         lineTo = distance_df_small_edges$to,
+                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c("#6a3d9a", "#33a02c"))
+
+
+## ----out.width="100%", fig.cap = "Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin."----
+
+centroid_plot + full_grid + std_pts_grid +
+  plot_annotation(tag_levels = 'a') +
+  plot_layout(ncol = 3) &
+  theme(plot.tag = element_text(size = 8))
 
 
 ## -----------------------------------------------------------------------------
+## Prediction for training data
+pred_emb_list_training <- predict_emb(test_data = s_curve_noise_training, 
+                             df_bin_centroids = df_bin_centroids_s_curve, 
+                             df_bin = df_bin_s_curve, type_NLDR = "UMAP")
+pred_df_training <- as.data.frame(do.call(cbind, pred_emb_list_training))
+
+pred_points_training <- ggplot(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2)) +
+  geom_point() +
+  geom_point(data = pred_df_training, aes(x = pred_UMAP_1, y = pred_UMAP_2), colour = "#de2d26") +
+  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
+
+## Prediction for test data
+pred_emb_list_test <- predict_emb(test_data = s_curve_noise_test, 
+                             df_bin_centroids = df_bin_centroids_s_curve, 
+                             df_bin = df_bin_s_curve, type_NLDR = "UMAP")
+pred_df_test <- as.data.frame(do.call(cbind, pred_emb_list_test))
+
+pred_points_test <- ggplot(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2)) +
+  geom_point() +
+  geom_point(data = pred_df_test, aes(x = pred_UMAP_1, y = pred_UMAP_2), colour = "#de2d26") +
+  annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
 
 
+
+## ----out.width="100%", fig.cap = "Predicted 2D embedding overlaid with UMAP embedding of S-curve training data: (a) prediction of 2D embeddings for S-curve training data, and (b) prediction of 2D embeddings for S-curve test data. Once the high-D model is generated, first, for the new data points the nearest high-D mappings of hexagonal bin centroids find by computing Euclidean distance. Then, mapping back the 2D hexagonal bin centroids gives the prediction for the new data points."----
+
+pred_points_training + pred_points_test +
+  plot_layout(ncol = 2) &
+  theme(plot.tag = element_text(size = 8))
+
+
+## ----out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."----
+
+trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
+  plot_layout(ncol = 3) &
+  theme(plot.tag = element_text(size = 8))
+
+
+## -----------------------------------------------------------------------------
+tour
 
 
 ## ----echo=FALSE---------------------------------------------------------------
