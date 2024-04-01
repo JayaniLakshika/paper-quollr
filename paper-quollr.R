@@ -2,9 +2,11 @@
 # Please edit paper-quollr.Rmd to modify this file
 
 ## ----setup, include=FALSE-----------------------------------------------------
-knitr::opts_chunk$set(warning = FALSE, 
-                      message = FALSE,
-                      echo = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  cache=FALSE, 
+  message=FALSE, 
+  warning=FALSE)
 
 
 
@@ -17,6 +19,7 @@ library(ggplot2)
 library(dplyr)
 library(ggbeeswarm)
 library(patchwork)
+library(Rtsne)
 
 set.seed(20240110)
 
@@ -245,6 +248,16 @@ pred_points_training + pred_points_test +
   theme(plot.tag = element_text(size = 8))
 
 
+## ----echo=TRUE----------------------------------------------------------------
+gen_summary(test_data = s_curve_noise_training, prediction_df = pred_df_training,
+df_bin = df_bin_s_curve, col_start = "x")
+
+
+## ----echo=TRUE----------------------------------------------------------------
+gen_summary(test_data = s_curve_noise_test, prediction_df = pred_df_test,
+df_bin = df_bin_s_curve, col_start = "x")
+
+
 ## ----out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."----
 
 trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
@@ -252,7 +265,7 @@ trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
   theme(plot.tag = element_text(size = 8))
 
 
-## -----------------------------------------------------------------------------
+## ----tour-s-curve-------------------------------------------------------------
 tour
 
 
@@ -365,8 +378,6 @@ clust_df <- clust_df |>
 
 
 ## -----------------------------------------------------------------------------
-library(Rtsne)
-
 tSNE_fit <- clust_df |>
   dplyr::select(-ID) |>
   dplyr::select(where(is.numeric)) |>
@@ -387,6 +398,8 @@ tSNE_df_plot <- tSNE_df |>
         axis.text = element_text(size = 5),
         axis.title = element_text(size = 7))
 
+
+## ----tsne-clust, out.width="100%", fig.cap="tSNE representation of data with perplexity: 39. Is this representation accurately capture the structure in high dimensions?"----
 tSNE_df_plot
 
 
@@ -487,9 +500,11 @@ mse_clust_plot <- ggplot(mse_df_clust, aes(x = num_bins,
   theme(legend.position = "none", legend.title = element_blank(), plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
         axis.title = element_text(size = 7),
         axis.text = element_text(size = 7)) +
-  ylab("MSE") +
+  ylab("log(MSE)") +
   xlab("total number of bins")
 
+
+## ----fig.cap="Parameter tuning plots, where the best choice of parameter at a large drop in MSE. Here, these are at *total number of bins* = 180."----
 mse_clust_plot
 
 

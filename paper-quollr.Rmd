@@ -1,7 +1,7 @@
 ---
 title: "quollr: An R Package for Visualizing 2D Models from Nonlinear Dimension Reductions in High Dimensional Space"
 abstract: >
-  An abstract of less than 150 words.
+  Non-Linear Dimension Reduction (NLDR) techniques have emerged as powerful tools to visualize high-dimensional ($p$-D) data. However, their complexity and parameter choices may lead to distrustful or misleading results. The R package \CRANpkg{quollr} is developed as a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data. Clustering data from \CRANpkg{cardinalR} package, is used to illustrate the algorithm and its use within the paackage.
 draft: true
 author:  
   - name: Jayani P.G. Lakshika
@@ -33,20 +33,24 @@ author:
     email: ttalagala@sjp.ac.lk
     orcid: 0000-0002-0656-9789
 type: package
+creative_commons: CC BY
+date: "`r Sys.Date()`"
 preamble: >
   \usepackage{amsmath}
   \usepackage{array}
 output: 
-  rjtools::rjournal_article:
-    self_contained: yes
-    toc: no
+ rjtools::rjournal_web_article:
+    css: "style.css"
+    keep_md: true
 bibliography: RJreferences.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, 
-                      message = FALSE,
-                      echo = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  cache=FALSE, 
+  message=FALSE, 
+  warning=FALSE)
 
 ```
 
@@ -59,6 +63,7 @@ library(ggplot2)
 library(dplyr)
 library(ggbeeswarm)
 library(patchwork)
+library(Rtsne)
 
 set.seed(20240110)
 ```
@@ -94,25 +99,48 @@ theme_set(theme_linedraw() +
 
 # Introduction
 
+<!-- research gap: add about hexbin pkg, and emphasize that in our package provide regular hexagons-->
+<!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
 # Methodology
 
 <!--explain algorithm steps in summary-->
+Our algorithm mainly consists of two steps: (1) construct the model in 2D space, and (2) lift the model into high dimensions. Constructing the model in 2D space involves: (1) scaling NLDR data, (2) binning data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means. The implementation of these steps are described in detail in the following section.
 
 # Implementation
 
 The package can be installed from CRAN:
 
-```install.packages("quollr")```
+```r
+install.packages("quollr")
+```
 
 The development version can be installed from GitHub:
 
-```devtools::install_github("JayaniLakshika/quollr")```
+```r
+devtools::install_github("JayaniLakshika/quollr")
+```
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`.
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+
+```{r, echo=TRUE, eval=FALSE}
+model_object <- fit_highd_model( training_data = s_curve_noise_training, 
+                                 nldr_df_with_id = s_curve_noise_umap_scaled, 
+                                 x = "UMAP1", y = "UMAP2", 
+                                 num_bins_x = num_bins_x_s_curve, 
+                                 num_bins_y = num_bins_y_s_curve, 
+                                 x_start = NA, y_start = NA, 
+                                 buffer_x = NA, buffer_y = NA, 
+                                 hex_size = hex_size_s_curve,
+                                 is_bin_centroid = TRUE,
+                                 is_rm_lwd_hex = FALSE, 
+                                 benchmark_to_rm_lwd_hex = NA, 
+                                 col_start_2d = "UMAP", 
+                                 col_start_highd = "x")
+```
 
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
@@ -281,12 +309,35 @@ tour <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
 
 The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization.
 
+```{r, echo=TRUE, eval=FALSE}
+s_curve_noise_umap_scaled <- gen_scaled_data(data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2")
+```
+
 <!-- add plot before and after scaling NLDR data-->
 
 ### Binning data 
 
+**Step 1: Compute hexagonal grid configurations**
+
+```{r, echo=TRUE, eval=FALSE}
+bin_list <- calc_bins(data = s_curve_noise_umap_scaled, x = "UMAP1", 
+                      y = "UMAP2", hex_size = NA, buffer_x = NA, buffer_y = NA)
+
+num_bins_x <- bin_list$num_x
+num_bins_y <- bin_list$num_y
+```
+
 The mains steps for the hexagonal binning algorithm can be executed by the main function `hex_binning()`, or can be run separately for more flexibility.
-<!-- add about main function for hexagonal bining-->
+<!-- add about main function for hexagonal binning-->
+
+```{r, echo=TRUE, eval=FALSE}
+hb_obj <- hex_binning(data = s_curve_noise_umap_scaled, x = "UMAP1", 
+                      y = "UMAP2", num_bins_x = num_bins_x, 
+                      num_bins_y = num_bins_y, x_start = NA, y_start = NA, 
+                      buffer_x = NA, buffer_y = NA, hex_size = NA, 
+                      col_start = "UMAP")
+
+```
 
 ```{r, out.width="100%", fig.cap = "Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin."}
 
@@ -296,29 +347,94 @@ centroid_plot + full_grid + std_pts_grid +
   theme(plot.tag = element_text(size = 8))
 ```
 
-**Step 1: Compute hexagonal grid configurations**
-
 **Step 2: Generate the hexagonal bin centroids**
+
+```{r, echo=TRUE, eval=FALSE}
+centroid_list <- gen_centroids(data = s_curve_noise_umap_scaled, x = "UMAP1", 
+                               y = "UMAP2", num_bins_x = num_bins_x,
+                               num_bins_y = num_bins_y, x_start = NA,
+                               y_start = NA, buffer_x = NA, buffer_y = NA, 
+                               hex_size = NA)
+
+all_centroids_df <- as.data.frame(do.call(cbind, centroid_list))
+```
 
 **Step 3: Create the hexagonal grid**
 
+```{r, echo=TRUE, eval=FALSE}
+all_hex_coordinates_list <- gen_hex_coord(centroids_df = all_centroids_df,
+                                            hex_size = NA)
+```
+
 **Step 4: Assign NLDR data to hexagons**
+
+```{r, echo=TRUE, eval=FALSE}
+df_with_hb_id_list <- assign_data(data = s_curve_noise_umap_scaled |> 
+                                    dplyr::select(-ID), 
+                                  centroid_df = all_centroids_df, 
+                                  col_start = "UMAP")
+umap_data_with_hb_id <- as.data.frame(do.call(cbind, df_with_hb_id_list))
+```
+
+```{r, echo=TRUE, eval=FALSE}
+std_counts_list <- compute_std_counts(data_hex_id = df_with_hex_id)
+counts_df <- as.data.frame(do.call(cbind, std_counts_list))
+```
+
 
 ### Obtain bin centroids/ means
 
 To obtain hexagonal bin centroids, `extract_hexbin_centroids()`is used. The function `extract_hexbin_mean()` is used to obtain average within each hexagon. 
 
+```{r, echo=TRUE, eval=FALSE}
+df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df, 
+                                             counts_df = counts_df)
+```
+
+```{r, echo=TRUE, eval=FALSE}
+df_bin_means <- extract_hexbin_mean(nldr_df_with_hex_id = umap_with_hb_id,
+                                        counts_df = counts_df)
+```
+
 ### Triangulate bin centroids/ means
 
 The `tri_bin_centroids()` is used to do triangulate bin centroids/ bin means. Then, `gen_edges()` compute the edges to obtain the triangular mesh which is the 2D model.
+
+```{r, echo=TRUE, eval=FALSE}
+tr1_object <- tri_bin_centroids(hex_df = df_bin_centroids, x = "c_x", y = "c_y")
+tr_from_to_df <- gen_edges(tri_object = tr1_object)
+```
 
 ## Lifting the model into high dimensions
 
 The $p$-D model is generated by `avg_highd_data()` by passing the $p$-D data. 
 
-## Tuning model parameters
+```{r, echo=TRUE, eval=FALSE}
+df_all <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID),
+                           umap_data_with_hb_id)
+
+df_bin <- avg_highd_data(data = df_all, col_start = "x")
+```
+
+## Model parameters
 
 Mainly there are two model parameter need to consider: benchmark value to remove the low-density hexagons, and benchmark value to remove the long edges. `find_low_dens_hex()` is used to find the hexagons which contains less number of points by considering the density of their neighboring points as well. In here, user can first decide which are the low-density hexagons and pass them to this function to check whether these removal of low-density hexagons can affect the model fit by looking at the the neighbors. On the other hand, `find_lg_benchmark()` function is used to compute the threshold for removing long edges.
+
+```{r, echo=TRUE, eval=FALSE}
+df_bin_centroids_low <- df_bin_centroids |> dplyr::filter(std_counts <= 0.43)
+
+low_dens_hex <- find_low_dens_hex(df_bin_centroids_all = df_bin_centroids, 
+                  num_bins_x = num_bins_x, 
+                  df_bin_centroids_low = df_bin_centroids_low)
+```
+
+```{r, echo=TRUE, eval=FALSE}
+distance_df <- cal_2d_dist(tr_coord_df = tr_from_to_df, start_x = "x_from", 
+                           start_y = "y_from", end_x = "x_to", end_y = "y_to",
+                           select_vars = c("from", "to", "distance"))
+
+benchmark_val <- find_lg_benchmark(distance_edges = distance_df, distance_col = "distance")
+```
 
 ## Prediction
 
@@ -360,6 +476,16 @@ pred_points_training + pred_points_test +
 
 As a Goodness of fit statistics for the model, `gen_summary()` is used to compute residuals and MSE. For the fitted model, how residuals and MSE is changing is shown in Figure 2.
 
+```{r, echo=TRUE}
+gen_summary(test_data = s_curve_noise_training, prediction_df = pred_df_training,
+df_bin = df_bin_s_curve, col_start = "x")
+```
+
+```{r, echo=TRUE}
+gen_summary(test_data = s_curve_noise_test, prediction_df = pred_df_test,
+df_bin = df_bin_s_curve, col_start = "x")
+```
+
 <!--add a plot with total bins Vs MSE, non-empty bins Vs Error-->
 
 ## Visualizations
@@ -371,9 +497,9 @@ The package provides four basic visualizations which includes three visualizatio
 ### 2D model visualization
 
 <!--2D model vis: triangular mesh, colored trimesh, removed edge trimesh-->
-To visualize the 2D model, mainly three functions are used. As shown in Figure 1, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure 1, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed 2D model which is the 2D model after removing the long edges (see Figure 1). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in 2D.
+To visualize the 2D model, mainly three functions are used. As shown in Figure \@ref(fig:mesh-plots)a, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \@ref(fig:mesh-plots)b, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed 2D model which is the 2D model after removing the long edges (see Figure \@ref(fig:mesh-plots)c). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in 2D.
 
-```{r, out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."}
+```{r mesh-plots, out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."}
 
 trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
   plot_layout(ncol = 3) &
@@ -386,8 +512,15 @@ trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
 
 The $p$-D model overlaid on data is visualized by the function `show_langevitour()`. This is a useful dynamic visualization result to validate visually whether the model fits the data well or not.
 
+```{r, echo=TRUE, eval=FALSE}
+tour <- show_langevitour(df = df_all, df_b = df_bin, 
+                 df_b_with_center_data = df_bin_centroids, benchmark_value = 0.5, 
+                 distance = distance_df, distance_col = "distance", 
+                 use_default_benchmark_val = FALSE, col_start = "x")
+```
+
 <!--need to add screenshots of the frames and add the link of the video-->
-```{r}
+```{r tour-s-curve}
 tour
 ```
 
@@ -403,6 +536,8 @@ tour
 All functions have tests written and implemented using the \CRANpkg{testthat} [@testthat] in R.
 
 # Application
+
+We illustrate the use of the algorithm by applying it to `clusters_different_shapes_diff_num_points` dataset in `cardinalR` package. The tSNE is used in the example for the demonstration (see Figure \@ref(fig:tsne-clust)). 
 
 <!--select a dataset from cardinalR-->
 <!-- diff shape clusters-->
@@ -507,6 +642,8 @@ clusters_different_shapes_diff_num_points <- function(sample_size = 400, with_se
 }
 ```
 
+<!--need to add screen shots of the original data-->
+
 ```{r}
 clust_df <- clusters_different_shapes_diff_num_points(sample_size = 1500, with_seed = NULL, cluster_size_vec = c(250, 150, 150, 150, 350, 450), num_gussian_clusters = 4, num_non_gaussian_clusters = 2, cluster_sd_gau = 0.2, cluster_sd_non_gau = 0.3, num_dims = 7, a = 2, b = 4)
 
@@ -517,8 +654,6 @@ clust_df <- clust_df |>
 ```
 
 ```{r}
-library(Rtsne)
-
 tSNE_fit <- clust_df |>
   dplyr::select(-ID) |>
   dplyr::select(where(is.numeric)) |>
@@ -538,9 +673,20 @@ tSNE_df_plot <- tSNE_df |>
   theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"),
         axis.text = element_text(size = 5),
         axis.title = element_text(size = 7))
+```
 
+```{r tsne-clust, out.width="100%", fig.cap="tSNE representation of data with perplexity: 39. Is this representation accurately capture the structure in high dimensions?"}
 tSNE_df_plot
 ```
+
+## Selecting parameter values for hexagonal binning
+
+We previously introduced three key parameters, *hex_size*, *x_start*, and *y_start*, in our explanation of the algorithm. While their best choice is unknown, a visualization tool enables their tuning such that user can select reasonable values. 
+
+Consider the relationships between *total number of bins*, *starting point*, and MSE. Increase of *total number of bins* usually reduces the MSE.  
+
+<!--hex_size, starting point (x_start, y_start)-->
+<!--talk about to use bin centroids or bin means-->
 
 <!-- MSE plot to find which is the effective number of bins to use-->
 ```{r}
@@ -640,11 +786,21 @@ mse_clust_plot <- ggplot(mse_df_clust, aes(x = num_bins,
   theme(legend.position = "none", legend.title = element_blank(), plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
         axis.title = element_text(size = 7),
         axis.text = element_text(size = 7)) +
-  ylab("MSE") +
+  ylab("log(MSE)") +
   xlab("total number of bins")
+```
 
+```{r, fig.cap="Parameter tuning plots, where the best choice of parameter at a large drop in MSE. Here, these are at *total number of bins* = 180."}
 mse_clust_plot
 ```
+
+## Selecting parameter values for the model
+
+<!--benchmark value to remove low density hexagons, long edges-->
+
+## Fit the model
+
+To perform the algorithm on the clustering data, we first scale the tSNE data. We then let *number of bins along the x-axis* be $21$, *number of bins along the y-axis* be $28$, and *hex_size* be 0.03; see [Selecting parameter values] for further discussion and guidance regarding selection of these choices. 
 
 <!-- model with bin centroids-->
 ```{r}
