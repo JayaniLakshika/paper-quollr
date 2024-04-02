@@ -550,6 +550,14 @@ To perform the algorithm on the clustering data, we first scale the tSNE data. W
 
 # Conclusion
 
+This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in 2D, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
+
+The paper includes a clustering example to illustrate how `quollr` is useful to assess which NLDR technique and which hyperparameter choice gives the most accurate representation. In addition, how to select parameters for hexagonal binning and fitting model are explained.
+
+Possible future improvements would be...<!--assess the preservation of local and glocal structure w.r.t 2D and high-D distance comparison--> 
+
+This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of $p-D$ data.  
+
 # Acknowledgements
 
 This article is created using \CRANpkg{knitr} [@knitr] and \CRANpkg{rmarkdown} [@rmarkdown] in R with the `rjtools::rjournal_article` template. The source code for reproducing this paper can be found at: <https://github.com/JayaniLakshika/paper-quollr>.
