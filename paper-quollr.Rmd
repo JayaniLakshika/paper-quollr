@@ -109,81 +109,9 @@ theme_set(theme_linedraw() +
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
+This paper presents the R package, `quollr` which introduce a new tool in determining which NLDR technique and which hyperparameter choice gives most accurate representation of $p-D$ data. The methodology of the algorithm is explained in *cite the methodology paper*. Furthermore, the `quollr` package enables users to perform hexagonal binning [@dan2023], resulting in the generation of regular hexagons. The software is available from the Comphrehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
 
-
-```{r}
-tSNE_data <- read_rds("data/s_curve/s_curve_tsne_27.rds")
-
-plot_list1 <- tSNE_data |>
-  ggplot(aes(x = tSNE1,
-             y = tSNE2)) +
-  geom_point(alpha=0.1, size=1, colour="#e41a1c") +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-```
-
-```{r}
-UMAP_data <- read_rds(file = "data/s_curve/s_curve_umap.rds")
-
-#(n-neighbors: 50)
-plot_list2 <- UMAP_data |>
-  ggplot(aes(x = UMAP1,
-             y = UMAP2)) +
-  geom_point(alpha=0.1, size=1, colour="#377eb8") +
-  annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-```
-
-
-```{r}
-#(knn: 5)
-PHATE_data <- read_rds(file = "data/s_curve/s_curve_phate.rds")
-
-plot_list3 <- PHATE_data |>
-  ggplot(aes(x = PHATE1,
-             y = PHATE2)) +
-  geom_point(alpha=0.1, size=1, colour="#4daf4a") +
-  annotate(geom = 'text', label = 'c', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-```
-
-```{r}
-TriMAP_data <- read_rds(file = "data/s_curve/s_curve_trimap.rds")
-
-#(n-inliers: 5, \n n-outliers: 4, n-random: 3)
-plot_list4 <- TriMAP_data |>
-  ggplot(aes(x = TriMAP1,
-             y = TriMAP2)) +
-  geom_point(alpha=0.1, size=1, colour="#984ea3") +
-  annotate(geom = 'text', label = 'd', x = Inf, y = Inf, hjust = 1.5, vjust = 1.5, size = 3)
-
-```
-
-
-```{r}
-PaCMAP_data <- read_rds(file = "data/s_curve/s_curve_pacmap.rds")
-
-#(knn: 10, init: random, \n MN-ratio: 0.9, FP-ratio: 2)
-plot_list5 <- PaCMAP_data |>
-  ggplot(aes(x = PaCMAP1,
-             y = PaCMAP2)) +
-  geom_point(alpha=0.1, size=1, colour="#ff7f00") +
-  annotate(geom = 'text', label = 'e', x = Inf, y = Inf, hjust = 1.5, vjust = 1.5, size = 3)
-
-```
-
-```{r fig-nldervis, fig.cap="2D layouts from different NLDR techniques applied the same data: (a) tSNE (perplexity = 27), (b) UMAP (n_neighbors = 50), (c) PHATE (knn = 5), (d) TriMAP (n_inliers = 5, n_outliers = 4, n_random = 3), and (e) PaCMAP (n_neighbors = 10, init = random, MN_ratio = 0.9, FP_ratio = 2). Is there a best representation of the original data or are they all providing  equivalent information?"}
-
-plot_list1 + plot_list2 + plot_list3 + plot_list4 + plot_list5 +
-  plot_layout(ncol=5)
-```
-
-The paper is organized as follows. Section **Methodology** details the main steps of the algorithm. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study clustering data set in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
-
-# Methodology
-
-<!--explain algorithm steps in summary-->
-Our algorithm mainly consists of two steps: (1) construct the model in 2D space, and (2) lift the model into high dimensions. Constructing the model in 2D space involves: (1) scaling NLDR data, (2) binning data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means. The implementation of these steps are described in detail in the following section.
+The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study clustering data set in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
 
 # Implementation
 
