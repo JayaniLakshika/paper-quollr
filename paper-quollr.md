@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2024-04-02'
+date: '2024-04-04'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -108,7 +108,7 @@ devtools::install_github("JayaniLakshika/quollr")
 
 ## Package dependencies
 
-Understanding the dependencies of the "quollr" package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that `quollr` relies on to execute its functions effectively. 
+Understanding the dependencies of the `quollr` package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that `quollr` relies on to execute its functions effectively. 
 
 <div class="layout-chunk" data-layout="l-body">
 
@@ -126,7 +126,7 @@ $quollr
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`.
 
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fit the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>model_object</span> <span class='op'>&lt;-</span> <span class='fu'>fit_highd_model</span><span class='op'>(</span> training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
@@ -157,26 +157,33 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 
 ## Constructing the 2D model
 
+Constructing the 2D model mainly contains (1) preprocessing, (2) binning NLD data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means.
+
 ### Preprocessing
 <!--Discuss scaling the NLDR data-->
 
-The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization.
+The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. The user can set up the ratio of the width and height of the hexagon using the `hex_ratio` argument.
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>s_curve_noise_umap_scaled</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>s_curve_noise_umap</span>, x <span class='op'>=</span> <span class='st'>"UMAP1"</span>, y <span class='op'>=</span> <span class='st'>"UMAP2"</span><span class='op'>)</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>s_curve_noise_umap_scaled</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>s_curve_noise_umap</span>, </span>
+<span>                                             x <span class='op'>=</span> <span class='st'>"UMAP1"</span>, y <span class='op'>=</span> <span class='st'>"UMAP2"</span>, </span>
+<span>                                             hex_ratio <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></span></code></pre></div>
 
 </div>
 
 
 <!-- add plot before and after scaling NLDR data-->
+<!-- also can discuss about the tuning hex_ratio-->
 
 ### Binning data 
+
+In binning data step, the objective is to perform hexagonal binning and assign NLDR data to regualr hexagons.
 
 **Step 1: Compute hexagonal grid configurations**
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bin_list</span> <span class='op'>&lt;-</span> <span class='fu'>calc_bins</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, x <span class='op'>=</span> <span class='st'>"UMAP1"</span>, </span>
-<span>                      y <span class='op'>=</span> <span class='st'>"UMAP2"</span>, hex_size <span class='op'>=</span> <span class='cn'>NA</span>, buffer_x <span class='op'>=</span> <span class='cn'>NA</span>, buffer_y <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></span>
+<span>                      y <span class='op'>=</span> <span class='st'>"UMAP2"</span>, hex_size <span class='op'>=</span> <span class='fl'>0.1</span>, buffer_x <span class='op'>=</span> <span class='cn'>NA</span>, buffer_y <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></span>
 <span></span>
 <span><span class='va'>num_bins_x</span> <span class='op'>&lt;-</span> <span class='va'>bin_list</span><span class='op'>$</span><span class='va'>num_x</span></span>
 <span><span class='va'>num_bins_y</span> <span class='op'>&lt;-</span> <span class='va'>bin_list</span><span class='op'>$</span><span class='va'>num_y</span></span></code></pre></div>
@@ -433,16 +440,15 @@ The $p$-D model overlaid on data is visualized by the function `show_langevitour
 </div>
 
 
-<!--
-## Usage
-
--   dependencies
-
--   basic example-->
-
 ## Tests
 
 All functions have tests written and implemented using the \CRANpkg{testthat} [@testthat] in R.
+
+These tests illuminated the issues that allowed us to make meaningful changes and understand some pitfalls of the package.
+
+<!--in data processing, minus values, NA, Inf values for aspect_ratio or hex_ratio-->
+<!-- to check length of list objects-->
+<!-- add tests to find NAs, inf values are in NLDR data-->
 
 # Application
 

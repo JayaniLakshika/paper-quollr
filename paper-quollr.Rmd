@@ -129,7 +129,7 @@ devtools::install_github("JayaniLakshika/quollr")
 
 ## Package dependencies
 
-Understanding the dependencies of the "quollr" package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that `quollr` relies on to execute its functions effectively. 
+Understanding the dependencies of the `quollr` package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that `quollr` relies on to execute its functions effectively. 
 
 ```{r}
 package_dependencies("quollr")
@@ -139,7 +139,7 @@ package_dependencies("quollr")
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`.
 
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fit the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
 ```{r, echo=TRUE, eval=FALSE}
 model_object <- fit_highd_model( training_data = s_curve_noise_training, 
@@ -338,24 +338,32 @@ tour <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
 
 ## Constructing the 2D model
 
+Constructing the 2D model mainly contains (1) preprocessing, (2) binning NLD data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means.
+
 ### Preprocessing
 <!--Discuss scaling the NLDR data-->
 
-The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization.
+The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. The user can set up the ratio of the width and height of the hexagon using the `hex_ratio` argument.
 
 ```{r, echo=TRUE, eval=FALSE}
-s_curve_noise_umap_scaled <- gen_scaled_data(data = s_curve_noise_umap, x = "UMAP1", y = "UMAP2")
+s_curve_noise_umap_scaled <- gen_scaled_data(data = s_curve_noise_umap, 
+                                             x = "UMAP1", y = "UMAP2", 
+                                             hex_ratio = NA)
+
 ```
 
 <!-- add plot before and after scaling NLDR data-->
+<!-- also can discuss about the tuning hex_ratio-->
 
 ### Binning data 
+
+In binning data step, the objective is to perform hexagonal binning and assign NLDR data to regualr hexagons.
 
 **Step 1: Compute hexagonal grid configurations**
 
 ```{r, echo=TRUE, eval=FALSE}
 bin_list <- calc_bins(data = s_curve_noise_umap_scaled, x = "UMAP1", 
-                      y = "UMAP2", hex_size = NA, buffer_x = NA, buffer_y = NA)
+                      y = "UMAP2", hex_size = 0.1, buffer_x = NA, buffer_y = NA)
 
 num_bins_x <- bin_list$num_x
 num_bins_y <- bin_list$num_y
@@ -567,16 +575,15 @@ tour <- show_langevitour(df = df_all, df_b = df_bin,
 tour
 ```
 
-<!--
-## Usage
-
--   dependencies
-
--   basic example-->
-
 ## Tests
 
 All functions have tests written and implemented using the \CRANpkg{testthat} [@testthat] in R.
+
+These tests illuminated the issues that allowed us to make meaningful changes and understand some pitfalls of the package.
+
+<!--in data processing, minus values, NA, Inf values for aspect_ratio or hex_ratio-->
+<!-- to check length of list objects-->
+<!-- add tests to find NAs, inf values are in NLDR data-->
 
 # Application
 
