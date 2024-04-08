@@ -36,6 +36,23 @@ type: package
 preamble: >
   \usepackage{amsmath}
   \usepackage{array}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 output: 
   rjtools::rjournal_article:
     self_contained: yes
