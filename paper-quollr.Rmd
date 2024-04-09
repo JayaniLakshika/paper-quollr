@@ -137,19 +137,25 @@ package_dependencies("quollr")
 
 ## Usage
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`.
+The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training`, `s_curve_noise_test` and `s_curve_noise_umap`. 
+
+`s_curve_noise_training` is a $3-D$ S-curve dataset with additional four noise dimensions which is used to train the model. `s_curve_noise_test` is used for testing. `s_curve_noise_umap` is the UMAP $2-D$ embedding for `s_curve_noise_training` dataset. Each dataset contains a unique ID column.  
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fit the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+
+If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
+
+The number of bins along the x and y axes, hexagonal grid starting point, buffer size along the x and y axes, hexagon size, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example.  
 
 ```{r, echo=TRUE, eval=FALSE}
 model_object <- fit_highd_model( training_data = s_curve_noise_training, 
                                  nldr_df_with_id = s_curve_noise_umap_scaled, 
                                  x = "UMAP1", y = "UMAP2", 
-                                 num_bins_x = num_bins_x_s_curve, 
-                                 num_bins_y = num_bins_y_s_curve, 
+                                 num_bins_x = 8, 
+                                 num_bins_y = 14, 
                                  x_start = NA, y_start = NA, 
                                  buffer_x = NA, buffer_y = NA, 
-                                 hex_size = hex_size_s_curve,
+                                 hex_size = 0.1,
                                  is_bin_centroid = TRUE,
                                  is_rm_lwd_hex = FALSE, 
                                  benchmark_to_rm_lwd_hex = NA, 
@@ -336,14 +342,14 @@ tour <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          levelColors = c("#6a3d9a", "#33a02c"))
 ```
 
-## Constructing the 2D model
+## Constructing the 2-D model
 
-Constructing the 2D model mainly contains (1) preprocessing, (2) binning NLD data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means.
+Constructing the $2-D$ model mainly contains (1) preprocessing, (2) binning NLD data, (3) obtain bin centroids/ means, and (4) triangulate bin centroids/ means.
 
 ### Preprocessing
 <!--Discuss scaling the NLDR data-->
 
-The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. The user can set up the ratio of the width and height of the hexagon using the `hex_ratio` argument.
+The function `gen_scaled_data()` is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization. The user can set up the ratio of the width and height of the hexagon using the `hex_ratio` argument. `hex_ratio` will be determined within `gen_scaled_data()`, if it is not provided.  
 
 ```{r, echo=TRUE, eval=FALSE}
 s_curve_noise_umap_scaled <- gen_scaled_data(data = s_curve_noise_umap, 
@@ -357,9 +363,13 @@ s_curve_noise_umap_scaled <- gen_scaled_data(data = s_curve_noise_umap,
 
 ### Binning data 
 
-In binning data step, the objective is to perform hexagonal binning and assign NLDR data to regualr hexagons.
+In binning data step, the objective is to perform hexagonal binning and assign NLDR data to regular hexagons. 
 
 **Step 1: Compute hexagonal grid configurations**
+
+In the computation of hexagonal bin configurations, there are mainly two configurations to consider: the number of bins along the x and y axes. The `calc_bins()` function is used to compute these configurations. It uses the hexagonal size, and the buffer amount along the x and y axes.
+
+When computing the number of bins along the x and y axes, the process begins by calculating the range of the respective NLDR component. After that, the range is adjusted to accommodate the buffer amount. Then, the spacing between hexagons is determined based on hexagonal size. Finally, the number of bins along the axis is computed by dividing the adjusted range by the corresponding spacing. 
 
 ```{r, echo=TRUE, eval=FALSE}
 bin_list <- calc_bins(data = s_curve_noise_umap_scaled, x = "UMAP1", 
@@ -369,19 +379,18 @@ num_bins_x <- bin_list$num_x
 num_bins_y <- bin_list$num_y
 ```
 
-The mains steps for the hexagonal binning algorithm can be executed by the main function `hex_binning()`, or can be run separately for more flexibility.
-<!-- add about main function for hexagonal binning-->
+The mains steps for the hexagonal binning algorithm can be executed by the main function `hex_binning()`, or can be run separately for more flexibility. The number of bins along the x and y axes, hexagonal grid starting point, buffer size along the x and y axes, and hexagon size are parameters that will be determined within `hex_binning()`, if they are not provided. The results from various steps in the process are illustrated in Figure \@ref(fig:hex-bin). 
 
 ```{r, echo=TRUE, eval=FALSE}
 hb_obj <- hex_binning(data = s_curve_noise_umap_scaled, x = "UMAP1", 
-                      y = "UMAP2", num_bins_x = num_bins_x, 
-                      num_bins_y = num_bins_y, x_start = NA, y_start = NA, 
+                      y = "UMAP2", num_bins_x = 8, 
+                      num_bins_y = 14, x_start = NA, y_start = NA, 
                       buffer_x = NA, buffer_y = NA, hex_size = NA, 
                       col_start = "UMAP")
 
 ```
 
-```{r, out.width="100%", fig.cap = "Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin."}
+```{r hex-bin, out.width="100%", fig.cap = "Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin."}
 
 centroid_plot + full_grid + std_pts_grid +
   plot_annotation(tag_levels = 'a') +
@@ -391,10 +400,14 @@ centroid_plot + full_grid + std_pts_grid +
 
 **Step 2: Generate the hexagonal bin centroids**
 
+The process of generating hexagonal bin centroids begins by defining the starting coordinates for the hexagons. With the number of bins computed along the x and y axes, along with the horizontal and vertical spacing, the centroids are computed by adding corresponding spacing to the hexagonal grid starting point along the axes.
+
+The `gen_centroids()` function is used to compute all the centroids within the hexagonal grid after providing the number of bins along the x and y axes, hexagonal grid starting point, buffer size along the x and y axes, and hexagon size. 
+
 ```{r, echo=TRUE, eval=FALSE}
 centroid_list <- gen_centroids(data = s_curve_noise_umap_scaled, x = "UMAP1", 
-                               y = "UMAP2", num_bins_x = num_bins_x,
-                               num_bins_y = num_bins_y, x_start = NA,
+                               y = "UMAP2", num_bins_x = 8,
+                               num_bins_y = 14, x_start = NA,
                                y_start = NA, buffer_x = NA, buffer_y = NA, 
                                hex_size = NA)
 
@@ -403,12 +416,18 @@ all_centroids_df <- as.data.frame(do.call(cbind, centroid_list))
 
 **Step 3: Create the hexagonal grid**
 
+Once the centroids for the hexagonal grid are obtained, the next step is to compute the hexagonal coordinates. To obtain hexagonal coordinates by passing all the hexagonal centroids, `gen_hex_coord()` is used.
+
+<!--write more on how grid coordinates are computed-->
+
 ```{r, echo=TRUE, eval=FALSE}
 all_hex_coordinates_list <- gen_hex_coord(centroids_df = all_centroids_df,
                                             hex_size = NA)
 ```
 
 **Step 4: Assign NLDR data to hexagons**
+
+After obtaining the centroids of the hexagonal bins for the entire grid, the process of assigning NLDR points to hexagons involves determining the nearest hexagonal bin for each NLDR point using the $2-D$ Euclidean distance. Then, the hexagonal ID of the nearest hexagon is assigned to the corresponding NLDR points. `assign_data()` used to do it after passing all the centroids.
 
 ```{r, echo=TRUE, eval=FALSE}
 df_with_hb_id_list <- assign_data(data = s_curve_noise_umap_scaled |> 
@@ -418,20 +437,23 @@ df_with_hb_id_list <- assign_data(data = s_curve_noise_umap_scaled |>
 umap_data_with_hb_id <- as.data.frame(do.call(cbind, df_with_hb_id_list))
 ```
 
+Next, `compute_std_counts()` function is used to compute standardized number of points within each hexagon when provide the NLDR data along with their corresponding hexagonal IDs. 
+
 ```{r, echo=TRUE, eval=FALSE}
 std_counts_list <- compute_std_counts(data_hex_id = df_with_hex_id)
 counts_df <- as.data.frame(do.call(cbind, std_counts_list))
 ```
 
-
 ### Obtain bin centroids/ means
 
-To obtain hexagonal bin centroids, `extract_hexbin_centroids()`is used. The function `extract_hexbin_mean()` is used to obtain average within each hexagon. 
+To obtain hexagonal bin centroid coordinates, `extract_hexbin_centroids()`is used. The dataframes of all the centroids and the standardized counts for hexagons need to be provided. 
 
 ```{r, echo=TRUE, eval=FALSE}
 df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df, 
                                              counts_df = counts_df)
 ```
+
+The function `extract_hexbin_mean()` is used to obtain mean value coordinates for each hexagon by passing the NLDR data along with their hexagonal IDs and standardized number of points within each hexagon. 
 
 ```{r, echo=TRUE, eval=FALSE}
 df_bin_means <- extract_hexbin_mean(nldr_df_with_hex_id = umap_with_hb_id,
@@ -440,7 +462,7 @@ df_bin_means <- extract_hexbin_mean(nldr_df_with_hex_id = umap_with_hb_id,
 
 ### Triangulate bin centroids/ means
 
-The `tri_bin_centroids()` is used to do triangulate bin centroids/ bin means. Then, `gen_edges()` compute the edges to obtain the triangular mesh which is the 2D model.
+The `tri_bin_centroids()` is used to triangulate bin centroids/ bin means. Then, `gen_edges()` compute the edges to obtain the triangular mesh after providing the triangulated data.
 
 ```{r, echo=TRUE, eval=FALSE}
 tr1_object <- tri_bin_centroids(hex_df = df_bin_centroids, x = "c_x", y = "c_y")
@@ -449,7 +471,7 @@ tr_from_to_df <- gen_edges(tri_object = tr1_object)
 
 ## Lifting the model into high dimensions
 
-The $p$-D model is generated by `avg_highd_data()` by passing the $p$-D data. 
+The `avg_highd_data()` is used to generate $p-D$ model by passing the $p-D$ and binned NLDR data. The $p-D$ model for NLDR data is the averaged $p-D$ data within hexagons.
 
 ```{r, echo=TRUE, eval=FALSE}
 df_all <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID),
@@ -482,7 +504,9 @@ benchmark_val <- find_lg_benchmark(distance_edges = distance_df, distance_col = 
 
 ## Prediction
 
-`predict_emb()` function is used to predict 2D embedding for a new $p$-D data point using the fitted model. This function is useful to predict 2D embedding irrespective of the NLDR technique.
+The `predict_emb()` function is used to predict 2D embedding for a new $p-D$ data point using the fitted model. This function is useful to predict 2D embedding irrespective of the NLDR technique.
+
+In the prediction process, first, the nearest $p-D$ model point is identified for a given new $p-D$ point by computing $p-D$ Euclidean distance. Then, the corresponding $2-D$ bin centroid mapping for the identified $p-D$ model point is determined. Finally, the coordinates of the identified $2-D$ bin centroid is used as the predicted NLDR point for the new $p-D$ data point.
 
 ```{r}
 ## Prediction for training data
@@ -518,7 +542,7 @@ pred_points_training + pred_points_test +
 
 ## Compute residuals and Mean Square Error (MSE)
 
-As a Goodness of fit statistics for the model, `gen_summary()` is used to compute residuals and MSE. For the fitted model, how residuals and MSE is changing is shown in Figure 2.
+As a Goodness of fit statistics for the model, `gen_summary()` is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the $p-D$ data. 
 
 ```{r, echo=TRUE}
 gen_summary(test_data = s_curve_noise_training, prediction_df = pred_df_training,
