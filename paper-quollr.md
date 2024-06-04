@@ -210,7 +210,13 @@ These tests illuminated the issues that allowed us to make meaningful changes an
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-4-1.png" width="100%" />
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-5-1.png" width="100%" />
 
 </div>
 
@@ -218,13 +224,13 @@ These tests illuminated the issues that allowed us to make meaningful changes an
 
 <!--To generate errors for different total number of bins-->
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-5-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-6-1.png" width="100%" />
 
 </div>
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-6-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-7-1.png" width="100%" />
 
 </div>
 

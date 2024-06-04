@@ -208,14 +208,16 @@ langevitour::langevitour(triangular_3d_data)
 ```
 
 ```{r}
-sc_ltr_pos <- c(0.08, 0.96)
-
 triangular_3d_data <- triangular_3d_data |>
   mutate(ID = row_number())
+```
+
+```{r}
+sc_ltr_pos <- c(0.08, 0.96)
 
 tSNE_fit <- triangular_3d_data |>
   select(-ID) |>
-  Rtsne(perplexity = sqrt(NROW(triangular_3d_data)))
+  Rtsne(perplexity = sqrt(NROW(triangular_3d_data))) 
 
 tsne_prism <- tSNE_fit$Y |>
   as_tibble() |>
