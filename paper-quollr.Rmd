@@ -70,6 +70,7 @@ library(patchwork)
 library(Rtsne)
 library(readr)
 library(tools)
+library(cardinalR)
 
 set.seed(20240110)
 ```
@@ -99,6 +100,12 @@ theme_set(theme_linedraw() +
    )
 
 )
+
+interior_annotation <- function(label, position = c(0.92, 0.92)) {
+  annotation_custom(grid::textGrob(label = label,
+      x = unit(position[1], "npc"), y = unit(position[2], "npc"),
+      gp = grid::gpar(cex = 1, col="grey70")))
+}
 ```
 
 <!-- 20 pages-->
@@ -140,9 +147,17 @@ package_dependencies("quollr")
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 
-## Constructing the 2-D model
+## Constructing the $2\text{-}D$ model
+
+Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
 
 ### Scaling the data
+
+```{r}
+scaled_nldr_data <- gen_scaled_data(data = s_curve_noise_umap)
+
+scaled_nldr_data
+```
 
 ### Computing hexagon grid configurations
 
@@ -177,6 +192,200 @@ These tests illuminated the issues that allowed us to make meaningful changes an
 # Application
 
 <!--with prism data-->
+<!-- my plan is to discuss which the appropriate representation from different parameter choices from tSNE-->
+<!--Why tSNE? thinking about the usability-->
+
+
+```{r}
+triangular_3d_data <- tri_3d(
+  n = 1250, num_noise = 2, 
+  min_n = -0.05, max_n = 0.05) |>
+  as_tibble() 
+
+colnames(triangular_3d_data) <- paste0("x", 1:NCOL(triangular_3d_data))
+  
+langevitour::langevitour(triangular_3d_data)
+```
+
+```{r}
+sc_ltr_pos <- c(0.08, 0.96)
+
+triangular_3d_data <- triangular_3d_data |>
+  mutate(ID = row_number())
+
+tSNE_fit <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = sqrt(NROW(triangular_3d_data)))
+
+tsne_prism <- tSNE_fit$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj <- gen_scaled_data(
+  data = tsne_prism)
+tsne_prism_scaled <- prism_scaled_obj$scaled_nldr
+
+nldr_prism <- tsne_prism_scaled |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+nldr_prism
+```
+
+
+<!--To generate errors for different total number of bins-->
+```{r}
+## To initialize number of bins along the x-axis
+bin1_vec_prism <- 2:25 
+
+lim1 <- prism_scaled_obj$lim1
+lim2 <- prism_scaled_obj$lim2
+r2_prism <- diff(lim2)/diff(lim1) 
+
+error_prism <- data.frame(matrix(nrow = 0, ncol = 0))
+
+for (xbins in bin1_vec_prism) {
+
+  bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
+
+  prism_model <- fit_highd_model(
+  training_data = triangular_3d_data,
+  emb_df = tsne_prism_scaled,
+  bin1 = xbins,
+  r2 = r2_prism,
+  is_bin_centroid = TRUE,
+  is_rm_lwd_hex = TRUE,
+  col_start_highd = "x"
+)
+
+  df_bin_centroids_prism <- prism_model$df_bin_centroids
+  df_bin_prism <- prism_model$df_bin
+
+  ## Compute error
+  error_df <- glance(
+    df_bin_centroids = df_bin_centroids_prism,
+    df_bin = df_bin_prism,
+    training_data = triangular_3d_data,
+    newdata = NULL,
+    type_NLDR = "tSNE",
+    col_start = "x") |>
+    mutate(bin1 = xbins,
+           bin2 = bin2,
+           b = bin1 * bin2,
+           b_non_empty = NROW(df_bin_centroids_prism))
+
+  error_prism <- bind_rows(error_prism, error_df)
+
+}
+
+mse_prism_b <- ggplot(error_prism, 
+                     aes(x = b, 
+                         y = log(MSE))) + 
+  geom_point(size = 1) +
+  geom_line() + 
+  geom_vline(xintercept = 420, linetype="solid", 
+             color = "black", linewidth=0.8, alpha = 0.5) +
+  ylab("log(MSE)") +
+  xlab("b") +
+  theme(axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7),
+        axis.title.x = element_text(size = 7),
+        axis.title.y = element_text(size = 7, angle = 90))
+
+mse_prism_b
+```
+
+```{r}
+## Compute hexbin parameters
+num_bins_x_prism <- 20
+lim1 <- prism_scaled_obj$lim1
+lim2 <- prism_scaled_obj$lim2
+r2_prism <- diff(lim2)/diff(lim1) 
+
+prism_model <- fit_highd_model(
+  training_data = triangular_3d_data,
+  emb_df = tsne_prism_scaled,
+  bin1 = num_bins_x_prism,
+  r2 = r2_prism,
+  is_bin_centroid = TRUE,
+  is_rm_lwd_hex = TRUE,
+  col_start_highd = "x"
+)
+
+df_bin_centroids_prism <- prism_model$df_bin_centroids
+df_bin_prism <- prism_model$df_bin
+
+## Triangulate bin centroids
+tr1_object_prism <- tri_bin_centroids(
+  df_bin_centroids_prism, x = "c_x", y = "c_y")
+tr_from_to_df_prism <- gen_edges(
+  tri_object = tr1_object_prism)
+
+## Compute 2D distances
+distance_prism <- cal_2d_dist(
+  tr_coord_df = tr_from_to_df_prism,
+  start_x = "x_from",
+  start_y = "y_from",
+  end_x = "x_to",
+  end_y = "y_to",
+  select_vars = c("from", "to", "distance"))
+
+## To find the benchmark value
+benchmark_prism <- find_lg_benchmark(
+  distance_edges = distance_prism,
+  distance_col = "distance")
+
+trimesh_removed_prism <- vis_rmlg_mesh(
+  distance_edges = distance_prism,
+  benchmark_value = benchmark_prism,
+  tr_coord_df = tr_from_to_df_prism,
+  distance_col = "distance") #+
+  #xlim(sc_xlims) + ylim(sc_ylims) +
+  #interior_annotation("a", sc_ltr_pos)
+
+trimesh_removed_prism
+```
+
+```{r}
+## Hexagonal binning to have regular hexagons
+hb_obj_prism <- hex_binning(
+  data = tsne_prism_scaled,
+  bin1 = num_bins_x_prism,
+  r2 = r2_prism)
+
+tsne_data_with_hb_id <- hb_obj_prism$data_hb_id
+
+df_all_prism <- dplyr::bind_cols(triangular_3d_data |> dplyr::select(-ID),
+                                tsne_data_with_hb_id)
+
+### Define type column
+df <- df_all_prism |>
+  dplyr::select(tidyselect::starts_with("x")) |>
+  dplyr::mutate(type = "data") ## original dataset
+
+df_b <- df_bin_prism |>
+  dplyr::filter(hb_id %in% df_bin_centroids_prism$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b <- df_b[match(df_bin_centroids_prism$hexID, df_b$hb_id),] |>
+  dplyr::select(-hb_id)
+
+df_exe <- dplyr::bind_rows(df_b, df)
+
+## Set the maximum difference as the criteria
+distance_df_small_edges <- distance_prism |>
+  dplyr::filter(distance < benchmark_prism)
+## Since erase brushing is considerd.
+
+langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = distance_df_small_edges$from,
+                         lineTo = distance_df_small_edges$to,
+                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))),
+                         levelColors = c("#6a3d9a", "#33a02c"))
+```
 
 # Discussion
 
