@@ -194,11 +194,7 @@ These tests illuminated the issues that allowed us to make meaningful changes an
 
 # Application
 
-<!--add intro to prism data-->
-
 To illustrate the method, we use $5\text{-}D$ simulated data, which we call the "triangular_3d_data". This dataset is generated using the `tri_3d` function from the `cardinalR` package. The dataset generation starts with the initialization of a starting point $p_0 = (x_0, y_0, z_0)$ randomly selected within the $3\text{-}D$ space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as $c_1 = (0, 0, 0)$, $c_2 = (1, 0, 0)$, $c_3 = (0.5, 1, 0)$, and $c_4 = (0.5, 0.5, 1)$. For each point $p_i$ where $i = 1, 2, \ldots, n$, one of the corner points $c_j$ (where $j \in \{1, 2, 3, 4\}$) is selected randomly, and the new point $p_i$ is computed as the midpoint between the current point $p_{i-1}$ and the selected corner point $c_j$: $p_i = \frac{p_{i-1} + c_j}{2}$. This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point $p_i$ form the variables $X_1, X_2, X_3$. The remaining variables $X_4, X_5$ are all uniform error, with small variance. We would consider $T=(X_1, X_2, X_3)$ to be the true model.
-
-<!-- how the data are generated and from which package I got the data-->
 
 <div class="layout-chunk" data-layout="l-body">
 
@@ -216,10 +212,55 @@ To illustrate the method, we use $5\text{-}D$ simulated data, which we call the 
 </div>
 
 
-<!--added, I selected tSNE with perplexity = 35 to explore and -->
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<!--tSNE with perplexity = 35-->
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-5-1.png" width="100%" />
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<!--UMAP with n_neighbors = 35-->
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-12-1.png" width="100%" />
 
 </div>
 
@@ -245,13 +286,13 @@ To illustrate the method, we use $5\text{-}D$ simulated data, which we call the 
 
 <!--To generate errors for different total number of bins-->
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-6-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-13-1.png" width="100%" />
 
 </div>
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-7-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-14-1.png" width="100%" />
 
 </div>
 

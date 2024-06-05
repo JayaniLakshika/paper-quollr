@@ -68,6 +68,7 @@ library(dplyr)
 library(ggbeeswarm)
 library(patchwork)
 library(Rtsne)
+library(uwot)
 library(readr)
 library(tools)
 library(cardinalR)
@@ -191,11 +192,7 @@ These tests illuminated the issues that allowed us to make meaningful changes an
 
 # Application
 
-<!--add intro to prism data-->
-
 To illustrate the method, we use $5\text{-}D$ simulated data, which we call the "triangular_3d_data". This dataset is generated using the `tri_3d` function from the `cardinalR` package. The dataset generation starts with the initialization of a starting point $p_0 = (x_0, y_0, z_0)$ randomly selected within the $3\text{-}D$ space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as $c_1 = (0, 0, 0)$, $c_2 = (1, 0, 0)$, $c_3 = (0.5, 1, 0)$, and $c_4 = (0.5, 0.5, 1)$. For each point $p_i$ where $i = 1, 2, \ldots, n$, one of the corner points $c_j$ (where $j \in \{1, 2, 3, 4\}$) is selected randomly, and the new point $p_i$ is computed as the midpoint between the current point $p_{i-1}$ and the selected corner point $c_j$: $p_i = \frac{p_{i-1} + c_j}{2}$. This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point $p_i$ form the variables $X_1, X_2, X_3$. The remaining variables $X_4, X_5$ are all uniform error, with small variance. We would consider $T=(X_1, X_2, X_3)$ to be the true model.
-
-<!-- how the data are generated and from which package I got the data-->
 
 ```{r}
 triangular_3d_data <- tri_3d(
@@ -213,11 +210,12 @@ triangular_3d_data <- triangular_3d_data |>
   mutate(ID = row_number())
 ```
 
-<!--added, I selected tSNE with perplexity = 35 to explore and -->
-
 ```{r}
 sc_ltr_pos <- c(0.08, 0.96)
+```
 
+<!--tSNE with perplexity = 35-->
+```{r}
 tSNE_fit <- triangular_3d_data |>
   select(-ID) |>
   Rtsne(perplexity = round(sqrt(NROW(triangular_3d_data)))) 
@@ -235,8 +233,113 @@ tsne_prism_scaled <- prism_scaled_obj$scaled_nldr
 nldr_prism1 <- tsne_prism_scaled |> 
   ggplot(aes(x = tSNE1, y = tSNE2)) + 
   geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
 
-nldr_prism1
+
+```{r}
+tSNE_fit2 <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = 6) 
+
+tsne_prism2 <- tSNE_fit2$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism2) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj2 <- gen_scaled_data(
+  data = tsne_prism2)
+tsne_prism_scaled2 <- prism_scaled_obj2$scaled_nldr
+
+nldr_prism2 <- tsne_prism_scaled2 |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
+
+```{r}
+tSNE_fit3 <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = 58) 
+
+tsne_prism3 <- tSNE_fit3$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism3) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj3 <- gen_scaled_data(
+  data = tsne_prism3)
+tsne_prism_scaled3 <- prism_scaled_obj3$scaled_nldr
+
+nldr_prism3 <- tsne_prism_scaled3 |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
+
+<!--UMAP with n_neighbors = 35-->
+```{r}
+umap_pbmc <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 35, n_components =  2, 
+       metric = "euclidean", min_dist = 0.5, init = "spca")
+
+umap_pbmc <- umap_pbmc |>
+  as_tibble()
+
+names(umap_pbmc) <- c("UMAP1", "UMAP2")
+
+umap_pbmc <- umap_pbmc |>
+  mutate(ID = 1:NROW(umap_pbmc))
+
+nldr_prism4 <- umap_pbmc |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
+
+
+```{r}
+umap_pbmc2 <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 15, n_components =  2, 
+       metric = "euclidean", min_dist = 0.01, init = "spca")
+
+umap_pbmc2 <- umap_pbmc2 |>
+  as_tibble()
+
+names(umap_pbmc2) <- c("UMAP1", "UMAP2")
+
+umap_pbmc2 <- umap_pbmc2 |>
+  mutate(ID = 1:NROW(umap_pbmc))
+
+nldr_prism5 <- umap_pbmc2 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
+
+
+```{r}
+umap_pbmc3 <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 69, n_components =  2, 
+       metric = "euclidean", min_dist = 0.6, init = "spca")
+
+umap_pbmc3 <- umap_pbmc3 |>
+  as_tibble()
+
+names(umap_pbmc3) <- c("UMAP1", "UMAP2")
+
+umap_pbmc3 <- umap_pbmc3 |>
+  mutate(ID = 1:NROW(umap_pbmc))
+
+nldr_prism6 <- umap_pbmc3 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+```
+
+```{r}
+nldr_prism1 + nldr_prism2 + nldr_prism3 + 
+  nldr_prism4 + nldr_prism5 + nldr_prism6 +
+  plot_layout(ncol=3)
 ```
 
 ## Deciding an appropriate fit
