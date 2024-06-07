@@ -159,7 +159,8 @@ The number of bins along the x axis, the ratio of the ranges of the original emb
 <span>  is_bin_centroid <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
 <span>  is_rm_lwd_hex <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
 <span>  benchmark_to_rm_lwd_hex <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
-<span>  col_start_highd <span class='op'>=</span> <span class='st'>"x"</span><span class='op'>)</span></span></code></pre></div>
+<span>  col_start_highd <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
 
 ```
 $df_bin
@@ -202,19 +203,196 @@ $df_bin_centroids
 
 Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
 
-
-
 ### Computing hexagon grid configurations
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>calc_bins_y</span><span class='op'>(</span></span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>10</span>, </span>
+<span>  r2 <span class='op'>=</span> <span class='va'>r2</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+```
+$bin2
+[1] 22
+
+$a1
+[1] 0.1221429
+```
+
+</div>
+
 
 ### Binning the data
 
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>hex_binning</span><span class='op'>(</span></span>
+<span>  data <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>10</span>, </span>
+<span>  r2 <span class='op'>=</span> <span class='va'>r2</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+```
+$bins
+[1] 10 22
+
+$start_point
+[1] -0.1000000 -0.2019414
+
+$centroids
+# A tibble: 220 × 3
+   hexID     c_x    c_y
+   <int>   <dbl>  <dbl>
+ 1     1 -0.1    -0.202
+ 2     2  0.0221 -0.202
+ 3     3  0.144  -0.202
+ 4     4  0.266  -0.202
+ 5     5  0.389  -0.202
+ 6     6  0.511  -0.202
+ 7     7  0.633  -0.202
+ 8     8  0.755  -0.202
+ 9     9  0.877  -0.202
+10    10  0.999  -0.202
+# ℹ 210 more rows
+
+$hex_poly
+# A tibble: 1,320 × 3
+   hex_poly_id       x      y
+         <int>   <dbl>  <dbl>
+ 1           1 -0.1    -0.131
+ 2           1 -0.161  -0.167
+ 3           1 -0.161  -0.237
+ 4           1 -0.1    -0.272
+ 5           1 -0.0389 -0.237
+ 6           1 -0.0389 -0.167
+ 7           2  0.0221 -0.131
+ 8           2 -0.0389 -0.167
+ 9           2 -0.0389 -0.237
+10           2  0.0221 -0.272
+# ℹ 1,310 more rows
+
+$data_hb_id
+# A tibble: 75 × 4
+    UMAP1  UMAP2    ID hb_id
+    <dbl>  <dbl> <int> <int>
+ 1 0.0804 0.320      1    52
+ 2 0.739  1.00       2   117
+ 3 0.840  1.08       3   129
+ 4 0.167  0.0432     4    23
+ 5 0.263  0.398      6    64
+ 6 0.838  2.01       7   218
+ 7 0.734  0.972      8   117
+ 8 0.627  0.721      9    96
+ 9 0.810  1.01      11   118
+10 0.903  1.87      12   209
+# ℹ 65 more rows
+
+$std_cts
+# A tibble: 37 × 3
+   hb_id     n std_counts
+   <int> <int>      <dbl>
+ 1    23     4        0.8
+ 2    32     2        0.4
+ 3    33     3        0.6
+ 4    34     2        0.4
+ 5    42     2        0.4
+ 6    44     1        0.2
+ 7    51     1        0.2
+ 8    52     5        1  
+ 9    54     1        0.2
+10    63     1        0.2
+# ℹ 27 more rows
+
+$tot_bins
+[1] 220
+
+$non_bins
+[1] 37
+
+$pts_bins
+# A tibble: 37 × 2
+   hexID pts_list    
+   <int> <named list>
+ 1    52 <int [75]>  
+ 2   117 <int [75]>  
+ 3   129 <int [75]>  
+ 4    23 <int [75]>  
+ 5    64 <int [75]>  
+ 6   218 <int [75]>  
+ 7    96 <int [75]>  
+ 8   118 <int [75]>  
+ 9   209 <int [75]>  
+10    97 <int [75]>  
+# ℹ 27 more rows
+
+attr(,"class")
+[1] "hex_bin_obj"
+```
+
+</div>
+
+
 ### Indicating neighbors by line segments connecting centroids
 
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>tr1_object</span> <span class='op'>&lt;-</span> <span class='fu'>tri_bin_centroids</span><span class='op'>(</span></span>
+<span>  hex_df <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  x <span class='op'>=</span> <span class='st'>"c_x"</span>, </span>
+<span>  y <span class='op'>=</span> <span class='st'>"c_y"</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>tr_from_to_df</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span></span>
+<span>  tri_object <span class='op'>=</span> <span class='va'>tr1_object</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
 ## Lifting the model into high dimensions
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>umap_data_with_hb_id</span> <span class='op'>&lt;-</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>data_hb_id</span></span>
+<span></span>
+<span><span class='va'>df_all</span> <span class='op'>&lt;-</span> <span class='fu'>bind_cols</span><span class='op'>(</span></span>
+<span>  <span class='va'>s_curve_noise_training</span> <span class='op'>|&gt;</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>ID</span><span class='op'>)</span>, </span>
+<span>  <span class='va'>umap_data_with_hb_id</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>df_bin</span> <span class='op'>&lt;-</span> <span class='fu'>avg_highd_data</span><span class='op'>(</span></span>
+<span>  data <span class='op'>=</span> <span class='va'>df_all</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
 
 ## Model parameters
 
 <!--discuss about default settings-->
+
+### Choice of bins
+
+### Removal of low-density bins
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
+<span>  df_bin_centroids_all <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='va'>num_bins_x</span>, </span>
+<span>  df_bin_centroids_low <span class='op'>=</span> <span class='va'>df_bin_centroids_low</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+### Removing long edges
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>
+<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
+<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
 
 ## Prediction
 
@@ -224,7 +402,44 @@ Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing 
 
 ### $2\text{-}D$ model visualization
 
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_lg_mesh</span><span class='op'>(</span></span>
+<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
+<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
+<span>  tr_coord_df <span class='op'>=</span> <span class='va'>tr_from_to_df</span>, </span>
+<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_rmlg_mesh</span><span class='op'>(</span></span>
+<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
+<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
+<span>  tr_coord_df <span class='op'>=</span> <span class='va'>tr_from_to_df</span>, </span>
+<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
 ### $p\text{-}D$ model visualization
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_langevitour</span><span class='op'>(</span></span>
+<span>  df <span class='op'>=</span> <span class='va'>df_all</span>, </span>
+<span>  df_b <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  df_b_with_center_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
+<span>  distance <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
+<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span>, </span>
+<span>  use_default_benchmark_val <span class='op'>=</span> <span class='cn'>FALSE</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
 
 ## Tests
 
@@ -303,7 +518,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-13-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" />
 
 </div>
 
@@ -338,7 +553,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-17-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
 
 </div>
 
@@ -358,7 +573,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-18-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" />
 
 </div>
 
