@@ -333,6 +333,19 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 </div>
 
 
+What can I see in high-D?
+
+- Four clusters that are really close 
+
+What can I see in 2D layout?
+
+- Several clusters (more that what see in high-D)
+
+What can learn from the model?
+
+- There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters.
+
+
 # Discussion
 
 This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in 2D, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
