@@ -538,6 +538,16 @@ error_plot_prism
 
 ## Fit the appropriate model
 
+### Construct model in $2\text{-}D$
+
+### Selecting parameter values for the model
+
+#### Choice of bins
+
+#### Removal of low-density bins
+
+#### Removing long edges
+
 ```{r}
 ## Compute hexbin parameters
 num_bins_x_prism <- 21
@@ -589,6 +599,8 @@ trimesh_removed_prism <- vis_rmlg_mesh(
 trimesh_removed_prism
 ```
 
+### Lifting the model into $p\text{-}D$
+
 ```{r}
 ## Hexagonal binning to have regular hexagons
 hb_obj_prism <- hex_binning(
@@ -627,14 +639,6 @@ langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))),
                          levelColors = c("#6a3d9a", "#33a02c"))
 ```
-
-### Selecting parameter values for the model
-
-#### Choice of bins
-
-#### Removal of low-density bins
-
-#### Removing long edges
 
 # Discussion
 

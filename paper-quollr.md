@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2024-06-05'
+date: '2024-06-07'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -305,11 +305,23 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 ## Fit the appropriate model
 
+### Construct model in $2\text{-}D$
+
+### Selecting parameter values for the model
+
+#### Choice of bins
+
+#### Removal of low-density bins
+
+#### Removing long edges
+
 <div class="layout-chunk" data-layout="l-body">
 <img src="paper-quollr_files/figure-html5/unnamed-chunk-17-1.png" width="100%" />
 
 </div>
 
+
+### Lifting the model into $p\text{-}D$
 
 <div class="layout-chunk" data-layout="l-body">
 
@@ -320,14 +332,6 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 </div>
 
-
-### Selecting parameter values for the model
-
-#### Choice of bins
-
-#### Removal of low-density bins
-
-#### Removing long edges
 
 # Discussion
 
