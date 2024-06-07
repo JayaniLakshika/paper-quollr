@@ -127,39 +127,81 @@ $quollr
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 
-## Constructing the $2\text{-}D$ model
+The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training`, `s_curve_noise_test` and `s_curve_noise_umap`. 
 
-Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
+`s_curve_noise_training` is a $3-D$ S-curve dataset with additional four noise dimensions which is used to train the model. `s_curve_noise_test` is used for prediction. `s_curve_noise_umap` is the UMAP $2-D$ embedding for `s_curve_noise_training` dataset. Each dataset contains a unique ID column.
 
 ### Scaling the data
 
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>scaled_nldr_obj_scurve</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>s_curve_noise_umap</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>s_curve_noise_umap_scaled</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>scaled_nldr</span></span>
+<span></span>
+<span><span class='va'>lim1</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>lim1</span></span>
+<span><span class='va'>lim2</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>lim2</span></span>
+<span><span class='va'>r2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diff.html'>diff</a></span><span class='op'>(</span><span class='va'>lim2</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/diff.html'>diff</a></span><span class='op'>(</span><span class='va'>lim1</span><span class='op'>)</span> </span></code></pre></div>
+
+</div>
+
+
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fit the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+
+If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
+
+The number of bins along the x axis, the ratio of the ranges of the original embedding components, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example. 
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>fit_highd_model</span><span class='op'>(</span></span>
+<span>  training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>,</span>
+<span>  emb_df <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, r2 <span class='op'>=</span> <span class='va'>r2</span>, </span>
+<span>  is_bin_centroid <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>  is_rm_lwd_hex <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>  benchmark_to_rm_lwd_hex <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  col_start_highd <span class='op'>=</span> <span class='st'>"x"</span><span class='op'>)</span></span></code></pre></div>
 
 ```
-$scaled_nldr
-# A tibble: 75 × 3
-    UMAP1  UMAP2    ID
-    <dbl>  <dbl> <int>
- 1 0.0804 0.320      1
- 2 0.739  1.00       2
- 3 0.840  1.08       3
- 4 0.167  0.0432     4
- 5 0.263  0.398      6
- 6 0.838  2.01       7
- 7 0.734  0.972      8
- 8 0.627  0.721      9
- 9 0.810  1.01      11
-10 0.903  1.87      12
-# ℹ 65 more rows
+$df_bin
+# A tibble: 53 × 8
+   hb_id       x1    x2    x3       x4       x5       x6        x7
+   <int>    <dbl> <dbl> <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
+ 1    49 -0.647   1.67  -1.75  0.00831 -0.00175 -0.0140   0.000784
+ 2    63 -0.991   1.22  -1.13 -0.00468  0.00358  0.0126   0.00660 
+ 3    64 -0.794   1.74  -1.49  0.0105   0.00914 -0.0380  -0.00616 
+ 4    65 -0.214   1.45  -1.98 -0.00966 -0.00370  0.0573   0.000307
+ 5    66  0.0277  1.80  -2.00  0.0190   0.00285 -0.00850 -0.00966 
+ 6    81  0.387   1.62  -1.92  0.00231 -0.0173  -0.0363   0.00175 
+ 7    93 -0.209   0.453 -1.98  0.0185   0.0189  -0.0999  -0.00412 
+ 8    95  0.00161 1.14  -2.00  0.00206 -0.00940 -0.0974  -0.00796 
+ 9    96  0.543   1.45  -1.83  0.0160  -0.00731 -0.0255  -0.00143 
+10   108 -0.462   0.463 -1.83  0.00121  0.00356 -0.00738 -0.000158
+# ℹ 43 more rows
 
-$lim1
-[1] -3.270358  2.455595
-
-$lim2
-[1] -5.742540  5.820531
+$df_bin_centroids
+# A tibble: 53 × 5
+   hexID    c_x    c_y std_counts drop_empty
+   <int>  <dbl>  <dbl>      <dbl> <lgl>     
+ 1    49 0.172  0            0.75 FALSE     
+ 2    63 0.0555 0.0673       0.25 FALSE     
+ 3    64 0.133  0.0673       0.5  FALSE     
+ 4    65 0.211  0.0673       0.25 FALSE     
+ 5    66 0.289  0.0673       0.25 FALSE     
+ 6    81 0.328  0.135        0.25 FALSE     
+ 7    93 0.0555 0.202        0.25 FALSE     
+ 8    95 0.211  0.202        0.25 FALSE     
+ 9    96 0.289  0.202        0.5  FALSE     
+10   108 0.0943 0.269        0.5  FALSE     
+# ℹ 43 more rows
 ```
 
 </div>
+
+
+## Constructing the $2\text{-}D$ model
+
+Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
+
 
 
 ### Computing hexagon grid configurations
@@ -261,7 +303,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-12-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-13-1.png" width="100%" />
 
 </div>
 
@@ -296,7 +338,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-16-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-17-1.png" width="100%" />
 
 </div>
 
@@ -316,7 +358,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-17-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-18-1.png" width="100%" />
 
 </div>
 
