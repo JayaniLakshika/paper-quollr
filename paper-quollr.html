@@ -2051,7 +2051,44 @@ attr(,&quot;class&quot;)
 </div>
 </div>
 <h3 data-number="2.5" id="prediction"><span class="header-section-number">2.5</span> Prediction</h3>
+<p>The <code>predict_emb()</code> function is used to predict <span class="math inline">\(2\text{-}D\)</span> embedding for a new <span class="math inline">\(p\text{-}D\)</span> data point using the fitted model. This function is useful to predict <span class="math inline">\(2\text{-}D\)</span> embedding irrespective of the NLDR technique.</p>
+<p>In the prediction process, first, the nearest <span class="math inline">\(p\text{-}D\)</span> model point is identified for a given new <span class="math inline">\(p\text{-}D\)</span> point by computing <span class="math inline">\(p\text{-}D\)</span> Euclidean distance. Then, the corresponding <span class="math inline">\(2-D\)</span> bin centroid mapping for the identified <span class="math inline">\(p\text{-}D\)</span> model point is determined. Finally, the coordinates of the identified <span class="math inline">\(2\text{-}D\)</span> bin centroid is used as the predicted NLDR point for the new <span class="math inline">\(p\text{-}D\)</span> data point.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>predict_emb</span><span class='op'>(</span></span>
+<span>  test_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span></span>
+<span>  <span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h3 data-number="2.6" id="compute-residuals-and-mean-square-error-mse"><span class="header-section-number">2.6</span> Compute residuals and Mean Square Error (MSE)</h3>
+<p>As a Goodness of fit statistics for the model, <code>glance()</code> is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the <span class="math inline">\(p\text{-}D\)</span> data.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>glance</span><span class='op'>(</span></span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  newdata <span class='op'>=</span> <span class='cn'>NULL</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>augment</span><span class='op'>(</span></span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  newdata <span class='op'>=</span> <span class='cn'>NULL</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h3 data-number="2.7" id="visualizations"><span class="header-section-number">2.7</span> Visualizations</h3>
 <h4 class="unnumbered" data-number="2.7.1" id="text-d-model-visualization"><span class="math inline">\(2\text{-}D\)</span> model visualization</h4>
 <div class="layout-chunk" data-layout="l-body">
@@ -2130,7 +2167,7 @@ attr(,&quot;class&quot;)
 
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" /></p>
 </div>
 <!--need to add details regarding which differences can I see with different layouts-->
 <h3 data-number="3.1" id="deciding-an-appropriate-fit"><span class="header-section-number">3.1</span> Deciding an appropriate fit</h3>
@@ -2148,7 +2185,7 @@ attr(,&quot;class&quot;)
 
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-29-1.png" width="100%" /></p>
 </div>
 <!--selected tSNE perplexity: 35-->
 <h3 data-number="3.2" id="fit-the-appropriate-model"><span class="header-section-number">3.2</span> Fit the appropriate model</h3>
@@ -2158,7 +2195,7 @@ attr(,&quot;class&quot;)
 <h5 class="unnumbered" data-number="3.2.2.2" id="removal-of-low-density-bins">Removal of low-density bins</h5>
 <h5 class="unnumbered" data-number="3.2.2.3" id="removing-long-edges">Removing long edges</h5>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-30-1.png" width="100%" /></p>
 </div>
 <h4 class="unnumbered" data-number="3.2.3" id="lifting-the-model-into-ptext-d">Lifting the model into <span class="math inline">\(p\text{-}D\)</span></h4>
 <div class="layout-chunk" data-layout="l-body">

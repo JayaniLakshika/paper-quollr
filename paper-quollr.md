@@ -408,7 +408,51 @@ The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ 
 
 ## Prediction
 
+The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
+
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2-D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR point for the new $p\text{-}D$ data point.
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>predict_emb</span><span class='op'>(</span></span>
+<span>  test_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
 ## Compute residuals and Mean Square Error (MSE)
+
+As a Goodness of fit statistics for the model, `glance()` is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the $p\text{-}D$ data. 
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>glance</span><span class='op'>(</span></span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  newdata <span class='op'>=</span> <span class='cn'>NULL</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>augment</span><span class='op'>(</span></span>
+<span>  df_bin_centroids <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  df_bin <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  training_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  newdata <span class='op'>=</span> <span class='cn'>NULL</span>, </span>
+<span>  type_NLDR <span class='op'>=</span> <span class='st'>"UMAP"</span>, </span>
+<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
 
 ## Visualizations
 
@@ -530,7 +574,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" />
 
 </div>
 
@@ -565,7 +609,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-29-1.png" width="100%" />
 
 </div>
 
@@ -585,7 +629,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-30-1.png" width="100%" />
 
 </div>
 

@@ -275,7 +275,45 @@ df_bin <- avg_highd_data(
 
 ## Prediction
 
+The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
+
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2-D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR point for the new $p\text{-}D$ data point.
+
+```{r, echo=TRUE, eval=FALSE}
+predict_emb(
+  test_data = s_curve_noise_training, 
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  type_NLDR = "UMAP"
+  )
+```
+
 ## Compute residuals and Mean Square Error (MSE)
+
+As a Goodness of fit statistics for the model, `glance()` is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the $p\text{-}D$ data. 
+
+```{r, echo=TRUE, eval=FALSE}
+glance(
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  training_data = s_curve_noise_training, 
+  newdata = NULL, 
+  type_NLDR = "UMAP", 
+  col_start = "x"
+  )
+```
+
+
+```{r, echo=TRUE, eval=FALSE}
+augment(
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  training_data = s_curve_noise_training, 
+  newdata = NULL, 
+  type_NLDR = "UMAP", 
+  col_start = "x"
+  )
+```
 
 ## Visualizations
 
