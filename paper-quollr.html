@@ -1997,8 +1997,19 @@ $pts_bins
 attr(,&quot;class&quot;)
 [1] &quot;hex_bin_obj&quot;</code></pre>
 </div>
+<!--add each step separately-->
 <h4 class="unnumbered" data-number="2.3.3" id="remove-low-density-hexagons">Remove low-density hexagons</h4>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
+<span>  df_bin_centroids_all <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
+<span>  df_bin_centroids_low <span class='op'>=</span> <span class='va'>df_bin_centroids_low</span></span>
+<span>  <span class='op'>)</span></span></code></pre>
+</div>
+</div>
 <h4 class="unnumbered" data-number="2.3.4" id="indicating-neighbors-by-line-segments-connecting-centroids">Indicating neighbors by line segments connecting centroids</h4>
+<p>To indicate neighbors, the <code>tri_bin_centroids()</code> function is used to triangulate bin centroids. Following this, <code>gen_edges()</code> function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>tr1_object</span> <span class='op'>&lt;-</span> <span class='fu'>tri_bin_centroids</span><span class='op'>(</span></span>
@@ -2116,7 +2127,7 @@ attr(,&quot;class&quot;)
 
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-21-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" /></p>
 </div>
 <!--need to add details regarding which differences can I see with different layouts-->
 <h3 data-number="3.1" id="deciding-an-appropriate-fit"><span class="header-section-number">3.1</span> Deciding an appropriate fit</h3>
@@ -2134,7 +2145,7 @@ attr(,&quot;class&quot;)
 
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" /></p>
 </div>
 <!--selected tSNE perplexity: 35-->
 <h3 data-number="3.2" id="fit-the-appropriate-model"><span class="header-section-number">3.2</span> Fit the appropriate model</h3>
@@ -2144,7 +2155,7 @@ attr(,&quot;class&quot;)
 <h5 class="unnumbered" data-number="3.2.2.2" id="removal-of-low-density-bins">Removal of low-density bins</h5>
 <h5 class="unnumbered" data-number="3.2.2.3" id="removing-long-edges">Removing long edges</h5>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" /></p>
+<p><img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" /></p>
 </div>
 <h4 class="unnumbered" data-number="3.2.3" id="lifting-the-model-into-ptext-d">Lifting the model into <span class="math inline">\(p\text{-}D\)</span></h4>
 <div class="layout-chunk" data-layout="l-body">

@@ -215,9 +215,22 @@ hex_binning(
   )
 ```
 
+<!--add each step separately-->
+
 ### Remove low-density hexagons
 
+```{r, echo=TRUE, eval=FALSE}
+find_low_dens_hex(
+  df_bin_centroids_all = df_bin_centroids, 
+  bin1 = 12, 
+  df_bin_centroids_low = df_bin_centroids_low
+  )
+
+```
+
 ### Indicating neighbors by line segments connecting centroids
+
+To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate bin centroids. Following this, `gen_edges()` function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
 
 ```{r, echo=TRUE, eval=FALSE}
 tr1_object <- tri_bin_centroids(

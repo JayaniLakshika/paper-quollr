@@ -341,9 +341,23 @@ attr(,"class")
 </div>
 
 
+<!--add each step separately-->
+
 ### Remove low-density hexagons
 
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
+<span>  df_bin_centroids_all <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
+<span>  df_bin_centroids_low <span class='op'>=</span> <span class='va'>df_bin_centroids_low</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
 ### Indicating neighbors by line segments connecting centroids
+
+To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate bin centroids. Following this, `gen_edges()` function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>tr1_object</span> <span class='op'>&lt;-</span> <span class='fu'>tri_bin_centroids</span><span class='op'>(</span></span>
@@ -510,7 +524,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-21-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" />
 
 </div>
 
@@ -545,7 +559,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
 
 </div>
 
@@ -565,7 +579,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" />
 
 </div>
 
