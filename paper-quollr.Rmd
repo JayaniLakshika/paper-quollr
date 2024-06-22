@@ -148,11 +148,13 @@ package_dependencies("quollr")
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training`, `s_curve_noise_test` and `s_curve_noise_umap`. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`. 
 
-`s_curve_noise_training` is a $3-D$ S-curve dataset with additional four noise dimensions which is used to train the model. `s_curve_noise_test` is used for prediction. `s_curve_noise_umap` is the UMAP $2-D$ embedding for `s_curve_noise_training` dataset. Each dataset contains a unique ID column.
+`s_curve_noise_training` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to train the model. `s_curve_noise_umap` is the UMAP $2\text{-}D$ embedding for `s_curve_noise_training` data set. Each data set contains a unique ID column.
 
 ### Scaling the data
+
+The algorithm begins by scaling NLDR data to a standard scale using the `gen_scaled_data()` function. This function standardizes the data and provides the original limits of embeddings and the aspect ratio.
 
 ```{r, echo=TRUE}
 scaled_nldr_obj_scurve <- gen_scaled_data(data = s_curve_noise_umap)
@@ -164,17 +166,19 @@ lim2 <- scaled_nldr_obj_scurve$lim2
 r2 <- diff(lim2)/diff(lim1) 
 ```
 
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fit the 2D model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the $2\text{-}D$ model, the user can choose either to fit the $2\text{-}D$ model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
 If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
 
-The number of bins along the x axis, the ratio of the ranges of the original embedding components, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example. 
+The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example. 
 
 ```{r, echo=TRUE}
 fit_highd_model(
   training_data = s_curve_noise_training,
   emb_df = s_curve_noise_umap_scaled, 
-  bin1 = 15, r2 = r2, 
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07,
   is_bin_centroid = TRUE,
   is_rm_lwd_hex = TRUE,
   benchmark_to_rm_lwd_hex = NULL,
