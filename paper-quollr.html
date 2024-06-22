@@ -2023,6 +2023,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
+<p>In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the <span class="math inline">\(2\text{-}D\)</span> representation. To address this issue, the <code>find_lg_benchmark()</code> function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>

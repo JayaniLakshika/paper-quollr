@@ -244,6 +244,8 @@ tr_from_to_df <- gen_edges(
   )
 ```
 
+In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the $2\text{-}D$ representation. To address this issue, the `find_lg_benchmark()` function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed. 
+
 ```{r, echo=TRUE, eval=FALSE}
 find_lg_benchmark(
   distance_edges = distance_df, 

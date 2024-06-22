@@ -373,6 +373,8 @@ To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate
 </div>
 
 
+In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the $2\text{-}D$ representation. To address this issue, the `find_lg_benchmark()` function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed. 
+
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>
 <span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
