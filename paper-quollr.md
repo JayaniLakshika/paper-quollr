@@ -386,6 +386,8 @@ In some cases, distant centroids may be connected, resulting in long line segmen
 
 ## Lifting the model into high dimensions
 
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data and their corresponding hexagonal bin IDs as inputs.
+
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>umap_data_with_hb_id</span> <span class='op'>&lt;-</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>data_hb_id</span></span>
 <span></span>

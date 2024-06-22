@@ -2033,6 +2033,7 @@ attr(,&quot;class&quot;)
 </div>
 </div>
 <h3 data-number="2.4" id="lifting-the-model-into-high-dimensions"><span class="header-section-number">2.4</span> Lifting the model into high dimensions</h3>
+<p>The final step involves lifting the fitted <span class="math inline">\(2\text{-}D\)</span> model into <span class="math inline">\(p\text{-}D\)</span> by computing the <span class="math inline">\(p\text{-}D\)</span> mean of data points within each bin to represent bin centroids. This transformation is performed using the <code>avg_highd_data()</code> function, which takes <span class="math inline">\(p\text{-}D\)</span> data and their corresponding hexagonal bin IDs as inputs.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>umap_data_with_hb_id</span> <span class='op'>&lt;-</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>data_hb_id</span></span>

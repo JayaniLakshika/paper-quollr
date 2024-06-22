@@ -255,6 +255,8 @@ find_lg_benchmark(
 
 ## Lifting the model into high dimensions
 
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data and their corresponding hexagonal bin IDs as inputs.
+
 ```{r, echo=TRUE, eval=FALSE}
 umap_data_with_hb_id <- hb_obj$data_hb_id
 
