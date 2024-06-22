@@ -170,7 +170,7 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 
 If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
 
-The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example. 
+The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model()`, if they are not provided. They are created as they are needed throughout the following example. The function `fit_highd_model()` provides the fitted model in $2\text{-}D$, and $p\text{-}D$.  
 
 ```{r, echo=TRUE}
 fit_highd_model(
@@ -188,26 +188,34 @@ fit_highd_model(
 
 ## Constructing the $2\text{-}D$ model
 
-Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
+Constructing the $2\text{-}D$ model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.
 
 ### Computing hexagon grid configurations
 
+The configurations of the hexagonal grid is defined by the number of bins in each direction. To find the number of bins along the y-axis, `calc_bins_y()` is used. This function takes as input the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. Additionally, this function provides the bin width.
+
 ```{r, echo=TRUE}
 calc_bins_y(
-  bin1 = 10, 
-  r2 = r2
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
   )
 ```
 
 ### Binning the data
 
+Points are allocated to the bins they fall into based on the nearest centroid. The main steps of the hexagonal binning algorithm can be executed using the `hex_binning()` function, or they can be run separately for greater flexibility. The parameters used within `hex_binning()` include the scaled NLDR data, the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. The output is an object of the `hex_bin_obj` class, which contains the number of bins in each direction, the coordinates of the hexagonal grid starting point, the details of bin centroids, the coordinates of bins, embedding components with their corresponding hexagon IDs, hex bins with their corresponding standardized counts, the total number of bins, the number of non-empty bins, and the points within each hexagon.  
+
 ```{r, echo=TRUE}
 hex_binning(
   data = s_curve_noise_umap_scaled, 
-  bin1 = 10, 
-  r2 = r2
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
   )
 ```
+
+### Remove low-density hexagons
 
 ### Indicating neighbors by line segments connecting centroids
 
@@ -220,6 +228,13 @@ tr1_object <- tri_bin_centroids(
 
 tr_from_to_df <- gen_edges(
   tri_object = tr1_object
+  )
+```
+
+```{r, echo=TRUE, eval=FALSE}
+find_lg_benchmark(
+  distance_edges = distance_df, 
+  distance_col = "distance"
   )
 ```
 
@@ -236,33 +251,6 @@ df_all <- bind_cols(
 df_bin <- avg_highd_data(
   data = df_all, 
   col_start = "x"
-  )
-```
-
-## Model parameters
-
-<!--discuss about default settings-->
-
-### Choice of bins
-
-### Removal of low-density bins
-
-```{r, echo=TRUE, eval=FALSE}
-
-find_low_dens_hex(
-  df_bin_centroids_all = df_bin_centroids, 
-  bin1 = num_bins_x, 
-  df_bin_centroids_low = df_bin_centroids_low
-  )
-
-```
-
-### Removing long edges
-
-```{r, echo=TRUE, eval=FALSE}
-find_lg_benchmark(
-  distance_edges = distance_df, 
-  distance_col = "distance"
   )
 ```
 
@@ -780,13 +768,13 @@ What can learn from the model?
 
 # Discussion
 
-This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in 2D, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
+This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
 
 The paper includes a clustering example to illustrate how `quollr` is useful to assess which NLDR technique and which (hyper)parameter choice gives the most accurate representation. In addition, how to select parameters for hexagonal binning and fitting model are explained.
 
 Possible future improvements would be...<!--assess the preservation of local and glocal structure w.r.t 2D and high-D distance comparison--> 
 
-This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of $p-D$ data.
+This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of $p\text{-}D$ data.
 
 # Acknowledgements
 

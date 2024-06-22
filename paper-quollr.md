@@ -151,7 +151,7 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 
 If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
 
-The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model`, if they are not provided. They are created as they are needed throughout the following example. 
+The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model()`, if they are not provided. They are created as they are needed throughout the following example. The function `fit_highd_model()` provides the fitted model in $2\text{-}D$, and $p\text{-}D$.  
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>fit_highd_model</span><span class='op'>(</span></span>
@@ -205,22 +205,25 @@ $df_bin_centroids
 
 ## Constructing the $2\text{-}D$ model
 
-Constructing the $2\text{-}D$ model mainly contains (i) scaling, (ii) computing hexagon grid configurations, (iii) binning, and (iv) indicating neighbors by line segments connecting centroids.
+Constructing the $2\text{-}D$ model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.
 
 ### Computing hexagon grid configurations
 
+The configurations of the hexagonal grid is defined by the number of bins in each direction. To find the number of bins along the y-axis, `calc_bins_y()` is used. This function takes as input the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. Additionally, this function provides the bin width.
+
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>calc_bins_y</span><span class='op'>(</span></span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>10</span>, </span>
-<span>  r2 <span class='op'>=</span> <span class='va'>r2</span></span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
+<span>  r2 <span class='op'>=</span> <span class='va'>r2</span>,</span>
+<span>  q <span class='op'>=</span> <span class='fl'>0.07</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 ```
 $bin2
-[1] 22
+[1] 27
 
 $a1
-[1] 0.1221429
+[1] 0.09596332
 ```
 
 </div>
@@ -228,105 +231,108 @@ $a1
 
 ### Binning the data
 
+Points are allocated to the bins they fall into based on the nearest centroid. The main steps of the hexagonal binning algorithm can be executed using the `hex_binning()` function, or they can be run separately for greater flexibility. The parameters used within `hex_binning()` include the scaled NLDR data, the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. The output is an object of the `hex_bin_obj` class, which contains the number of bins in each direction, the coordinates of the hexagonal grid starting point, the details of bin centroids, the coordinates of bins, embedding components with their corresponding hexagon IDs, hex bins with their corresponding standardized counts, the total number of bins, the number of non-empty bins, and the points within each hexagon.  
+
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>hex_binning</span><span class='op'>(</span></span>
 <span>  data <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>10</span>, </span>
-<span>  r2 <span class='op'>=</span> <span class='va'>r2</span></span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
+<span>  r2 <span class='op'>=</span> <span class='va'>r2</span>,</span>
+<span>  q <span class='op'>=</span> <span class='fl'>0.07</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 ```
 $bins
-[1] 10 22
+[1] 12 27
 
 $start_point
-[1] -0.1000000 -0.2019414
+[1] -0.070000 -0.141359
 
 $centroids
-# A tibble: 220 × 3
+# A tibble: 324 × 3
    hexID     c_x    c_y
    <int>   <dbl>  <dbl>
- 1     1 -0.1    -0.202
- 2     2  0.0221 -0.202
- 3     3  0.144  -0.202
- 4     4  0.266  -0.202
- 5     5  0.389  -0.202
- 6     6  0.511  -0.202
- 7     7  0.633  -0.202
- 8     8  0.755  -0.202
- 9     9  0.877  -0.202
-10    10  0.999  -0.202
-# ℹ 210 more rows
+ 1     1 -0.07   -0.141
+ 2     2  0.0287 -0.141
+ 3     3  0.127  -0.141
+ 4     4  0.226  -0.141
+ 5     5  0.325  -0.141
+ 6     6  0.423  -0.141
+ 7     7  0.522  -0.141
+ 8     8  0.621  -0.141
+ 9     9  0.719  -0.141
+10    10  0.818  -0.141
+# ℹ 314 more rows
 
 $hex_poly
-# A tibble: 1,320 × 3
-   hex_poly_id       x      y
-         <int>   <dbl>  <dbl>
- 1           1 -0.1    -0.131
- 2           1 -0.161  -0.167
- 3           1 -0.161  -0.237
- 4           1 -0.1    -0.272
- 5           1 -0.0389 -0.237
- 6           1 -0.0389 -0.167
- 7           2  0.0221 -0.131
- 8           2 -0.0389 -0.167
- 9           2 -0.0389 -0.237
-10           2  0.0221 -0.272
-# ℹ 1,310 more rows
+# A tibble: 1,944 × 3
+   hex_poly_id       x       y
+         <int>   <dbl>   <dbl>
+ 1           1 -0.07   -0.0860
+ 2           1 -0.118  -0.114 
+ 3           1 -0.118  -0.169 
+ 4           1 -0.07   -0.197 
+ 5           1 -0.0220 -0.169 
+ 6           1 -0.0220 -0.114 
+ 7           2  0.0287 -0.0860
+ 8           2 -0.0193 -0.114 
+ 9           2 -0.0193 -0.169 
+10           2  0.0287 -0.197 
+# ℹ 1,934 more rows
 
 $data_hb_id
 # A tibble: 75 × 4
     UMAP1  UMAP2    ID hb_id
     <dbl>  <dbl> <int> <int>
- 1 0.0804 0.320      1    52
- 2 0.739  1.00       2   117
- 3 0.840  1.08       3   129
- 4 0.167  0.0432     4    23
- 5 0.263  0.398      6    64
- 6 0.838  2.01       7   218
- 7 0.734  0.972      8   117
- 8 0.627  0.721      9    96
- 9 0.810  1.01      11   118
-10 0.903  1.87      12   209
+ 1 0.0804 0.320      1    62
+ 2 0.739  1.00       2   165
+ 3 0.840  1.08       3   178
+ 4 0.167  0.0432     4    27
+ 5 0.263  0.398      6    76
+ 6 0.838  2.01       7   310
+ 7 0.734  0.972      8   165
+ 8 0.627  0.721      9   128
+ 9 0.810  1.01      11   178
+10 0.903  1.87      12   299
 # ℹ 65 more rows
 
 $std_cts
-# A tibble: 37 × 3
+# A tibble: 45 × 3
    hb_id     n std_counts
    <int> <int>      <dbl>
- 1    23     4        0.8
- 2    32     2        0.4
- 3    33     3        0.6
- 4    34     2        0.4
- 5    42     2        0.4
- 6    44     1        0.2
- 7    51     1        0.2
- 8    52     5        1  
- 9    54     1        0.2
-10    63     1        0.2
-# ℹ 27 more rows
+ 1    27     5        1  
+ 2    28     1        0.2
+ 3    38     1        0.2
+ 4    40     3        0.6
+ 5    50     1        0.2
+ 6    52     1        0.2
+ 7    61     1        0.2
+ 8    62     4        0.8
+ 9    64     1        0.2
+10    74     2        0.4
+# ℹ 35 more rows
 
 $tot_bins
-[1] 220
+[1] 324
 
 $non_bins
-[1] 37
+[1] 45
 
 $pts_bins
-# A tibble: 37 × 2
+# A tibble: 45 × 2
    hexID pts_list    
    <int> <named list>
- 1    52 <int [75]>  
- 2   117 <int [75]>  
- 3   129 <int [75]>  
- 4    23 <int [75]>  
- 5    64 <int [75]>  
- 6   218 <int [75]>  
- 7    96 <int [75]>  
- 8   118 <int [75]>  
- 9   209 <int [75]>  
-10    97 <int [75]>  
-# ℹ 27 more rows
+ 1    62 <int [75]>  
+ 2   165 <int [75]>  
+ 3   178 <int [75]>  
+ 4    27 <int [75]>  
+ 5    76 <int [75]>  
+ 6   310 <int [75]>  
+ 7   128 <int [75]>  
+ 8   299 <int [75]>  
+ 9    74 <int [75]>  
+10   287 <int [75]>  
+# ℹ 35 more rows
 
 attr(,"class")
 [1] "hex_bin_obj"
@@ -334,6 +340,8 @@ attr(,"class")
 
 </div>
 
+
+### Remove low-density hexagons
 
 ### Indicating neighbors by line segments connecting centroids
 
@@ -346,6 +354,15 @@ attr(,"class")
 <span></span>
 <span><span class='va'>tr_from_to_df</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span></span>
 <span>  tri_object <span class='op'>=</span> <span class='va'>tr1_object</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>
+<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
+<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
@@ -364,35 +381,6 @@ attr(,"class")
 <span><span class='va'>df_bin</span> <span class='op'>&lt;-</span> <span class='fu'>avg_highd_data</span><span class='op'>(</span></span>
 <span>  data <span class='op'>=</span> <span class='va'>df_all</span>, </span>
 <span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
-
-</div>
-
-
-## Model parameters
-
-<!--discuss about default settings-->
-
-### Choice of bins
-
-### Removal of low-density bins
-
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
-<span>  df_bin_centroids_all <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='va'>num_bins_x</span>, </span>
-<span>  df_bin_centroids_low <span class='op'>=</span> <span class='va'>df_bin_centroids_low</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
-
-</div>
-
-
-### Removing long edges
-
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>
-<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
-<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
@@ -522,7 +510,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-22-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-21-1.png" width="100%" />
 
 </div>
 
@@ -557,7 +545,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" />
 
 </div>
 
@@ -577,7 +565,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-26-1.png" width="100%" />
 
 </div>
 
@@ -609,13 +597,13 @@ What can learn from the model?
 
 # Discussion
 
-This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in 2D, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
+This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
 
 The paper includes a clustering example to illustrate how `quollr` is useful to assess which NLDR technique and which (hyper)parameter choice gives the most accurate representation. In addition, how to select parameters for hexagonal binning and fitting model are explained.
 
 Possible future improvements would be...<!--assess the preservation of local and glocal structure w.r.t 2D and high-D distance comparison--> 
 
-This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of $p-D$ data.
+This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of $p\text{-}D$ data.
 
 # Acknowledgements
 
