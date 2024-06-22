@@ -219,6 +219,8 @@ hex_binning(
 
 ### Remove low-density hexagons
 
+In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
+
 ```{r, echo=TRUE, eval=FALSE}
 find_low_dens_hex(
   df_bin_centroids_all = df_bin_centroids, 
