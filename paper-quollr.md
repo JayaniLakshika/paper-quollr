@@ -1,8 +1,8 @@
 ---
-title: 'quollr: An R Package for Visualizing 2D Models from Nonlinear Dimension Reductions
-  in High Dimensional Space'
+title: 'quollr: An R Package for Visualizing $2-D$ Models from Non-linear Dimension
+  Reductions in High Dimensional Space'
 description: |
-  Non-Linear Dimension Reduction (NLDR) techniques have emerged as powerful tools to visualize high-dimensional data in low-diemnsioanl space. However, their complexity and (hyper)parameter choices may lead to distrustful or misleading results. The R package quollr is developed as a new tool to help to determine which method, which (hyper)parameter choice provide the most accurate representation of $p-D$ data. Clustering data from cardinalR package, is used to illustrate the algorithm and its use within the package.
+  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package quollr has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `triangular_3d_data` data from the cardinalR package is used to illustrate the algorithm and its application within the package.
 draft: yes
 author:
 - name: Jayani P.G. Lakshika
@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2024-06-07'
+date: '2024-06-22'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -90,7 +90,7 @@ csl: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/rjtool
 
 This paper presents the R package, `quollr` which introduce a new visual tool in determining which NLDR technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in *cite the methodology paper*. Furthermore, the `quollr` package enables users to perform hexagonal binning [@dan2023], resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
 
-The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study clustering data set in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
+The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
 
 # Implementation
 
