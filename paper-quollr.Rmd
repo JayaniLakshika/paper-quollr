@@ -277,7 +277,7 @@ df_bin <- avg_highd_data(
 
 The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
 
-In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2-D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR point for the new $p\text{-}D$ data point.
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point.
 
 ```{r, echo=TRUE, eval=FALSE}
 predict_emb(
@@ -303,6 +303,11 @@ glance(
   )
 ```
 
+Furthermore, `augment()` accepts $2\text{-}D$ and $p\text{-}D$ model points, and the $p\text{-}D$ data and adds information about each observation in the data set. Most commonly, this includes predicted values, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error. 
+
+Users can pass data to `augment()` via either the `training_data` argument or the `newdata` argument. If data is passed to the `training_data` argument, it must be exactly the data that was used to fit the model.  Alternatively, datasets can be passed to `newdata` to augment data that was not used during model fitting. This requires that at least all predictor variable columns used to fit the model are present. If the original outcome variable used to fit the model is not included in `newdata`, then no corresponding column will be included in the output.
+
+The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
 
 ```{r, echo=TRUE, eval=FALSE}
 augment(
