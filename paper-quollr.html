@@ -1998,6 +1998,7 @@ attr(,&quot;class&quot;)
 [1] &quot;hex_bin_obj&quot;</code></pre>
 </div>
 <!--add each step separately-->
+<!--add hexbin notation image-->
 <h4 class="unnumbered" data-number="2.3.3" id="remove-low-density-hexagons">Remove low-density hexagons</h4>
 <p>In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The <code>find_low_dens_hex()</code> function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2095,16 +2096,18 @@ attr(,&quot;class&quot;)
 <h3 data-number="2.7" id="visualizations"><span class="header-section-number">2.7</span> Visualizations</h3>
 <p>The package provides five basic visualizations which includes one to visualize the full hexagonal grid in <span class="math inline">\(2\text{-}D\)</span>, three visualizations related to the <span class="math inline">\(2\text{-}D\)</span> model (static visualizations), and one related to the <span class="math inline">\(p\text{-}D\)</span> model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.</p>
 <h4 class="unnumbered" data-number="2.7.1" id="text-d-model-visualization"><span class="math inline">\(2\text{-}D\)</span> model visualization</h4>
+<p>The <code>geom_hexgrid()</code> function is used to plot the hexagonal grid from the provided centroid data set.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span><span class='fu'>geom_hexgrid</span><span class='op'>(</span></span>
-<span>  data <span class='op'>=</span> <span class='va'>all_centroids_df</span>, </span>
-<span>  <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
-<span>  <span class='op'>)</span> <span class='op'>+</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'>geom_hexgrid</span><span class='op'>(</span></span>
+<span>    data <span class='op'>=</span> <span class='va'>all_centroids_df</span>, </span>
+<span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
+<p>To visualize the <span class="math inline">\(2\text{-}D\)</span> model, mainly three functions are used. As shown in Figure <a href="#fig:mesh-plots"><strong>??</strong></a>a, <code>geom_trimesh()</code> to visualize the triangular mesh by adding a new layer to <code>ggplot()</code>. After identifying benchmark value to remove long edge, <code>vis_lg_mesh()</code> is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure <a href="#fig:mesh-plots"><strong>??</strong></a>b, the small and long edges are colored by black and red respectively. Following this, <code>vis_rmlg_mesh()</code> is used to visualize smoothed <span class="math inline">\(2\text{-}D\)</span> model which is the <span class="math inline">\(2\text{-}D\)</span> model after removing the long edges (see Figure <a href="#fig:mesh-plots"><strong>??</strong></a>c). In <code>vis_lg_mesh()</code> and <code>vis_rmlg_mesh()</code>, <code>benchmark_value</code> argument controls the edge removal in <span class="math inline">\(2\text{-}D\)</span>. Using small value of <code>benchmark_value</code>, will produce a triangular mesh with missing data structure; for example <code>benchmark_value = 0.3</code> shows two clusters rather than continuous structure, while <code>benchmark_value = 0.8</code> creates long edges and mislead the data structure in <span class="math inline">\(p\text{-}D\)</span> space.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
@@ -2136,6 +2139,7 @@ attr(,&quot;class&quot;)
 </div>
 </div>
 <h4 class="unnumbered" data-number="2.7.2" id="ptext-d-model-visualization"><span class="math inline">\(p\text{-}D\)</span> model visualization</h4>
+<p>Displaying the <span class="math inline">\(p\text{-}D\)</span> model overlaid on the data is done using the function <code>show_langevitour()</code>. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, <span class="math inline">\(2\text{-}D\)</span> and <span class="math inline">\(p\text{-}D\)</span> model points, the threshold for removing long edges, and the distance data set.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_langevitour</span><span class='op'>(</span></span>

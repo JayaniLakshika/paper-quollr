@@ -216,6 +216,7 @@ hex_binning(
 ```
 
 <!--add each step separately-->
+<!--add hexbin notation image-->
 
 ### Remove low-density hexagons
 
@@ -326,15 +327,18 @@ The package provides five basic visualizations which includes one to visualize t
 
 ### $2\text{-}D$ model visualization
 
+The `geom_hexgrid()` function is used to plot the hexagonal grid from the provided centroid data set.
+
 ```{r, echo=TRUE, eval=FALSE}
-ggplot() +
-geom_hexgrid(
-  data = all_centroids_df, 
-  aes(x = c_x, y = c_y)
-  ) +
+ggplot() + 
+  geom_hexgrid(
+    data = all_centroids_df, 
+    aes(x = c_x, y = c_y)
+    ) +
   coord_fixed()
 ```
 
+To visualize the $2\text{-}D$ model, mainly three functions are used. As shown in Figure \@ref(fig:mesh-plots)a, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \@ref(fig:mesh-plots)b, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed $2\text{-}D$ model which is the $2\text{-}D$ model after removing the long edges (see Figure \@ref(fig:mesh-plots)c). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in $2\text{-}D$. Using small value of `benchmark_value`, will produce a triangular mesh with missing data structure; for example `benchmark_value = 0.3` shows two clusters rather than continuous structure, while `benchmark_value = 0.8` creates long edges and mislead the data structure in $p\text{-}D$ space.
 
 ```{r, echo=TRUE, eval=FALSE}
 ggplot() + 
@@ -364,6 +368,8 @@ vis_rmlg_mesh(
 ```
 
 ### $p\text{-}D$ model visualization
+
+Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 ```{r, echo=TRUE, eval=FALSE}
 show_langevitour(
