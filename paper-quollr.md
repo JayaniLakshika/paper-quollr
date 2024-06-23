@@ -461,6 +461,8 @@ The augmented dataset is always returned as a `tibble::tibble` with the same num
 
 ## Visualizations
 
+The package provides five basic visualizations which includes one to visualize the full hexagonal grid in $2\text{-}D$, three visualizations related to the $2\text{-}D$ model (static visualizations), and one related to the $p\text{-}D$ model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.
+
 ### $2\text{-}D$ model visualization
 
 <div class="layout-chunk" data-layout="l-body">
