@@ -466,6 +466,29 @@ The package provides five basic visualizations which includes one to visualize t
 ### $2\text{-}D$ model visualization
 
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span><span class='fu'>geom_hexgrid</span><span class='op'>(</span></span>
+<span>  data <span class='op'>=</span> <span class='va'>all_centroids_df</span>, </span>
+<span>  <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
+<span>  <span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'>geom_trimesh</span><span class='op'>(</span></span>
+<span>    data <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_lg_mesh</span><span class='op'>(</span></span>
 <span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
 <span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
@@ -581,7 +604,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-25-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-27-1.png" width="100%" />
 
 </div>
 
@@ -616,7 +639,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-29-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-31-1.png" width="100%" />
 
 </div>
 
@@ -636,7 +659,7 @@ To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call t
 #### Removing long edges
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-30-1.png" width="100%" />
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-32-1.png" width="100%" />
 
 </div>
 

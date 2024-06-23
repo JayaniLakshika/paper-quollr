@@ -327,6 +327,25 @@ The package provides five basic visualizations which includes one to visualize t
 ### $2\text{-}D$ model visualization
 
 ```{r, echo=TRUE, eval=FALSE}
+ggplot() +
+geom_hexgrid(
+  data = all_centroids_df, 
+  aes(x = c_x, y = c_y)
+  ) +
+  coord_fixed()
+```
+
+
+```{r, echo=TRUE, eval=FALSE}
+ggplot() + 
+  geom_trimesh(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) +
+  coord_fixed()
+```
+
+```{r, echo=TRUE, eval=FALSE}
 vis_lg_mesh(
   distance_edges = distance_df, 
   benchmark_value = 0.75, 
