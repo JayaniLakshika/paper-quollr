@@ -2,11 +2,13 @@
 # Please edit paper-quollr.Rmd to modify this file
 
 ## ----setup, include=FALSE-----------------------------------------------------
+options(repos = "https://cloud.r-project.org") ## set up CRAN mirror
 knitr::opts_chunk$set(
   echo = FALSE, 
   cache=FALSE, 
   message=FALSE, 
-  warning=FALSE)
+  warning=FALSE,
+  out.width = "100%")
 
 
 
@@ -20,6 +22,10 @@ library(dplyr)
 library(ggbeeswarm)
 library(patchwork)
 library(Rtsne)
+library(uwot)
+library(readr)
+library(tools)
+library(cardinalR)
 
 set.seed(20240110)
 
@@ -50,669 +56,589 @@ theme_set(theme_linedraw() +
 
 )
 
-
-## -----------------------------------------------------------------------------
-
-## Decide by looking at MSE plot
-num_bins_x_s_curve <- 8
-num_bins_y_s_curve <- 14
-hex_size_s_curve <- 0.1
-hb_obj_s_curve <- hex_binning(data = s_curve_noise_umap_scaled, x = "UMAP1", 
-                      y = "UMAP2", num_bins_x = num_bins_x_s_curve, 
-                      num_bins_y = num_bins_y_s_curve, x_start = NA, y_start = NA, 
-                      buffer_x = NA, buffer_y = NA, hex_size = hex_size_s_curve, col_start = "UMAP")
-## Data set with all possible centroids in the hexagonal grid
-all_centroids_df <- as.data.frame(do.call(cbind, hb_obj_s_curve$centroids))
-## Generate all coordinates of hexagons
-hex_grid <- as.data.frame(do.call(cbind, hb_obj_s_curve$hex_poly))
-## To obtain the standardise counts within hexbins
-counts_df <- as.data.frame(do.call(cbind, hb_obj_s_curve$std_cts))
-df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df, 
-                                             counts_df = counts_df)
-## remove low-density hexagons
-hex_grid_with_counts <- dplyr::left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hb_id"))
-
-centroid_plot <- ggplot(data = all_centroids_df, aes(x = c_x, y = c_y)) +
-  geom_point(color = "#33a02c") +
-  coord_fixed() +
-  theme_void() +
-  theme(plot.title = element_text(size = 7, hjust = 0.5,
-vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
-        legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) 
-
-full_grid <- ggplot(data = hex_grid, aes(x = x, y = y)) +
-  geom_polygon(fill = "#ffffff", color = "black", aes(group = hex_poly_id)) +
-  geom_point(data = all_centroids_df, aes(x = c_x, y = c_y), color = "#33a02c") +
-  coord_fixed() +
-  theme_void() +
-  theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
-vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
-        legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) 
-
-std_pts_grid <-  ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-  geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-  geom_point(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2), color = "black", alpha = 1) +
-  scale_fill_viridis_c(direction = -1, na.value = "#ffffff", option = "C") +
-  coord_fixed() +
-  theme_void() +
-  theme(legend.position="none", legend.direction="horizontal", plot.title = element_text(size = 7, hjust = 0.5,
-vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), #change legend key width
-        legend.title = element_text(size=8), #change legend title font size
-        legend.text = element_text(size=6)) 
-
-umap_data_with_hb_id <- as.data.frame(do.call(cbind, hb_obj_s_curve$data_hb_id))
-  
-model_object <- fit_highd_model( training_data = s_curve_noise_training, 
-                                 nldr_df_with_id = s_curve_noise_umap_scaled, 
-                                 x = "UMAP1", y = "UMAP2", 
-                                 num_bins_x = num_bins_x_s_curve, 
-                                 num_bins_y = num_bins_y_s_curve, 
-                                 x_start = NA, y_start = NA, 
-                                 buffer_x = NA, buffer_y = NA, 
-                                 hex_size = hex_size_s_curve,
-                                 is_rm_lwd_hex = FALSE, 
-                                 benchmark_to_rm_lwd_hex = NA, 
-                                 col_start_2d = "UMAP", 
-                                 col_start_highd = "x")
-df_bin_centroids_s_curve <- model_object$df_bin_centroids
-df_bin_s_curve <- model_object$df_bin
-
-
-
-## Triangulate bin centroids
-tr1_object_s_curve <- tri_bin_centroids(df_bin_centroids_s_curve, x = "c_x", y = "c_y")
-tr_from_to_df_s_curve <- gen_edges(tri_object = tr1_object_s_curve)
-## Compute 2D distances
-distance_s_curve <- cal_2d_dist(tr_coord_df = tr_from_to_df_s_curve, 
-                             start_x = "x_from", start_y = "y_from", 
-                             end_x = "x_to", end_y = "y_to", 
-                             select_vars = c("from", "to", "distance"))
-
-## To find the benchmark value
-benchmark_s_curve <- find_lg_benchmark(distance_edges = distance_s_curve, distance_col = "distance")
-benchmark_s_curve <- 0.5
-
-trimesh_s_curve <- ggplot(df_bin_centroids_s_curve, aes(x = c_x, y = c_y)) +
-  geom_trimesh() +
-  theme_linedraw() +
-  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) +
-  labs(colour = "")
-
-trimesh_colored_s_curve_umap <- vis_lg_mesh(distance_edges = distance_s_curve, benchmark_value = benchmark_s_curve,
-tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance") 
-
-trimesh_colored_s_curve_umap <- trimesh_colored_s_curve_umap +
-  theme_linedraw() +
-  theme(legend.position = "bottom", plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3) +
-  labs(colour = "")
-
-trimesh_removed_s_curve_umap <- vis_rmlg_mesh(distance_edges = distance_s_curve, benchmark_value =
-benchmark_s_curve, tr_coord_df = tr_from_to_df_s_curve, distance_col = "distance")
-trimesh_removed_s_curve_umap <- trimesh_removed_s_curve_umap +
-  theme_linedraw() +
-  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'c', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-df_all_s_curve <- dplyr::bind_cols(s_curve_noise_training |> dplyr::select(-ID), umap_data_with_hb_id)
-
-# show_langevitour(df_all_s_curve, df_bin_s_curve, df_bin_centroids_s_curve, benchmark_s_curve, distance_s_curve, "distance", col_start = "x")
-
-### Define type column
-df <- df_all_s_curve |>
-  dplyr::select(tidyselect::starts_with("x")) |>
-  dplyr::mutate(type = "data") ## original dataset
-
-df_b <- df_bin_s_curve |>
-  dplyr::filter(hb_id %in% df_bin_centroids_s_curve$hexID) |>
-  dplyr::mutate(type = "model") ## Data with summarized mean
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b <- df_b[match(df_bin_centroids_s_curve$hexID, df_b$hb_id),] |>
-  dplyr::select(-hb_id)
-df_exe <- dplyr::bind_rows(df_b, df)
-## Set the maximum difference as the criteria
-distance_df_small_edges <- distance_s_curve |>
-  dplyr::filter(distance < benchmark_s_curve)
-## Since erase brushing is considerd.
-tour <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = distance_df_small_edges$from,
-                         lineTo = distance_df_small_edges$to,
-                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(1, NROW(df))),
-                         levelColors = c("#6a3d9a", "#33a02c"))
-
-
-## ----out.width="100%", fig.cap = "Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin."----
-
-centroid_plot + full_grid + std_pts_grid +
-  plot_annotation(tag_levels = 'a') +
-  plot_layout(ncol = 3) &
-  theme(plot.tag = element_text(size = 8))
+interior_annotation <- function(label, position = c(0.92, 0.92)) {
+  annotation_custom(grid::textGrob(label = label,
+      x = unit(position[1], "npc"), y = unit(position[2], "npc"),
+      gp = grid::gpar(cex = 1, col="grey70")))
+}
 
 
 ## -----------------------------------------------------------------------------
-## Prediction for training data
-pred_emb_list_training <- predict_emb(test_data = s_curve_noise_training, 
-                             df_bin_centroids = df_bin_centroids_s_curve, 
-                             df_bin = df_bin_s_curve, type_NLDR = "UMAP")
-pred_df_training <- as.data.frame(do.call(cbind, pred_emb_list_training))
-
-pred_points_training <- ggplot(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2)) +
-  geom_point() +
-  geom_point(data = pred_df_training, aes(x = pred_UMAP_1, y = pred_UMAP_2), colour = "#de2d26") +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-## Prediction for test data
-pred_emb_list_test <- predict_emb(test_data = s_curve_noise_test, 
-                             df_bin_centroids = df_bin_centroids_s_curve, 
-                             df_bin = df_bin_s_curve, type_NLDR = "UMAP")
-pred_df_test <- as.data.frame(do.call(cbind, pred_emb_list_test))
-
-pred_points_test <- ggplot(data = s_curve_noise_umap_scaled, aes(x = UMAP1, y = UMAP2)) +
-  geom_point() +
-  geom_point(data = pred_df_test, aes(x = pred_UMAP_1, y = pred_UMAP_2), colour = "#de2d26") +
-  annotate(geom = 'text', label = 'b', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
-
-
-
-## ----out.width="100%", fig.cap = "Predicted 2D embedding overlaid with UMAP embedding of S-curve training data: (a) prediction of 2D embeddings for S-curve training data, and (b) prediction of 2D embeddings for S-curve test data. Once the high-D model is generated, first, for the new data points the nearest high-D mappings of hexagonal bin centroids find by computing Euclidean distance. Then, mapping back the 2D hexagonal bin centroids gives the prediction for the new data points."----
-
-pred_points_training + pred_points_test +
-  plot_layout(ncol = 2) &
-  theme(plot.tag = element_text(size = 8))
+package_dependencies("quollr")
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-gen_summary(test_data = s_curve_noise_training, prediction_df = pred_df_training,
-df_bin = df_bin_s_curve, col_start = "x")
+scaled_nldr_obj_scurve <- gen_scaled_data(data = s_curve_noise_umap)
+
+s_curve_noise_umap_scaled <- scaled_nldr_obj_scurve$scaled_nldr
+
+lim1 <- scaled_nldr_obj_scurve$lim1
+lim2 <- scaled_nldr_obj_scurve$lim2
+r2 <- diff(lim2)/diff(lim1) 
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-gen_summary(test_data = s_curve_noise_test, prediction_df = pred_df_test,
-df_bin = df_bin_s_curve, col_start = "x")
+fit_highd_model(
+  training_data = s_curve_noise_training,
+  emb_df = s_curve_noise_umap_scaled, 
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07,
+  is_bin_centroid = TRUE,
+  is_rm_lwd_hex = TRUE,
+  benchmark_to_rm_lwd_hex = NULL,
+  col_start_highd = "x"
+  )
 
 
-## ----out.width="100%", fig.cap="Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed."----
-
-trimesh_s_curve + trimesh_colored_s_curve_umap + trimesh_removed_s_curve_umap +
-  plot_layout(ncol = 3) &
-  theme(plot.tag = element_text(size = 8))
-
-
-## ----tour-s-curve-------------------------------------------------------------
-tour
+## ----echo=TRUE----------------------------------------------------------------
+calc_bins_y(
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
+  )
 
 
-## ----echo=FALSE---------------------------------------------------------------
-clusters_different_shapes_diff_num_points <- function(sample_size = 400, with_seed = NULL, cluster_size_vec = c(50, 50, 50, 50, 100, 100), num_gussian_clusters = 4, num_non_gaussian_clusters = 2,
-                                      cluster_sd_gau = 0.05, cluster_sd_non_gau = 0.1, num_dims = 7, a = 2, b = 4) {
+## ----echo=TRUE----------------------------------------------------------------
+hex_binning(
+  data = s_curve_noise_umap_scaled, 
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
+  )
 
 
-  # To check the seed is not assigned
-  if (!is.null(with_seed)) {
-    set.seed(with_seed)
-  }
-
-  num_clusters <- num_gussian_clusters + num_non_gaussian_clusters
-
-
-
-  ## Generate Gaussian clusters
-
-  # Create a vector of possible values (0 and 1)
-  values <- c(0, 1)
-
-  # Create an expanded grid with 0's and 1's
-  mean_val_grid <- tidyr::expand_grid(!!!setNames(rep(list(values), num_dims),
-                                                  paste0("mean_dim", 1:num_dims)))
-
-  # To select combinations for assigned number of clusters
-
-  mean_val_grid_gau <- mean_val_grid |>
-    dplyr::slice_sample(n = num_gussian_clusters)
-
-  mean_val_grid_non_gau <- mean_val_grid |>
-    dplyr::slice_sample(n = num_non_gaussian_clusters)
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> find_low_dens_hex(
+#>   df_bin_centroids_all = df_bin_centroids,
+#>   bin1 = 12,
+#>   df_bin_centroids_low = df_bin_centroids_low
+#>   )
+#> 
 
 
-  # To generate empty tibble
-  column_names <- paste0(rep("x", num_dims), 1:num_dims)
-  df <- tibble(!!!setNames(rep(list(NULL), length(column_names)), column_names))
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> tr1_object <- tri_bin_centroids(
+#>   hex_df = df_bin_centroids,
+#>   x = "c_x",
+#>   y = "c_y"
+#>   )
+#> 
+#> tr_from_to_df <- gen_edges(
+#>   tri_object = tr1_object
+#>   )
 
-  for (i in 1:num_gussian_clusters) {
 
-    # To filter the mean values for specific cluster
-    mean_val_for_cluster <- mean_val_grid_gau |>
-      dplyr::filter(dplyr::row_number() == i) |>
-      unlist(use.names = FALSE)
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> find_lg_benchmark(
+#>   distance_edges = distance_df,
+#>   distance_col = "distance"
+#>   )
 
-    # Initialize an empty list to store the vectors with column
-    # values
-    dim_val_list <- list()
 
-    for (j in 1:num_dims) {
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> umap_data_with_hb_id <- hb_obj$data_hb_id
+#> 
+#> df_all <- bind_cols(
+#>   s_curve_noise_training |> dplyr::select(-ID),
+#>   umap_data_with_hb_id
+#>   )
+#> 
+#> df_bin <- avg_highd_data(
+#>   data = df_all,
+#>   col_start = "x"
+#>   )
 
-      dim_val_list[[column_names[j]]] <- rnorm(cluster_size_vec[i], mean = mean_val_for_cluster[j],
-                                               sd = cluster_sd_gau)
 
-    }
-    # To generate a tibble for a cluster
-    df_gau_cluster <- tibble::as_tibble(dim_val_list)
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> predict_emb(
+#>   test_data = s_curve_noise_training,
+#>   df_bin_centroids = df_bin_centroids,
+#>   df_bin = df_bin,
+#>   type_NLDR = "UMAP"
+#>   )
 
-    df <- dplyr::bind_rows(df, df_gau_cluster)
 
-  }
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> glance(
+#>   df_bin_centroids = df_bin_centroids,
+#>   df_bin = df_bin,
+#>   training_data = s_curve_noise_training,
+#>   newdata = NULL,
+#>   type_NLDR = "UMAP",
+#>   col_start = "x"
+#>   )
 
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> augment(
+#>   df_bin_centroids = df_bin_centroids,
+#>   df_bin = df_bin,
+#>   training_data = s_curve_noise_training,
+#>   newdata = NULL,
+#>   type_NLDR = "UMAP",
+#>   col_start = "x"
+#>   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> ggplot() +
+#>   geom_hexgrid(
+#>     data = all_centroids_df,
+#>     aes(x = c_x, y = c_y)
+#>     ) +
+#>   coord_fixed()
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> ggplot() +
+#>   geom_trimesh(
+#>     data = df_bin_centroids,
+#>     aes(x = c_x, y = c_y)
+#>     ) +
+#>   coord_fixed()
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> vis_lg_mesh(
+#>   distance_edges = distance_df,
+#>   benchmark_value = 0.75,
+#>   tr_coord_df = tr_from_to_df,
+#>   distance_col = "distance"
+#>   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> vis_rmlg_mesh(
+#>   distance_edges = distance_df,
+#>   benchmark_value = 0.75,
+#>   tr_coord_df = tr_from_to_df,
+#>   distance_col = "distance"
+#>   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+#> show_langevitour(
+#>   df = df_all,
+#>   df_b = df_bin,
+#>   df_b_with_center_data = df_bin_centroids,
+#>   benchmark_value = 0.75,
+#>   distance = distance_df,
+#>   distance_col = "distance",
+#>   use_default_benchmark_val = FALSE,
+#>   col_start = "x"
+#>   )
+
+
+## -----------------------------------------------------------------------------
+triangular_3d_data <- tri_3d(
+  n = 1250, num_noise = 2, 
+  min_n = -0.05, max_n = 0.05) |>
+  as_tibble() 
+
+colnames(triangular_3d_data) <- paste0("x", 1:NCOL(triangular_3d_data))
   
+#langevitour::langevitour(triangular_3d_data)
 
-  for (i in 1:num_non_gaussian_clusters) {
+
+## -----------------------------------------------------------------------------
+triangular_3d_data <- triangular_3d_data |>
+  mutate(ID = row_number())
+
+
+## -----------------------------------------------------------------------------
+sc_ltr_pos <- c(0.08, 0.96)
+
+
+## -----------------------------------------------------------------------------
+tSNE_fit1 <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = 6) 
+
+tsne_prism1 <- tSNE_fit1$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism1) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj_tsne1 <- gen_scaled_data(
+  data = tsne_prism1)
+tsne_prism_scaled1 <- prism_scaled_obj_tsne1$scaled_nldr
+
+nldr_prism1 <- tsne_prism_scaled1 |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+tSNE_fit2 <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = round(sqrt(NROW(triangular_3d_data)))) 
+
+tsne_prism2 <- tSNE_fit2$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism2) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj_tsne2 <- gen_scaled_data(
+  data = tsne_prism2)
+tsne_prism_scaled2 <- prism_scaled_obj_tsne2$scaled_nldr
+
+nldr_prism2 <- tsne_prism_scaled2 |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+tSNE_fit3 <- triangular_3d_data |>
+  select(-ID) |>
+  Rtsne(perplexity = 58) 
+
+tsne_prism3 <- tSNE_fit3$Y |>
+  as_tibble() |>
+  mutate(ID = row_number())
+
+colnames(tsne_prism3) <- c("tSNE1", "tSNE2", "ID")
+
+prism_scaled_obj_tsne3 <- gen_scaled_data(
+  data = tsne_prism3)
+tsne_prism_scaled3 <- prism_scaled_obj_tsne3$scaled_nldr
+
+nldr_prism3 <- tsne_prism_scaled3 |> 
+  ggplot(aes(x = tSNE1, y = tSNE2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+umap_prism1 <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 15, n_components =  2, 
+       metric = "euclidean", min_dist = 0.3, init = "spca")
+
+umap_prism1 <- umap_prism1 |>
+  as_tibble()
+
+names(umap_prism1) <- c("UMAP1", "UMAP2")
+
+umap_prism1 <- umap_prism1 |>
+  mutate(ID = 1:NROW(umap_prism1))
+
+prism_scaled_obj_umap1 <- gen_scaled_data(
+  data = umap_prism1)
+umap_prism_scaled1 <- prism_scaled_obj_umap1$scaled_nldr
+
+nldr_prism4 <- umap_prism_scaled1 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+umap_prism2 <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 35, n_components =  2, 
+       metric = "euclidean", min_dist = 0.5, init = "spca")
+
+umap_prism2 <- umap_prism2 |>
+  as_tibble()
+
+names(umap_prism2) <- c("UMAP1", "UMAP2")
+
+umap_prism2 <- umap_prism2 |>
+  mutate(ID = 1:NROW(umap_prism2))
+
+prism_scaled_obj_umap2 <- gen_scaled_data(
+  data = umap_prism2)
+umap_prism_scaled2 <- prism_scaled_obj_umap2$scaled_nldr
+
+nldr_prism5 <- umap_prism_scaled2 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+umap_prism3 <- triangular_3d_data |>
+  select(-ID) |>
+  umap(n_neighbors = 69, n_components =  2, 
+       metric = "euclidean", min_dist = 0.6, init = "spca")
+
+umap_prism3 <- umap_prism3 |>
+  as_tibble()
+
+names(umap_prism3) <- c("UMAP1", "UMAP2")
+
+umap_prism3 <- umap_prism3 |>
+  mutate(ID = 1:NROW(umap_prism3))
+
+prism_scaled_obj_umap3 <- gen_scaled_data(
+  data = umap_prism3)
+umap_prism_scaled3 <- prism_scaled_obj_umap3$scaled_nldr
+
+nldr_prism6 <- umap_prism_scaled3 |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) + 
+  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+
+
+## -----------------------------------------------------------------------------
+nldr_prism1 + nldr_prism2 + nldr_prism3 + 
+  nldr_prism4 + nldr_prism5 + nldr_prism6 +
+  plot_layout(ncol=3)
+
+
+## -----------------------------------------------------------------------------
+error_prism_tsne <- data.frame(matrix(nrow = 0, ncol = 0))
+
+## To initialize number of bins along the x-axis
+bin1_vec_prism <- 2:25 
+
+perplexity_vec <- c(6, 35, 58)
+
+for (perplexity_val in perplexity_vec) {
+  
+  tSNE_fit <- triangular_3d_data |>
+    select(-ID) |>
+    Rtsne(perplexity = perplexity_val)
+  
+  tsne_prism <- tSNE_fit$Y |>
+    as_tibble() |>
+    mutate(ID = row_number())
+  
+  colnames(tsne_prism) <- c("tSNE1", "tSNE2", "ID")
+  
+  prism_scaled_obj <- gen_scaled_data(
+    data = tsne_prism)
+  tsne_prism_scaled <- prism_scaled_obj$scaled_nldr
+  
+  lim1 <- prism_scaled_obj$lim1
+  lim2 <- prism_scaled_obj$lim2
+  r2_prism <- diff(lim2)/diff(lim1) 
+  
+  for (xbins in bin1_vec_prism) {
     
-    phi <- runif(cluster_size_vec[(num_clusters - i)], max = 2*pi)
-    rho <- sqrt(runif(cluster_size_vec[(num_clusters - i)]))
-
-    # To filter the mean values for specific cluster
-    presence_of_elipse_cluster <- mean_val_grid_non_gau |>
-      dplyr::filter(dplyr::row_number() == i) |>
-      unlist(use.names = FALSE)
-
-    # Initialize an empty list to store the vectors with column
-    # values
-    dim_val_list_n <- list()
-
-    for (j in 1:num_dims) {
-      if(presence_of_elipse_cluster[j] == 1){
-        dim_val_list_n[[column_names[j]]] <- sqrt(a)*rho*cos(phi) + b
-        ## Surface of poolar coordinate
-      } else {
-        dim_val_list_n[[column_names[j]]] <- rnorm(cluster_size_vec[(num_clusters - i)], mean = 0,
-                                                   sd = cluster_sd_non_gau)
-
-      }
-
-    }
-    # To generate a tibble for a cluster
-    df_non_gau_cluster <- tibble::as_tibble(dim_val_list_n)
-
-    df <- dplyr::bind_rows(df, df_non_gau_cluster)
-
+    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
+    
+    prism_model <- fit_highd_model(
+      training_data = triangular_3d_data,
+      emb_df = tsne_prism_scaled,
+      bin1 = xbins,
+      r2 = r2_prism,
+      is_bin_centroid = TRUE,
+      is_rm_lwd_hex = TRUE,
+      col_start_highd = "x"
+    )
+    
+    df_bin_centroids_prism <- prism_model$df_bin_centroids
+    df_bin_prism <- prism_model$df_bin
+    
+    ## Compute error
+    error_df <- glance(
+      df_bin_centroids = df_bin_centroids_prism,
+      df_bin = df_bin_prism,
+      training_data = triangular_3d_data,
+      newdata = NULL,
+      type_NLDR = "tSNE",
+      col_start = "x") |>
+      mutate(bin1 = xbins,
+             bin2 = bin2,
+             b = bin1 * bin2,
+             b_non_empty = NROW(df_bin_centroids_prism),
+             type = paste0("perplexity: ", perplexity_val))
+    
+    error_prism_tsne <- bind_rows(error_prism_tsne, error_df)
+    
   }
+  
+}
 
-  df
 
+## -----------------------------------------------------------------------------
+error_prism_umap <- data.frame(matrix(nrow = 0, ncol = 0))
+
+## To initialize number of bins along the x-axis
+bin1_vec_prism <- 2:25 
+
+param_list <- list(param1 = c(15, 0.3), param2 = c(35, 0.5), param3 = c(69, 0.6))
+
+for (i in 1:length(param_list)) {
+  
+  n_neighbors_val <- param_list[[i]][1]
+  min_dist_val <- param_list[[i]][2]
+    
+  umap_prism <- triangular_3d_data |>
+    select(-ID) |>
+    umap(n_neighbors = n_neighbors_val, n_components =  2, 
+         metric = "euclidean", min_dist = min_dist_val, init = "spca")
+
+  umap_prism <- umap_prism |>
+    as_tibble()
+  
+  names(umap_prism) <- c("UMAP1", "UMAP2")
+  
+  umap_prism <- umap_prism |>
+    mutate(ID = 1:NROW(umap_prism))
+  
+  prism_scaled_obj <- gen_scaled_data(
+    data = umap_prism)
+  umap_prism_scaled <- prism_scaled_obj$scaled_nldr
+  
+  lim1 <- prism_scaled_obj$lim1
+  lim2 <- prism_scaled_obj$lim2
+  r2_prism <- diff(lim2)/diff(lim1) 
+  
+  for (xbins in bin1_vec_prism) {
+    
+    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
+    
+    prism_model <- fit_highd_model(
+      training_data = triangular_3d_data,
+      emb_df = umap_prism_scaled,
+      bin1 = xbins,
+      r2 = r2_prism,
+      is_bin_centroid = TRUE,
+      is_rm_lwd_hex = TRUE,
+      col_start_highd = "x"
+    )
+    
+    df_bin_centroids_prism <- prism_model$df_bin_centroids
+    df_bin_prism <- prism_model$df_bin
+    
+    ## Compute error
+    error_df <- glance(
+      df_bin_centroids = df_bin_centroids_prism,
+      df_bin = df_bin_prism,
+      training_data = triangular_3d_data,
+      newdata = NULL,
+      type_NLDR = "UMAP",
+      col_start = "x") |>
+      mutate(bin1 = xbins,
+             bin2 = bin2,
+             b = bin1 * bin2,
+             b_non_empty = NROW(df_bin_centroids_prism),
+             type = paste0("n_neighbors: ", n_neighbors_val, 
+                           " min_dist: ", min_dist_val))
+    
+    error_prism_umap <- bind_rows(error_prism_umap, error_df)
+    
+  }
+  
 }
 
 
 ## -----------------------------------------------------------------------------
-clust_df <- clusters_different_shapes_diff_num_points(sample_size = 1500, with_seed = NULL, cluster_size_vec = c(250, 150, 150, 150, 350, 450), num_gussian_clusters = 4, num_non_gaussian_clusters = 2, cluster_sd_gau = 0.2, cluster_sd_non_gau = 0.3, num_dims = 7, a = 2, b = 4)
-
-langevitour::langevitour(clust_df)
-
-clust_df <- clust_df |>
-  dplyr::mutate(ID = row_number())
+error_prism <- bind_rows(error_prism_tsne, error_prism_umap) 
+error_prism <- error_prism |>
+  filter(b <= 625)
 
 
 ## -----------------------------------------------------------------------------
-tSNE_fit <- clust_df |>
-  dplyr::select(-ID) |>
-  dplyr::select(where(is.numeric)) |>
-  Rtsne::Rtsne(perplexity = 39, pca = FALSE, pca_center = FALSE, normalize = FALSE, dims = 2)
+error_plot_prism <- ggplot(error_prism, 
+                           aes(x = b_non_empty, 
+                               y = log(Error), 
+                               group = type, 
+                               colour = type)) + 
+  geom_point(size = 1) +
+  geom_line() + 
+  geom_vline(xintercept = 112, linetype="solid",
+             color = "black", linewidth=0.8, alpha = 0.5) +
+  scale_color_manual(values=c('#e41a1c','#377eb8','#4daf4a','#984ea3',
+                              '#ff7f00','#a6cee3','#a65628','#f781bf')) +
+  ylab("log(Error)") +
+  xlab("number of non-empty bins") +
+  theme(axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 5),
+        axis.title.x = element_text(size = 5),
+        axis.title.y = element_text(size = 5, angle = 90),
+        legend.position = "bottom")
 
-tSNE_df <- tSNE_fit$Y |> 
-  tibble::as_tibble(.name_repair = "unique") |>
-  dplyr::mutate(ID = clust_df$ID)
-
-names(tSNE_df) <- c("tSNE1", "tSNE2", "ID")
-
-tSNE_df_plot <- tSNE_df |>
-  ggplot(aes(x = tSNE1,
-             y = tSNE2))+
-  geom_point(alpha=0.5, colour="#e41a1c", size = 0.5) +
-  coord_equal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"),
-        axis.text = element_text(size = 5),
-        axis.title = element_text(size = 7))
-
-
-## ----tsne-clust, out.width="100%", fig.cap="tSNE representation of data with perplexity: 39. Is this representation accurately capture the structure in high dimensions?"----
-tSNE_df_plot
+error_plot_prism
 
 
 ## -----------------------------------------------------------------------------
-tsne_gau_scaled <- as.data.frame(do.call(cbind, gen_scaled_data(data = tSNE_df, 
-                                    x = "tSNE1", y = "tSNE2"))) |>
-  dplyr::rename(c("tSNE1" = "scaled_tSNE1", 
-                  "tSNE2" = "scaled_tSNE2")) |>
-  dplyr::mutate(ID = 1:NROW(tSNE_df))    
-## tSNE
-hex_size_vec <- seq(0.02, 2, by = 0.01)
-vec <- stats::setNames(rep("", 6), c("num_bins", "aic", "mse", "num_bins_x", "num_bins_y", "hex_size"))  ## Define column names
-mse_df_gau <- dplyr::bind_rows(vec)[0, ]
-mse_df_gau <- mse_df_gau |>
-  dplyr::mutate_if(is.character, as.numeric)
-for (i in 1:length(hex_size_vec)) {
-  
-  num_bin_list <- calc_bins(data = tsne_gau_scaled, 
-            x = "tSNE1", y = "tSNE2", 
-            hex_size = hex_size_vec[i], buffer_x = NA, buffer_y = NA)
-  
-  num_bins_x <- num_bin_list$num_x
-  num_bins_y <- num_bin_list$num_y
-  
-  model_object <- fit_highd_model( training_data = clust_df, 
-                                   nldr_df_with_id = tsne_gau_scaled, 
-                                   x = "tSNE1", y = "tSNE2", 
-                                   num_bins_x = num_bins_x, 
-                                   num_bins_y = num_bins_y, 
-                                   x_start = NA, y_start = NA, 
-                                   buffer_x = NA, buffer_y = NA, 
-                                   hex_size = hex_size_vec[i],
-                                   is_rm_lwd_hex = FALSE, 
-                                   benchmark_to_rm_lwd_hex = NA, 
-                                   col_start_2d = "tSNE", 
-                                   col_start_highd = "x")
-  
-  centroid_df_training <- model_object$df_bin_centroids
-  avg_df_training <- model_object$df_bin
-  
-  pred_emb_list <- predict_emb(test_data = clust_df, 
-                                  df_bin_centroids = centroid_df_training, 
-                                  df_bin = avg_df_training, type_NLDR = "tSNE")
-  
-  pred_df_training <- as.data.frame(do.call(cbind, pred_emb_list))
-  
-  eval_list <- gen_summary(test_data = clust_df, 
-                                  prediction_df = pred_df_training, 
-                                  df_bin = avg_df_training, col_start = "x")
-  
-  mse_df_gau <- mse_df_gau |>
-    tibble::add_row(num_bins = num_bins_x * num_bins_y,
-                    aic = eval_list$aic,
-                    mse = eval_list$mse,
-                    num_bins_x = num_bins_x,
-                    num_bins_y = num_bins_y,
-                    hex_size = hex_size_vec[i])
-  
-}
-## If same total number of bins occurred only select ones with minimum error
-### Obtain duplicate bins
-dupli_bins <- mse_df_gau |> 
-  dplyr::count(num_bins) |> 
-  dplyr::filter(n > 1) |> 
-  dplyr::pull(num_bins)
-### Group split by duplicated bins
-duplicate_df_list <- mse_df_gau |>
-  dplyr::filter(num_bins %in% dupli_bins) |>
-  dplyr::arrange(num_bins) |>
-  dplyr::group_split(num_bins)
-### Obtain one row from duplicates which have lowest error and hexsize
-duplicate_df <- data.frame(matrix(nrow = 0, ncol = 0))
-for (i in 1:length(duplicate_df_list)) {
-  
-  dd <- duplicate_df_list[[i]] |>
-    dplyr::filter(mse == min(duplicate_df_list[[i]]$mse)) |>
-    dplyr::filter(hex_size == min(duplicate_df_list[[i]]$hex_size))
-  
-  duplicate_df <- dplyr::bind_rows(duplicate_df, dd)
-  
-}
-### Obtain the mse_df with not duplicated bins
-not_dupli_df <- mse_df_gau |>
-  dplyr::filter(!(num_bins %in% dupli_bins))
-### Combine duplicated and not duplicated(corrected) bins dfs
-mse_df_clust <- dplyr::bind_rows(not_dupli_df, duplicate_df) 
+## Compute hexbin parameters
+num_bins_x_prism <- 21
+lim1 <- prism_scaled_obj_tsne2$lim1
+lim2 <- prism_scaled_obj_tsne2$lim2
+r2_prism <- diff(lim2)/diff(lim1) 
 
+prism_model <- fit_highd_model(
+  training_data = triangular_3d_data,
+  emb_df = tsne_prism_scaled2,
+  bin1 = num_bins_x_prism,
+  r2 = r2_prism,
+  is_bin_centroid = TRUE,
+  is_rm_lwd_hex = TRUE,
+  col_start_highd = "x"
+)
 
-## -----------------------------------------------------------------------------
-mse_clust_plot <- ggplot(mse_df_clust, aes(x = num_bins,
-                                       y = log(mse)
-)) +
-  geom_point() +
-  geom_line() +
-   geom_vline(xintercept = 588, linetype="solid",
-                color = "red", size=0.8, alpha = 0.5) +
-  theme_light() +
-  theme(legend.position = "none", legend.title = element_blank(), plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title = element_text(size = 7),
-        axis.text = element_text(size = 7)) +
-  ylab("log(MSE)") +
-  xlab("total number of bins")
+df_bin_centroids_prism <- prism_model$df_bin_centroids
+df_bin_prism <- prism_model$df_bin
 
-
-## ----fig.cap="Parameter tuning plots, where the best choice of parameter at a large drop in MSE. Here, these are at *total number of bins* = 180."----
-mse_clust_plot
-
-
-## -----------------------------------------------------------------------------
-
-## Decide by looking at MSE plot
-num_bins_x_tsne_gau <- 21
-num_bins_y_tsne_gau <- 28
-hex_size_tsne_gau <- 0.03
-## non-empty:198
-hb_obj_tsne_gau <- hex_binning(data = tsne_gau_scaled, x = "tSNE1", 
-                      y = "tSNE2", num_bins_x = num_bins_x_tsne_gau, 
-                      num_bins_y = num_bins_y_tsne_gau, x_start = NA, y_start = NA, 
-                      buffer_x = NA, buffer_y = NA, hex_size = hex_size_tsne_gau, col_start = "tSNE")
-## Data set with all possible centroids in the hexagonal grid
-all_centroids_df <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$centroids))
-## Generate all coordinates of hexagons
-hex_grid <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$hex_poly))
-## To obtain the standardise counts within hexbins
-counts_df <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$std_cts))
-df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df, 
-                                             counts_df = counts_df)
-# ggplot(data = hex_grid, aes(x = x, y = y)) +
-#   geom_polygon(fill = "white", color = "black", aes(group = hex_poly_id)) +
-#   geom_point(data = all_centroids_df, aes(x = c_x, y = c_y), color = "red") +
-#   coord_fixed()
-hex_grid_with_counts <- dplyr::left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hb_id"))
-# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-#   geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
-#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-#   coord_fixed()
-tsne_data_with_hb_id_gau <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$data_hb_id))
-  
-model_object_tsne_gau <- fit_highd_model( training_data = clust_df, 
-                                 nldr_df_with_id = tsne_gau_scaled, 
-                                 x = "tSNE1", y = "tSNE2", 
-                                 num_bins_x = num_bins_x_tsne_gau, 
-                                 num_bins_y = num_bins_y_tsne_gau, 
-                                 x_start = NA, y_start = NA, 
-                                 buffer_x = NA, buffer_y = NA, 
-                                 hex_size = hex_size_tsne_gau,
-                                 is_rm_lwd_hex = FALSE, 
-                                 benchmark_to_rm_lwd_hex = NA, 
-                                 col_start_2d = "tSNE", 
-                                 col_start_highd = "x")
-df_bin_centroids_tsne_gau <- model_object_tsne_gau$df_bin_centroids
-df_bin_tsne_gau <- model_object_tsne_gau$df_bin
 ## Triangulate bin centroids
-tr1_object_tsne_gau <- tri_bin_centroids(df_bin_centroids_tsne_gau, x = "c_x", y = "c_y")
-tr_from_to_df_tsne_gau <- gen_edges(tri_object = tr1_object_tsne_gau)
+tr1_object_prism <- tri_bin_centroids(
+  df_bin_centroids_prism, x = "c_x", y = "c_y")
+tr_from_to_df_prism <- gen_edges(
+  tri_object = tr1_object_prism)
+
 ## Compute 2D distances
-distance_tsne_gau <- cal_2d_dist(tr_coord_df = tr_from_to_df_tsne_gau, 
-                             start_x = "x_from", start_y = "y_from", 
-                             end_x = "x_to", end_y = "y_to", 
-                             select_vars = c("from", "to", "distance"))
-# distance_plot <- plot_dist(distance_tsne_gau) +
-#   ylab(expression(d^{(2)})) +
-#   theme(axis.text = element_text(size = 5),
-#         axis.title = element_text(size = 12))
-# 
-# distance_plot
+distance_prism <- cal_2d_dist(
+  tr_coord_df = tr_from_to_df_prism,
+  start_x = "x_from",
+  start_y = "y_from",
+  end_x = "x_to",
+  end_y = "y_to",
+  select_vars = c("from", "to", "distance"))
+
 ## To find the benchmark value
-benchmark_tsne_gau <- find_lg_benchmark(distance_edges = distance_tsne_gau, distance_col = "distance")
-# ggplot() +
-# geom_trimesh(data = df_bin_centroids_tsne_gau, mapping = aes(x = c_x, y = c_y))
-trimesh_removed_tsne_gau <- vis_rmlg_mesh(distance_edges = distance_tsne_gau, benchmark_value =
-benchmark_tsne_gau, tr_coord_df = tr_from_to_df_tsne_gau, distance_col = "distance")
-trimesh_removed_tsne_gau <- trimesh_removed_tsne_gau +
-  theme_linedraw() +
-  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size = 3)
+benchmark_prism <- find_lg_benchmark(
+  distance_edges = distance_prism,
+  distance_col = "distance")
 
-trimesh_removed_tsne_gau
+trimesh_removed_prism <- vis_rmlg_mesh(
+  distance_edges = distance_prism,
+  benchmark_value = benchmark_prism,
+  tr_coord_df = tr_from_to_df_prism,
+  distance_col = "distance") #+
+#xlim(sc_xlims) + ylim(sc_ylims) +
+#interior_annotation("a", sc_ltr_pos)
 
-df_all_tsne_gau <- dplyr::bind_cols(clust_df |> dplyr::select(-ID), tsne_data_with_hb_id_gau)
+trimesh_removed_prism
+
+
+## -----------------------------------------------------------------------------
+## Hexagonal binning to have regular hexagons
+hb_obj_prism <- hex_binning(
+  data = tsne_prism_scaled2,
+  bin1 = num_bins_x_prism,
+  r2 = r2_prism)
+
+tsne_data_with_hb_id <- hb_obj_prism$data_hb_id
+
+df_all_prism <- dplyr::bind_cols(triangular_3d_data |> dplyr::select(-ID),
+                                 tsne_data_with_hb_id)
 
 ### Define type column
-df <- df_all_tsne_gau |>
+df <- df_all_prism |>
   dplyr::select(tidyselect::starts_with("x")) |>
   dplyr::mutate(type = "data") ## original dataset
 
-df_b <- df_bin_tsne_gau |>
-  dplyr::filter(hb_id %in% df_bin_centroids_tsne_gau$hexID) |>
+df_b <- df_bin_prism |>
+  dplyr::filter(hb_id %in% df_bin_centroids_prism$hexID) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
+
 ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b <- df_b[match(df_bin_centroids_tsne_gau$hexID, df_b$hb_id),] |>
+df_b <- df_b[match(df_bin_centroids_prism$hexID, df_b$hb_id),] |>
   dplyr::select(-hb_id)
+
 df_exe <- dplyr::bind_rows(df_b, df)
+
 ## Set the maximum difference as the criteria
-distance_df_small_edges <- distance_tsne_gau |>
-  dplyr::filter(distance < benchmark_tsne_gau)
+distance_df_small_edges <- distance_prism |>
+  dplyr::filter(distance < benchmark_prism)
 ## Since erase brushing is considerd.
-langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = distance_df_small_edges$from,
-                         lineTo = distance_df_small_edges$to,
-                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.7, NROW(df))),
-                         levelColors = c("#6a3d9a", "#33a02c"))
 
-
-
-## -----------------------------------------------------------------------------
-## Decide by looking at MSE plot
-num_bins_x_tsne_gau <- 21
-num_bins_y_tsne_gau <- 28
-hex_size_tsne_gau <- 0.03
-## non-empty:198
-hb_obj_tsne_gau <- hex_binning(data = tsne_gau_scaled, x = "tSNE1", 
-                      y = "tSNE2", num_bins_x = num_bins_x_tsne_gau, 
-                      num_bins_y = num_bins_y_tsne_gau, x_start = NA, y_start = NA, 
-                      buffer_x = NA, buffer_y = NA, hex_size = hex_size_tsne_gau, col_start
-= "tSNE")
-## Data set with all possible centroids in the hexagonal grid
-all_centroids_df <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$centroids))
-## Generate all coordinates of hexagons
-hex_grid <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$hex_poly))
-## To obtain the standardise counts within hexbins
-counts_df <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$std_cts))
-df_bin_centroids <- extract_hexbin_centroids(centroids_df = all_centroids_df, 
-                                             counts_df = counts_df)
-# ggplot(data = hex_grid, aes(x = x, y = y)) +
-#   geom_polygon(fill = "white", color = "black", aes(group = hex_poly_id)) +
-#   geom_point(data = all_centroids_df, aes(x = c_x, y = c_y), color = "red") +
-#   coord_fixed()
-hex_grid_with_counts <- dplyr::left_join(hex_grid, counts_df, by = c("hex_poly_id" =
-"hb_id"))
-# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = std_counts)) +
-#   geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
-#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-#   coord_fixed()
-tsne_data_with_hb_id_gau <- as.data.frame(do.call(cbind, hb_obj_tsne_gau$data_hb_id))
-  
-model_object_tsne_gau <- fit_highd_model( training_data = clust_df, 
-                                 nldr_df_with_id = tsne_gau_scaled, 
-                                 x = "tSNE1", y = "tSNE2", 
-                                 num_bins_x = num_bins_x_tsne_gau, 
-                                 num_bins_y = num_bins_y_tsne_gau, 
-                                 x_start = NA, y_start = NA, 
-                                 buffer_x = NA, buffer_y = NA, 
-                                 hex_size = hex_size_tsne_gau,
-                                 is_bin_centroid = FALSE,
-                                 is_rm_lwd_hex = FALSE, 
-                                 benchmark_to_rm_lwd_hex = NA, 
-                                 col_start_2d = "tSNE", 
-                                 col_start_highd = "x")
-df_bin_centroids_tsne_gau <- model_object_tsne_gau$df_bin_centroids
-df_bin_tsne_gau <- model_object_tsne_gau$df_bin
-## Triangulate bin centroids
-tr1_object_tsne_gau <- tri_bin_centroids(df_bin_centroids_tsne_gau, x = "c_x", y = "c_y")
-tr_from_to_df_tsne_gau <- gen_edges(tri_object = tr1_object_tsne_gau)
-## Compute 2D distances
-distance_tsne_gau <- cal_2d_dist(tr_coord_df = tr_from_to_df_tsne_gau, 
-                             start_x = "x_from", start_y = "y_from", 
-                             end_x = "x_to", end_y = "y_to", 
-                             select_vars = c("from", "to", "distance"))
-# distance_plot <- plot_dist(distance_tsne_gau) +
-  # ylab(expression(d^{(2)})) +
-  # theme(axis.text = element_text(size = 5),
-        # axis.title = element_text(size = 12))
-
-# distance_plot
-## To find the benchmark value
-benchmark_tsne_gau <- find_lg_benchmark(distance_edges = distance_tsne_gau, distance_col =
-"distance")
-
-benchmark_tsne_gau <- 0.17
-
-# ggplot() +
-# geom_trimesh(data = df_bin_centroids_tsne_gau, mapping = aes(x = c_x, y = c_y))
-trimesh_removed_tsne_gau <- vis_rmlg_mesh(distance_edges = distance_tsne_gau, 
-                                          benchmark_value = benchmark_tsne_gau, 
-                                          tr_coord_df = tr_from_to_df_tsne_gau, distance_col = "distance")
-trimesh_removed_tsne_gau <- trimesh_removed_tsne_gau +
-  theme_linedraw() +
-  theme(plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-        axis.title.x = element_blank(), axis.title.y = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  annotate(geom = 'text', label = 'a', x = -Inf, y = Inf, hjust = -0.5, vjust = 1.5, size =
-3)
-trimesh_removed_tsne_gau
-df_all_tsne_gau <- dplyr::bind_cols(clust_df |> dplyr::select(-ID),
-tsne_data_with_hb_id_gau)
-### Define type column
-df <- df_all_tsne_gau |>
-  dplyr::select(tidyselect::starts_with("x")) |>
-  dplyr::mutate(type = "data") ## original dataset
-df_b <- df_bin_tsne_gau |>
-  dplyr::filter(hb_id %in% df_bin_centroids_tsne_gau$hexID) |>
-  dplyr::mutate(type = "model") ## Data with summarized mean
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b <- df_b[match(df_bin_centroids_tsne_gau$hexID, df_b$hb_id),] |>
-  dplyr::select(-hb_id)
-df_exe <- dplyr::bind_rows(df_b, df)
-## Set the maximum difference as the criteria
-distance_df_small_edges <- distance_tsne_gau |>
-  dplyr::filter(distance < benchmark_tsne_gau)
-## Since erase brushing is considerd.
-langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = distance_df_small_edges$from,
-                         lineTo = distance_df_small_edges$to,
-                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)),
-rep(0.7, NROW(df))),
-                         levelColors = c("#6a3d9a", "#33a02c"))
+# langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+#                          lineFrom = distance_df_small_edges$from,
+#                          lineTo = distance_df_small_edges$to,
+#                          group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))),
+#                          levelColors = c("#6a3d9a", "#33a02c"))
 

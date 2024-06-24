@@ -1,5 +1,5 @@
 % !TeX root = RJwrapper.tex
-\title{quollr: An R Package for Visualizing 2D Models from Nonlinear Dimension Reductions in High Dimensional Space}
+\title{quollr: An R Package for Visualizing \(2-D\) Models from Non-linear Dimension Reductions in High Dimensional Space}
 
 
 \author{by Jayani P.G. Lakshika, Dianne Cook, Paul Harrison, Michael Lydeamore, and Thiyanga S. Talagala}
@@ -7,204 +7,498 @@
 \maketitle
 
 \abstract{%
-Non-Linear Dimension Reduction (NLDR) techniques have emerged as powerful tools to visualize high-dimensional (\(p\)-D) data. However, their complexity and parameter choices may lead to distrustful or misleading results. The R package \CRANpkg{quollr} is developed as a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data. Clustering data from \CRANpkg{cardinalR} package, is used to illustrate the algorithm and its use within the paackage.
+Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The \texttt{triangular\_3d\_data} data from the \CRANpkg{cardinalR} package is used to illustrate the algorithm and its application within the package.
 }
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\section{Introduction}\label{introduction}
 
-\hypertarget{methodology}{%
-\section{Methodology}\label{methodology}}
+This paper presents the R package, \texttt{quollr} which introduce a new visual tool in determining which NLDR technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in \emph{cite the methodology paper}. Furthermore, the \texttt{quollr} package enables users to perform hexagonal binning (Carr et al. 2023), resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at \url{https://CRAN.R-project.org/package=quollr}.
 
-\hypertarget{implementation}{%
-\section{Implementation}\label{implementation}}
+The paper is organized as follows. In next section, introduces the implementation of \texttt{quollr} package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in \textbf{Application} section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
+
+\section{Implementation}\label{implementation}
 
 The package can be installed from CRAN:
 
-\texttt{install.packages("quollr")}
+\begin{verbatim}
+install.packages("quollr")
+\end{verbatim}
 
 The development version can be installed from GitHub:
 
-\texttt{devtools::install\_github("JayaniLakshika/quollr")}
+\begin{verbatim}
+devtools::install_github("JayaniLakshika/quollr")
+\end{verbatim}
+
+\subsection{Package dependencies}\label{package-dependencies}
+
+Understanding the dependencies of the \texttt{quollr} package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that \texttt{quollr} relies on to execute its functions effectively.
+
+\begin{verbatim}
+#> $quollr
+#>  [1] "dplyr"       "ggplot2"     "grid"        "interp"      "langevitour"
+#>  [6] "proxy"       "rlang"       "rsample"     "stats"       "tibble"     
+#> [11] "tidyselect"
+\end{verbatim}
+
+\subsection{Usage}\label{usage}
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{s\_curve\_noise\_training} and \texttt{s\_curve\_noise\_umap}.
 
-The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility. When constructing the 2D model, the user can choose either to fir the 2D model with hexagonal bin centroids or bin means using \texttt{is\_bin\_centroid} argument.
+\texttt{s\_curve\_noise\_training} is a \(3\text{-}D\) S-curve data set with additional four noise dimensions which is used to train the model. \texttt{s\_curve\_noise\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{s\_curve\_noise\_training} data set. Each data set contains a unique ID column.
 
-\hypertarget{constructing-the-2d-model}{%
-\subsection{Constructing the 2D model}\label{constructing-the-2d-model}}
+\subsubsection{Scaling the data}\label{scaling-the-data}
 
-\hypertarget{preprocessing}{%
-\subsubsection{Preprocessing}\label{preprocessing}}
-
-The function \texttt{gen\_scaled\_data()} is used to prepare the NLDR data to fit within the bounds required for regular hexagonal binning, ensuring effective visualization.
-
-\hypertarget{binning-data}{%
-\subsubsection{Binning data}\label{binning-data}}
-
-The mains steps for the hexagonal binning algorithm can be executed by the main function \texttt{hex\_binning()}, or can be run separately for more flexibility.
-
-\begin{figure}
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-2-1} \caption{Illustration of key steps of the hexagonal bining algorithm: (a) first, all hexagonal bin centroids are created; (b) second, full hexagon grid is created; and (c) finally, assign the data to hexagons. The centroids are used to generate hexagonal coordinates. Once the full hexagonal grid is generated, by computing the 2D euclidean distance from each NLDR points to hexagonal bin centroids, the nearest NLDR points are allocated to the nearest hexagoanl bin.}\label{fig:unnamed-chunk-2}
-\end{figure}
-
-\textbf{Step 1: Compute hexagonal grid configurations}
-
-\textbf{Step 2: Generate the hexagonal bin centroids}
-
-\textbf{Step 3: Create the hexagonal grid}
-
-\textbf{Step 4: Assign NLDR data to hexagons}
-
-\hypertarget{obtain-bin-centroids-means}{%
-\subsubsection{Obtain bin centroids/ means}\label{obtain-bin-centroids-means}}
-
-To obtain hexagonal bin centroids, \texttt{extract\_hexbin\_centroids()}is used. The function \texttt{extract\_hexbin\_mean()} is used to obtain average within each hexagon.
-
-\hypertarget{triangulate-bin-centroids-means}{%
-\subsubsection{Triangulate bin centroids/ means}\label{triangulate-bin-centroids-means}}
-
-The \texttt{tri\_bin\_centroids()} is used to do triangulate bin centroids/ bin means. Then, \texttt{gen\_edges()} compute the edges to obtain the triangular mesh which is the 2D model.
-
-\hypertarget{lifting-the-model-into-high-dimensions}{%
-\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}}
-
-The \(p\)-D model is generated by \texttt{avg\_highd\_data()} by passing the \(p\)-D data.
-
-\hypertarget{model-parameters}{%
-\subsection{Model parameters}\label{model-parameters}}
-
-Mainly there are two model parameter need to consider: benchmark value to remove the low-density hexagons, and benchmark value to remove the long edges. \texttt{find\_low\_dens\_hex()} is used to find the hexagons which contains less number of points by considering the density of their neighboring points as well. In here, user can first decide which are the low-density hexagons and pass them to this function to check whether these removal of low-density hexagons can affect the model fit by looking at the the neighbors. On the other hand, \texttt{find\_lg\_benchmark()} function is used to compute the threshold for removing long edges.
-
-\hypertarget{prediction}{%
-\subsection{Prediction}\label{prediction}}
-
-\texttt{predict\_emb()} function is used to predict 2D embedding for a new \(p\)-D data point using the fitted model. This function is useful to predict 2D embedding irrespective of the NLDR technique.
-
-\begin{figure}
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-4-1} \caption{Predicted 2D embedding overlaid with UMAP embedding of S-curve training data: (a) prediction of 2D embeddings for S-curve training data, and (b) prediction of 2D embeddings for S-curve test data. Once the high-D model is generated, first, for the new data points the nearest high-D mappings of hexagonal bin centroids find by computing Euclidean distance. Then, mapping back the 2D hexagonal bin centroids gives the prediction for the new data points.}\label{fig:unnamed-chunk-4}
-\end{figure}
-
-\hypertarget{compute-residuals-and-mean-square-error-mse}{%
-\subsection{Compute residuals and Mean Square Error (MSE)}\label{compute-residuals-and-mean-square-error-mse}}
-
-As a Goodness of fit statistics for the model, \texttt{gen\_summary()} is used to compute residuals and MSE. For the fitted model, how residuals and MSE is changing is shown in Figure 2.
+The algorithm begins by scaling NLDR data to a standard scale using the \texttt{gen\_scaled\_data()} function. This function standardizes the data and provides the original limits of embeddings and the aspect ratio.
 
 \begin{verbatim}
-gen_summary(test_data = s_curve_noise_training, prediction_df = pred_df_training,
-df_bin = df_bin_s_curve, col_start = "x")
+scaled_nldr_obj_scurve <- gen_scaled_data(data = s_curve_noise_umap)
+
+s_curve_noise_umap_scaled <- scaled_nldr_obj_scurve$scaled_nldr
+
+lim1 <- scaled_nldr_obj_scurve$lim1
+lim2 <- scaled_nldr_obj_scurve$lim2
+r2 <- diff(lim2)/diff(lim1) 
+\end{verbatim}
+
+The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility. When constructing the \(2\text{-}D\) model, the user can choose either to fit the \(2\text{-}D\) model with hexagonal bin centroids or bin means using \texttt{is\_bin\_centroid} argument.
+
+If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the \texttt{extract\_hexbin\_centroids()} function can be used directly.
+
+The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if \texttt{is\_rm\_lwd\_hex\ =\ TRUE}, benchmark value to remove low density hexagons are parameters that will be determined within \texttt{fit\_highd\_model()}, if they are not provided. They are created as they are needed throughout the following example. The function \texttt{fit\_highd\_model()} provides the fitted model in \(2\text{-}D\), and \(p\text{-}D\).
+
+\begin{verbatim}
+fit_highd_model(
+  training_data = s_curve_noise_training,
+  emb_df = s_curve_noise_umap_scaled, 
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07,
+  is_bin_centroid = TRUE,
+  is_rm_lwd_hex = TRUE,
+  benchmark_to_rm_lwd_hex = NULL,
+  col_start_highd = "x"
+  )
 \end{verbatim}
 
 \begin{verbatim}
-#> $error
-#> [1] 35.79497
+#> $df_bin
+#> # A tibble: 37 x 8
+#>    hb_id       x1     x2     x3       x4       x5       x6        x7
+#>    <int>    <dbl>  <dbl>  <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
+#>  1    27 -0.706   1.70   -1.65   0.00918  0.00261 -0.0236  -0.00199 
+#>  2    28 -0.214   1.45   -1.98  -0.00966 -0.00370  0.0573   0.000307
+#>  3    40  0.356   1.74   -1.89   0.0127  -0.00773 -0.0219  -0.000757
+#>  4    50 -0.209   0.453  -1.98   0.0185   0.0189  -0.0999  -0.00412 
+#>  5    52  0.00161 1.14   -2.00   0.00206 -0.00940 -0.0974  -0.00796 
+#>  6    61 -0.671   0.0922 -1.74  -0.00458  0.0127  -0.0613  -0.00643 
+#>  7    62 -0.375   0.328  -1.89  -0.00226 -0.00651 -0.0291   0.00120 
+#>  8    74 -0.175   0.0562 -1.98   0.00204 -0.00179  0.0112  -0.00111 
+#>  9    75  0.325   0.0821 -1.95   0.00292  0.0197  -0.0165  -0.000881
+#> 10   127  0.704   0.454  -0.290 -0.00394  0.0118  -0.00941 -0.00348 
+#> # i 27 more rows
 #> 
-#> $mse
-#> [1] 0.1114669
-#> 
-#> $aic
-#> [1] -815.8643
+#> $df_bin_centroids
+#> # A tibble: 37 x 5
+#>    hexID     c_x    c_y std_counts drop_empty
+#>    <int>   <dbl>  <dbl>      <dbl> <lgl>     
+#>  1    27  0.127  0.0295        1   FALSE     
+#>  2    28  0.226  0.0295        0.2 FALSE     
+#>  3    40  0.275  0.115         0.6 FALSE     
+#>  4    50  0.0287 0.200         0.2 FALSE     
+#>  5    52  0.226  0.200         0.2 FALSE     
+#>  6    61 -0.0207 0.286         0.2 FALSE     
+#>  7    62  0.0780 0.286         0.8 FALSE     
+#>  8    74  0.0287 0.371         0.4 FALSE     
+#>  9    75  0.127  0.371         0.2 FALSE     
+#> 10   127  0.522  0.713         0.4 FALSE     
+#> # i 27 more rows
+\end{verbatim}
+
+\subsection{\texorpdfstring{Constructing the \(2\text{-}D\) model}{Constructing the 2\textbackslash text\{-\}D model}}\label{constructing-the-2text-d-model}
+
+Constructing the \(2\text{-}D\) model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.
+
+\subsubsection{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
+
+The configurations of the hexagonal grid is defined by the number of bins in each direction. To find the number of bins along the y-axis, \texttt{calc\_bins\_y()} is used. This function takes as input the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. Additionally, this function provides the bin width.
+
+\begin{verbatim}
+calc_bins_y(
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
+  )
 \end{verbatim}
 
 \begin{verbatim}
-gen_summary(test_data = s_curve_noise_test, prediction_df = pred_df_test,
-df_bin = df_bin_s_curve, col_start = "x")
+#> $bin2
+#> [1] 27
+#> 
+#> $a1
+#> [1] 0.09596332
+\end{verbatim}
+
+\subsubsection{Binning the data}\label{binning-the-data}
+
+Points are allocated to the bins they fall into based on the nearest centroid. The main steps of the hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or they can be run separately for greater flexibility. The parameters used within \texttt{hex\_binning()} include the scaled NLDR data, the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. The output is an object of the \texttt{hex\_bin\_obj} class, which contains the number of bins in each direction, the coordinates of the hexagonal grid starting point, the details of bin centroids, the coordinates of bins, embedding components with their corresponding hexagon IDs, hex bins with their corresponding standardized counts, the total number of bins, the number of non-empty bins, and the points within each hexagon.
+
+\begin{verbatim}
+hex_binning(
+  data = s_curve_noise_umap_scaled, 
+  bin1 = 12, 
+  r2 = r2,
+  q = 0.07
+  )
 \end{verbatim}
 
 \begin{verbatim}
-#> $error
-#> [1] 15.4298
+#> $bins
+#> [1] 12 27
 #> 
-#> $mse
-#> [1] 0.1546555
+#> $start_point
+#> [1] -0.070000 -0.141359
 #> 
-#> $aic
-#> [1] 9.352806
+#> $centroids
+#> # A tibble: 324 x 3
+#>    hexID     c_x    c_y
+#>    <int>   <dbl>  <dbl>
+#>  1     1 -0.07   -0.141
+#>  2     2  0.0287 -0.141
+#>  3     3  0.127  -0.141
+#>  4     4  0.226  -0.141
+#>  5     5  0.325  -0.141
+#>  6     6  0.423  -0.141
+#>  7     7  0.522  -0.141
+#>  8     8  0.621  -0.141
+#>  9     9  0.719  -0.141
+#> 10    10  0.818  -0.141
+#> # i 314 more rows
+#> 
+#> $hex_poly
+#> # A tibble: 1,944 x 3
+#>    hex_poly_id       x       y
+#>          <int>   <dbl>   <dbl>
+#>  1           1 -0.07   -0.0860
+#>  2           1 -0.118  -0.114 
+#>  3           1 -0.118  -0.169 
+#>  4           1 -0.07   -0.197 
+#>  5           1 -0.0220 -0.169 
+#>  6           1 -0.0220 -0.114 
+#>  7           2  0.0287 -0.0860
+#>  8           2 -0.0193 -0.114 
+#>  9           2 -0.0193 -0.169 
+#> 10           2  0.0287 -0.197 
+#> # i 1,934 more rows
+#> 
+#> $data_hb_id
+#> # A tibble: 75 x 4
+#>     UMAP1  UMAP2    ID hb_id
+#>     <dbl>  <dbl> <int> <int>
+#>  1 0.0804 0.320      1    62
+#>  2 0.739  1.00       2   165
+#>  3 0.840  1.08       3   178
+#>  4 0.167  0.0432     4    27
+#>  5 0.263  0.398      6    76
+#>  6 0.838  2.01       7   310
+#>  7 0.734  0.972      8   165
+#>  8 0.627  0.721      9   128
+#>  9 0.810  1.01      11   178
+#> 10 0.903  1.87      12   299
+#> # i 65 more rows
+#> 
+#> $std_cts
+#> # A tibble: 45 x 3
+#>    hb_id     n std_counts
+#>    <int> <int>      <dbl>
+#>  1    27     5        1  
+#>  2    28     1        0.2
+#>  3    38     1        0.2
+#>  4    40     3        0.6
+#>  5    50     1        0.2
+#>  6    52     1        0.2
+#>  7    61     1        0.2
+#>  8    62     4        0.8
+#>  9    64     1        0.2
+#> 10    74     2        0.4
+#> # i 35 more rows
+#> 
+#> $tot_bins
+#> [1] 324
+#> 
+#> $non_bins
+#> [1] 45
+#> 
+#> $pts_bins
+#> # A tibble: 45 x 2
+#>    hexID pts_list    
+#>    <int> <named list>
+#>  1    62 <int [75]>  
+#>  2   165 <int [75]>  
+#>  3   178 <int [75]>  
+#>  4    27 <int [75]>  
+#>  5    76 <int [75]>  
+#>  6   310 <int [75]>  
+#>  7   128 <int [75]>  
+#>  8   299 <int [75]>  
+#>  9    74 <int [75]>  
+#> 10   287 <int [75]>  
+#> # i 35 more rows
+#> 
+#> attr(,"class")
+#> [1] "hex_bin_obj"
 \end{verbatim}
 
-\hypertarget{visualizations}{%
-\subsection{Visualizations}\label{visualizations}}
+\subsubsection{Remove low-density hexagons}\label{remove-low-density-hexagons}
 
-The package provides four basic visualizations which includes three visualizations regarding 2D model (static vis) and one is regrading \(p\)-D model (dynamic vis). Each visualization can be done their own functions which describes in this section.
+In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The \texttt{find\_low\_dens\_hex()} function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
 
-\hypertarget{d-model-visualization}{%
-\subsubsection{2D model visualization}\label{d-model-visualization}}
+\begin{verbatim}
+find_low_dens_hex(
+  df_bin_centroids_all = df_bin_centroids, 
+  bin1 = 12, 
+  df_bin_centroids_low = df_bin_centroids_low
+  )
+\end{verbatim}
 
-To visualize the 2D model, mainly three functions are used. As shown in Figure 1, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure 1, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed 2D model which is the 2D model after removing the long edges (see Figure 1). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in 2D.
+\subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
-\begin{figure}
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-7-1} \caption{Visualization of model generated for UMAP embedding for S-curve data in 2D space: (a) triangular mesh, (b), triangular mesh colored by edge type, and (c) triangular mesh after removing the long edges. The edges which has the length greater than $0.5$ are assigned as long edges. To obtain smooth representation in 2D space, the long edges are removed.}\label{fig:unnamed-chunk-7}
-\end{figure}
+To indicate neighbors, the \texttt{tri\_bin\_centroids()} function is used to triangulate bin centroids. Following this, \texttt{gen\_edges()} function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
 
-\hypertarget{p-d-model-visualization}{%
-\subsubsection{p-D model visualization}\label{p-d-model-visualization}}
+\begin{verbatim}
+tr1_object <- tri_bin_centroids(
+  hex_df = df_bin_centroids, 
+  x = "c_x", 
+  y = "c_y"
+  )
 
-The \(p\)-D model overlaid on data is visualized by the function \texttt{show\_langevitour()}. This is a useful dynamic visualization result to validate visually whether the model fits the data well or not.
+tr_from_to_df <- gen_edges(
+  tri_object = tr1_object
+  )
+\end{verbatim}
 
-\includegraphics{paper-quollr_files/figure-latex/tour-s-curve-1.pdf}
+In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the \(2\text{-}D\) representation. To address this issue, the \texttt{find\_lg\_benchmark()} function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed.
 
-\hypertarget{tests}{%
-\subsection{Tests}\label{tests}}
+\begin{verbatim}
+find_lg_benchmark(
+  distance_edges = distance_df, 
+  distance_col = "distance"
+  )
+\end{verbatim}
+
+\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
+
+The final step involves lifting the fitted \(2\text{-}D\) model into \(p\text{-}D\) by computing the \(p\text{-}D\) mean of data points within each bin to represent bin centroids. This transformation is performed using the \texttt{avg\_highd\_data()} function, which takes \(p\text{-}D\) data and their corresponding hexagonal bin IDs as inputs.
+
+\begin{verbatim}
+umap_data_with_hb_id <- hb_obj$data_hb_id
+
+df_all <- bind_cols(
+  s_curve_noise_training |> dplyr::select(-ID), 
+  umap_data_with_hb_id
+  )
+
+df_bin <- avg_highd_data(
+  data = df_all, 
+  col_start = "x"
+  )
+\end{verbatim}
+
+\subsection{Prediction}\label{prediction}
+
+The \texttt{predict\_emb()} function is used to predict \(2\text{-}D\) embedding for a new \(p\text{-}D\) data point using the fitted model. This function is useful to predict \(2\text{-}D\) embedding irrespective of the NLDR technique.
+
+In the prediction process, first, the nearest \(p\text{-}D\) model point is identified for a given new \(p\text{-}D\) data point by computing \(p\text{-}D\) Euclidean distance. Then, the corresponding \(2\text{-}D\) bin centroid mapping for the identified \(p\text{-}D\) model point is determined. Finally, the coordinates of the identified \(2\text{-}D\) bin centroid is used as the predicted NLDR embedding for the new \(p\text{-}D\) data point.
+
+\begin{verbatim}
+predict_emb(
+  test_data = s_curve_noise_training, 
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  type_NLDR = "UMAP"
+  )
+\end{verbatim}
+
+\subsection{Compute residuals and Mean Square Error (MSE)}\label{compute-residuals-and-mean-square-error-mse}
+
+As a Goodness of fit statistics for the model, \texttt{glance()} is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the \(p\text{-}D\) data.
+
+\begin{verbatim}
+glance(
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  training_data = s_curve_noise_training, 
+  newdata = NULL, 
+  type_NLDR = "UMAP", 
+  col_start = "x"
+  )
+\end{verbatim}
+
+Furthermore, \texttt{augment()} accepts \(2\text{-}D\) and \(p\text{-}D\) model points, and the \(p\text{-}D\) data and adds information about each observation in the data set. Most commonly, this includes predicted values, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error.
+
+Users can pass data to \texttt{augment()} via either the \texttt{training\_data} argument or the \texttt{newdata} argument. If data is passed to the \texttt{training\_data} argument, it must be exactly the data that was used to fit the model. Alternatively, datasets can be passed to \texttt{newdata} to augment data that was not used during model fitting. This requires that at least all predictor variable columns used to fit the model are present. If the original outcome variable used to fit the model is not included in \texttt{newdata}, then no corresponding column will be included in the output.
+
+The augmented dataset is always returned as a \texttt{tibble::tibble} with the same number of rows as the passed dataset.
+
+\begin{verbatim}
+augment(
+  df_bin_centroids = df_bin_centroids, 
+  df_bin = df_bin, 
+  training_data = s_curve_noise_training, 
+  newdata = NULL, 
+  type_NLDR = "UMAP", 
+  col_start = "x"
+  )
+\end{verbatim}
+
+\subsection{Visualizations}\label{visualizations}
+
+The package provides five basic visualizations which includes one to visualize the full hexagonal grid in \(2\text{-}D\), three visualizations related to the \(2\text{-}D\) model (static visualizations), and one related to the \(p\text{-}D\) model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.
+
+\subsubsection{\texorpdfstring{\(2\text{-}D\) model visualization}{2\textbackslash text\{-\}D model visualization}}\label{text-d-model-visualization}
+
+The \texttt{geom\_hexgrid()} function is used to plot the hexagonal grid from the provided centroid data set.
+
+\begin{verbatim}
+ggplot() + 
+  geom_hexgrid(
+    data = all_centroids_df, 
+    aes(x = c_x, y = c_y)
+    ) +
+  coord_fixed()
+\end{verbatim}
+
+To visualize the \(2\text{-}D\) model, mainly three functions are used. As shown in Figure \ref{fig:mesh-plots}a, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \ref{fig:mesh-plots}b, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed \(2\text{-}D\) model which is the \(2\text{-}D\) model after removing the long edges (see Figure \ref{fig:mesh-plots}c). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in \(2\text{-}D\). Using small value of \texttt{benchmark\_value}, will produce a triangular mesh with missing data structure; for example \texttt{benchmark\_value\ =\ 0.3} shows two clusters rather than continuous structure, while \texttt{benchmark\_value\ =\ 0.8} creates long edges and mislead the data structure in \(p\text{-}D\) space.
+
+\begin{verbatim}
+ggplot() + 
+  geom_trimesh(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) +
+  coord_fixed()
+\end{verbatim}
+
+\begin{verbatim}
+vis_lg_mesh(
+  distance_edges = distance_df, 
+  benchmark_value = 0.75, 
+  tr_coord_df = tr_from_to_df, 
+  distance_col = "distance"
+  )
+\end{verbatim}
+
+\begin{verbatim}
+vis_rmlg_mesh(
+  distance_edges = distance_df, 
+  benchmark_value = 0.75, 
+  tr_coord_df = tr_from_to_df, 
+  distance_col = "distance"
+  )
+\end{verbatim}
+
+\subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
+
+Displaying the \(p\text{-}D\) model overlaid on the data is done using the function \texttt{show\_langevitour()}. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, \(2\text{-}D\) and \(p\text{-}D\) model points, the threshold for removing long edges, and the distance data set.
+
+\begin{verbatim}
+show_langevitour(
+  df = df_all, 
+  df_b = df_bin, 
+  df_b_with_center_data = df_bin_centroids, 
+  benchmark_value = 0.75, 
+  distance = distance_df, 
+  distance_col = "distance", 
+  use_default_benchmark_val = FALSE, 
+  col_start = "x"
+  )
+\end{verbatim}
+
+\subsection{Tests}\label{tests}
 
 All functions have tests written and implemented using the \CRANpkg{testthat} (Wickham 2011) in R.
 
-\hypertarget{application}{%
-\section{Application}\label{application}}
+These tests illuminated the issues that allowed us to make meaningful changes and understand some pitfalls of the package.
 
-We illustrate the use of the algorithm by applying it to \texttt{clusters\_different\_shapes\_diff\_num\_points} dataset in \texttt{cardinalR} package. The tSNE is used in the example for the demonstration (see Figure \ref{fig:tsne-clust}).
+\section{Application}\label{application}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-9-1.pdf}
+To illustrate the algorithm, we use \(5\text{-}D\) simulated data, which we call the ``triangular\_3d\_data''. This dataset is generated using the \texttt{tri\_3d} function from the \texttt{cardinalR} package. The dataset generation starts with the initialization of a starting point \(p_0 = (x_0, y_0, z_0)\) randomly selected within the \(3\text{-}D\) space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as \(c_1 = (0, 0, 0)\), \(c_2 = (1, 0, 0)\), \(c_3 = (0.5, 1, 0)\), and \(c_4 = (0.5, 0.5, 1)\). For each point \(p_i\) where \(i = 1, 2, \ldots, n\), one of the corner points \(c_j\) (where \(j \in \{1, 2, 3, 4\}\)) is selected randomly, and the new point \(p_i\) is computed as the midpoint between the current point \(p_{i-1}\) and the selected corner point \(c_j\): \(p_i = \frac{p_{i-1} + c_j}{2}\). This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point \(p_i\) form the variables \(X_1, X_2, X_3\). The remaining variables \(X_4, X_5\) are all uniform error, with small variance. We would consider \(T=(X_1, X_2, X_3)\) to be the true model.
 
-\begin{figure}
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/tsne-clust-1} \caption{tSNE representation of data with perplexity: 39. Is this representation accurately capture the structure in high dimensions?}\label{fig:tsne-clust}
-\end{figure}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
 
-\hypertarget{selecting-parameter-values-for-hexagonal-binning}{%
-\subsection{Selecting parameter values for hexagonal binning}\label{selecting-parameter-values-for-hexagonal-binning}}
+\subsection{Deciding an appropriate fit}\label{deciding-an-appropriate-fit}
 
-We previously introduced three key parameters, \emph{hex\_size}, \emph{x\_start}, and \emph{y\_start}, in our explanation of the algorithm. While their best choice is unknown, a visualization tool enables their tuning such that user can select reasonable values.
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-31-1}
 
-Consider the relationships between \emph{total number of bins}, \emph{starting point}, and MSE. Increase of \emph{total number of bins} usually reduces the MSE.
+\subsection{Fit the appropriate model}\label{fit-the-appropriate-model}
 
-\begin{figure}
-\centering
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-13-1.pdf}
-\caption{\label{fig:unnamed-chunk-13}Parameter tuning plots, where the best choice of parameter at a large drop in MSE. Here, these are at \emph{total number of bins} = 180.}
-\end{figure}
+\subsubsection{\texorpdfstring{Construct model in \(2\text{-}D\)}{Construct model in 2\textbackslash text\{-\}D}}\label{construct-model-in-2text-d}
 
-\hypertarget{selecting-parameter-values-for-the-model}{%
-\subsection{Selecting parameter values for the model}\label{selecting-parameter-values-for-the-model}}
+\subsubsection{Selecting parameter values for the model}\label{selecting-parameter-values-for-the-model}
 
-\hypertarget{fit-the-model}{%
-\subsection{Fit the model}\label{fit-the-model}}
+\paragraph{Choice of bins}\label{choice-of-bins}
 
-To perform the algorithm on the clustering data, we first scale the tSNE data. We then let \emph{number of bins along the x-axis} be \(21\), \emph{number of bins along the y-axis} be \(28\), and \emph{hex\_size} be 0.03; see {[}Selecting parameter values{]} for further discussion and guidance regarding selection of these choices.
+\paragraph{Removal of low-density bins}\label{removal-of-low-density-bins}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf} \includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-14-2.pdf}
+\paragraph{Removing long edges}\label{removing-long-edges}
 
-\includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf} \includegraphics{paper-quollr_files/figure-latex/unnamed-chunk-15-2.pdf}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-32-1}
 
-\hypertarget{conclusion}{%
-\section{Conclusion}\label{conclusion}}
+\subsubsection{\texorpdfstring{Lifting the model into \(p\text{-}D\)}{Lifting the model into p\textbackslash text\{-\}D}}\label{lifting-the-model-into-ptext-d}
 
-\hypertarget{acknowledgements}{%
-\section{Acknowledgements}\label{acknowledgements}}
+What can I see in high-D?
+
+\begin{itemize}
+\tightlist
+\item
+  Four clusters that are really close
+\end{itemize}
+
+What can I see in 2D layout?
+
+\begin{itemize}
+\tightlist
+\item
+  Several clusters (more that what see in high-D)
+\end{itemize}
+
+What can learn from the model?
+
+\begin{itemize}
+\tightlist
+\item
+  There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters.
+\end{itemize}
+
+\section{Discussion}\label{discussion}
+
+This paper presents the R package \texttt{quollr} to develop a way to take the fitted model, as represented by the positions of points in \(2\text{-}D\), and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
+
+The paper includes a clustering example to illustrate how \texttt{quollr} is useful to assess which NLDR technique and which (hyper)parameter choice gives the most accurate representation. In addition, how to select parameters for hexagonal binning and fitting model are explained.
+
+Possible future improvements would be\ldots{}
+
+This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyperparameter choice gives the most accurate representation of \(p\text{-}D\) data.
+
+\section{Acknowledgements}\label{acknowledgements}
 
 This article is created using \CRANpkg{knitr} (Xie 2015) and \CRANpkg{rmarkdown} (Xie, Allaire, and Grolemund 2018) in R with the \texttt{rjtools::rjournal\_article} template. The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
 
-\hypertarget{references}{%
-\section*{References}\label{references}}
+\section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
-\hypertarget{refs}{}
+\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-testthat}{}}%
+\bibitem[\citeproctext]{ref-dan2023}
+Carr, Dan, ported by Nicholas Lewin-Koh, Martin Maechler, and contains copies of lattice functions written by Deepayan Sarkar. 2023. \emph{Hexbin: Hexagonal Binning Routines}. \url{https://CRAN.R-project.org/package=hexbin}.
+
+\bibitem[\citeproctext]{ref-testthat}
 Wickham, Hadley. 2011. {``Testthat: Get Started with Testing.''} \emph{The R Journal} 3: 5--10. \url{https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf}.
 
-\leavevmode\vadjust pre{\hypertarget{ref-knitr}{}}%
+\bibitem[\citeproctext]{ref-knitr}
 Xie, Yihui. 2015. \emph{Dynamic Documents with {R} and Knitr}. 2nd ed. Boca Raton, Florida: Chapman; Hall/CRC. \url{https://yihui.name/knitr/}.
 
-\leavevmode\vadjust pre{\hypertarget{ref-rmarkdown}{}}%
+\bibitem[\citeproctext]{ref-rmarkdown}
 Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. \emph{{R} Markdown: The Definitive Guide}. Boca Raton, Florida: Chapman; Hall/CRC. \url{https://bookdown.org/yihui/rmarkdown}.
 
 \end{CSLReferences}

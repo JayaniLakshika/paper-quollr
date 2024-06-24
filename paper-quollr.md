@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2024-06-23'
+date: '2024-06-24'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -535,11 +535,12 @@ Displaying the $p\text{-}D$ model overlaid on the data is done using the functio
 
 ## Tests
 
-All functions have tests written and implemented using the \CRANpkg{testthat} [@testthat] in R.
+All functions have tests written and implemented using the \CRANpkg{testthat} package in R. These tests illuminated issues, allowing meaningful changes and providing insights into some pitfalls of the package. For example, several tests check if there is an NLDR point at the intersection of two bins and determine which bin this point falls into.
 
-These tests illuminated the issues that allowed us to make meaningful changes and understand some pitfalls of the package.
+Figure xx shows an example of a simulated test set. When creating this test data set, 
 
 <!--discuss a test with how a point in a intersection of two hexagonal going to evaluate-->
+<!--selecting the default values to q as 0.1-->
 
 # Application
 
