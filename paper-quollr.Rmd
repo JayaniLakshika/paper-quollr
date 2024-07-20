@@ -570,7 +570,7 @@ nldr_prism1 + nldr_prism2 + nldr_prism3 +
 error_prism_tsne <- data.frame(matrix(nrow = 0, ncol = 0))
 
 ## To initialize number of bins along the x-axis
-bin1_vec_prism <- 2:25 
+bin1_vec_prism <- 4:25 
 
 perplexity_vec <- c(6, 35, 58)
 
@@ -638,7 +638,7 @@ for (perplexity_val in perplexity_vec) {
 error_prism_umap <- data.frame(matrix(nrow = 0, ncol = 0))
 
 ## To initialize number of bins along the x-axis
-bin1_vec_prism <- 2:25 
+bin1_vec_prism <- 4:25 
 
 param_list <- list(param1 = c(15, 0.3), param2 = c(35, 0.5), param3 = c(69, 0.6))
 
