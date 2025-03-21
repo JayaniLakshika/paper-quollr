@@ -384,6 +384,8 @@ show_langevitour(
   )
 ```
 
+### Interactivity
+
 ## Tests
 
 All functions have tests written and implemented using the \CRANpkg{testthat} package in R. These tests illuminated issues, allowing meaningful changes and providing insights into some pitfalls of the package. For example, several tests check if there is an NLDR point at the intersection of two bins and determine which bin this point falls into.
@@ -393,7 +395,7 @@ Figure xx shows an example of a simulated test set. When creating this test data
 <!--discuss a test with how a point in a intersection of two hexagonal going to evaluate-->
 <!--selecting the default values to q as 0.1-->
 
-# Application
+# Example
 
 To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call the "triangular_3d_data". This dataset is generated using the `tri_3d` function from the `cardinalR` package. The dataset generation starts with the initialization of a starting point $p_0 = (x_0, y_0, z_0)$ randomly selected within the $3\text{-}D$ space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as $c_1 = (0, 0, 0)$, $c_2 = (1, 0, 0)$, $c_3 = (0.5, 1, 0)$, and $c_4 = (0.5, 0.5, 1)$. For each point $p_i$ where $i = 1, 2, \ldots, n$, one of the corner points $c_j$ (where $j \in \{1, 2, 3, 4\}$) is selected randomly, and the new point $p_i$ is computed as the midpoint between the current point $p_{i-1}$ and the selected corner point $c_j$: $p_i = \frac{p_{i-1} + c_j}{2}$. This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point $p_i$ form the variables $X_1, X_2, X_3$. The remaining variables $X_4, X_5$ are all uniform error, with small variance. We would consider $T=(X_1, X_2, X_3)$ to be the true model.
 
@@ -855,6 +857,23 @@ What can learn from the model?
 
 - There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters.
 
+# Application
+
+<!--https://arxiv.org/abs/2409.09227-->
+
+The data used in our study is from APOGEE Data Release 17 (DR17), which encompasses 19 chemical abundances
+and stellar parameters for 370,060 stars. This data was obtained through automated analysis of spectra using APOGEE
+Stellar Parameter and Chemical Abundances Pipeline (ASPCAP) software (Garc´ıa P´erez et al. 2016). We removed
+poor quality stars by ASPCAPFLAG and STARFLAG bitmasks to mitigate potential quality warnings and also
+removed outliers and applied standard scale, resulting in a final dataset comprising 133,891 stars.
+We focused on chemical abundances, which refer to the relative abundance of different chemical elements in the
+atmosphere of stars. To quantify the relative amounts of individual elements, it uses the abundance ratio as the
+logarithm of the ratio of two metallic elements in a star relative to their ratio in the sun. For instance, if a star has a
+[C/FE] value of -0.08, it means its carbon abundance is 83% that of the Sun. We are using 19 dimensions related to
+chemical abundances, including the metallicity [FE/H] and other 18 element abundances. 
+
+
+Compare PCA, tSNE, UMAP, VAE, Autoencoders
 
 # Discussion
 
