@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-03-22'
+date: '2025-03-24'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
