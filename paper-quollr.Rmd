@@ -174,15 +174,12 @@ The number of bins along the x-axis, the ratio of the ranges of the original emb
 
 ```{r, echo=TRUE}
 fit_highd_model(
-  training_data = s_curve_noise_training,
-  emb_df = s_curve_noise_umap_scaled, 
+  highd_data = s_curve_noise_training,
+  nldr_data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07,
-  is_bin_centroid = TRUE,
-  is_rm_lwd_hex = TRUE,
-  benchmark_to_rm_lwd_hex = NULL,
-  col_start_highd = "x"
+  q = 0.1,
+  is_bin_centroid = TRUE
   )
 ```
 
@@ -198,7 +195,7 @@ The configurations of the hexagonal grid is defined by the number of bins in eac
 calc_bins_y(
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 ```
 
@@ -211,7 +208,7 @@ hex_binning(
   data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 ```
 
@@ -269,8 +266,7 @@ df_all <- bind_cols(
   )
 
 df_bin <- avg_highd_data(
-  data = df_all, 
-  col_start = "x"
+  data = df_all
   )
 ```
 
@@ -282,10 +278,9 @@ In the prediction process, first, the nearest $p\text{-}D$ model point is identi
 
 ```{r, echo=TRUE, eval=FALSE}
 predict_emb(
-  test_data = s_curve_noise_training, 
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  type_NLDR = "UMAP"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 ```
 
@@ -295,12 +290,9 @@ As a Goodness of fit statistics for the model, `glance()` is used to compute res
 
 ```{r, echo=TRUE, eval=FALSE}
 glance(
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  training_data = s_curve_noise_training, 
-  newdata = NULL, 
-  type_NLDR = "UMAP", 
-  col_start = "x"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 ```
 
@@ -312,12 +304,9 @@ The augmented dataset is always returned as a `tibble::tibble` with the same num
 
 ```{r, echo=TRUE, eval=FALSE}
 augment(
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  training_data = s_curve_noise_training, 
-  newdata = NULL, 
-  type_NLDR = "UMAP", 
-  col_start = "x"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 ```
 
@@ -386,6 +375,20 @@ show_langevitour(
 
 ### Interactivity
 
+```{r, echo=TRUE, eval=FALSE}
+show_link_plots(
+  point_df = df_exe, 
+  edge_df = distance_small_df
+  )
+```
+
+```{r, echo=TRUE, eval=FALSE}
+show_error_link_plots(
+  point_df = df_exe, 
+  edge_df = distance_small_df
+  )
+```
+
 <!-- ## Tests -->
 
 <!-- All functions have tests written and implemented using the \CRANpkg{testthat} package in R. These tests illuminated issues, allowing meaningful changes and providing insights into some pitfalls of the package. For example, several tests check if there is an NLDR point at the intersection of two bins and determine which bin this point falls into. -->
@@ -395,467 +398,467 @@ show_langevitour(
 <!-- <!--discuss a test with how a point in a intersection of two hexagonal going to evaluate--> -->
 <!-- <!--selecting the default values to q as 0.1--> -->
 
-# Example
-
-To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call the "triangular_3d_data". This dataset is generated using the `tri_3d` function from the `cardinalR` package. The dataset generation starts with the initialization of a starting point $p_0 = (x_0, y_0, z_0)$ randomly selected within the $3\text{-}D$ space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as $c_1 = (0, 0, 0)$, $c_2 = (1, 0, 0)$, $c_3 = (0.5, 1, 0)$, and $c_4 = (0.5, 0.5, 1)$. For each point $p_i$ where $i = 1, 2, \ldots, n$, one of the corner points $c_j$ (where $j \in \{1, 2, 3, 4\}$) is selected randomly, and the new point $p_i$ is computed as the midpoint between the current point $p_{i-1}$ and the selected corner point $c_j$: $p_i = \frac{p_{i-1} + c_j}{2}$. This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point $p_i$ form the variables $X_1, X_2, X_3$. The remaining variables $X_4, X_5$ are all uniform error, with small variance. We would consider $T=(X_1, X_2, X_3)$ to be the true model.
-
-```{r}
-triangular_3d_data <- tri_3d(
-  n = 1250, num_noise = 2, 
-  min_n = -0.05, max_n = 0.05) |>
-  as_tibble() 
-
-colnames(triangular_3d_data) <- paste0("x", 1:NCOL(triangular_3d_data))
-  
-langevitour::langevitour(triangular_3d_data)
-```
-
-```{r}
-triangular_3d_data <- triangular_3d_data |>
-  mutate(ID = row_number())
-```
-
-```{r}
-sc_ltr_pos <- c(0.08, 0.96)
-```
-
-<!--tSNE with perplexity = 6-->
-```{r}
-tSNE_fit1 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = 6) 
-
-tsne_prism1 <- tSNE_fit1$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
-
-colnames(tsne_prism1) <- c("tSNE1", "tSNE2", "ID")
-
-prism_scaled_obj_tsne1 <- gen_scaled_data(
-  data = tsne_prism1)
-tsne_prism_scaled1 <- prism_scaled_obj_tsne1$scaled_nldr
-
-nldr_prism1 <- tsne_prism_scaled1 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-<!--tSNE with perplexity = 35-->
-```{r}
-tSNE_fit2 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = round(sqrt(NROW(triangular_3d_data)))) 
-
-tsne_prism2 <- tSNE_fit2$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
-
-colnames(tsne_prism2) <- c("tSNE1", "tSNE2", "ID")
-
-prism_scaled_obj_tsne2 <- gen_scaled_data(
-  data = tsne_prism2)
-tsne_prism_scaled2 <- prism_scaled_obj_tsne2$scaled_nldr
-
-nldr_prism2 <- tsne_prism_scaled2 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-<!--tSNE with perplexity = 58-->
-```{r}
-tSNE_fit3 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = 58) 
-
-tsne_prism3 <- tSNE_fit3$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
-
-colnames(tsne_prism3) <- c("tSNE1", "tSNE2", "ID")
-
-prism_scaled_obj_tsne3 <- gen_scaled_data(
-  data = tsne_prism3)
-tsne_prism_scaled3 <- prism_scaled_obj_tsne3$scaled_nldr
+<!-- # Example -->
+
+<!-- To illustrate the algorithm, we use $5\text{-}D$ simulated data, which we call the "triangular_3d_data". This dataset is generated using the `tri_3d` function from the `cardinalR` package. The dataset generation starts with the initialization of a starting point $p_0 = (x_0, y_0, z_0)$ randomly selected within the $3\text{-}D$ space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as $c_1 = (0, 0, 0)$, $c_2 = (1, 0, 0)$, $c_3 = (0.5, 1, 0)$, and $c_4 = (0.5, 0.5, 1)$. For each point $p_i$ where $i = 1, 2, \ldots, n$, one of the corner points $c_j$ (where $j \in \{1, 2, 3, 4\}$) is selected randomly, and the new point $p_i$ is computed as the midpoint between the current point $p_{i-1}$ and the selected corner point $c_j$: $p_i = \frac{p_{i-1} + c_j}{2}$. This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point $p_i$ form the variables $X_1, X_2, X_3$. The remaining variables $X_4, X_5$ are all uniform error, with small variance. We would consider $T=(X_1, X_2, X_3)$ to be the true model. -->
 
-nldr_prism3 <- tsne_prism_scaled3 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-<!--UMAP with n_neighbors = 15 and min_dist = 0.3-->
-```{r}
-umap_prism1 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 15, n_components =  2, 
-       metric = "euclidean", min_dist = 0.3, init = "spca")
-
-umap_prism1 <- umap_prism1 |>
-  as_tibble()
-
-names(umap_prism1) <- c("UMAP1", "UMAP2")
-
-umap_prism1 <- umap_prism1 |>
-  mutate(ID = 1:NROW(umap_prism1))
-
-prism_scaled_obj_umap1 <- gen_scaled_data(
-  data = umap_prism1)
-umap_prism_scaled1 <- prism_scaled_obj_umap1$scaled_nldr
-
-nldr_prism4 <- umap_prism_scaled1 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-<!--UMAP with n_neighbors = 35 and min_dist = 0.5-->
-```{r}
-umap_prism2 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 35, n_components =  2, 
-       metric = "euclidean", min_dist = 0.5, init = "spca")
-
-umap_prism2 <- umap_prism2 |>
-  as_tibble()
-
-names(umap_prism2) <- c("UMAP1", "UMAP2")
-
-umap_prism2 <- umap_prism2 |>
-  mutate(ID = 1:NROW(umap_prism2))
-
-prism_scaled_obj_umap2 <- gen_scaled_data(
-  data = umap_prism2)
-umap_prism_scaled2 <- prism_scaled_obj_umap2$scaled_nldr
-
-nldr_prism5 <- umap_prism_scaled2 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-<!--UMAP with n_neighbors = 69 and min_dist = 0.6-->
-```{r}
-umap_prism3 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 69, n_components =  2, 
-       metric = "euclidean", min_dist = 0.6, init = "spca")
-
-umap_prism3 <- umap_prism3 |>
-  as_tibble()
-
-names(umap_prism3) <- c("UMAP1", "UMAP2")
-
-umap_prism3 <- umap_prism3 |>
-  mutate(ID = 1:NROW(umap_prism3))
-
-prism_scaled_obj_umap3 <- gen_scaled_data(
-  data = umap_prism3)
-umap_prism_scaled3 <- prism_scaled_obj_umap3$scaled_nldr
-
-nldr_prism6 <- umap_prism_scaled3 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-```
-
-```{r}
-nldr_prism1 + nldr_prism2 + nldr_prism3 + 
-  nldr_prism4 + nldr_prism5 + nldr_prism6 +
-  plot_layout(ncol=3)
-```
-
-<!--need to add details regarding which differences can I see with different layouts-->
-
-## Deciding an appropriate fit
-
-<!--select based on looking at b_non_empty vs log(Error)-->
-<!--select a choice for b_non_empty-->
-
-<!--compute error with tSNE and different perplexity values-->
-```{r}
-error_prism_tsne <- data.frame(matrix(nrow = 0, ncol = 0))
-
-## To initialize number of bins along the x-axis
-bin1_vec_prism <- 4:25 
-
-perplexity_vec <- c(6, 35, 58)
-
-for (perplexity_val in perplexity_vec) {
-  
-  tSNE_fit <- triangular_3d_data |>
-    select(-ID) |>
-    Rtsne(perplexity = perplexity_val)
-  
-  tsne_prism <- tSNE_fit$Y |>
-    as_tibble() |>
-    mutate(ID = row_number())
-  
-  colnames(tsne_prism) <- c("tSNE1", "tSNE2", "ID")
-  
-  prism_scaled_obj <- gen_scaled_data(
-    data = tsne_prism)
-  tsne_prism_scaled <- prism_scaled_obj$scaled_nldr
-  
-  lim1 <- prism_scaled_obj$lim1
-  lim2 <- prism_scaled_obj$lim2
-  r2_prism <- diff(lim2)/diff(lim1) 
-  
-  for (xbins in bin1_vec_prism) {
-    
-    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
-    
-    prism_model <- fit_highd_model(
-      training_data = triangular_3d_data,
-      emb_df = tsne_prism_scaled,
-      bin1 = xbins,
-      r2 = r2_prism,
-      is_bin_centroid = TRUE,
-      is_rm_lwd_hex = TRUE,
-      col_start_highd = "x"
-    )
-    
-    df_bin_centroids_prism <- prism_model$df_bin_centroids
-    df_bin_prism <- prism_model$df_bin
-    
-    ## Compute error
-    error_df <- glance(
-      df_bin_centroids = df_bin_centroids_prism,
-      df_bin = df_bin_prism,
-      training_data = triangular_3d_data,
-      newdata = NULL,
-      type_NLDR = "tSNE",
-      col_start = "x") |>
-      mutate(bin1 = xbins,
-             bin2 = bin2,
-             b = bin1 * bin2,
-             b_non_empty = NROW(df_bin_centroids_prism),
-             type = paste0("perplexity: ", perplexity_val))
-    
-    error_prism_tsne <- bind_rows(error_prism_tsne, error_df)
-    
-  }
-  
-}
-```
-
-
-<!--compute error with UMAP and different parameter values-->
-```{r}
-error_prism_umap <- data.frame(matrix(nrow = 0, ncol = 0))
-
-## To initialize number of bins along the x-axis
-bin1_vec_prism <- 4:25 
-
-param_list <- list(param1 = c(15, 0.3), param2 = c(35, 0.5), param3 = c(69, 0.6))
-
-for (i in 1:length(param_list)) {
-  
-  n_neighbors_val <- param_list[[i]][1]
-  min_dist_val <- param_list[[i]][2]
-    
-  umap_prism <- triangular_3d_data |>
-    select(-ID) |>
-    umap(n_neighbors = n_neighbors_val, n_components =  2, 
-         metric = "euclidean", min_dist = min_dist_val, init = "spca")
-
-  umap_prism <- umap_prism |>
-    as_tibble()
-  
-  names(umap_prism) <- c("UMAP1", "UMAP2")
-  
-  umap_prism <- umap_prism |>
-    mutate(ID = 1:NROW(umap_prism))
-  
-  prism_scaled_obj <- gen_scaled_data(
-    data = umap_prism)
-  umap_prism_scaled <- prism_scaled_obj$scaled_nldr
-  
-  lim1 <- prism_scaled_obj$lim1
-  lim2 <- prism_scaled_obj$lim2
-  r2_prism <- diff(lim2)/diff(lim1) 
-  
-  for (xbins in bin1_vec_prism) {
-    
-    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
-    
-    prism_model <- fit_highd_model(
-      training_data = triangular_3d_data,
-      emb_df = umap_prism_scaled,
-      bin1 = xbins,
-      r2 = r2_prism,
-      is_bin_centroid = TRUE,
-      is_rm_lwd_hex = TRUE,
-      col_start_highd = "x"
-    )
-    
-    df_bin_centroids_prism <- prism_model$df_bin_centroids
-    df_bin_prism <- prism_model$df_bin
-    
-    ## Compute error
-    error_df <- glance(
-      df_bin_centroids = df_bin_centroids_prism,
-      df_bin = df_bin_prism,
-      training_data = triangular_3d_data,
-      newdata = NULL,
-      type_NLDR = "UMAP",
-      col_start = "x") |>
-      mutate(bin1 = xbins,
-             bin2 = bin2,
-             b = bin1 * bin2,
-             b_non_empty = NROW(df_bin_centroids_prism),
-             type = paste0("n_neighbors: ", n_neighbors_val, 
-                           " min_dist: ", min_dist_val))
-    
-    error_prism_umap <- bind_rows(error_prism_umap, error_df)
-    
-  }
-  
-}
-```
-
-```{r}
-error_prism <- bind_rows(error_prism_tsne, error_prism_umap) 
-error_prism <- error_prism |>
-  filter(b <= 625)
-```
-
-
-```{r}
-error_plot_prism <- ggplot(error_prism, 
-                           aes(x = b_non_empty, 
-                               y = log(Error), 
-                               group = type, 
-                               colour = type)) + 
-  geom_point(size = 1) +
-  geom_line() + 
-  geom_vline(xintercept = 112, linetype="solid",
-             color = "black", linewidth=0.8, alpha = 0.5) +
-  scale_color_manual(values=c('#e41a1c','#377eb8','#4daf4a','#984ea3',
-                              '#ff7f00','#a6cee3','#a65628','#f781bf')) +
-  ylab("log(Error)") +
-  xlab("number of non-empty bins") +
-  theme(axis.text.x = element_text(size = 5),
-        axis.text.y = element_text(size = 5),
-        axis.title.x = element_text(size = 5),
-        axis.title.y = element_text(size = 5, angle = 90),
-        legend.position = "bottom")
-
-error_plot_prism
-```
-
-<!--selected tSNE perplexity: 35-->
-
-## Fit the appropriate model
-
-### Construct model in $2\text{-}D$
-
-### Selecting parameter values for the model
-
-#### Choice of bins
-
-#### Removal of low-density bins
-
-#### Removing long edges
-
-```{r}
-## Compute hexbin parameters
-num_bins_x_prism <- 21
-lim1 <- prism_scaled_obj_tsne2$lim1
-lim2 <- prism_scaled_obj_tsne2$lim2
-r2_prism <- diff(lim2)/diff(lim1) 
-
-prism_model <- fit_highd_model(
-  training_data = triangular_3d_data,
-  emb_df = tsne_prism_scaled2,
-  bin1 = num_bins_x_prism,
-  r2 = r2_prism,
-  is_bin_centroid = TRUE,
-  is_rm_lwd_hex = TRUE,
-  col_start_highd = "x"
-)
-
-df_bin_centroids_prism <- prism_model$df_bin_centroids
-df_bin_prism <- prism_model$df_bin
-
-## Triangulate bin centroids
-tr1_object_prism <- tri_bin_centroids(
-  df_bin_centroids_prism, x = "c_x", y = "c_y")
-tr_from_to_df_prism <- gen_edges(
-  tri_object = tr1_object_prism)
-
-## Compute 2D distances
-distance_prism <- cal_2d_dist(
-  tr_coord_df = tr_from_to_df_prism,
-  start_x = "x_from",
-  start_y = "y_from",
-  end_x = "x_to",
-  end_y = "y_to",
-  select_vars = c("from", "to", "distance"))
-
-## To find the benchmark value
-benchmark_prism <- find_lg_benchmark(
-  distance_edges = distance_prism,
-  distance_col = "distance")
-
-trimesh_removed_prism <- vis_rmlg_mesh(
-  distance_edges = distance_prism,
-  benchmark_value = benchmark_prism,
-  tr_coord_df = tr_from_to_df_prism,
-  distance_col = "distance") #+
-#xlim(sc_xlims) + ylim(sc_ylims) +
-#interior_annotation("a", sc_ltr_pos)
-
-trimesh_removed_prism
-```
-
-### Lifting the model into $p\text{-}D$
-
-```{r}
-## Hexagonal binning to have regular hexagons
-hb_obj_prism <- hex_binning(
-  data = tsne_prism_scaled2,
-  bin1 = num_bins_x_prism,
-  r2 = r2_prism)
-
-tsne_data_with_hb_id <- hb_obj_prism$data_hb_id
-
-df_all_prism <- dplyr::bind_cols(triangular_3d_data |> dplyr::select(-ID),
-                                 tsne_data_with_hb_id)
-
-### Define type column
-df <- df_all_prism |>
-  dplyr::select(tidyselect::starts_with("x")) |>
-  dplyr::mutate(type = "data") ## original dataset
-
-df_b <- df_bin_prism |>
-  dplyr::filter(hb_id %in% df_bin_centroids_prism$hexID) |>
-  dplyr::mutate(type = "model") ## Data with summarized mean
-
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b <- df_b[match(df_bin_centroids_prism$hexID, df_b$hb_id),] |>
-  dplyr::select(-hb_id)
-
-df_exe <- dplyr::bind_rows(df_b, df)
-
-## Set the maximum difference as the criteria
-distance_df_small_edges <- distance_prism |>
-  dplyr::filter(distance < benchmark_prism)
-## Since erase brushing is considerd.
-
-langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = distance_df_small_edges$from,
-                         lineTo = distance_df_small_edges$to,
-                         group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))),
-                         levelColors = c("#6a3d9a", "#33a02c"))
-```
-
-What can I see in high-D?
-
-- Four clusters that are really close 
-
-What can I see in 2D layout?
-
-- Several clusters (more that what see in high-D)
-
-What can learn from the model?
-
-- There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters.
+<!-- ```{r} -->
+<!-- triangular_3d_data <- tri_3d( -->
+<!--   n = 1250, num_noise = 2,  -->
+<!--   min_n = -0.05, max_n = 0.05) |> -->
+<!--   as_tibble()  -->
+
+<!-- colnames(triangular_3d_data) <- paste0("x", 1:NCOL(triangular_3d_data)) -->
+
+<!-- langevitour::langevitour(triangular_3d_data) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- triangular_3d_data <- triangular_3d_data |> -->
+<!--   mutate(ID = row_number()) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- sc_ltr_pos <- c(0.08, 0.96) -->
+<!-- ``` -->
+
+<!-- <!--tSNE with perplexity = 6--> -->
+<!-- ```{r} -->
+<!-- tSNE_fit1 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   Rtsne(perplexity = 6)  -->
+
+<!-- tsne_prism1 <- tSNE_fit1$Y |> -->
+<!--   as_tibble() |> -->
+<!--   mutate(ID = row_number()) -->
+
+<!-- colnames(tsne_prism1) <- c("tSNE1", "tSNE2", "ID") -->
+
+<!-- prism_scaled_obj_tsne1 <- gen_scaled_data( -->
+<!--   data = tsne_prism1) -->
+<!-- tsne_prism_scaled1 <- prism_scaled_obj_tsne1$scaled_nldr -->
+
+<!-- nldr_prism1 <- tsne_prism_scaled1 |>  -->
+<!--   ggplot(aes(x = tSNE1, y = tSNE2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- <!--tSNE with perplexity = 35--> -->
+<!-- ```{r} -->
+<!-- tSNE_fit2 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   Rtsne(perplexity = round(sqrt(NROW(triangular_3d_data))))  -->
+
+<!-- tsne_prism2 <- tSNE_fit2$Y |> -->
+<!--   as_tibble() |> -->
+<!--   mutate(ID = row_number()) -->
+
+<!-- colnames(tsne_prism2) <- c("tSNE1", "tSNE2", "ID") -->
+
+<!-- prism_scaled_obj_tsne2 <- gen_scaled_data( -->
+<!--   data = tsne_prism2) -->
+<!-- tsne_prism_scaled2 <- prism_scaled_obj_tsne2$scaled_nldr -->
+
+<!-- nldr_prism2 <- tsne_prism_scaled2 |>  -->
+<!--   ggplot(aes(x = tSNE1, y = tSNE2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- <!--tSNE with perplexity = 58--> -->
+<!-- ```{r} -->
+<!-- tSNE_fit3 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   Rtsne(perplexity = 58)  -->
+
+<!-- tsne_prism3 <- tSNE_fit3$Y |> -->
+<!--   as_tibble() |> -->
+<!--   mutate(ID = row_number()) -->
+
+<!-- colnames(tsne_prism3) <- c("tSNE1", "tSNE2", "ID") -->
+
+<!-- prism_scaled_obj_tsne3 <- gen_scaled_data( -->
+<!--   data = tsne_prism3) -->
+<!-- tsne_prism_scaled3 <- prism_scaled_obj_tsne3$scaled_nldr -->
+
+<!-- nldr_prism3 <- tsne_prism_scaled3 |>  -->
+<!--   ggplot(aes(x = tSNE1, y = tSNE2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- <!--UMAP with n_neighbors = 15 and min_dist = 0.3--> -->
+<!-- ```{r} -->
+<!-- umap_prism1 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   umap(n_neighbors = 15, n_components =  2,  -->
+<!--        metric = "euclidean", min_dist = 0.3, init = "spca") -->
+
+<!-- umap_prism1 <- umap_prism1 |> -->
+<!--   as_tibble() -->
+
+<!-- names(umap_prism1) <- c("UMAP1", "UMAP2") -->
+
+<!-- umap_prism1 <- umap_prism1 |> -->
+<!--   mutate(ID = 1:NROW(umap_prism1)) -->
+
+<!-- prism_scaled_obj_umap1 <- gen_scaled_data( -->
+<!--   data = umap_prism1) -->
+<!-- umap_prism_scaled1 <- prism_scaled_obj_umap1$scaled_nldr -->
+
+<!-- nldr_prism4 <- umap_prism_scaled1 |>  -->
+<!--   ggplot(aes(x = UMAP1, y = UMAP2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- <!--UMAP with n_neighbors = 35 and min_dist = 0.5--> -->
+<!-- ```{r} -->
+<!-- umap_prism2 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   umap(n_neighbors = 35, n_components =  2,  -->
+<!--        metric = "euclidean", min_dist = 0.5, init = "spca") -->
+
+<!-- umap_prism2 <- umap_prism2 |> -->
+<!--   as_tibble() -->
+
+<!-- names(umap_prism2) <- c("UMAP1", "UMAP2") -->
+
+<!-- umap_prism2 <- umap_prism2 |> -->
+<!--   mutate(ID = 1:NROW(umap_prism2)) -->
+
+<!-- prism_scaled_obj_umap2 <- gen_scaled_data( -->
+<!--   data = umap_prism2) -->
+<!-- umap_prism_scaled2 <- prism_scaled_obj_umap2$scaled_nldr -->
+
+<!-- nldr_prism5 <- umap_prism_scaled2 |>  -->
+<!--   ggplot(aes(x = UMAP1, y = UMAP2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- <!--UMAP with n_neighbors = 69 and min_dist = 0.6--> -->
+<!-- ```{r} -->
+<!-- umap_prism3 <- triangular_3d_data |> -->
+<!--   select(-ID) |> -->
+<!--   umap(n_neighbors = 69, n_components =  2,  -->
+<!--        metric = "euclidean", min_dist = 0.6, init = "spca") -->
+
+<!-- umap_prism3 <- umap_prism3 |> -->
+<!--   as_tibble() -->
+
+<!-- names(umap_prism3) <- c("UMAP1", "UMAP2") -->
+
+<!-- umap_prism3 <- umap_prism3 |> -->
+<!--   mutate(ID = 1:NROW(umap_prism3)) -->
+
+<!-- prism_scaled_obj_umap3 <- gen_scaled_data( -->
+<!--   data = umap_prism3) -->
+<!-- umap_prism_scaled3 <- prism_scaled_obj_umap3$scaled_nldr -->
+
+<!-- nldr_prism6 <- umap_prism_scaled3 |>  -->
+<!--   ggplot(aes(x = UMAP1, y = UMAP2)) +  -->
+<!--   geom_point(alpha=0.5, colour="#000000", size = 0.5)  -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- nldr_prism1 + nldr_prism2 + nldr_prism3 +  -->
+<!--   nldr_prism4 + nldr_prism5 + nldr_prism6 + -->
+<!--   plot_layout(ncol=3) -->
+<!-- ``` -->
+
+<!-- <!--need to add details regarding which differences can I see with different layouts--> -->
+
+<!-- ## Deciding an appropriate fit -->
+
+<!-- <!--select based on looking at b_non_empty vs log(Error)--> -->
+<!-- <!--select a choice for b_non_empty--> -->
+
+<!-- <!--compute error with tSNE and different perplexity values--> -->
+<!-- ```{r} -->
+<!-- error_prism_tsne <- data.frame(matrix(nrow = 0, ncol = 0)) -->
+
+<!-- ## To initialize number of bins along the x-axis -->
+<!-- bin1_vec_prism <- 4:25  -->
+
+<!-- perplexity_vec <- c(6, 35, 58) -->
+
+<!-- for (perplexity_val in perplexity_vec) { -->
+
+<!--   tSNE_fit <- triangular_3d_data |> -->
+<!--     select(-ID) |> -->
+<!--     Rtsne(perplexity = perplexity_val) -->
+
+<!--   tsne_prism <- tSNE_fit$Y |> -->
+<!--     as_tibble() |> -->
+<!--     mutate(ID = row_number()) -->
+
+<!--   colnames(tsne_prism) <- c("tSNE1", "tSNE2", "ID") -->
+
+<!--   prism_scaled_obj <- gen_scaled_data( -->
+<!--     data = tsne_prism) -->
+<!--   tsne_prism_scaled <- prism_scaled_obj$scaled_nldr -->
+
+<!--   lim1 <- prism_scaled_obj$lim1 -->
+<!--   lim2 <- prism_scaled_obj$lim2 -->
+<!--   r2_prism <- diff(lim2)/diff(lim1)  -->
+
+<!--   for (xbins in bin1_vec_prism) { -->
+
+<!--     bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2 -->
+
+<!--     prism_model <- fit_highd_model( -->
+<!--       training_data = triangular_3d_data, -->
+<!--       emb_df = tsne_prism_scaled, -->
+<!--       bin1 = xbins, -->
+<!--       r2 = r2_prism, -->
+<!--       is_bin_centroid = TRUE, -->
+<!--       is_rm_lwd_hex = TRUE, -->
+<!--       col_start_highd = "x" -->
+<!--     ) -->
+
+<!--     df_bin_centroids_prism <- prism_model$df_bin_centroids -->
+<!--     df_bin_prism <- prism_model$df_bin -->
+
+<!--     ## Compute error -->
+<!--     error_df <- glance( -->
+<!--       df_bin_centroids = df_bin_centroids_prism, -->
+<!--       df_bin = df_bin_prism, -->
+<!--       training_data = triangular_3d_data, -->
+<!--       newdata = NULL, -->
+<!--       type_NLDR = "tSNE", -->
+<!--       col_start = "x") |> -->
+<!--       mutate(bin1 = xbins, -->
+<!--              bin2 = bin2, -->
+<!--              b = bin1 * bin2, -->
+<!--              b_non_empty = NROW(df_bin_centroids_prism), -->
+<!--              type = paste0("perplexity: ", perplexity_val)) -->
+
+<!--     error_prism_tsne <- bind_rows(error_prism_tsne, error_df) -->
+
+<!--   } -->
+
+<!-- } -->
+<!-- ``` -->
+
+
+<!-- <!--compute error with UMAP and different parameter values--> -->
+<!-- ```{r} -->
+<!-- error_prism_umap <- data.frame(matrix(nrow = 0, ncol = 0)) -->
+
+<!-- ## To initialize number of bins along the x-axis -->
+<!-- bin1_vec_prism <- 4:25  -->
+
+<!-- param_list <- list(param1 = c(15, 0.3), param2 = c(35, 0.5), param3 = c(69, 0.6)) -->
+
+<!-- for (i in 1:length(param_list)) { -->
+
+<!--   n_neighbors_val <- param_list[[i]][1] -->
+<!--   min_dist_val <- param_list[[i]][2] -->
+
+<!--   umap_prism <- triangular_3d_data |> -->
+<!--     select(-ID) |> -->
+<!--     umap(n_neighbors = n_neighbors_val, n_components =  2,  -->
+<!--          metric = "euclidean", min_dist = min_dist_val, init = "spca") -->
+
+<!--   umap_prism <- umap_prism |> -->
+<!--     as_tibble() -->
+
+<!--   names(umap_prism) <- c("UMAP1", "UMAP2") -->
+
+<!--   umap_prism <- umap_prism |> -->
+<!--     mutate(ID = 1:NROW(umap_prism)) -->
+
+<!--   prism_scaled_obj <- gen_scaled_data( -->
+<!--     data = umap_prism) -->
+<!--   umap_prism_scaled <- prism_scaled_obj$scaled_nldr -->
+
+<!--   lim1 <- prism_scaled_obj$lim1 -->
+<!--   lim2 <- prism_scaled_obj$lim2 -->
+<!--   r2_prism <- diff(lim2)/diff(lim1)  -->
+
+<!--   for (xbins in bin1_vec_prism) { -->
+
+<!--     bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2 -->
+
+<!--     prism_model <- fit_highd_model( -->
+<!--       training_data = triangular_3d_data, -->
+<!--       emb_df = umap_prism_scaled, -->
+<!--       bin1 = xbins, -->
+<!--       r2 = r2_prism, -->
+<!--       is_bin_centroid = TRUE, -->
+<!--       is_rm_lwd_hex = TRUE, -->
+<!--       col_start_highd = "x" -->
+<!--     ) -->
+
+<!--     df_bin_centroids_prism <- prism_model$df_bin_centroids -->
+<!--     df_bin_prism <- prism_model$df_bin -->
+
+<!--     ## Compute error -->
+<!--     error_df <- glance( -->
+<!--       df_bin_centroids = df_bin_centroids_prism, -->
+<!--       df_bin = df_bin_prism, -->
+<!--       training_data = triangular_3d_data, -->
+<!--       newdata = NULL, -->
+<!--       type_NLDR = "UMAP", -->
+<!--       col_start = "x") |> -->
+<!--       mutate(bin1 = xbins, -->
+<!--              bin2 = bin2, -->
+<!--              b = bin1 * bin2, -->
+<!--              b_non_empty = NROW(df_bin_centroids_prism), -->
+<!--              type = paste0("n_neighbors: ", n_neighbors_val,  -->
+<!--                            " min_dist: ", min_dist_val)) -->
+
+<!--     error_prism_umap <- bind_rows(error_prism_umap, error_df) -->
+
+<!--   } -->
+
+<!-- } -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- error_prism <- bind_rows(error_prism_tsne, error_prism_umap)  -->
+<!-- error_prism <- error_prism |> -->
+<!--   filter(b <= 625) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- error_plot_prism <- ggplot(error_prism,  -->
+<!--                            aes(x = b_non_empty,  -->
+<!--                                y = log(Error),  -->
+<!--                                group = type,  -->
+<!--                                colour = type)) +  -->
+<!--   geom_point(size = 1) + -->
+<!--   geom_line() +  -->
+<!--   geom_vline(xintercept = 112, linetype="solid", -->
+<!--              color = "black", linewidth=0.8, alpha = 0.5) + -->
+<!--   scale_color_manual(values=c('#e41a1c','#377eb8','#4daf4a','#984ea3', -->
+<!--                               '#ff7f00','#a6cee3','#a65628','#f781bf')) + -->
+<!--   ylab("log(Error)") + -->
+<!--   xlab("number of non-empty bins") + -->
+<!--   theme(axis.text.x = element_text(size = 5), -->
+<!--         axis.text.y = element_text(size = 5), -->
+<!--         axis.title.x = element_text(size = 5), -->
+<!--         axis.title.y = element_text(size = 5, angle = 90), -->
+<!--         legend.position = "bottom") -->
+
+<!-- error_plot_prism -->
+<!-- ``` -->
+
+<!-- <!--selected tSNE perplexity: 35--> -->
+
+<!-- ## Fit the appropriate model -->
+
+<!-- ### Construct model in $2\text{-}D$ -->
+
+<!-- ### Selecting parameter values for the model -->
+
+<!-- #### Choice of bins -->
+
+<!-- #### Removal of low-density bins -->
+
+<!-- #### Removing long edges -->
+
+<!-- ```{r} -->
+<!-- ## Compute hexbin parameters -->
+<!-- num_bins_x_prism <- 21 -->
+<!-- lim1 <- prism_scaled_obj_tsne2$lim1 -->
+<!-- lim2 <- prism_scaled_obj_tsne2$lim2 -->
+<!-- r2_prism <- diff(lim2)/diff(lim1)  -->
+
+<!-- prism_model <- fit_highd_model( -->
+<!--   training_data = triangular_3d_data, -->
+<!--   emb_df = tsne_prism_scaled2, -->
+<!--   bin1 = num_bins_x_prism, -->
+<!--   r2 = r2_prism, -->
+<!--   is_bin_centroid = TRUE, -->
+<!--   is_rm_lwd_hex = TRUE, -->
+<!--   col_start_highd = "x" -->
+<!-- ) -->
+
+<!-- df_bin_centroids_prism <- prism_model$df_bin_centroids -->
+<!-- df_bin_prism <- prism_model$df_bin -->
+
+<!-- ## Triangulate bin centroids -->
+<!-- tr1_object_prism <- tri_bin_centroids( -->
+<!--   df_bin_centroids_prism, x = "c_x", y = "c_y") -->
+<!-- tr_from_to_df_prism <- gen_edges( -->
+<!--   tri_object = tr1_object_prism) -->
+
+<!-- ## Compute 2D distances -->
+<!-- distance_prism <- cal_2d_dist( -->
+<!--   tr_coord_df = tr_from_to_df_prism, -->
+<!--   start_x = "x_from", -->
+<!--   start_y = "y_from", -->
+<!--   end_x = "x_to", -->
+<!--   end_y = "y_to", -->
+<!--   select_vars = c("from", "to", "distance")) -->
+
+<!-- ## To find the benchmark value -->
+<!-- benchmark_prism <- find_lg_benchmark( -->
+<!--   distance_edges = distance_prism, -->
+<!--   distance_col = "distance") -->
+
+<!-- trimesh_removed_prism <- vis_rmlg_mesh( -->
+<!--   distance_edges = distance_prism, -->
+<!--   benchmark_value = benchmark_prism, -->
+<!--   tr_coord_df = tr_from_to_df_prism, -->
+<!--   distance_col = "distance") #+ -->
+<!-- #xlim(sc_xlims) + ylim(sc_ylims) + -->
+<!-- #interior_annotation("a", sc_ltr_pos) -->
+
+<!-- trimesh_removed_prism -->
+<!-- ``` -->
+
+<!-- ### Lifting the model into $p\text{-}D$ -->
+
+<!-- ```{r} -->
+<!-- ## Hexagonal binning to have regular hexagons -->
+<!-- hb_obj_prism <- hex_binning( -->
+<!--   data = tsne_prism_scaled2, -->
+<!--   bin1 = num_bins_x_prism, -->
+<!--   r2 = r2_prism) -->
+
+<!-- tsne_data_with_hb_id <- hb_obj_prism$data_hb_id -->
+
+<!-- df_all_prism <- dplyr::bind_cols(triangular_3d_data |> dplyr::select(-ID), -->
+<!--                                  tsne_data_with_hb_id) -->
+
+<!-- ### Define type column -->
+<!-- df <- df_all_prism |> -->
+<!--   dplyr::select(tidyselect::starts_with("x")) |> -->
+<!--   dplyr::mutate(type = "data") ## original dataset -->
+
+<!-- df_b <- df_bin_prism |> -->
+<!--   dplyr::filter(hb_id %in% df_bin_centroids_prism$hexID) |> -->
+<!--   dplyr::mutate(type = "model") ## Data with summarized mean -->
+
+<!-- ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data -->
+<!-- df_b <- df_b[match(df_bin_centroids_prism$hexID, df_b$hb_id),] |> -->
+<!--   dplyr::select(-hb_id) -->
+
+<!-- df_exe <- dplyr::bind_rows(df_b, df) -->
+
+<!-- ## Set the maximum difference as the criteria -->
+<!-- distance_df_small_edges <- distance_prism |> -->
+<!--   dplyr::filter(distance < benchmark_prism) -->
+<!-- ## Since erase brushing is considerd. -->
+
+<!-- langevitour::langevitour(df_exe[1:(length(df_exe)-1)], -->
+<!--                          lineFrom = distance_df_small_edges$from, -->
+<!--                          lineTo = distance_df_small_edges$to, -->
+<!--                          group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))), -->
+<!--                          levelColors = c("#6a3d9a", "#33a02c")) -->
+<!-- ``` -->
+
+<!-- What can I see in high-D? -->
+
+<!-- - Four clusters that are really close  -->
+
+<!-- What can I see in 2D layout? -->
+
+<!-- - Several clusters (more that what see in high-D) -->
+
+<!-- What can learn from the model? -->
+
+<!-- - There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters. -->
 
 # Application
 
