@@ -18,15 +18,15 @@ if (!dir.exists(file.path(download_path, "scRNAseq", "T0_1A"))) {
 
 # Load 10X data using Seurat v5
 T1_seurat <- Read10X(data.dir = file.path(download_path, "scRNAseq", "T0_1A")) %>%
-  CreateSeuratObject(project = "T0_1A")
+  CreateSeuratObject(project = "T0_1A", min.cells = 10)
 T2_seurat <- Read10X(data.dir = file.path(download_path, "scRNAseq", "T2_3B")) %>%
-  CreateSeuratObject(project = "T2_3B")
+  CreateSeuratObject(project = "T2_3B", min.cells = 10)
 T3_seurat <- Read10X(data.dir = file.path(download_path, "scRNAseq", "T4_5C")) %>%
-  CreateSeuratObject(project = "T4_5C")
+  CreateSeuratObject(project = "T4_5C", min.cells = 10)
 T4_seurat <- Read10X(data.dir = file.path(download_path, "scRNAseq", "T6_7D")) %>%
-  CreateSeuratObject(project = "T6_7D")
+  CreateSeuratObject(project = "T6_7D", min.cells = 10)
 T5_seurat <- Read10X(data.dir = file.path(download_path, "scRNAseq", "T8_9E")) %>%
-  CreateSeuratObject(project = "T8_9E")
+  CreateSeuratObject(project = "T8_9E", min.cells = 10)
 
 # Combine Seurat objects
 EBT_seurat <- merge(T1_seurat, y = c(T2_seurat, T3_seurat, T4_seurat, T5_seurat),
@@ -37,23 +37,31 @@ EBT_seurat <- subset(EBT_seurat, subset = nCount_RNA > quantile(EBT_seurat$nCoun
 EBT_seurat <- subset(EBT_seurat, subset = nCount_RNA < quantile(EBT_seurat$nCount_RNA, 0.75))
 
 # Filter rare genes (using Seurat's functions)
-counts_matrix <- GetAssayData(EBT_seurat, slot = "counts")
-gene_counts <- rowSums(counts_matrix > 0)
-genes_to_keep <- names(gene_counts[gene_counts >= 10])
-EBT_seurat <- subset(EBT_seurat, features = genes_to_keep)
+# counts_matrix <- GetAssayData(EBT_seurat, slot = "counts")
+# gene_counts <- rowSums(counts_matrix > 0)
+# genes_to_keep <- names(gene_counts[gene_counts >= 10])
+# EBT_seurat <- subset(EBT_seurat, features = genes_to_keep)
 
 # Library size normalization (using Seurat's functions)
 EBT_seurat <- NormalizeData(EBT_seurat)
 
 # Get mitochondrial genes
-mito_genes <- grep(pattern = "^MT-", x = rownames(EBT_se-urat), value = TRUE)
+#mito_genes <- grep(pattern = "^MT-", x = rownames(EBT_seurat), value = TRUE)
+
+# The [[ operator can add columns to object metadata. This is a great place to stash QC stats
+EBT_seurat[["percent.mt"]] <- PercentageFeatureSet(EBT_seurat, pattern = "^MT-")
+EBT_seurat <- subset(EBT_seurat, subset = percent.mt < quantile(EBT_seurat$percent.mt, 0.9))
+
 
 # Filter cells based on mitochondrial gene expression
-EBT_seurat <- subset(EBT_seurat, subset = percent.mt < quantile(EBT_seurat$percent.mt, 0.9))
+#EBT_seurat <- subset(EBT_seurat, subset = percent.mt < quantile(EBT_seurat$percent.mt, 0.9))
 
 # Square root transformation (using Seurat's functions)
 EBT_seurat <- NormalizeData(EBT_seurat, normalization.method = "CLR")
-EBT_seurat[["RNA"]] <- ScaleData(EBT_seurat, features = rownames(EBT_seurat), normalization.method = "center")
+EBT_seurat <- ScaleData(EBT_seurat, features = rownames(EBT_seurat))
+
+T0_1A_df <- EBT_seurat@assays$RNA@layers$counts.T0_1A |>
+  as_tibble()
 
 # Access the count matrix
 EBT_counts <- GetAssayData(EBT_seurat, slot = "counts")
