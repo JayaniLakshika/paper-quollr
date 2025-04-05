@@ -12,8 +12,8 @@ library(tidyverse)
 
 organ = "Limb_Muscle"
 
-raw.data <- read.csv(here("data", "FACS",paste0(organ,"-counts.csv")),row.names = 1)
-meta.data <- read.csv(here("data", "metadata_FACS.csv"))
+raw.data <- read.csv(here("data", "limb_muscles",paste0(organ,"-counts.csv")),row.names = 1)
+meta.data <- read.csv(here("data", "limb_muscles", "metadata_FACS.csv"))
 
 plates <- str_split(colnames(raw.data),"[.]", simplify = TRUE)[,2]
 
@@ -65,3 +65,24 @@ pca_df <- pca_df |>
   mutate(ID = row_number())
 
 write_rds(pca_df, "data/limb_muscles/facs_limb_muscles_pcs_10.rds")
+
+## Obtain cells to map with cluster ids
+
+selected_cells <- tiss@assays$RNA@cells@.Data
+selected_cells <- rownames(selected_cells)
+
+pca_df <- pca_df |>
+  mutate(cell = selected_cells)
+
+annotaions <- read_csv("data/limb_muscles/annotations_FACS.csv")
+
+## Annotations for the selected cells
+annotaions <- annotaions |>
+  filter(cell %in% selected_cells) |>
+  dplyr::select("cell", "cluster.ids")
+
+cluster_df <- inner_join(pca_df, annotaions, by = c("cell")) |>
+  dplyr::select("ID", "cluster.ids")
+
+write_rds(cluster_df, "data/limb_muscles/facs_limb_muscles_cluster_df.rds")
+
