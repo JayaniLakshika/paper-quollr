@@ -993,7 +993,7 @@ training_data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
 #| label: tsne-num-bins-limb
 
 ## Compute hexbin parameters
-num_bins_x_limb <- 16
+num_bins_x_limb <- 25
 
 algo_obj_limb <- gen_nldr_vis_algo_obj(
   high_d_data = training_data_limb, 
@@ -1046,7 +1046,7 @@ trimesh_removed_limb <- ggplot() +
 #| label: tsne-best-num-bins-limb
 
 ## Compute hexbin parameters
-num_bins_x_limb <- 13
+num_bins_x_limb <- 19
 
 algo_obj_limb <- gen_nldr_vis_algo_obj(
   high_d_data = training_data_limb, 
