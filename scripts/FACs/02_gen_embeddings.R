@@ -133,3 +133,19 @@ PacMAP_data <- PacMAP_data |>
 
 write_rds(PacMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_", n_neighbors,"_init_", init, "_MN-ratio_", MN_ratio, "_FP-ratio_", FP_ratio, ".rds"))
 
+## tSNE (best layout)
+perplexity <- 15
+
+tSNE_fit <- data |>
+  dplyr::select(where(is.numeric)) |>
+  Rtsne::Rtsne(perplexity = perplexity,
+               pca = FALSE)
+
+tSNE_data <- tSNE_fit$Y |>
+  tibble::as_tibble(.name_repair = "unique")
+names(tSNE_data) <- c("emb1", "emb2")
+
+tSNE_data <- tSNE_data |>
+  mutate(ID = row_number())
+
+write_rds(tSNE_data, file = paste0("data/limb_muscles/facs_limb_muscles_tsne_perplexity_", perplexity, ".rds"))
