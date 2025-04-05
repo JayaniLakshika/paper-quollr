@@ -1051,6 +1051,20 @@ Need to find another application
 </div>
 
 
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<!-- Assessing which of the 8 NLDR layouts on the PBMC3k data  (shown in @fig-NLDR-variety) is the better representation using MSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-h). Layout f is universally poor. Layouts a, c, g, h that show large separations between clusters are universally suboptimal. Layout d with little separation performs well at tiny binwidth (where most points are in their own bin) and poorly as binwidth increases. The choice of best is between layouts b and e, that have small separations between oddly shaped clusters. Layout e is the best choice.-->
+
+<div class="layout-chunk" data-layout="l-body">
+<img src="paper-quollr_files/figure-html5/fig-limb-mse-1.png" width="100%" />
+
+</div>
+
+
 # Discussion
 
 This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.

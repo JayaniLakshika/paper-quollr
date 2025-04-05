@@ -901,6 +901,52 @@ Need to find another application
 <https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1> <!--data-->
 
 ```{r}
+#| label: read-limb-nldr
+# Read a variety of different NLDR representations of PBMC
+# and plot them on same aspect ratio
+clr_choice <- "#0077A3"
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+
+nldr1 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
+  interior_annotation("a")
+
+tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
+
+nldr2 <- tsne_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("b")
+
+phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
+
+nldr3 <- phate_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  interior_annotation("c")
+
+trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+
+nldr4 <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#377eb8') +
+  interior_annotation("d")
+
+pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+nldr5 <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  interior_annotation("e")
+```
+
+```{r}
 #| label: combine-error-data-muscles
 
 error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_30_min-dist_0.1.rds")
@@ -934,6 +980,19 @@ error_plot_limb <- plot_mse(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
   scale_color_manual(values=c('#999999','#a65628','#e41a1c','#377eb8','#4daf4a','#ff7f00','#984ea3','#f781bf')) 
 
+```
+
+<!-- Assessing which of the 8 NLDR layouts on the PBMC3k data  (shown in @fig-NLDR-variety) is the better representation using MSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-h). Layout f is universally poor. Layouts a, c, g, h that show large separations between clusters are universally suboptimal. Layout d with little separation performs well at tiny binwidth (where most points are in their own bin) and poorly as binwidth increases. The choice of best is between layouts b and e, that have small separations between oddly shaped clusters. Layout e is the best choice.-->
+
+```{r}
+#| fig-cap: ""
+#| label: fig-limb-mse
+#| fig-pos: H
+#| out-width: 100%
+
+free(error_plot_limb) + wrap_plots(
+  nldr1, nldr2, nldr3, 
+  nldr4, nldr5, ncol = 2)
 ```
 
 # Discussion
