@@ -4,7 +4,7 @@ library(readr)
 library(conflicted)
 
 library(Rtsne)
-library(umap)
+library(uwot)
 library(phateR)
 library(reticulate)
 
@@ -39,20 +39,16 @@ write_rds(tSNE_data, file = paste0("data/limb_muscles/facs_limb_muscles_tsne_per
 
 ## UMAP
 
-n_neighbors <- 15
-min_dist <- 0.1
+# Create a config list with the desired parameters
+umap_config <- umap.defaults
+umap_config$n_neighbors <- 15      # Set the number of neighbors
+umap_config$n_components <- 2    # Set the number of output dimensions (typically 2 or 3)
+umap_config$min_dist <- 0.1
 
-UMAP_model <- umap(data,
-                  n_neighbors = n_neighbors,
-                  min_dist = min_dist,
-                  n_components =  2,
-                  init ="spca")
-
-UMAP_data <- UMAP_model |>
-  as_tibble()
+UMAP_fit <- umap(data, config = umap_config)
 
 UMAP_data <- UMAP_fit$layout |>
-  tibble::as_tibble(.name_repair = "unique")
+  as_tibble()
 
 names(UMAP_data) <- c("emb1", "emb2")
 
