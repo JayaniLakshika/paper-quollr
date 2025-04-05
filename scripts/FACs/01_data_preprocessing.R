@@ -1,5 +1,7 @@
 ## Tabula Muris: single organ analysis (Limb Muscles)
+## Paper: https://www.nature.com/articles/s41586-018-0590-4#data-availability
 ## https://github.com/czbiohub-sf/tabula-muris/blob/master/00_data_ingest/FACS_Notebook.Rmd
+## Data: https://figshare.com/articles/dataset/Single-cell_RNA-seq_data_from_Smart-seq2_sequencing_of_FACS_sorted_cells_v2_/5829687/7
 
 library(Seurat)
 library(dplyr)
@@ -58,5 +60,8 @@ pca_df <- pca_df[, 1:10] |>
   tibble::as_tibble()
 
 names(pca_df) <- paste0("x", 1:10)
+
+pca_df <- pca_df |>
+  mutate(ID = row_number())
 
 write_rds(pca_df, "data/limb_muscles/facs_limb_muscles_pcs_10.rds")

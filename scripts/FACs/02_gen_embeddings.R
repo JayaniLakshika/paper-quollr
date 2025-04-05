@@ -32,6 +32,9 @@ tSNE_data <- tSNE_fit$Y |>
   tibble::as_tibble(.name_repair = "unique")
 names(tSNE_data) <- c("emb1", "emb2")
 
+tSNE_data <- tSNE_data |>
+  mutate(ID = row_number())
+
 write_rds(tSNE_data, file = paste0("data/limb_muscles/facs_limb_muscles_tsne_perplexity_", perplexity, ".rds"))
 
 ## UMAP
@@ -51,7 +54,10 @@ UMAP_data <- UMAP_model |>
 UMAP_data <- UMAP_fit$layout |>
   tibble::as_tibble(.name_repair = "unique")
 
-names(UMAP_data) <- c("UMAP1", "UMAP2")
+names(UMAP_data) <- c("emb1", "emb2")
+
+UMAP_data <- UMAP_data |>
+  mutate(ID = row_number())
 
 ## Run only once
 write_rds(UMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_", n_neighbors, "_min-dist_", min_dist, ".rds"))
@@ -62,7 +68,10 @@ knn <- 5
 PHATE_data <- phate(data, knn = knn)
 PHATE_data <- as_tibble(PHATE_data$embedding)
 
-names(PHATE_data) <- c("PHATE1", "PHATE2")
+names(PHATE_data) <- c("emb1", "emb2")
+
+PHATE_data <- PHATE_data |>
+  mutate(ID = row_number())
 
 write_rds(PHATE_data, file = paste0("data/limb_muscles/facs_limb_muscles_phate_knn_", knn, ".rds"))
 
@@ -89,7 +98,10 @@ reducer <- trimap$TRIMAP(n_dims = as.integer(2),
 TriMAP_data <- reducer$fit_transform(data_matrix) |>
   as_tibble()
 
-names(TriMAP_data) <- c("TriMAP1", "TriMAP2")
+names(TriMAP_data) <- c("emb1", "emb2")
+
+TriMAP_data <- TriMAP_data |>
+  mutate(ID = row_number())
 
 write_rds(TriMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_", n_inliers, "_n-outliers_", n_outliers, "_n-random_", n_random, ".rds"))
 
@@ -117,7 +129,10 @@ reducer <- pacmap$PaCMAP(n_components = as.integer(2),
 PacMAP_data <- reducer$fit_transform(data_matrix, init = init) |>
   as_tibble()
 
-names(PacMAP_data) <- c("PaCMAP1", "PaCMAP2")
+names(PacMAP_data) <- c("emb1", "emb2")
+
+PacMAP_data <- PacMAP_data |>
+  mutate(ID = row_number())
 
 write_rds(PacMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_", n_neighbors,"_init_", init, "_MN-ratio_", MN_ratio, "_FP-ratio_", FP_ratio, ".rds"))
 
