@@ -878,7 +878,7 @@ Need to find another application
 
 ```{r}
 #| label: read-limb-nldr
-# Read a variety of different NLDR representations of PBMC
+# Read a variety of different NLDR representations of limb
 # and plot them on same aspect ratio
 clr_choice <- "#0077A3"
 umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
@@ -981,6 +981,123 @@ error_plot_limb <- plot_mse(error_limb) +
 free(error_plot_limb) + wrap_plots(
   nldr1, nldr2, nldr3, 
   nldr4, nldr5, nldr6, ncol = 2)
+```
+
+```{r}
+#| label: data-limb
+
+training_data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
+```
+
+```{r}
+#| label: tsne-num-bins-limb
+
+## Compute hexbin parameters
+num_bins_x_limb <- 16
+
+algo_obj_limb <- gen_nldr_vis_algo_obj(
+  high_d_data = training_data_limb, 
+  nldr_data = tsne_limb, 
+  num_x_bins = num_bins_x_limb)
+
+tsne_limb_scaled <- algo_obj_limb$nldr_scaled
+distance_limb <- algo_obj_limb$distance_df
+tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+benchmark_limb <- algo_obj_limb$benchmark
+df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+df_bin_limb <- algo_obj_limb$df_bin
+
+distance_df_small_edges_limb <- distance_limb |>
+  filter(distance < benchmark_limb) #benchmark_limb
+
+tr_from_to_df_limb <- right_join(
+  tr_from_to_df_limb, distance_df_small_edges_limb,
+  by = c("from", "to")) 
+
+# umap_limb_scaled_with_cluster <- umap_limb_scaled |>
+#   mutate(cluster = umap_limb_scaled_with_cluster$cluster)
+
+trimesh_removed_limb <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled,
+    aes(
+      x = emb1,
+      y = emb2
+    ),
+    alpha = 0.3,
+    color = "#a65628"
+  ) +
+    geom_segment(data = tr_from_to_df_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1) +
+  #scale_color_manual(values = c("#8dd3c7", "#fdb462", "#bebada")) +
+  interior_annotation("b1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
+```
+
+```{r}
+#| label: tsne-best-num-bins-limb
+
+## Compute hexbin parameters
+num_bins_x_limb <- 13
+
+algo_obj_limb <- gen_nldr_vis_algo_obj(
+  high_d_data = training_data_limb, 
+  nldr_data = tsne_limb2, 
+  num_x_bins = num_bins_x_limb)
+
+tsne_limb_scaled_best <- algo_obj_limb$nldr_scaled
+distance_limb <- algo_obj_limb$distance_df
+tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+benchmark_limb <- algo_obj_limb$benchmark
+df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+df_bin_limb <- algo_obj_limb$df_bin
+
+distance_df_small_edges_limb <- distance_limb |>
+  filter(distance < benchmark_limb) #benchmark_limb
+
+tr_from_to_df_limb <- right_join(
+  tr_from_to_df_limb, distance_df_small_edges_limb,
+  by = c("from", "to")) 
+
+# umap_limb_scaled_with_cluster <- umap_limb_scaled |>
+#   mutate(cluster = umap_limb_scaled_with_cluster$cluster)
+
+trimesh_removed_limb_best <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_best,
+    aes(
+      x = emb1,
+      y = emb2
+    ),
+    alpha = 0.3,
+    color = "#ff7f00"
+  ) +
+    geom_segment(data = tr_from_to_df_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1) +
+  #scale_color_manual(values = c("#8dd3c7", "#fdb462", "#bebada")) +
+  interior_annotation("b1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
+```
+
+```{r}
+trimesh_removed_limb + trimesh_removed_limb_best +
+  plot_layout(ncol = 3)
 ```
 
 # Discussion

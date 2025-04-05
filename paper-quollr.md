@@ -1065,6 +1065,30 @@ Need to find another application
 </div>
 
 
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-20-1.png" width="100%" />
+
+</div>
+
+
 # Discussion
 
 This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
