@@ -868,6 +868,9 @@ show_error_link_plots(
 
 Need to find another application
 
+<https://www.nature.com/articles/s41586-018-0590-4#data-availability> <!--paper-->
+<https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1> <!--data-->
+
 # Discussion
 
 This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
