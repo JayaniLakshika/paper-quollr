@@ -949,7 +949,7 @@ nldr5 <- pacmap_limb |>
 ```{r}
 #| label: combine-error-data-muscles
 
-error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_30_min-dist_0.1.rds")
+error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
 error_limb_tsne <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_30.rds")
 error_limb_phate <- read_rds("data/limb_muscles/error_limb_muscles_phate_knn_5.rds")
 error_limb_trimap <- read_rds("data/limb_muscles/error_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
@@ -970,7 +970,7 @@ error_limb <- error_limb |>
 
 error_limb <- error_limb |>
   mutate(method = factor(method,
-                         levels = c("UMAP_30_min_dist_0.1","tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2")))
+                         levels = c("UMAP_15_min_dist_0.1","tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2")))
 ```
 
 ```{r}

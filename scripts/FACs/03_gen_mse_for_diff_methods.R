@@ -2,6 +2,8 @@ library(readr)
 library(quollr)
 library(dplyr)
 
+set.seed(20240110)
+
 data <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
 
 ## For umap
@@ -48,14 +50,14 @@ for (xbins in bin1_vec_limb_muscles) {
            bin2 = bin2,
            b = bin1 * bin2,
            b_non_empty = NROW(df_bin_centroids_limb_muscles),
-           method = "UMAP_30_min_dist_0.1",
+           method = "UMAP_15_min_dist_0.1",
            a1 = a1)
 
   error_limb_muscles_umap <- bind_rows(error_limb_muscles_umap, error_df)
 
 }
 
-write_rds(error_limb_muscles_umap, "data/limb_muscles/error_limb_muscles_umap_n-neigbors_30_min-dist_0.1.rds")
+write_rds(error_limb_muscles_umap, "data/limb_muscles/error_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
 
 ###########
 

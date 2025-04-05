@@ -4,7 +4,7 @@ library(readr)
 library(conflicted)
 
 library(Rtsne)
-library(uwot)
+library(umap)
 library(phateR)
 library(reticulate)
 
@@ -18,7 +18,8 @@ use_python("~/miniforge3/envs/pcamp_env/bin/python")
 use_condaenv("pcamp_env")
 
 data <- read_rds(here::here("data/limb_muscles/facs_limb_muscles_pcs_10.rds"))
-
+data <- data |>
+  dplyr::select(-ID)
 
 ## tSNE (default)
 perplexity <- 30
@@ -56,7 +57,7 @@ UMAP_data <- UMAP_data |>
   mutate(ID = row_number())
 
 ## Run only once
-write_rds(UMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_", n_neighbors, "_min-dist_", min_dist, ".rds"))
+write_rds(UMAP_data, file = paste0("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_", "15", "_min-dist_", "0.1", ".rds"))
 
 ## PHATE
 knn <- 5
