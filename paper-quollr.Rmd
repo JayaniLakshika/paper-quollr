@@ -109,6 +109,35 @@ interior_annotation <- function(label, position = c(0.92, 0.92)) {
 }
 ```
 
+```{r}
+# Plot MSE
+
+plot_mse <- function(error_df) {
+
+  ggplot(error_df,
+         aes(x = a1,
+             y = MSE,
+             colour = method)) +
+    geom_point(size = 0.8) +
+    geom_line(linewidth = 0.3) +
+    scale_y_log10() +
+    ylab("log(MSE)") +
+    xlab(expression(paste("binwidth (", a[1], ")"))) +
+    theme_minimal() +
+    theme(panel.border = element_rect(fill = 'transparent'),
+          plot.title = element_text(size = 12, hjust = 0.5, vjust = -0.5),
+          axis.ticks.x = element_line(),
+          axis.ticks.y = element_line(),
+          legend.position = "none",
+          axis.text.x = element_text(size = 7),
+          axis.text.y = element_text(size = 7),
+          axis.title.x = element_text(size = 7),
+          axis.title.y = element_text(size = 7))
+
+}
+
+```
+
 <!-- 20 pages-->
 
 # Introduction
@@ -870,6 +899,42 @@ Need to find another application
 
 <https://www.nature.com/articles/s41586-018-0590-4#data-availability> <!--paper-->
 <https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1> <!--data-->
+
+```{r}
+#| label: combine-error-data-muscles
+
+error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_30_min-dist_0.1.rds")
+error_limb_tsne <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_30.rds")
+error_limb_phate <- read_rds("data/limb_muscles/error_limb_muscles_phate_knn_5.rds")
+error_limb_trimap <- read_rds("data/limb_muscles/error_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+error_limb_pacmap <- read_rds("data/limb_muscles/error_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+error_limb <- bind_rows(error_limb_umap, 
+                        error_limb_tsne,
+                        error_limb_phate,
+                        error_limb_trimap,
+                        error_limb_pacmap)
+
+error_limb <- error_limb |>
+  mutate(a1 = round(a1, 2)) |>
+  filter(bin1 >= 5) |>
+  group_by(method, a1) |>
+  filter(MSE == min(MSE)) |>
+  ungroup()
+
+error_limb <- error_limb |>
+  mutate(method = factor(method,
+                         levels = c("UMAP_30_min_dist_0.1","tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2")))
+```
+
+```{r}
+#| label: error-comp-muscles
+
+error_plot_limb <- plot_mse(error_limb) +
+  scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
+  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#377eb8','#4daf4a','#ff7f00','#984ea3','#f781bf')) 
+
+```
 
 # Discussion
 
