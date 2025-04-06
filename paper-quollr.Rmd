@@ -987,6 +987,8 @@ free(error_plot_limb) + wrap_plots(
 #| label: data-limb
 
 training_data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
+
+cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 ```
 
 ```{r}
@@ -1014,18 +1016,19 @@ tr_from_to_df_limb <- right_join(
   tr_from_to_df_limb, distance_df_small_edges_limb,
   by = c("from", "to")) 
 
-# umap_limb_scaled_with_cluster <- umap_limb_scaled |>
-#   mutate(cluster = umap_limb_scaled_with_cluster$cluster)
+tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+  mutate(cluster.ids = as.character(cluster.ids))
 
 trimesh_removed_limb <- ggplot() + 
   geom_point(
-    data = tsne_limb_scaled,
+    data = tsne_limb_scaled_with_cluster,
     aes(
       x = emb1,
-      y = emb2
+      y = emb2,
+      color = cluster.ids
     ),
-    alpha = 0.3,
-    color = "#a65628"
+    alpha = 0.3#,
+    #color = "#a65628"
   ) +
     geom_segment(data = tr_from_to_df_limb, 
                aes(
@@ -1035,7 +1038,7 @@ trimesh_removed_limb <- ggplot() +
                  yend = y_to),
                colour = "#000000",
                linewidth = 1) +
-  #scale_color_manual(values = c("#8dd3c7", "#fdb462", "#bebada")) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
   interior_annotation("a1", cex = 2) +
   theme(
     aspect.ratio = 1
@@ -1075,18 +1078,18 @@ scaled_limb_data_model <- scaled_limb |>
 #| label: langevitour-limb-tsne-author-proj
 #| eval: false
 
-# data_limb_n <- data_limb |>
-#   select(-type) |>
-#   mutate(type = as.character(umap_limb_scaled_with_cluster$cluster))
+data_limb_n <- data_limb |>
+  select(-type) |>
+  mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
 
-df_model_data_limb_n <- bind_rows(df_b_limb, data_limb)
+df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 
 langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
                          lineFrom = distance_df_small_edges_limb$from,
                          lineTo = distance_df_small_edges_limb$to,
                          group = factor(df_model_data_limb_n$type,
-                                        c("data", "model")),
-                         levelColors = c("#a65628", "#000000"))
+                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
+                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 ```
 
 ```{r}
@@ -1114,18 +1117,20 @@ tr_from_to_df_limb <- right_join(
   tr_from_to_df_limb, distance_df_small_edges_limb,
   by = c("from", "to")) 
 
-# umap_limb_scaled_with_cluster <- umap_limb_scaled |>
-#   mutate(cluster = umap_limb_scaled_with_cluster$cluster)
+tsne_limb_scaled_best_with_cluster <- inner_join(tsne_limb_scaled_best, cluster_df, by = "ID") |>
+  mutate(cluster.ids = as.character(cluster.ids))
+
 
 trimesh_removed_limb_best <- ggplot() + 
   geom_point(
-    data = tsne_limb_scaled_best,
+    data = tsne_limb_scaled_best_with_cluster,
     aes(
       x = emb1,
-      y = emb2
+      y = emb2,
+      color = cluster.ids
     ),
-    alpha = 0.3,
-    color = "#ff7f00"
+    alpha = 0.3#,
+    #color = "#ff7f00"
   ) +
     geom_segment(data = tr_from_to_df_limb, 
                aes(
@@ -1135,7 +1140,7 @@ trimesh_removed_limb_best <- ggplot() +
                  yend = y_to),
                colour = "#000000",
                linewidth = 1) +
-  #scale_color_manual(values = c("#8dd3c7", "#fdb462", "#bebada")) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
   interior_annotation("b1", cex = 2) +
   theme(
     aspect.ratio = 1
@@ -1175,18 +1180,14 @@ scaled_limb_data_model <- scaled_limb |>
 #| label: langevitour-limb-tsne-best-proj
 #| eval: false
 
-# data_limb_n <- data_limb |>
-#   select(-type) |>
-#   mutate(type = as.character(umap_limb_scaled_with_cluster$cluster))
-
-df_model_data_limb_n <- bind_rows(df_b_limb, data_limb)
+df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 
 langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
                          lineFrom = distance_df_small_edges_limb$from,
                          lineTo = distance_df_small_edges_limb$to,
                          group = factor(df_model_data_limb_n$type,
-                                        c("data", "model")),
-                         levelColors = c("#ff7f00", "#000000"))
+                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
+                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 ```
 
 ```{r}
