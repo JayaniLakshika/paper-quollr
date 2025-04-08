@@ -56,12 +56,6 @@ theme_set(theme_linedraw() +
 
 )
 
-interior_annotation <- function(label, position = c(0.92, 0.92)) {
-  annotation_custom(grid::textGrob(label = label,
-      x = unit(position[1], "npc"), y = unit(position[2], "npc"),
-      gp = grid::gpar(cex = 1, col="grey70")))
-}
-
 
 ## -----------------------------------------------------------------------------
 #| label: import-scripts
@@ -352,57 +346,56 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 
 ## -----------------------------------------------------------------------------
 #| label: tsne-num-bins-limb
-#| eval: false
 
-# ## Compute hexbin parameters
-# num_bins_x_limb <- 19
-# 
-# algo_obj_limb <- gen_nldr_vis_algo_obj(
-#   high_d_data = training_data_limb,
-#   nldr_data = tsne_limb,
-#   num_x_bins = num_bins_x_limb)
-# 
-# tsne_limb_scaled <- algo_obj_limb$nldr_scaled
-# distance_limb <- algo_obj_limb$distance_df
-# tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
-# benchmark_limb <- algo_obj_limb$benchmark
-# df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
-# df_bin_limb <- algo_obj_limb$df_bin
-# 
-# distance_df_small_edges_limb <- distance_limb |>
-#   filter(distance < 0.1) #benchmark_limb
-# 
-# tr_from_to_df_limb <- right_join(
-#   tr_from_to_df_limb, distance_df_small_edges_limb,
-#   by = c("from", "to"))
-# 
-# tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
-#   mutate(cluster.ids = as.character(cluster.ids))
-# 
-# trimesh_removed_limb <- ggplot() +
-#   geom_point(
-#     data = tsne_limb_scaled_with_cluster,
-#     aes(
-#       x = emb1,
-#       y = emb2,
-#       color = cluster.ids
-#     ),
-#     alpha = 0.3#,
-#     #color = "#a65628"
-#   ) +
-#     geom_segment(data = tr_from_to_df_limb,
-#                aes(
-#                  x = x_from,
-#                  y = y_from,
-#                  xend = x_to,
-#                  yend = y_to),
-#                colour = "#000000",
-#                linewidth = 1) +
-#   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
-#   interior_annotation("a1", cex = 2) +
-#   theme(
-#     aspect.ratio = 1
-#   )
+## Compute hexbin parameters
+num_bins_x_limb <- 19
+
+algo_obj_limb <- gen_nldr_vis_algo_obj(
+  high_d_data = training_data_limb, 
+  nldr_data = tsne_limb, 
+  num_x_bins = num_bins_x_limb)
+
+tsne_limb_scaled <- algo_obj_limb$nldr_scaled
+distance_limb <- algo_obj_limb$distance_df
+tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+benchmark_limb <- algo_obj_limb$benchmark
+df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+df_bin_limb <- algo_obj_limb$df_bin
+
+distance_df_small_edges_limb <- distance_limb |>
+  filter(distance < 0.1) #benchmark_limb
+
+tr_from_to_df_limb <- right_join(
+  tr_from_to_df_limb, distance_df_small_edges_limb,
+  by = c("from", "to")) 
+
+tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+  mutate(cluster.ids = as.character(cluster.ids))
+
+trimesh_removed_limb <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_with_cluster,
+    aes(
+      x = emb1,
+      y = emb2,
+      color = cluster.ids
+    ),
+    alpha = 0.3#,
+    #color = "#a65628"
+  ) +
+    geom_segment(data = tr_from_to_df_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+  interior_annotation("a1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
 
 
 ## -----------------------------------------------------------------------------
