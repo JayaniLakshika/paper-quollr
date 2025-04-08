@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 .DS_Store
+*.aux
+*.log
+*.out
+RJwrapper.synctex.gz
+paper-quollr.md
