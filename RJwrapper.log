@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  8 APR 2025 12:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.19)  8 APR 2025 12:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -985,8 +985,21 @@ File: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf Graphic file (type pdf
 Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  us
 ed on input line 443.
 (pdftex.def)             Requested size: 398.33858pt x 275.2867pt.
+<paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf, id=105, 302.12875pt x 
+144.54pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type
+ pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf
+  used on input line 445.
+(pdftex.def)             Requested size: 398.33858pt x 190.5684pt.
 
-Overfull \hbox (63.49947pt too wide) in paragraph at lines 457--458
+Overfull \hbox (15.0pt too wide) in paragraph at lines 445--446
+[][] 
+ []
+
+[8 <./paper-quollr_files/figure-latex/unnamed-chunk-20-1.pdf>]
+Overfull \hbox (63.49947pt too wide) in paragraph at lines 459--460
 \T1/ppl/m/n/9 (-20) This ar-ti-cle is cre-ated us-ing [][]\T1/ppl/b/n/9 (-20) k
 nitr[][] \T1/ppl/m/n/9 (-20) ([][][]Xie[][], [][]2015[][]) and [][]\T1/ppl/b/n/
 9 (-20) rmark-down[][] \T1/ppl/m/n/9 (-20) ([][][]Xie et al.[][], [][]2018[][])
@@ -994,7 +1007,7 @@ nitr[][] \T1/ppl/m/n/9 (-20) ([][][]Xie[][], [][]2015[][]) and [][]\T1/ppl/b/n/
  []
 
 
-Overfull \hbox (26.07806pt too wide) in paragraph at lines 457--458
+Overfull \hbox (26.07806pt too wide) in paragraph at lines 459--460
 \T1/ppl/m/n/9 (-20) tem-plate. The source code for re-pro-duc-ing this pa-per c
 an be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
  []
@@ -1003,13 +1016,13 @@ an be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
-[8])
+)
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 469.
+(Font)              using `T1/zi4/m/n' instead on input line 471.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 479.
+(Font)              scaled to size 9.18004pt on input line 481.
 [9 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>]) [10] (./RJwrapper.a
 ux)
 
@@ -1021,13 +1034,13 @@ LaTeX Warning: There were undefined references.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 9E7912D51AC4CD961DF47E950C95B7BE;2545.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 4431BD83F905B9A3D88FEC1AE20763E6;129.
+(rerunfilecheck)             Checksum: 2F99B0E8557596B2D1DAEE9A54DD2E61;129.
  ) 
 Here is how much of TeX's memory you used:
- 27282 strings out of 476025
- 497344 string characters out of 5790017
+ 27291 strings out of 476025
+ 497857 string characters out of 5790017
  1872388 words of memory out of 5000000
- 46947 multiletter control sequences out of 15000+600000
+ 46955 multiletter control sequences out of 15000+600000
  568656 words of font info for 288 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  117i,12n,131p,1207b,887s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1036,10 +1049,10 @@ a-zi4r.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/c
 msy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.p
 fb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></us
 r/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (10 pages, 492353 bytes).
+Output written on RJwrapper.pdf (10 pages, 624798 bytes).
 PDF statistics:
- 194 PDF objects out of 1000 (max. 8388607)
- 167 compressed objects within 2 object streams
+ 206 PDF objects out of 1000 (max. 8388607)
+ 176 compressed objects within 2 object streams
  30 named destinations out of 1000 (max. 500000)
- 74874 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 74879 words of extra memory for PDF output out of 89155 (max. 10000000)
 

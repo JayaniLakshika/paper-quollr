@@ -400,32 +400,31 @@ trimesh_removed_limb <- ggplot() +
 
 ## -----------------------------------------------------------------------------
 #| label: prep-limb-tsne-author-model-proj
-#| eval: false
 
-# data_limb <- training_data_limb |>
-#   select(-ID) |>
-#   mutate(type = "data")
-# 
-# df_b_limb <- df_bin_limb |>
-#   dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
-#   dplyr::mutate(type = "model") ## Data with summarized mean
-# 
-# ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-# df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
-#   dplyr::select(-hb_id)
-# 
-# # Apply the scaling
-# df_model_data_limb <- bind_rows(data_limb, df_b_limb)
-# scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
-#   as_tibble()
-# 
-# scaled_limb_data <- scaled_limb |>
-#   filter(type == "data") |>
-#   select(-type)
-# 
-# scaled_limb_data_model <- scaled_limb |>
-#   filter(type == "model") |>
-#   select(-type)
+data_limb <- training_data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
+  dplyr::select(-hb_id) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb, df_b_limb)
+scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
+  as_tibble()
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
 
 
 ## -----------------------------------------------------------------------------
@@ -448,88 +447,86 @@ trimesh_removed_limb <- ggplot() +
 
 ## -----------------------------------------------------------------------------
 #| label: tsne-best-num-bins-limb
-#| eval: false
 
-# ## Compute hexbin parameters
-# num_bins_x_limb <- 18
-# 
-# algo_obj_limb <- gen_nldr_vis_algo_obj(
-#   high_d_data = training_data_limb,
-#   nldr_data = tsne_limb2,
-#   num_x_bins = num_bins_x_limb)
-# 
-# tsne_limb_scaled_best <- algo_obj_limb$nldr_scaled
-# distance_limb <- algo_obj_limb$distance_df
-# tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
-# benchmark_limb <- algo_obj_limb$benchmark
-# df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
-# df_bin_limb <- algo_obj_limb$df_bin
-# 
-# distance_df_small_edges_limb <- distance_limb |>
-#   filter(distance < benchmark_limb) #benchmark_limb
-# 
-# tr_from_to_df_limb <- right_join(
-#   tr_from_to_df_limb, distance_df_small_edges_limb,
-#   by = c("from", "to"))
-# 
-# tsne_limb_scaled_best_with_cluster <- inner_join(tsne_limb_scaled_best, cluster_df, by = "ID") |>
-#   mutate(cluster.ids = as.character(cluster.ids))
-# 
-# 
-# trimesh_removed_limb_best <- ggplot() +
-#   geom_point(
-#     data = tsne_limb_scaled_best_with_cluster,
-#     aes(
-#       x = emb1,
-#       y = emb2,
-#       color = cluster.ids
-#     ),
-#     alpha = 0.3#,
-#     #color = "#ff7f00"
-#   ) +
-#     geom_segment(data = tr_from_to_df_limb,
-#                aes(
-#                  x = x_from,
-#                  y = y_from,
-#                  xend = x_to,
-#                  yend = y_to),
-#                colour = "#000000",
-#                linewidth = 1) +
-#   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
-#   interior_annotation("b1", cex = 2) +
-#   theme(
-#     aspect.ratio = 1
-#   )
+## Compute hexbin parameters
+num_bins_x_limb <- 18
+
+algo_obj_limb <- gen_nldr_vis_algo_obj(
+  high_d_data = training_data_limb, 
+  nldr_data = tsne_limb2, 
+  num_x_bins = num_bins_x_limb)
+
+tsne_limb_scaled_best <- algo_obj_limb$nldr_scaled
+distance_limb <- algo_obj_limb$distance_df
+tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+benchmark_limb <- algo_obj_limb$benchmark
+df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+df_bin_limb <- algo_obj_limb$df_bin
+
+distance_df_small_edges_limb <- distance_limb |>
+  filter(distance < benchmark_limb) #benchmark_limb
+
+tr_from_to_df_limb <- right_join(
+  tr_from_to_df_limb, distance_df_small_edges_limb,
+  by = c("from", "to")) 
+
+tsne_limb_scaled_best_with_cluster <- inner_join(tsne_limb_scaled_best, cluster_df, by = "ID") |>
+  mutate(cluster.ids = as.character(cluster.ids))
+
+
+trimesh_removed_limb_best <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_best_with_cluster,
+    aes(
+      x = emb1,
+      y = emb2,
+      color = cluster.ids
+    ),
+    alpha = 0.3#,
+    #color = "#ff7f00"
+  ) +
+    geom_segment(data = tr_from_to_df_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+  interior_annotation("b1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
 
 
 ## -----------------------------------------------------------------------------
 #| label: prep-limb-tsne-best-model-proj
-#| eval: false
 
-# data_limb <- training_data_limb |>
-#   select(-ID) |>
-#   mutate(type = "data")
-# 
-# df_b_limb <- df_bin_limb |>
-#   dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
-#   dplyr::mutate(type = "model") ## Data with summarized mean
-# 
-# ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-# df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
-#   dplyr::select(-hb_id)
-# 
-# # Apply the scaling
-# df_model_data_limb <- bind_rows(data_limb, df_b_limb)
-# scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
-#   as_tibble()
-# 
-# scaled_limb_data <- scaled_limb |>
-#   filter(type == "data") |>
-#   select(-type)
-# 
-# scaled_limb_data_model <- scaled_limb |>
-#   filter(type == "model") |>
-#   select(-type)
+data_limb <- training_data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
+  dplyr::select(-hb_id) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb, df_b_limb)
+scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
+  as_tibble()
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
 
 
 ## -----------------------------------------------------------------------------
@@ -547,7 +544,6 @@ trimesh_removed_limb <- ggplot() +
 
 
 ## -----------------------------------------------------------------------------
-#| eval: false
-# trimesh_removed_limb + trimesh_removed_limb_best +
-#   plot_layout(ncol = 3)
+trimesh_removed_limb + trimesh_removed_limb_best +
+  plot_layout(ncol = 3)
 

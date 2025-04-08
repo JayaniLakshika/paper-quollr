@@ -597,6 +597,7 @@ scaled_limb_data_model <- scaled_limb |>
 
 ```{r}
 #| label: langevitour-limb-tsne-author-proj
+#| eval: false
 
 data_limb_n <- data_limb |>
   select(-type) |>
@@ -698,6 +699,7 @@ scaled_limb_data_model <- scaled_limb |>
 
 ```{r}
 #| label: langevitour-limb-tsne-best-proj
+#| eval: false
 
 df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 
