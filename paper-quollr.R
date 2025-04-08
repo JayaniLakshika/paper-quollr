@@ -335,7 +335,6 @@ error_plot_limb <- plot_mse(error_limb) +
 ## -----------------------------------------------------------------------------
 #| fig-cap: ""
 #| label: fig-limb-mse
-#| fig-pos: H
 #| out-width: 100%
 
 free(error_plot_limb) + wrap_plots(
@@ -356,7 +355,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 #| eval: false
 
 # ## Compute hexbin parameters
-# num_bins_x_limb <- 25
+# num_bins_x_limb <- 19
 # 
 # algo_obj_limb <- gen_nldr_vis_algo_obj(
 #   high_d_data = training_data_limb,
@@ -371,7 +370,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 # df_bin_limb <- algo_obj_limb$df_bin
 # 
 # distance_df_small_edges_limb <- distance_limb |>
-#   filter(distance < benchmark_limb) #benchmark_limb
+#   filter(distance < 0.1) #benchmark_limb
 # 
 # tr_from_to_df_limb <- right_join(
 #   tr_from_to_df_limb, distance_df_small_edges_limb,
@@ -459,7 +458,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 #| eval: false
 
 # ## Compute hexbin parameters
-# num_bins_x_limb <- 19
+# num_bins_x_limb <- 18
 # 
 # algo_obj_limb <- gen_nldr_vis_algo_obj(
 #   high_d_data = training_data_limb,

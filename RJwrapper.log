@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.31)  8 APR 2025 10:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.31)  8 APR 2025 10:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1065,16 +1065,6 @@ Overfull \hbox (2.7194pt too wide) in paragraph at lines 465--467
  []
 
 
-./paper-quollr.tex:468: LaTeX Error: Unknown float option `H'.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.468 \begin{figure}[H]
-                       
-? 
-
 ./paper-quollr.tex:469: LaTeX Error: File `paper-quollr_files/figure-latex/fig-
 limb-mse-1' not found.
 
@@ -1107,11 +1097,11 @@ LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
 (Font)              scaled to size 9.18004pt on input line 505.
-) [9] [10]
+)
 
 Package natbib Warning: There were undefined citations.
 
-(./RJwrapper.aux)
+[9] (./RJwrapper.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -1136,22 +1126,22 @@ Package rerunfilecheck Info: Checksums for `RJwrapper.out':
 (rerunfilecheck)             After:  9E7912D51AC4CD961DF47E950C95B7BE;2545.
  ) 
 Here is how much of TeX's memory you used:
- 27028 strings out of 474116
- 489331 string characters out of 5743682
+ 27027 strings out of 474116
+ 489324 string characters out of 5743682
  1948187 words of memory out of 5000000
  48626 multiletter control sequences out of 15000+600000
  614335 words of font info for 292 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 117i,11n,131p,1207b,897s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,1207b,897s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/inconsolata/Inconsolat
 a-zi4r.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/c
 msy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.p
 fb></usr/local/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></us
 r/local/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (10 pages, 117078 bytes).
+Output written on RJwrapper.pdf (9 pages, 116477 bytes).
 PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 102 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
+ 121 PDF objects out of 1000 (max. 8388607)
+ 99 compressed objects within 1 object stream
+ 26 named destinations out of 1000 (max. 500000)
  74765 words of extra memory for PDF output out of 89155 (max. 10000000)
 
