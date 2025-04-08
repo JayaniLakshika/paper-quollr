@@ -12,7 +12,7 @@ Non-linear dimension reduction (NLDR) methods provide a low-dimensional represen
 
 \section{Introduction}\label{introduction}
 
-This paper presents the R package, \texttt{quollr} which introduce a new visual tool in determining which NLDR technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in \emph{cite the methodology paper}. Furthermore, the \texttt{quollr} package enables users to perform hexagonal binning (Carr et al. 2023), resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at \url{https://CRAN.R-project.org/package=quollr}.
+This paper presents the R package, \texttt{quollr} which introduce a new visual tool in determining which Non-linear dimension reduction (NLDR) technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in \emph{cite the methodology paper}. Furthermore, the \texttt{quollr} package enables users to perform hexagonal binning \citep{dan2023}, resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at \url{https://CRAN.R-project.org/package=quollr}.
 
 The paper is organized as follows. In next section, introduces the implementation of \texttt{quollr} package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in \textbf{Application} section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
 
@@ -69,50 +69,47 @@ The number of bins along the x-axis, the ratio of the ranges of the original emb
 
 \begin{verbatim}
 fit_highd_model(
-  training_data = s_curve_noise_training,
-  emb_df = s_curve_noise_umap_scaled, 
+  highd_data = s_curve_noise_training,
+  nldr_data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07,
-  is_bin_centroid = TRUE,
-  is_rm_lwd_hex = TRUE,
-  benchmark_to_rm_lwd_hex = NULL,
-  col_start_highd = "x"
+  q = 0.1,
+  is_bin_centroid = TRUE
   )
 \end{verbatim}
 
 \begin{verbatim}
 #> $df_bin
-#> # A tibble: 37 x 8
-#>    hb_id       x1     x2     x3       x4       x5       x6        x7
-#>    <int>    <dbl>  <dbl>  <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
-#>  1    27 -0.706   1.70   -1.65   0.00918  0.00261 -0.0236  -0.00199 
-#>  2    28 -0.214   1.45   -1.98  -0.00966 -0.00370  0.0573   0.000307
-#>  3    40  0.356   1.74   -1.89   0.0127  -0.00773 -0.0219  -0.000757
-#>  4    50 -0.209   0.453  -1.98   0.0185   0.0189  -0.0999  -0.00412 
-#>  5    52  0.00161 1.14   -2.00   0.00206 -0.00940 -0.0974  -0.00796 
-#>  6    61 -0.671   0.0922 -1.74  -0.00458  0.0127  -0.0613  -0.00643 
-#>  7    62 -0.375   0.328  -1.89  -0.00226 -0.00651 -0.0291   0.00120 
-#>  8    74 -0.175   0.0562 -1.98   0.00204 -0.00179  0.0112  -0.00111 
-#>  9    75  0.325   0.0821 -1.95   0.00292  0.0197  -0.0165  -0.000881
-#> 10   127  0.704   0.454  -0.290 -0.00394  0.0118  -0.00941 -0.00348 
-#> # i 27 more rows
+#> # A tibble: 72 x 8
+#>    hb_id     x1    x2    x3        x4        x5        x6         x7
+#>    <int>  <dbl> <dbl> <dbl>     <dbl>     <dbl>     <dbl>      <dbl>
+#>  1    13  0.996  1.77  1.07 -0.0117    0.00979  -0.0725   -0.00321  
+#>  2    14  0.829  1.79  1.50 -0.000753 -0.00194  -0.00936  -0.000454 
+#>  3    15  0.307  1.78  1.94 -0.00384   0.00212  -0.00117  -0.000159 
+#>  4    16 -0.175  1.74  1.98  0.00143   0.00320   0.00450  -0.0000763
+#>  5    18 -0.493  1.78  1.87 -0.0100    0.000680  0.0799   -0.000835 
+#>  6    26  0.962  1.22  1.22  0.00107  -0.00260  -0.000948  0.000234 
+#>  7    27  0.631  1.28  1.75  0.000266  0.00174  -0.00158   0.00114  
+#>  8    28  0.139  1.20  1.97 -0.00183   0.000279  0.00177  -0.000666 
+#>  9    29 -0.187  1.00  1.98 -0.00228   0.00461  -0.0506   -0.00472  
+#> 10    30 -0.562  1.23  1.82 -0.000563  0.00166  -0.00923  -0.000111 
+#> # i 62 more rows
 #> 
 #> $df_bin_centroids
-#> # A tibble: 37 x 5
-#>    hexID     c_x    c_y std_counts drop_empty
-#>    <int>   <dbl>  <dbl>      <dbl> <lgl>     
-#>  1    27  0.127  0.0295        1   FALSE     
-#>  2    28  0.226  0.0295        0.2 FALSE     
-#>  3    40  0.275  0.115         0.6 FALSE     
-#>  4    50  0.0287 0.200         0.2 FALSE     
-#>  5    52  0.226  0.200         0.2 FALSE     
-#>  6    61 -0.0207 0.286         0.2 FALSE     
-#>  7    62  0.0780 0.286         0.8 FALSE     
-#>  8    74  0.0287 0.371         0.4 FALSE     
-#>  9    75  0.127  0.371         0.2 FALSE     
-#> 10   127  0.522  0.713         0.4 FALSE     
-#> # i 27 more rows
+#> # A tibble: 72 x 6
+#>    hexID      c_x      c_y bin_counts std_counts drop_empty
+#>    <int>    <dbl>    <dbl>      <int>      <dbl> <lgl>     
+#>  1    13 -0.0455  0.000514          2     0.0194 FALSE     
+#>  2    14  0.0634  0.000514         81     0.786  FALSE     
+#>  3    15  0.172   0.000514         56     0.544  FALSE     
+#>  4    16  0.281   0.000514         55     0.534  FALSE     
+#>  5    18  0.499   0.000514          2     0.0194 FALSE     
+#>  6    26  0.00894 0.0949           70     0.680  FALSE     
+#>  7    27  0.118   0.0949           78     0.757  FALSE     
+#>  8    28  0.227   0.0949           86     0.835  FALSE     
+#>  9    29  0.336   0.0949            5     0.0485 FALSE     
+#> 10    30  0.445   0.0949           54     0.524  FALSE     
+#> # i 62 more rows
 \end{verbatim}
 
 \subsection{\texorpdfstring{Constructing the \(2\text{-}D\) model}{Constructing the 2\textbackslash text\{-\}D model}}\label{constructing-the-2text-d-model}
@@ -127,16 +124,19 @@ The configurations of the hexagonal grid is defined by the number of bins in eac
 calc_bins_y(
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 \end{verbatim}
 
 \begin{verbatim}
 #> $bin2
-#> [1] 27
+#> [1] 13
 #> 
 #> $a1
-#> [1] 0.09596332
+#> [1] 0.1089367
+#> 
+#> $a2
+#> [1] 0.09434198
 \end{verbatim}
 
 \subsubsection{Binning the data}\label{binning-the-data}
@@ -148,102 +148,108 @@ hex_binning(
   data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 \end{verbatim}
 
 \begin{verbatim}
+#> $a1
+#> [1] 0.1089367
+#> 
+#> $a2
+#> [1] 0.09434198
+#> 
 #> $bins
-#> [1] 12 27
+#> [1] 12 13
 #> 
 #> $start_point
-#> [1] -0.070000 -0.141359
+#> [1] -0.10000000 -0.09382762
 #> 
 #> $centroids
-#> # A tibble: 324 x 3
-#>    hexID     c_x    c_y
-#>    <int>   <dbl>  <dbl>
-#>  1     1 -0.07   -0.141
-#>  2     2  0.0287 -0.141
-#>  3     3  0.127  -0.141
-#>  4     4  0.226  -0.141
-#>  5     5  0.325  -0.141
-#>  6     6  0.423  -0.141
-#>  7     7  0.522  -0.141
-#>  8     8  0.621  -0.141
-#>  9     9  0.719  -0.141
-#> 10    10  0.818  -0.141
-#> # i 314 more rows
+#> # A tibble: 156 x 3
+#>    hexID      c_x     c_y
+#>    <int>    <dbl>   <dbl>
+#>  1     1 -0.1     -0.0938
+#>  2     2  0.00894 -0.0938
+#>  3     3  0.118   -0.0938
+#>  4     4  0.227   -0.0938
+#>  5     5  0.336   -0.0938
+#>  6     6  0.445   -0.0938
+#>  7     7  0.554   -0.0938
+#>  8     8  0.663   -0.0938
+#>  9     9  0.771   -0.0938
+#> 10    10  0.880   -0.0938
+#> # i 146 more rows
 #> 
 #> $hex_poly
-#> # A tibble: 1,944 x 3
-#>    hex_poly_id       x       y
-#>          <int>   <dbl>   <dbl>
-#>  1           1 -0.07   -0.0860
-#>  2           1 -0.118  -0.114 
-#>  3           1 -0.118  -0.169 
-#>  4           1 -0.07   -0.197 
-#>  5           1 -0.0220 -0.169 
-#>  6           1 -0.0220 -0.114 
-#>  7           2  0.0287 -0.0860
-#>  8           2 -0.0193 -0.114 
-#>  9           2 -0.0193 -0.169 
-#> 10           2  0.0287 -0.197 
-#> # i 1,934 more rows
+#> # A tibble: 936 x 3
+#>    hex_poly_id        x       y
+#>          <int>    <dbl>   <dbl>
+#>  1           1 -0.1     -0.0309
+#>  2           1 -0.154   -0.0624
+#>  3           1 -0.154   -0.125 
+#>  4           1 -0.1     -0.157 
+#>  5           1 -0.0455  -0.125 
+#>  6           1 -0.0455  -0.0624
+#>  7           2  0.00894 -0.0309
+#>  8           2 -0.0455  -0.0624
+#>  9           2 -0.0455  -0.125 
+#> 10           2  0.00894 -0.157 
+#> # i 926 more rows
 #> 
 #> $data_hb_id
-#> # A tibble: 75 x 4
-#>     UMAP1  UMAP2    ID hb_id
+#> # A tibble: 3,750 x 4
+#>      emb1   emb2    ID hb_id
 #>     <dbl>  <dbl> <int> <int>
-#>  1 0.0804 0.320      1    62
-#>  2 0.739  1.00       2   165
-#>  3 0.840  1.08       3   178
-#>  4 0.167  0.0432     4    27
-#>  5 0.263  0.398      6    76
-#>  6 0.838  2.01       7   310
-#>  7 0.734  0.972      8   165
-#>  8 0.627  0.721      9   128
-#>  9 0.810  1.01      11   178
-#> 10 0.903  1.87      12   299
-#> # i 65 more rows
+#>  1 0.276  0.915      1   136
+#>  2 0.927  0.347      2    70
+#>  3 0.810  0.242      3    45
+#>  4 0.137  0.657      5    99
+#>  5 0.476  0.799      6   114
+#>  6 0.0485 0.0657     7    26
+#>  7 0.737  0.851      9   129
+#>  8 0.833  0.224     10    45
+#>  9 0.909  0.371     11    70
+#> 10 0.0890 0.194     12    38
+#> # i 3,740 more rows
 #> 
 #> $std_cts
-#> # A tibble: 45 x 3
+#> # A tibble: 72 x 3
 #>    hb_id     n std_counts
 #>    <int> <int>      <dbl>
-#>  1    27     5        1  
-#>  2    28     1        0.2
-#>  3    38     1        0.2
-#>  4    40     3        0.6
-#>  5    50     1        0.2
-#>  6    52     1        0.2
-#>  7    61     1        0.2
-#>  8    62     4        0.8
-#>  9    64     1        0.2
-#> 10    74     2        0.4
-#> # i 35 more rows
+#>  1    13     2     0.0194
+#>  2    14    81     0.786 
+#>  3    15    56     0.544 
+#>  4    16    55     0.534 
+#>  5    18     2     0.0194
+#>  6    26    70     0.680 
+#>  7    27    78     0.757 
+#>  8    28    86     0.835 
+#>  9    29     5     0.0485
+#> 10    30    54     0.524 
+#> # i 62 more rows
 #> 
 #> $tot_bins
-#> [1] 324
+#> [1] 156
 #> 
 #> $non_bins
-#> [1] 45
+#> [1] 72
 #> 
 #> $pts_bins
-#> # A tibble: 45 x 2
-#>    hexID pts_list    
-#>    <int> <named list>
-#>  1    62 <int [75]>  
-#>  2   165 <int [75]>  
-#>  3   178 <int [75]>  
-#>  4    27 <int [75]>  
-#>  5    76 <int [75]>  
-#>  6   310 <int [75]>  
-#>  7   128 <int [75]>  
-#>  8   299 <int [75]>  
-#>  9    74 <int [75]>  
-#> 10   287 <int [75]>  
-#> # i 35 more rows
+#> # A tibble: 72 x 2
+#>    hexID pts_list     
+#>    <int> <named list> 
+#>  1   136 <int [3,750]>
+#>  2    70 <int [3,750]>
+#>  3    45 <int [3,750]>
+#>  4    99 <int [3,750]>
+#>  5   114 <int [3,750]>
+#>  6    26 <int [3,750]>
+#>  7   129 <int [3,750]>
+#>  8    38 <int [3,750]>
+#>  9   111 <int [3,750]>
+#> 10    14 <int [3,750]>
+#> # i 62 more rows
 #> 
 #> attr(,"class")
 #> [1] "hex_bin_obj"
@@ -299,8 +305,7 @@ df_all <- bind_cols(
   )
 
 df_bin <- avg_highd_data(
-  data = df_all, 
-  col_start = "x"
+  data = df_all
   )
 \end{verbatim}
 
@@ -312,10 +317,9 @@ In the prediction process, first, the nearest \(p\text{-}D\) model point is iden
 
 \begin{verbatim}
 predict_emb(
-  test_data = s_curve_noise_training, 
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  type_NLDR = "UMAP"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 \end{verbatim}
 
@@ -325,12 +329,9 @@ As a Goodness of fit statistics for the model, \texttt{glance()} is used to comp
 
 \begin{verbatim}
 glance(
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  training_data = s_curve_noise_training, 
-  newdata = NULL, 
-  type_NLDR = "UMAP", 
-  col_start = "x"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 \end{verbatim}
 
@@ -342,12 +343,9 @@ The augmented dataset is always returned as a \texttt{tibble::tibble} with the s
 
 \begin{verbatim}
 augment(
-  df_bin_centroids = df_bin_centroids, 
-  df_bin = df_bin, 
-  training_data = s_curve_noise_training, 
-  newdata = NULL, 
-  type_NLDR = "UMAP", 
-  col_start = "x"
+  highd_data = s_curve_noise_training, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
   )
 \end{verbatim}
 
@@ -414,61 +412,61 @@ show_langevitour(
   )
 \end{verbatim}
 
-\subsection{Tests}\label{tests}
+\subsubsection{Link plots}\label{link-plots}
 
-All functions have tests written and implemented using the \CRANpkg{testthat} (Wickham 2011) in R.
+There are mainly two interactive link plots can be generated. \texttt{show\_link\_plots()} helps to examine the fit. The function requires several arguments: points data which contain Non-linear dimension reduction data, high-dimensional data, and high-dimensional model data, and edge data where the from and to links of the edges.
 
-These tests illuminated the issues that allowed us to make meaningful changes and understand some pitfalls of the package.
+\texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern. The function requires several arguments: points data which contain Non-linear dimension reduction data, high-dimensional data, high-dimensional model data, and model error, and edge data where the from and to links of the edges.
+
+\begin{verbatim}
+show_link_plots(
+  point_df = df_exe, 
+  edge_df = distance_small_df
+  )
+\end{verbatim}
+
+\begin{verbatim}
+show_error_link_plots(
+  point_df = df_exe, 
+  edge_df = distance_small_df
+  )
+\end{verbatim}
+
+--\textgreater{}
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
+
+--\textgreater{}
 
 \section{Application}\label{application}
 
-To illustrate the algorithm, we use \(5\text{-}D\) simulated data, which we call the ``triangular\_3d\_data''. This dataset is generated using the \texttt{tri\_3d} function from the \texttt{cardinalR} package. The dataset generation starts with the initialization of a starting point \(p_0 = (x_0, y_0, z_0)\) randomly selected within the \(3\text{-}D\) space using a uniform distribution. Four fixed corner points of a tetrahedron are defined as \(c_1 = (0, 0, 0)\), \(c_2 = (1, 0, 0)\), \(c_3 = (0.5, 1, 0)\), and \(c_4 = (0.5, 0.5, 1)\). For each point \(p_i\) where \(i = 1, 2, \ldots, n\), one of the corner points \(c_j\) (where \(j \in \{1, 2, 3, 4\}\)) is selected randomly, and the new point \(p_i\) is computed as the midpoint between the current point \(p_{i-1}\) and the selected corner point \(c_j\): \(p_i = \frac{p_{i-1} + c_j}{2}\). This iterative process ensures that each new point moves closer to one of the corners, creating a fractal-like triangular distribution of points. The coordinates of each generated point \(p_i\) form the variables \(X_1, X_2, X_3\). The remaining variables \(X_4, X_5\) are all uniform error, with small variance. We would consider \(T=(X_1, X_2, X_3)\) to be the true model.
+Need to find another application
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
+\url{https://www.nature.com/articles/s41586-018-0590-4\#data-availability}
+\url{https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1}
 
-\subsection{Deciding an appropriate fit}\label{deciding-an-appropriate-fit}
-
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-31-1}
-
-\subsection{Fit the appropriate model}\label{fit-the-appropriate-model}
-
-\subsubsection{\texorpdfstring{Construct model in \(2\text{-}D\)}{Construct model in 2\textbackslash text\{-\}D}}\label{construct-model-in-2text-d}
-
-\subsubsection{Selecting parameter values for the model}\label{selecting-parameter-values-for-the-model}
-
-\paragraph{Choice of bins}\label{choice-of-bins}
-
-\paragraph{Removal of low-density bins}\label{removal-of-low-density-bins}
-
-\paragraph{Removing long edges}\label{removing-long-edges}
-
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-32-1}
-
-\subsubsection{\texorpdfstring{Lifting the model into \(p\text{-}D\)}{Lifting the model into p\textbackslash text\{-\}D}}\label{lifting-the-model-into-ptext-d}
-
-What can I see in high-D?
-
-\begin{itemize}
-\tightlist
-\item
-  Four clusters that are really close
-\end{itemize}
-
-What can I see in 2D layout?
-
-\begin{itemize}
-\tightlist
-\item
-  Several clusters (more that what see in high-D)
-\end{itemize}
-
-What can learn from the model?
-
-\begin{itemize}
-\tightlist
-\item
-  There are four clusters, but not as the same cluster what data shows. In 2D, the two of actual clusters (high-D clusters) are really close. Also, one of the big high-D cluster is separated to two sub clusters.
-\end{itemize}
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/fig-limb-mse-1} \end{figure}
 
 \section{Discussion}\label{discussion}
 
@@ -482,27 +480,9 @@ This new tool provides an effective start point for automatically creating regul
 
 \section{Acknowledgements}\label{acknowledgements}
 
-This article is created using \CRANpkg{knitr} (Xie 2015) and \CRANpkg{rmarkdown} (Xie, Allaire, and Grolemund 2018) in R with the \texttt{rjtools::rjournal\_article} template. The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
+This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdown} \citep{rmarkdown} in R with the \texttt{rjtools::rjournal\_article} template. The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
-
-\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-dan2023}
-Carr, Dan, ported by Nicholas Lewin-Koh, Martin Maechler, and contains copies of lattice functions written by Deepayan Sarkar. 2023. \emph{Hexbin: Hexagonal Binning Routines}. \url{https://CRAN.R-project.org/package=hexbin}.
-
-\bibitem[\citeproctext]{ref-testthat}
-Wickham, Hadley. 2011. {``Testthat: Get Started with Testing.''} \emph{The R Journal} 3: 5--10. \url{https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf}.
-
-\bibitem[\citeproctext]{ref-knitr}
-Xie, Yihui. 2015. \emph{Dynamic Documents with {R} and Knitr}. 2nd ed. Boca Raton, Florida: Chapman; Hall/CRC. \url{https://yihui.name/knitr/}.
-
-\bibitem[\citeproctext]{ref-rmarkdown}
-Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. \emph{{R} Markdown: The Definitive Guide}. Boca Raton, Florida: Chapman; Hall/CRC. \url{https://bookdown.org/yihui/rmarkdown}.
-
-\end{CSLReferences}
-
+\bibliography{paper-quollr.bib}
 
 \address{%
 Jayani P.G. Lakshika\\

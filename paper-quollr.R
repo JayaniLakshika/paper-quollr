@@ -64,6 +64,11 @@ interior_annotation <- function(label, position = c(0.92, 0.92)) {
 
 
 ## -----------------------------------------------------------------------------
+#| label: import-scripts
+source("scripts/additional_functions.R")
+
+
+## -----------------------------------------------------------------------------
 package_dependencies("quollr")
 
 
@@ -79,15 +84,12 @@ r2 <- diff(lim2)/diff(lim1)
 
 ## ----echo=TRUE----------------------------------------------------------------
 fit_highd_model(
-  training_data = s_curve_noise_training,
-  emb_df = s_curve_noise_umap_scaled, 
+  highd_data = s_curve_noise_training,
+  nldr_data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07,
-  is_bin_centroid = TRUE,
-  is_rm_lwd_hex = TRUE,
-  benchmark_to_rm_lwd_hex = NULL,
-  col_start_highd = "x"
+  q = 0.1,
+  is_bin_centroid = TRUE
   )
 
 
@@ -95,7 +97,7 @@ fit_highd_model(
 calc_bins_y(
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 
 
@@ -104,541 +106,456 @@ hex_binning(
   data = s_curve_noise_umap_scaled, 
   bin1 = 12, 
   r2 = r2,
-  q = 0.07
+  q = 0.1
   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> find_low_dens_hex(
-#>   df_bin_centroids_all = df_bin_centroids,
-#>   bin1 = 12,
-#>   df_bin_centroids_low = df_bin_centroids_low
-#>   )
-#> 
+# find_low_dens_hex(
+#   df_bin_centroids_all = df_bin_centroids,
+#   bin1 = 12,
+#   df_bin_centroids_low = df_bin_centroids_low
+#   )
+# 
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> tr1_object <- tri_bin_centroids(
-#>   hex_df = df_bin_centroids,
-#>   x = "c_x",
-#>   y = "c_y"
-#>   )
-#> 
-#> tr_from_to_df <- gen_edges(
-#>   tri_object = tr1_object
-#>   )
+# tr1_object <- tri_bin_centroids(
+#   hex_df = df_bin_centroids,
+#   x = "c_x",
+#   y = "c_y"
+#   )
+# 
+# tr_from_to_df <- gen_edges(
+#   tri_object = tr1_object
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> find_lg_benchmark(
-#>   distance_edges = distance_df,
-#>   distance_col = "distance"
-#>   )
+# find_lg_benchmark(
+#   distance_edges = distance_df,
+#   distance_col = "distance"
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> umap_data_with_hb_id <- hb_obj$data_hb_id
-#> 
-#> df_all <- bind_cols(
-#>   s_curve_noise_training |> dplyr::select(-ID),
-#>   umap_data_with_hb_id
-#>   )
-#> 
-#> df_bin <- avg_highd_data(
-#>   data = df_all,
-#>   col_start = "x"
-#>   )
+# umap_data_with_hb_id <- hb_obj$data_hb_id
+# 
+# df_all <- bind_cols(
+#   s_curve_noise_training |> dplyr::select(-ID),
+#   umap_data_with_hb_id
+#   )
+# 
+# df_bin <- avg_highd_data(
+#   data = df_all
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> predict_emb(
-#>   test_data = s_curve_noise_training,
-#>   df_bin_centroids = df_bin_centroids,
-#>   df_bin = df_bin,
-#>   type_NLDR = "UMAP"
-#>   )
+# predict_emb(
+#   highd_data = s_curve_noise_training,
+#   model_2d = df_bin_centroids,
+#   model_highd = df_bin
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> glance(
-#>   df_bin_centroids = df_bin_centroids,
-#>   df_bin = df_bin,
-#>   training_data = s_curve_noise_training,
-#>   newdata = NULL,
-#>   type_NLDR = "UMAP",
-#>   col_start = "x"
-#>   )
+# glance(
+#   highd_data = s_curve_noise_training,
+#   model_2d = df_bin_centroids,
+#   model_highd = df_bin
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> augment(
-#>   df_bin_centroids = df_bin_centroids,
-#>   df_bin = df_bin,
-#>   training_data = s_curve_noise_training,
-#>   newdata = NULL,
-#>   type_NLDR = "UMAP",
-#>   col_start = "x"
-#>   )
+# augment(
+#   highd_data = s_curve_noise_training,
+#   model_2d = df_bin_centroids,
+#   model_highd = df_bin
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> ggplot() +
-#>   geom_hexgrid(
-#>     data = all_centroids_df,
-#>     aes(x = c_x, y = c_y)
-#>     ) +
-#>   coord_fixed()
+# ggplot() +
+#   geom_hexgrid(
+#     data = all_centroids_df,
+#     aes(x = c_x, y = c_y)
+#     ) +
+#   coord_fixed()
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> ggplot() +
-#>   geom_trimesh(
-#>     data = df_bin_centroids,
-#>     aes(x = c_x, y = c_y)
-#>     ) +
-#>   coord_fixed()
+# ggplot() +
+#   geom_trimesh(
+#     data = df_bin_centroids,
+#     aes(x = c_x, y = c_y)
+#     ) +
+#   coord_fixed()
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> vis_lg_mesh(
-#>   distance_edges = distance_df,
-#>   benchmark_value = 0.75,
-#>   tr_coord_df = tr_from_to_df,
-#>   distance_col = "distance"
-#>   )
+# vis_lg_mesh(
+#   distance_edges = distance_df,
+#   benchmark_value = 0.75,
+#   tr_coord_df = tr_from_to_df,
+#   distance_col = "distance"
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> vis_rmlg_mesh(
-#>   distance_edges = distance_df,
-#>   benchmark_value = 0.75,
-#>   tr_coord_df = tr_from_to_df,
-#>   distance_col = "distance"
-#>   )
+# vis_rmlg_mesh(
+#   distance_edges = distance_df,
+#   benchmark_value = 0.75,
+#   tr_coord_df = tr_from_to_df,
+#   distance_col = "distance"
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#> show_langevitour(
-#>   df = df_all,
-#>   df_b = df_bin,
-#>   df_b_with_center_data = df_bin_centroids,
-#>   benchmark_value = 0.75,
-#>   distance = distance_df,
-#>   distance_col = "distance",
-#>   use_default_benchmark_val = FALSE,
-#>   col_start = "x"
-#>   )
+# show_langevitour(
+#   df = df_all,
+#   df_b = df_bin,
+#   df_b_with_center_data = df_bin_centroids,
+#   benchmark_value = 0.75,
+#   distance = distance_df,
+#   distance_col = "distance",
+#   use_default_benchmark_val = FALSE,
+#   col_start = "x"
+#   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# show_link_plots(
+#   point_df = df_exe,
+#   edge_df = distance_small_df
+#   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# show_error_link_plots(
+#   point_df = df_exe,
+#   edge_df = distance_small_df
+#   )
 
 
 ## -----------------------------------------------------------------------------
-triangular_3d_data <- tri_3d(
-  n = 1250, num_noise = 2, 
-  min_n = -0.05, max_n = 0.05) |>
-  as_tibble() 
+#| label: read-limb-nldr
+# Read a variety of different NLDR representations of limb
+# and plot them on same aspect ratio
+clr_choice <- "#0077A3"
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
 
-colnames(triangular_3d_data) <- paste0("x", 1:NCOL(triangular_3d_data))
-  
-#langevitour::langevitour(triangular_3d_data)
+nldr1 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
+  interior_annotation("a")
 
+tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
 
-## -----------------------------------------------------------------------------
-triangular_3d_data <- triangular_3d_data |>
-  mutate(ID = row_number())
+nldr2 <- tsne_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("b")
 
+phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
 
-## -----------------------------------------------------------------------------
-sc_ltr_pos <- c(0.08, 0.96)
+nldr3 <- phate_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  interior_annotation("c")
 
+trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
 
-## -----------------------------------------------------------------------------
-tSNE_fit1 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = 6) 
+nldr4 <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#377eb8') +
+  interior_annotation("d")
 
-tsne_prism1 <- tSNE_fit1$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
+pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
 
-colnames(tsne_prism1) <- c("tSNE1", "tSNE2", "ID")
+nldr5 <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  interior_annotation("e")
 
-prism_scaled_obj_tsne1 <- gen_scaled_data(
-  data = tsne_prism1)
-tsne_prism_scaled1 <- prism_scaled_obj_tsne1$scaled_nldr
+tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
 
-nldr_prism1 <- tsne_prism_scaled1 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
-
-
-## -----------------------------------------------------------------------------
-tSNE_fit2 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = round(sqrt(NROW(triangular_3d_data)))) 
-
-tsne_prism2 <- tSNE_fit2$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
-
-colnames(tsne_prism2) <- c("tSNE1", "tSNE2", "ID")
-
-prism_scaled_obj_tsne2 <- gen_scaled_data(
-  data = tsne_prism2)
-tsne_prism_scaled2 <- prism_scaled_obj_tsne2$scaled_nldr
-
-nldr_prism2 <- tsne_prism_scaled2 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+nldr6 <- tsne_limb2 |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
+  interior_annotation("f")
 
 
 ## -----------------------------------------------------------------------------
-tSNE_fit3 <- triangular_3d_data |>
-  select(-ID) |>
-  Rtsne(perplexity = 58) 
+#| label: combine-error-data-muscles
 
-tsne_prism3 <- tSNE_fit3$Y |>
-  as_tibble() |>
-  mutate(ID = row_number())
+error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+error_limb_tsne <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_30.rds")
+error_limb_phate <- read_rds("data/limb_muscles/error_limb_muscles_phate_knn_5.rds")
+error_limb_trimap <- read_rds("data/limb_muscles/error_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+error_limb_pacmap <- read_rds("data/limb_muscles/error_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
 
-colnames(tsne_prism3) <- c("tSNE1", "tSNE2", "ID")
+error_limb_tsne2 <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_15.rds")
 
-prism_scaled_obj_tsne3 <- gen_scaled_data(
-  data = tsne_prism3)
-tsne_prism_scaled3 <- prism_scaled_obj_tsne3$scaled_nldr
+error_limb <- bind_rows(error_limb_umap, 
+                        error_limb_tsne,
+                        error_limb_phate,
+                        error_limb_trimap,
+                        error_limb_pacmap,
+                        error_limb_tsne2)
 
-nldr_prism3 <- tsne_prism_scaled3 |> 
-  ggplot(aes(x = tSNE1, y = tSNE2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+error_limb <- error_limb |>
+  mutate(a1 = round(a1, 2)) |>
+  filter(bin1 >= 5) |>
+  filter(a1 >= 0.03) |>
+  group_by(method, a1) |>
+  filter(MSE == min(MSE)) |>
+  ungroup()
 
-
-## -----------------------------------------------------------------------------
-umap_prism1 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 15, n_components =  2, 
-       metric = "euclidean", min_dist = 0.3, init = "spca")
-
-umap_prism1 <- umap_prism1 |>
-  as_tibble()
-
-names(umap_prism1) <- c("UMAP1", "UMAP2")
-
-umap_prism1 <- umap_prism1 |>
-  mutate(ID = 1:NROW(umap_prism1))
-
-prism_scaled_obj_umap1 <- gen_scaled_data(
-  data = umap_prism1)
-umap_prism_scaled1 <- prism_scaled_obj_umap1$scaled_nldr
-
-nldr_prism4 <- umap_prism_scaled1 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+error_limb <- error_limb |>
+  mutate(method = factor(method,
+                         levels = c("UMAP_15_min_dist_0.1","tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
 
 
 ## -----------------------------------------------------------------------------
-umap_prism2 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 35, n_components =  2, 
-       metric = "euclidean", min_dist = 0.5, init = "spca")
+#| label: error-comp-muscles
 
-umap_prism2 <- umap_prism2 |>
-  as_tibble()
+error_plot_limb <- plot_mse(error_limb) +
+  scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
+  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#377eb8','#4daf4a','#ff7f00','#984ea3','#f781bf')) 
 
-names(umap_prism2) <- c("UMAP1", "UMAP2")
-
-umap_prism2 <- umap_prism2 |>
-  mutate(ID = 1:NROW(umap_prism2))
-
-prism_scaled_obj_umap2 <- gen_scaled_data(
-  data = umap_prism2)
-umap_prism_scaled2 <- prism_scaled_obj_umap2$scaled_nldr
-
-nldr_prism5 <- umap_prism_scaled2 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
 
 
 ## -----------------------------------------------------------------------------
-umap_prism3 <- triangular_3d_data |>
-  select(-ID) |>
-  umap(n_neighbors = 69, n_components =  2, 
-       metric = "euclidean", min_dist = 0.6, init = "spca")
+#| fig-cap: ""
+#| label: fig-limb-mse
+#| fig-pos: H
+#| out-width: 100%
 
-umap_prism3 <- umap_prism3 |>
-  as_tibble()
-
-names(umap_prism3) <- c("UMAP1", "UMAP2")
-
-umap_prism3 <- umap_prism3 |>
-  mutate(ID = 1:NROW(umap_prism3))
-
-prism_scaled_obj_umap3 <- gen_scaled_data(
-  data = umap_prism3)
-umap_prism_scaled3 <- prism_scaled_obj_umap3$scaled_nldr
-
-nldr_prism6 <- umap_prism_scaled3 |> 
-  ggplot(aes(x = UMAP1, y = UMAP2)) + 
-  geom_point(alpha=0.5, colour="#000000", size = 0.5) 
+free(error_plot_limb) + wrap_plots(
+  nldr1, nldr2, nldr3, 
+  nldr4, nldr5, nldr6, ncol = 2)
 
 
 ## -----------------------------------------------------------------------------
-nldr_prism1 + nldr_prism2 + nldr_prism3 + 
-  nldr_prism4 + nldr_prism5 + nldr_prism6 +
-  plot_layout(ncol=3)
+#| label: data-limb
+
+training_data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
+
+cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 
 
 ## -----------------------------------------------------------------------------
-error_prism_tsne <- data.frame(matrix(nrow = 0, ncol = 0))
+#| label: tsne-num-bins-limb
+#| eval: false
 
-## To initialize number of bins along the x-axis
-bin1_vec_prism <- 2:25 
-
-perplexity_vec <- c(6, 35, 58)
-
-for (perplexity_val in perplexity_vec) {
-  
-  tSNE_fit <- triangular_3d_data |>
-    select(-ID) |>
-    Rtsne(perplexity = perplexity_val)
-  
-  tsne_prism <- tSNE_fit$Y |>
-    as_tibble() |>
-    mutate(ID = row_number())
-  
-  colnames(tsne_prism) <- c("tSNE1", "tSNE2", "ID")
-  
-  prism_scaled_obj <- gen_scaled_data(
-    data = tsne_prism)
-  tsne_prism_scaled <- prism_scaled_obj$scaled_nldr
-  
-  lim1 <- prism_scaled_obj$lim1
-  lim2 <- prism_scaled_obj$lim2
-  r2_prism <- diff(lim2)/diff(lim1) 
-  
-  for (xbins in bin1_vec_prism) {
-    
-    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
-    
-    prism_model <- fit_highd_model(
-      training_data = triangular_3d_data,
-      emb_df = tsne_prism_scaled,
-      bin1 = xbins,
-      r2 = r2_prism,
-      is_bin_centroid = TRUE,
-      is_rm_lwd_hex = TRUE,
-      col_start_highd = "x"
-    )
-    
-    df_bin_centroids_prism <- prism_model$df_bin_centroids
-    df_bin_prism <- prism_model$df_bin
-    
-    ## Compute error
-    error_df <- glance(
-      df_bin_centroids = df_bin_centroids_prism,
-      df_bin = df_bin_prism,
-      training_data = triangular_3d_data,
-      newdata = NULL,
-      type_NLDR = "tSNE",
-      col_start = "x") |>
-      mutate(bin1 = xbins,
-             bin2 = bin2,
-             b = bin1 * bin2,
-             b_non_empty = NROW(df_bin_centroids_prism),
-             type = paste0("perplexity: ", perplexity_val))
-    
-    error_prism_tsne <- bind_rows(error_prism_tsne, error_df)
-    
-  }
-  
-}
+# ## Compute hexbin parameters
+# num_bins_x_limb <- 25
+# 
+# algo_obj_limb <- gen_nldr_vis_algo_obj(
+#   high_d_data = training_data_limb,
+#   nldr_data = tsne_limb,
+#   num_x_bins = num_bins_x_limb)
+# 
+# tsne_limb_scaled <- algo_obj_limb$nldr_scaled
+# distance_limb <- algo_obj_limb$distance_df
+# tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+# benchmark_limb <- algo_obj_limb$benchmark
+# df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+# df_bin_limb <- algo_obj_limb$df_bin
+# 
+# distance_df_small_edges_limb <- distance_limb |>
+#   filter(distance < benchmark_limb) #benchmark_limb
+# 
+# tr_from_to_df_limb <- right_join(
+#   tr_from_to_df_limb, distance_df_small_edges_limb,
+#   by = c("from", "to"))
+# 
+# tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+#   mutate(cluster.ids = as.character(cluster.ids))
+# 
+# trimesh_removed_limb <- ggplot() +
+#   geom_point(
+#     data = tsne_limb_scaled_with_cluster,
+#     aes(
+#       x = emb1,
+#       y = emb2,
+#       color = cluster.ids
+#     ),
+#     alpha = 0.3#,
+#     #color = "#a65628"
+#   ) +
+#     geom_segment(data = tr_from_to_df_limb,
+#                aes(
+#                  x = x_from,
+#                  y = y_from,
+#                  xend = x_to,
+#                  yend = y_to),
+#                colour = "#000000",
+#                linewidth = 1) +
+#   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+#   interior_annotation("a1", cex = 2) +
+#   theme(
+#     aspect.ratio = 1
+#   )
 
 
 ## -----------------------------------------------------------------------------
-error_prism_umap <- data.frame(matrix(nrow = 0, ncol = 0))
+#| label: prep-limb-tsne-author-model-proj
+#| eval: false
 
-## To initialize number of bins along the x-axis
-bin1_vec_prism <- 2:25 
-
-param_list <- list(param1 = c(15, 0.3), param2 = c(35, 0.5), param3 = c(69, 0.6))
-
-for (i in 1:length(param_list)) {
-  
-  n_neighbors_val <- param_list[[i]][1]
-  min_dist_val <- param_list[[i]][2]
-    
-  umap_prism <- triangular_3d_data |>
-    select(-ID) |>
-    umap(n_neighbors = n_neighbors_val, n_components =  2, 
-         metric = "euclidean", min_dist = min_dist_val, init = "spca")
-
-  umap_prism <- umap_prism |>
-    as_tibble()
-  
-  names(umap_prism) <- c("UMAP1", "UMAP2")
-  
-  umap_prism <- umap_prism |>
-    mutate(ID = 1:NROW(umap_prism))
-  
-  prism_scaled_obj <- gen_scaled_data(
-    data = umap_prism)
-  umap_prism_scaled <- prism_scaled_obj$scaled_nldr
-  
-  lim1 <- prism_scaled_obj$lim1
-  lim2 <- prism_scaled_obj$lim2
-  r2_prism <- diff(lim2)/diff(lim1) 
-  
-  for (xbins in bin1_vec_prism) {
-    
-    bin2 <- calc_bins_y(bin1 = xbins, r2 = r2_prism)$bin2
-    
-    prism_model <- fit_highd_model(
-      training_data = triangular_3d_data,
-      emb_df = umap_prism_scaled,
-      bin1 = xbins,
-      r2 = r2_prism,
-      is_bin_centroid = TRUE,
-      is_rm_lwd_hex = TRUE,
-      col_start_highd = "x"
-    )
-    
-    df_bin_centroids_prism <- prism_model$df_bin_centroids
-    df_bin_prism <- prism_model$df_bin
-    
-    ## Compute error
-    error_df <- glance(
-      df_bin_centroids = df_bin_centroids_prism,
-      df_bin = df_bin_prism,
-      training_data = triangular_3d_data,
-      newdata = NULL,
-      type_NLDR = "UMAP",
-      col_start = "x") |>
-      mutate(bin1 = xbins,
-             bin2 = bin2,
-             b = bin1 * bin2,
-             b_non_empty = NROW(df_bin_centroids_prism),
-             type = paste0("n_neighbors: ", n_neighbors_val, 
-                           " min_dist: ", min_dist_val))
-    
-    error_prism_umap <- bind_rows(error_prism_umap, error_df)
-    
-  }
-  
-}
+# data_limb <- training_data_limb |>
+#   select(-ID) |>
+#   mutate(type = "data")
+# 
+# df_b_limb <- df_bin_limb |>
+#   dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
+#   dplyr::mutate(type = "model") ## Data with summarized mean
+# 
+# ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+# df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
+#   dplyr::select(-hb_id)
+# 
+# # Apply the scaling
+# df_model_data_limb <- bind_rows(data_limb, df_b_limb)
+# scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
+#   as_tibble()
+# 
+# scaled_limb_data <- scaled_limb |>
+#   filter(type == "data") |>
+#   select(-type)
+# 
+# scaled_limb_data_model <- scaled_limb |>
+#   filter(type == "model") |>
+#   select(-type)
 
 
 ## -----------------------------------------------------------------------------
-error_prism <- bind_rows(error_prism_tsne, error_prism_umap) 
-error_prism <- error_prism |>
-  filter(b <= 625)
+#| label: langevitour-limb-tsne-author-proj
+#| eval: false
+
+# data_limb_n <- data_limb |>
+#   select(-type) |>
+#   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
+# 
+# df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+# 
+# langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+#                          lineFrom = distance_df_small_edges_limb$from,
+#                          lineTo = distance_df_small_edges_limb$to,
+#                          group = factor(df_model_data_limb_n$type,
+#                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
+#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 
 
 ## -----------------------------------------------------------------------------
-error_plot_prism <- ggplot(error_prism, 
-                           aes(x = b_non_empty, 
-                               y = log(Error), 
-                               group = type, 
-                               colour = type)) + 
-  geom_point(size = 1) +
-  geom_line() + 
-  geom_vline(xintercept = 112, linetype="solid",
-             color = "black", linewidth=0.8, alpha = 0.5) +
-  scale_color_manual(values=c('#e41a1c','#377eb8','#4daf4a','#984ea3',
-                              '#ff7f00','#a6cee3','#a65628','#f781bf')) +
-  ylab("log(Error)") +
-  xlab("number of non-empty bins") +
-  theme(axis.text.x = element_text(size = 5),
-        axis.text.y = element_text(size = 5),
-        axis.title.x = element_text(size = 5),
-        axis.title.y = element_text(size = 5, angle = 90),
-        legend.position = "bottom")
+#| label: tsne-best-num-bins-limb
+#| eval: false
 
-error_plot_prism
-
-
-## -----------------------------------------------------------------------------
-## Compute hexbin parameters
-num_bins_x_prism <- 21
-lim1 <- prism_scaled_obj_tsne2$lim1
-lim2 <- prism_scaled_obj_tsne2$lim2
-r2_prism <- diff(lim2)/diff(lim1) 
-
-prism_model <- fit_highd_model(
-  training_data = triangular_3d_data,
-  emb_df = tsne_prism_scaled2,
-  bin1 = num_bins_x_prism,
-  r2 = r2_prism,
-  is_bin_centroid = TRUE,
-  is_rm_lwd_hex = TRUE,
-  col_start_highd = "x"
-)
-
-df_bin_centroids_prism <- prism_model$df_bin_centroids
-df_bin_prism <- prism_model$df_bin
-
-## Triangulate bin centroids
-tr1_object_prism <- tri_bin_centroids(
-  df_bin_centroids_prism, x = "c_x", y = "c_y")
-tr_from_to_df_prism <- gen_edges(
-  tri_object = tr1_object_prism)
-
-## Compute 2D distances
-distance_prism <- cal_2d_dist(
-  tr_coord_df = tr_from_to_df_prism,
-  start_x = "x_from",
-  start_y = "y_from",
-  end_x = "x_to",
-  end_y = "y_to",
-  select_vars = c("from", "to", "distance"))
-
-## To find the benchmark value
-benchmark_prism <- find_lg_benchmark(
-  distance_edges = distance_prism,
-  distance_col = "distance")
-
-trimesh_removed_prism <- vis_rmlg_mesh(
-  distance_edges = distance_prism,
-  benchmark_value = benchmark_prism,
-  tr_coord_df = tr_from_to_df_prism,
-  distance_col = "distance") #+
-#xlim(sc_xlims) + ylim(sc_ylims) +
-#interior_annotation("a", sc_ltr_pos)
-
-trimesh_removed_prism
+# ## Compute hexbin parameters
+# num_bins_x_limb <- 19
+# 
+# algo_obj_limb <- gen_nldr_vis_algo_obj(
+#   high_d_data = training_data_limb,
+#   nldr_data = tsne_limb2,
+#   num_x_bins = num_bins_x_limb)
+# 
+# tsne_limb_scaled_best <- algo_obj_limb$nldr_scaled
+# distance_limb <- algo_obj_limb$distance_df
+# tr_from_to_df_limb <- algo_obj_limb$tr_from_to_df
+# benchmark_limb <- algo_obj_limb$benchmark
+# df_bin_centroids_limb <- algo_obj_limb$df_bin_centroids
+# df_bin_limb <- algo_obj_limb$df_bin
+# 
+# distance_df_small_edges_limb <- distance_limb |>
+#   filter(distance < benchmark_limb) #benchmark_limb
+# 
+# tr_from_to_df_limb <- right_join(
+#   tr_from_to_df_limb, distance_df_small_edges_limb,
+#   by = c("from", "to"))
+# 
+# tsne_limb_scaled_best_with_cluster <- inner_join(tsne_limb_scaled_best, cluster_df, by = "ID") |>
+#   mutate(cluster.ids = as.character(cluster.ids))
+# 
+# 
+# trimesh_removed_limb_best <- ggplot() +
+#   geom_point(
+#     data = tsne_limb_scaled_best_with_cluster,
+#     aes(
+#       x = emb1,
+#       y = emb2,
+#       color = cluster.ids
+#     ),
+#     alpha = 0.3#,
+#     #color = "#ff7f00"
+#   ) +
+#     geom_segment(data = tr_from_to_df_limb,
+#                aes(
+#                  x = x_from,
+#                  y = y_from,
+#                  xend = x_to,
+#                  yend = y_to),
+#                colour = "#000000",
+#                linewidth = 1) +
+#   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+#   interior_annotation("b1", cex = 2) +
+#   theme(
+#     aspect.ratio = 1
+#   )
 
 
 ## -----------------------------------------------------------------------------
-## Hexagonal binning to have regular hexagons
-hb_obj_prism <- hex_binning(
-  data = tsne_prism_scaled2,
-  bin1 = num_bins_x_prism,
-  r2 = r2_prism)
+#| label: prep-limb-tsne-best-model-proj
+#| eval: false
 
-tsne_data_with_hb_id <- hb_obj_prism$data_hb_id
+# data_limb <- training_data_limb |>
+#   select(-ID) |>
+#   mutate(type = "data")
+# 
+# df_b_limb <- df_bin_limb |>
+#   dplyr::filter(hb_id %in% df_bin_centroids_limb$hexID) |>
+#   dplyr::mutate(type = "model") ## Data with summarized mean
+# 
+# ## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+# df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hb_id),] |>
+#   dplyr::select(-hb_id)
+# 
+# # Apply the scaling
+# df_model_data_limb <- bind_rows(data_limb, df_b_limb)
+# scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
+#   as_tibble()
+# 
+# scaled_limb_data <- scaled_limb |>
+#   filter(type == "data") |>
+#   select(-type)
+# 
+# scaled_limb_data_model <- scaled_limb |>
+#   filter(type == "model") |>
+#   select(-type)
 
-df_all_prism <- dplyr::bind_cols(triangular_3d_data |> dplyr::select(-ID),
-                                 tsne_data_with_hb_id)
 
-### Define type column
-df <- df_all_prism |>
-  dplyr::select(tidyselect::starts_with("x")) |>
-  dplyr::mutate(type = "data") ## original dataset
+## -----------------------------------------------------------------------------
+#| label: langevitour-limb-tsne-best-proj
+#| eval: false
 
-df_b <- df_bin_prism |>
-  dplyr::filter(hb_id %in% df_bin_centroids_prism$hexID) |>
-  dplyr::mutate(type = "model") ## Data with summarized mean
+# df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+# 
+# langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+#                          lineFrom = distance_df_small_edges_limb$from,
+#                          lineTo = distance_df_small_edges_limb$to,
+#                          group = factor(df_model_data_limb_n$type,
+#                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
+#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b <- df_b[match(df_bin_centroids_prism$hexID, df_b$hb_id),] |>
-  dplyr::select(-hb_id)
 
-df_exe <- dplyr::bind_rows(df_b, df)
-
-## Set the maximum difference as the criteria
-distance_df_small_edges <- distance_prism |>
-  dplyr::filter(distance < benchmark_prism)
-## Since erase brushing is considerd.
-
-# langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-#                          lineFrom = distance_df_small_edges$from,
-#                          lineTo = distance_df_small_edges$to,
-#                          group = df_exe$type, pointSize = append(rep(0, NROW(df_b)), rep(0.8, NROW(df))),
-#                          levelColors = c("#6a3d9a", "#33a02c"))
+## -----------------------------------------------------------------------------
+#| eval: false
+# trimesh_removed_limb + trimesh_removed_limb_best +
+#   plot_layout(ncol = 3)
 

@@ -35,14 +35,13 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-04-06'
+date: '2025-04-08'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
   distill::distill_article:
-    css: style.css
     keep_md: yes
-bibliography: RJreferences.bib
+bibliography: paper-quollr.bib
 editor_options:
   chunk_output_type: inline
 journal:
@@ -1108,7 +1107,7 @@ Need to find another application
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-20-1.png" width="100%" />
+
 
 </div>
 

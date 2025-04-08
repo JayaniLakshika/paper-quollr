@@ -39,10 +39,9 @@ preamble: >
   \usepackage{amsmath}
   \usepackage{array}
 output: 
- rjtools::rjournal_web_article:
-    css: "style.css"
+ rjtools::rjournal_article:
     keep_md: true
-bibliography: RJreferences.bib
+bibliography: paper-quollr.bib
 editor_options: 
   chunk_output_type: inline
 ---
@@ -993,6 +992,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 
 ```{r}
 #| label: tsne-num-bins-limb
+#| eval: false
 
 ## Compute hexbin parameters
 num_bins_x_limb <- 25
@@ -1047,6 +1047,7 @@ trimesh_removed_limb <- ggplot() +
 
 ```{r}
 #| label: prep-limb-tsne-author-model-proj
+#| eval: false
 
 data_limb <- training_data_limb |> 
   select(-ID) |>
@@ -1094,6 +1095,7 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
 
 ```{r}
 #| label: tsne-best-num-bins-limb
+#| eval: false
 
 ## Compute hexbin parameters
 num_bins_x_limb <- 19
@@ -1149,6 +1151,7 @@ trimesh_removed_limb_best <- ggplot() +
 
 ```{r}
 #| label: prep-limb-tsne-best-model-proj
+#| eval: false
 
 data_limb <- training_data_limb |> 
   select(-ID) |>
@@ -1191,6 +1194,7 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
 ```
 
 ```{r}
+#| eval: false
 trimesh_removed_limb + trimesh_removed_limb_best +
   plot_layout(ncol = 3)
 ```
