@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-04-08'
+date: '2025-04-19'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -330,18 +330,18 @@ $non_bins
 
 $pts_bins
 # A tibble: 72 × 2
-   hexID pts_list     
-   <int> <named list> 
- 1   136 <int [3,750]>
- 2    70 <int [3,750]>
- 3    45 <int [3,750]>
- 4    99 <int [3,750]>
- 5   114 <int [3,750]>
- 6    26 <int [3,750]>
- 7   129 <int [3,750]>
- 8    38 <int [3,750]>
- 9   111 <int [3,750]>
-10    14 <int [3,750]>
+   hb_id pts_list  
+   <int> <list>    
+ 1    13 <int [2]> 
+ 2    14 <int [81]>
+ 3    15 <int [56]>
+ 4    16 <int [55]>
+ 5    18 <int [2]> 
+ 6    26 <int [70]>
+ 7    27 <int [78]>
+ 8    28 <int [86]>
+ 9    29 <int [5]> 
+10    30 <int [54]>
 # ℹ 62 more rows
 
 attr(,"class")
