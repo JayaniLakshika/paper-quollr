@@ -5,7 +5,7 @@ description: |
   Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `triangular_3d_data` data from the \CRANpkg{cardinalR} package is used to illustrate the algorithm and its application within the package.
 draft: yes
 author:
-- name: Jayani P.G. Lakshika
+- name: Jayani P. Gamage
   affiliation: Monash University
   address: Department of Econometrics and Business Statistics, VIC 3800 Australia
   url: https://jayanilakshika.netlify.app/
@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-04-19'
+date: '2025-04-20'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
