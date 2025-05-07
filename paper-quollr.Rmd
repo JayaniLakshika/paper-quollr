@@ -231,20 +231,22 @@ Understanding the dependencies of the `quollr` package is essential for smooth o
 package_dependencies("quollr")
 ```
 
+## Data sets
+
+Add a table of data sets that quollr have
+
 ## Usage
 
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `scurve` and `scurve_umap`. 
 
-`s_curve_noise_training` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to train the model. `s_curve_noise_umap` is the UMAP $2\text{-}D$ embedding for `s_curve_noise_training` data set. Each data set contains a unique ID column.
+`scurve` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to build the model. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data set with `n_neighbors` is $15$ and `min_dist` is $0.1$. Each data set contains a unique ID column that mapping `scurve` and `scurve_umap`.
 
-Add a table of data sets that quollr have
+### Scaling the Data
 
-### Scaling the data
-
-The algorithm begins by scaling NLDR data to a standard scale using the `gen_scaled_data()` function. This function standardizes the data with first embedding scale to 0 and 1, The second embedding scales to 0 and the maximum of the second embedding. The resulting output provides the scaled NLDR data and the original limits of embeddings.
+The algorithm starts by scaling the NLDR data to a standard range using the `gen_scaled_data()` function. This function standardizes the data so that the first embedding ranges from $0$ to $1$, while the second embedding scales from $0$ to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
 
 ```{r, echo=TRUE}
 scurve_nldr_obj <- gen_scaled_data(nldr_data = scurve_umap)
@@ -260,7 +262,7 @@ lim2 <- scurve_nldr_obj$lim2
 r2 <- diff(lim2)/diff(lim1) 
 ```
 
-We can compute the `r2` which is the ratio of the ranges of the original embedding components.
+We can calculate the `r2`, which represents the ratio of the ranges of the original embedding components.
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the $2\text{-}D$ model, the user can choose either to fit the $2\text{-}D$ model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
@@ -279,9 +281,9 @@ fit_highd_model(
   )
 ```
 
-## Constructing the $2\text{-}D$ model
+## Constructing the $2\text{-}D$ Model
 
-Constructing the $2\text{-}D$ model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.
+Constructing the $2\text{-}D$ model primarily involves (i) binning data, (ii) obtaining bin centroids, and (iii) connecting centroids with line segments to indicate neighbors.
 
 ### Computing hexagon grid configurations
 
