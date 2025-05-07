@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-04-20'
+date: '2025-05-07'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -93,6 +93,20 @@ csl: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/rjtool
 <!--intro with S-curve with 5 methods-->
 
 This paper presents the R package, `quollr` which introduce a new visual tool in determining which Non-linear dimension reduction (NLDR) technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in *cite the methodology paper*. Furthermore, the `quollr` package enables users to perform hexagonal binning [@dan2023], resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
+
+Add the image generated with S-curve data
+
+<div class="layout-chunk" data-layout="l-body">
+
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-1-1.png" width="100%" />
+
+</div>
+
 
 The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
 
@@ -169,36 +183,36 @@ The number of bins along the x-axis, the ratio of the ranges of the original emb
 
 ```
 $df_bin
-# A tibble: 72 × 8
-   hb_id     x1    x2    x3        x4        x5        x6         x7
-   <int>  <dbl> <dbl> <dbl>     <dbl>     <dbl>     <dbl>      <dbl>
- 1    13  0.996  1.77  1.07 -0.0117    0.00979  -0.0725   -0.00321  
- 2    14  0.829  1.79  1.50 -0.000753 -0.00194  -0.00936  -0.000454 
- 3    15  0.307  1.78  1.94 -0.00384   0.00212  -0.00117  -0.000159 
- 4    16 -0.175  1.74  1.98  0.00143   0.00320   0.00450  -0.0000763
- 5    18 -0.493  1.78  1.87 -0.0100    0.000680  0.0799   -0.000835 
- 6    26  0.962  1.22  1.22  0.00107  -0.00260  -0.000948  0.000234 
- 7    27  0.631  1.28  1.75  0.000266  0.00174  -0.00158   0.00114  
- 8    28  0.139  1.20  1.97 -0.00183   0.000279  0.00177  -0.000666 
- 9    29 -0.187  1.00  1.98 -0.00228   0.00461  -0.0506   -0.00472  
-10    30 -0.562  1.23  1.82 -0.000563  0.00166  -0.00923  -0.000111 
-# ℹ 62 more rows
+# A tibble: 86 × 8
+   hb_id       x1    x2    x3        x4        x5        x6        x7
+   <int>    <dbl> <dbl> <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+ 1    15  0.968   0.198  1.21  0.000518  0.00161   0.00240  -0.000547
+ 2    16  0.730   0.142  1.67 -0.000689  0.000495  0.00168   0.000794
+ 3    17  0.323   0.158  1.94 -0.00265  -0.00523  -0.00942  -0.00115 
+ 4    18 -0.203   0.154  1.98 -0.00269  -0.00107  -0.0382   -0.00167 
+ 5    19 -0.628   0.114  1.78 -0.000131 -0.00323   0.0347   -0.00288 
+ 6    27  0.987   0.579  1.14 -0.00124  -0.00121   0.0199   -0.00363 
+ 7    28  0.847   0.537  1.51  0.000374 -0.00215  -0.00901  -0.000548
+ 8    29  0.469   0.476  1.87  0.00117  -0.000439 -0.0191    0.000251
+ 9    30 -0.00747 0.491  1.99 -0.000570  0.00114  -0.000815  0.000786
+10    31 -0.525   0.449  1.84  0.00141  -0.000575 -0.0112    0.000714
+# ℹ 76 more rows
 
 $df_bin_centroids
-# A tibble: 72 × 6
-   hexID      c_x      c_y bin_counts std_counts drop_empty
-   <int>    <dbl>    <dbl>      <int>      <dbl> <lgl>     
- 1    13 -0.0455  0.000514          2     0.0194 FALSE     
- 2    14  0.0634  0.000514         81     0.786  FALSE     
- 3    15  0.172   0.000514         56     0.544  FALSE     
- 4    16  0.281   0.000514         55     0.534  FALSE     
- 5    18  0.499   0.000514          2     0.0194 FALSE     
- 6    26  0.00894 0.0949           70     0.680  FALSE     
- 7    27  0.118   0.0949           78     0.757  FALSE     
- 8    28  0.227   0.0949           86     0.835  FALSE     
- 9    29  0.336   0.0949            5     0.0485 FALSE     
-10    30  0.445   0.0949           54     0.524  FALSE     
-# ℹ 62 more rows
+# A tibble: 86 × 6
+   hexID   c_x      c_y bin_counts std_counts drop_empty
+   <int> <dbl>    <dbl>      <int>      <dbl> <lgl>     
+ 1    15 0.158 0.000959         43     0.518  FALSE     
+ 2    16 0.262 0.000959         35     0.422  FALSE     
+ 3    17 0.365 0.000959         21     0.253  FALSE     
+ 4    18 0.468 0.000959         11     0.133  FALSE     
+ 5    19 0.571 0.000959          8     0.0964 FALSE     
+ 6    27 0.107 0.0904           10     0.120  FALSE     
+ 7    28 0.210 0.0904           56     0.675  FALSE     
+ 8    29 0.313 0.0904           43     0.518  FALSE     
+ 9    30 0.416 0.0904           54     0.651  FALSE     
+10    31 0.520 0.0904           42     0.506  FALSE     
+# ℹ 76 more rows
 ```
 
 </div>
@@ -224,10 +238,10 @@ $bin2
 [1] 13
 
 $a1
-[1] 0.1089367
+[1] 0.1032943
 
 $a2
-[1] 0.09434198
+[1] 0.08945548
 ```
 
 </div>
@@ -247,102 +261,102 @@ Points are allocated to the bins they fall into based on the nearest centroid. T
 
 ```
 $a1
-[1] 0.1089367
+[1] 0.1032943
 
 $a2
-[1] 0.09434198
+[1] 0.08945548
 
 $bins
 [1] 12 13
 
 $start_point
-[1] -0.10000000 -0.09382762
+[1] -0.10000000 -0.08849688
 
 $centroids
 # A tibble: 156 × 3
    hexID      c_x     c_y
    <int>    <dbl>   <dbl>
- 1     1 -0.1     -0.0938
- 2     2  0.00894 -0.0938
- 3     3  0.118   -0.0938
- 4     4  0.227   -0.0938
- 5     5  0.336   -0.0938
- 6     6  0.445   -0.0938
- 7     7  0.554   -0.0938
- 8     8  0.663   -0.0938
- 9     9  0.771   -0.0938
-10    10  0.880   -0.0938
+ 1     1 -0.1     -0.0885
+ 2     2  0.00329 -0.0885
+ 3     3  0.107   -0.0885
+ 4     4  0.210   -0.0885
+ 5     5  0.313   -0.0885
+ 6     6  0.416   -0.0885
+ 7     7  0.520   -0.0885
+ 8     8  0.623   -0.0885
+ 9     9  0.726   -0.0885
+10    10  0.830   -0.0885
 # ℹ 146 more rows
 
 $hex_poly
 # A tibble: 936 × 3
    hex_poly_id        x       y
          <int>    <dbl>   <dbl>
- 1           1 -0.1     -0.0309
- 2           1 -0.154   -0.0624
- 3           1 -0.154   -0.125 
- 4           1 -0.1     -0.157 
- 5           1 -0.0455  -0.125 
- 6           1 -0.0455  -0.0624
- 7           2  0.00894 -0.0309
- 8           2 -0.0455  -0.0624
- 9           2 -0.0455  -0.125 
-10           2  0.00894 -0.157 
+ 1           1 -0.1     -0.0289
+ 2           1 -0.152   -0.0587
+ 3           1 -0.152   -0.118 
+ 4           1 -0.1     -0.148 
+ 5           1 -0.0484  -0.118 
+ 6           1 -0.0484  -0.0587
+ 7           2  0.00329 -0.0289
+ 8           2 -0.0484  -0.0587
+ 9           2 -0.0484  -0.118 
+10           2  0.00329 -0.148 
 # ℹ 926 more rows
 
 $data_hb_id
 # A tibble: 3,750 × 4
-     emb1   emb2    ID hb_id
-    <dbl>  <dbl> <int> <int>
- 1 0.276  0.915      1   136
- 2 0.927  0.347      2    70
- 3 0.810  0.242      3    45
- 4 0.137  0.657      5    99
- 5 0.476  0.799      6   114
- 6 0.0485 0.0657     7    26
- 7 0.737  0.851      9   129
- 8 0.833  0.224     10    45
- 9 0.909  0.371     11    70
-10 0.0890 0.194     12    38
+    emb1   emb2    ID hb_id
+   <dbl>  <dbl> <int> <int>
+ 1 0.270 0.839      1   125
+ 2 0.788 0.466      2    82
+ 3 0.771 0.319      3    69
+ 4 0.306 0.542      5    88
+ 5 0.549 0.806      6   127
+ 6 0.166 0.259      7    52
+ 7 0.672 0.596      9   104
+ 8 0.735 0.354     10    69
+ 9 0.839 0.467     11    82
+10 0.240 0.0903    12    28
 # ℹ 3,740 more rows
 
 $std_cts
-# A tibble: 72 × 3
+# A tibble: 86 × 3
    hb_id     n std_counts
    <int> <int>      <dbl>
- 1    13     2     0.0194
- 2    14    81     0.786 
- 3    15    56     0.544 
- 4    16    55     0.534 
- 5    18     2     0.0194
- 6    26    70     0.680 
- 7    27    78     0.757 
- 8    28    86     0.835 
- 9    29     5     0.0485
-10    30    54     0.524 
-# ℹ 62 more rows
+ 1    15    43     0.518 
+ 2    16    35     0.422 
+ 3    17    21     0.253 
+ 4    18    11     0.133 
+ 5    19     8     0.0964
+ 6    27    10     0.120 
+ 7    28    56     0.675 
+ 8    29    43     0.518 
+ 9    30    54     0.651 
+10    31    42     0.506 
+# ℹ 76 more rows
 
 $tot_bins
 [1] 156
 
 $non_bins
-[1] 72
+[1] 86
 
 $pts_bins
-# A tibble: 72 × 2
+# A tibble: 86 × 2
    hb_id pts_list  
    <int> <list>    
- 1    13 <int [2]> 
- 2    14 <int [81]>
- 3    15 <int [56]>
- 4    16 <int [55]>
- 5    18 <int [2]> 
- 6    26 <int [70]>
- 7    27 <int [78]>
- 8    28 <int [86]>
- 9    29 <int [5]> 
-10    30 <int [54]>
-# ℹ 62 more rows
+ 1    15 <int [43]>
+ 2    16 <int [35]>
+ 3    17 <int [21]>
+ 4    18 <int [11]>
+ 5    19 <int [8]> 
+ 6    27 <int [10]>
+ 7    28 <int [56]>
+ 8    29 <int [43]>
+ 9    30 <int [54]>
+10    31 <int [42]>
+# ℹ 76 more rows
 
 attr(,"class")
 [1] "hex_bin_obj"
@@ -635,7 +649,7 @@ Need to find another application
 
 
 <div class="layout-chunk" data-layout="l-body">
-<img src="paper-quollr_files/figure-html5/unnamed-chunk-20-1.png" width="100%" />
+
 
 </div>
 

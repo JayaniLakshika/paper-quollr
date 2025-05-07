@@ -119,6 +119,88 @@ This paper presents the R package, `quollr` which introduce a new visual tool in
 
 Add the image generated with S-curve data
 
+```{r}
+#| label: scurve-diff-umap-layouts
+
+scurve_umap1 <- read_rds("data/scurve/s_curve_noise_umap.rds")
+
+nldr_scaled_obj <- gen_scaled_data(
+  data = scurve_umap1)
+umap_scaled1 <- nldr_scaled_obj$scaled_nldr
+
+nldr1 <- umap_scaled1 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  theme(aspect.ratio = 1)
+
+scurve_umap2 <- read_rds("data/scurve/s_curve_noise_umap2.rds")
+
+nldr_scaled_obj2 <- gen_scaled_data(
+  data = scurve_umap2)
+umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
+
+nldr2 <- umap_scaled2 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
+  theme(aspect.ratio = 1)
+
+scurve_umap3 <- read_rds("data/scurve/s_curve_noise_umap3.rds")
+
+nldr_scaled_obj3 <- gen_scaled_data(
+  data = scurve_umap3)
+umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
+
+nldr3 <- umap_scaled3 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  theme(aspect.ratio = 1)
+
+scurve_umap4 <- read_rds("data/scurve/s_curve_noise_umap4.rds")
+
+nldr_scaled_obj4 <- gen_scaled_data(
+  data = scurve_umap4)
+umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
+
+nldr4 <- umap_scaled4 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  theme(aspect.ratio = 1)
+
+scurve_umap5 <- read_rds("data/scurve/s_curve_noise_umap5.rds")
+
+nldr_scaled_obj5 <- gen_scaled_data(
+  data = scurve_umap5)
+umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
+
+nldr5 <- umap_scaled5 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#636363') +
+  theme(aspect.ratio = 1)
+
+scurve_umap6 <- read_rds("data/scurve/s_curve_noise_umap6.rds")
+
+nldr_scaled_obj6 <- gen_scaled_data(
+  data = scurve_umap6)
+umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
+
+nldr6 <- umap_scaled6 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#984ea3') +
+  theme(aspect.ratio = 1)
+```
+
+```{r}
+nldr1 + nldr2 + nldr3 + 
+  nldr4 + nldr5 + nldr6 +
+  plot_layout(ncol = 3)
+```
+
 The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
 
 # Implementation
@@ -516,6 +598,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 
 ```{r}
 #| label: tsne-num-bins-limb
+#| eval: false
 
 ## Compute hexbin parameters
 num_bins_x_limb <- 19
@@ -570,6 +653,7 @@ trimesh_removed_limb <- ggplot() +
 
 ```{r}
 #| label: prep-limb-tsne-author-model-proj
+#| eval: false
 
 data_limb <- training_data_limb |> 
   select(-ID) |>
@@ -617,6 +701,7 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
 
 ```{r}
 #| label: tsne-best-num-bins-limb
+#| eval: false
 
 ## Compute hexbin parameters
 num_bins_x_limb <- 18
@@ -672,6 +757,7 @@ trimesh_removed_limb_best <- ggplot() +
 
 ```{r}
 #| label: prep-limb-tsne-best-model-proj
+#| eval: false
 
 data_limb <- training_data_limb |> 
   select(-ID) |>
@@ -714,6 +800,7 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
 ```
 
 ```{r}
+#| eval: false
 trimesh_removed_limb + trimesh_removed_limb_best +
   plot_layout(ncol = 3)
 ```

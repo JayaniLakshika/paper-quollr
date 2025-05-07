@@ -5,10 +5,8 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Carr et~al.(2023)Carr, ported~by Nicholas Lewin-Koh, Maechler, and
-  contains copies of lattice functions written~by Deepayan~Sarkar]{dan2023}
-D.~Carr, ported~by Nicholas Lewin-Koh, M.~Maechler, and contains copies of
-  lattice functions written~by Deepayan~Sarkar.
+\bibitem[Carr et~al.(2023)Carr, ported~by Nicholas Lewin-Koh, Maechler, and contains copies of lattice functions written~by Deepayan~Sarkar]{dan2023}
+D.~Carr, ported~by Nicholas Lewin-Koh, M.~Maechler, and contains copies of lattice functions written~by Deepayan~Sarkar.
 \newblock \emph{hexbin: Hexagonal Binning Routines}, 2023.
 \newblock URL \url{https://CRAN.R-project.org/package=hexbin}.
 \newblock R package version 1.28.3.
