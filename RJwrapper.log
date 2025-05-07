@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  7 MAY 2025 14:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  7 MAY 2025 14:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -801,7 +801,7 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 7.29405pt on input line 15.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 5.21004pt on input line 15.
-<paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf, id=64, 446.66875pt x 293.095pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf, id=72, 446.66875pt x 293.095pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf  used on input line 19.
@@ -816,7 +816,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 19--20
 [1{/Users/jpiy0001/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 {/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc} <./paper-quollr_files/figure-latex/unnamed-chunk-1-1.pdf>]
-Overfull \hbox (7.30585pt too wide) in paragraph at lines 52--53
+Overfull \hbox (7.30585pt too wide) in paragraph at lines 58--59
 \T1/ppl/m/n/9 (-20) used to train the model. \T1/zi4/m/n/9 s_curve_noise_umap \T1/ppl/m/n/9 (-20) is the UMAP $\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) em-bed-ding for \T1/zi4/m/n/9 s_curve_noise_training
  []
 
@@ -824,17 +824,17 @@ Overfull \hbox (7.30585pt too wide) in paragraph at lines 52--53
 
 [2]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 119.
+(Font)              scaled to size 10.42007pt on input line 125.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 119.
+(Font)              scaled to size 7.91925pt on input line 125.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 119.
+(Font)              scaled to size 6.25204pt on input line 125.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 119.
+(Font)              scaled to size 10.42007pt on input line 125.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 119.
+(Font)              scaled to size 7.91925pt on input line 125.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 119.
+(Font)              scaled to size 6.25204pt on input line 125.
 
 
 [3]
@@ -845,40 +845,40 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 
 [6]
 
-LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 373.
+LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 379.
 
 
-LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 373.
+LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 379.
 
 
-LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 373.
+LaTeX Warning: Reference `fig:mesh-plots' on page 7 undefined on input line 379.
 
 
-Overfull \hbox (5.81674pt too wide) in paragraph at lines 373--374
+Overfull \hbox (5.81674pt too wide) in paragraph at lines 379--380
 []\T1/ppl/m/n/9 (-20) To vi-su-al-ize the $\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) model, mainly three func-tions are used. As shown in Fig-ure []a, \T1/zi4/m/n/9 geom_trimesh()
  []
 
 
 
 [7]
-Overfull \hbox (2.7194pt too wide) in paragraph at lines 443--445
+
+[8]
+Overfull \hbox (2.7194pt too wide) in paragraph at lines 449--451
 [][][]$\T1/zi4/m/n/9 https : / / www . nature . com / articles / s41586 -[] 018 -[] 0590 -[] 4 # data -[] availability$[][] [][]$https : / / figshare .
  []
 
-<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=113, 438.63875pt x 303.1325pt>
+<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=127, 438.63875pt x 303.1325pt>
 File: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 447.
+Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 453.
 (pdftex.def)             Requested size: 398.33858pt x 275.2867pt.
 
-
-[8]
-Overfull \hbox (63.49947pt too wide) in paragraph at lines 461--462
+Overfull \hbox (63.49947pt too wide) in paragraph at lines 467--468
 \T1/ppl/m/n/9 (-20) This ar-ti-cle is cre-ated us-ing [][]\T1/ppl/b/n/9 (-20) knitr[][] \T1/ppl/m/n/9 (-20) ([][][]Xie[][], [][]2015[][]) and [][]\T1/ppl/b/n/9 (-20) rmark-down[][] \T1/ppl/m/n/9 (-20) ([][][]Xie et al.[][], [][]2018[][]) in R with the \T1/zi4/m/n/9 rjtools::rjournal_article
  []
 
 
-Overfull \hbox (26.07806pt too wide) in paragraph at lines 461--462
+Overfull \hbox (26.07806pt too wide) in paragraph at lines 467--468
 \T1/ppl/m/n/9 (-20) tem-plate. The source code for re-pro-duc-ing this pa-per can be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
  []
 
@@ -886,16 +886,15 @@ Overfull \hbox (26.07806pt too wide) in paragraph at lines 461--462
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
-)
+
+
+[9 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 473.
+(Font)              using `T1/zi4/m/n' instead on input line 479.
 
-
-
-[9 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>]
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 483.
+(Font)              scaled to size 9.18004pt on input line 489.
 )
 
 [10] (./RJwrapper.aux)
@@ -910,23 +909,23 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
-(rerunfilecheck)             Checksum: 9E7912D51AC4CD961DF47E950C95B7BE;2545.
+(rerunfilecheck)             Checksum: AA3DF21301E24B962B76E458F8F46C8C;2772.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 2F99B0E8557596B2D1DAEE9A54DD2E61;129.
  ) 
 Here is how much of TeX's memory you used:
- 27089 strings out of 471589
- 494640 string characters out of 5520134
- 894570 words of memory out of 5000000
- 52896 multiletter control sequences out of 15000+600000
+ 27095 strings out of 471589
+ 494732 string characters out of 5520134
+ 894658 words of memory out of 5000000
+ 52900 multiletter control sequences out of 15000+600000
  683118 words of font info for 295 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,11n,131p,1207b,916s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,1207b,931s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (10 pages, 1774463 bytes).
+Output written on RJwrapper.pdf (10 pages, 1775168 bytes).
 PDF statistics:
- 203 PDF objects out of 1000 (max. 8388607)
- 173 compressed objects within 2 object streams
- 30 named destinations out of 1000 (max. 500000)
- 74879 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 214 PDF objects out of 1000 (max. 8388607)
+ 184 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
+ 74895 words of extra memory for PDF output out of 89155 (max. 10000000)
 

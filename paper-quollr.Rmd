@@ -205,17 +205,23 @@ The paper is organized as follows. In next section, introduces the implementatio
 
 # Implementation
 
+## Installation
+
 The package can be installed from CRAN:
 
 ```r
 install.packages("quollr")
 ```
 
-The development version can be installed from GitHub:
+and the development version can be installed from GitHub:
 
 ```r
 devtools::install_github("JayaniLakshika/quollr")
 ```
+
+## Web site
+
+More documentation of the package can be found at the web site [https://jayanilakshika.github.io/quollr/](https://jayanilakshika.github.io/quollr/).
 
 ## Package dependencies
 

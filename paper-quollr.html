@@ -1814,11 +1814,14 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p>The paper is organized as follows. In next section, introduces the implementation of <code>quollr</code> package on CRAN, including demonstration of the package’s key functions and visualization capabilities. We illustrate the algorithm’s functionality to study about clustering data structure in <strong>Application</strong> section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.</p>
 <h2 data-number="2" id="implementation"><span class="header-section-number">2</span> Implementation</h2>
+<h3 data-number="2.1" id="installation"><span class="header-section-number">2.1</span> Installation</h3>
 <p>The package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;quollr&quot;</span>)</span></code></pre></div>
-<p>The development version can be installed from GitHub:</p>
+<p>and the development version can be installed from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;JayaniLakshika/quollr&quot;</span>)</span></code></pre></div>
-<h3 data-number="2.1" id="package-dependencies"><span class="header-section-number">2.1</span> Package dependencies</h3>
+<h3 data-number="2.2" id="web-site"><span class="header-section-number">2.2</span> Web site</h3>
+<p>More documentation of the package can be found at the web site <a href="https://jayanilakshika.github.io/quollr/">https://jayanilakshika.github.io/quollr/</a>.</p>
+<h3 data-number="2.3" id="package-dependencies"><span class="header-section-number">2.3</span> Package dependencies</h3>
 <p>Understanding the dependencies of the <code>quollr</code> package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that <code>quollr</code> relies on to execute its functions effectively.</p>
 <div class="layout-chunk" data-layout="l-body">
 <pre><code>$quollr
@@ -1826,12 +1829,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
  [5] &quot;langevitour&quot; &quot;proxy&quot;       &quot;rlang&quot;       &quot;rsample&quot;    
  [9] &quot;stats&quot;       &quot;tibble&quot;      &quot;tidyselect&quot; </code></pre>
 </div>
-<h3 data-number="2.2" id="usage"><span class="header-section-number">2.2</span> Usage</h3>
+<h3 data-number="2.4" id="usage"><span class="header-section-number">2.4</span> Usage</h3>
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 <p>The following demonstration of the package’s functionality assumes <code>quollr</code> has been loaded. We also want to load the built-in data sets <code>s_curve_noise_training</code> and <code>s_curve_noise_umap</code>.</p>
 <p><code>s_curve_noise_training</code> is a <span class="math inline">\(3\text{-}D\)</span> S-curve data set with additional four noise dimensions which is used to train the model. <code>s_curve_noise_umap</code> is the UMAP <span class="math inline">\(2\text{-}D\)</span> embedding for <code>s_curve_noise_training</code> data set. Each data set contains a unique ID column.</p>
-<h4 class="unnumbered" data-number="2.2.1" id="scaling-the-data">Scaling the data</h4>
+<h4 class="unnumbered" data-number="2.4.1" id="scaling-the-data">Scaling the data</h4>
 <p>The algorithm begins by scaling NLDR data to a standard scale using the <code>gen_scaled_data()</code> function. This function standardizes the data and provides the original limits of embeddings and the aspect ratio.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1890,9 +1893,9 @@ $df_bin_centroids
 10    31 0.520 0.0904           42     0.506  FALSE     
 # ℹ 76 more rows</code></pre>
 </div>
-<h3 data-number="2.3" id="constructing-the-2text-d-model"><span class="header-section-number">2.3</span> Constructing the <span class="math inline">\(2\text{-}D\)</span> model</h3>
+<h3 data-number="2.5" id="constructing-the-2text-d-model"><span class="header-section-number">2.5</span> Constructing the <span class="math inline">\(2\text{-}D\)</span> model</h3>
 <p>Constructing the <span class="math inline">\(2\text{-}D\)</span> model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.</p>
-<h4 class="unnumbered" data-number="2.3.1" id="computing-hexagon-grid-configurations">Computing hexagon grid configurations</h4>
+<h4 class="unnumbered" data-number="2.5.1" id="computing-hexagon-grid-configurations">Computing hexagon grid configurations</h4>
 <p>The configurations of the hexagonal grid is defined by the number of bins in each direction. To find the number of bins along the y-axis, <code>calc_bins_y()</code> is used. This function takes as input the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. Additionally, this function provides the bin width.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -1911,7 +1914,7 @@ $a1
 $a2
 [1] 0.08945548</code></pre>
 </div>
-<h4 class="unnumbered" data-number="2.3.2" id="binning-the-data">Binning the data</h4>
+<h4 class="unnumbered" data-number="2.5.2" id="binning-the-data">Binning the data</h4>
 <p>Points are allocated to the bins they fall into based on the nearest centroid. The main steps of the hexagonal binning algorithm can be executed using the <code>hex_binning()</code> function, or they can be run separately for greater flexibility. The parameters used within <code>hex_binning()</code> include the scaled NLDR data, the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. The output is an object of the <code>hex_bin_obj</code> class, which contains the number of bins in each direction, the coordinates of the hexagonal grid starting point, the details of bin centroids, the coordinates of bins, embedding components with their corresponding hexagon IDs, hex bins with their corresponding standardized counts, the total number of bins, the number of non-empty bins, and the points within each hexagon.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2025,7 +2028,7 @@ attr(,&quot;class&quot;)
 </div>
 <!--add each step separately-->
 <!--add hexbin notation image-->
-<h4 class="unnumbered" data-number="2.3.3" id="remove-low-density-hexagons">Remove low-density hexagons</h4>
+<h4 class="unnumbered" data-number="2.5.3" id="remove-low-density-hexagons">Remove low-density hexagons</h4>
 <p>In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The <code>find_low_dens_hex()</code> function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2036,7 +2039,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h4 class="unnumbered" data-number="2.3.4" id="indicating-neighbors-by-line-segments-connecting-centroids">Indicating neighbors by line segments connecting centroids</h4>
+<h4 class="unnumbered" data-number="2.5.4" id="indicating-neighbors-by-line-segments-connecting-centroids">Indicating neighbors by line segments connecting centroids</h4>
 <p>To indicate neighbors, the <code>tri_bin_centroids()</code> function is used to triangulate bin centroids. Following this, <code>gen_edges()</code> function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2060,7 +2063,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h3 data-number="2.4" id="lifting-the-model-into-high-dimensions"><span class="header-section-number">2.4</span> Lifting the model into high dimensions</h3>
+<h3 data-number="2.6" id="lifting-the-model-into-high-dimensions"><span class="header-section-number">2.6</span> Lifting the model into high dimensions</h3>
 <p>The final step involves lifting the fitted <span class="math inline">\(2\text{-}D\)</span> model into <span class="math inline">\(p\text{-}D\)</span> by computing the <span class="math inline">\(p\text{-}D\)</span> mean of data points within each bin to represent bin centroids. This transformation is performed using the <code>avg_highd_data()</code> function, which takes <span class="math inline">\(p\text{-}D\)</span> data and their corresponding hexagonal bin IDs as inputs.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2076,7 +2079,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h3 data-number="2.5" id="prediction"><span class="header-section-number">2.5</span> Prediction</h3>
+<h3 data-number="2.7" id="prediction"><span class="header-section-number">2.7</span> Prediction</h3>
 <p>The <code>predict_emb()</code> function is used to predict <span class="math inline">\(2\text{-}D\)</span> embedding for a new <span class="math inline">\(p\text{-}D\)</span> data point using the fitted model. This function is useful to predict <span class="math inline">\(2\text{-}D\)</span> embedding irrespective of the NLDR technique.</p>
 <p>In the prediction process, first, the nearest <span class="math inline">\(p\text{-}D\)</span> model point is identified for a given new <span class="math inline">\(p\text{-}D\)</span> data point by computing <span class="math inline">\(p\text{-}D\)</span> Euclidean distance. Then, the corresponding <span class="math inline">\(2\text{-}D\)</span> bin centroid mapping for the identified <span class="math inline">\(p\text{-}D\)</span> model point is determined. Finally, the coordinates of the identified <span class="math inline">\(2\text{-}D\)</span> bin centroid is used as the predicted NLDR embedding for the new <span class="math inline">\(p\text{-}D\)</span> data point.</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2088,7 +2091,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h3 data-number="2.6" id="compute-residuals-and-mean-square-error-mse"><span class="header-section-number">2.6</span> Compute residuals and Mean Square Error (MSE)</h3>
+<h3 data-number="2.8" id="compute-residuals-and-mean-square-error-mse"><span class="header-section-number">2.8</span> Compute residuals and Mean Square Error (MSE)</h3>
 <p>As a Goodness of fit statistics for the model, <code>glance()</code> is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the <span class="math inline">\(p\text{-}D\)</span> data.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2111,9 +2114,9 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h3 data-number="2.7" id="visualizations"><span class="header-section-number">2.7</span> Visualizations</h3>
+<h3 data-number="2.9" id="visualizations"><span class="header-section-number">2.9</span> Visualizations</h3>
 <p>The package provides five basic visualizations which includes one to visualize the full hexagonal grid in <span class="math inline">\(2\text{-}D\)</span>, three visualizations related to the <span class="math inline">\(2\text{-}D\)</span> model (static visualizations), and one related to the <span class="math inline">\(p\text{-}D\)</span> model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.</p>
-<h4 class="unnumbered" data-number="2.7.1" id="text-d-model-visualization"><span class="math inline">\(2\text{-}D\)</span> model visualization</h4>
+<h4 class="unnumbered" data-number="2.9.1" id="text-d-model-visualization"><span class="math inline">\(2\text{-}D\)</span> model visualization</h4>
 <p>The <code>geom_hexgrid()</code> function is used to plot the hexagonal grid from the provided centroid data set.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2156,7 +2159,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h4 class="unnumbered" data-number="2.7.2" id="ptext-d-model-visualization"><span class="math inline">\(p\text{-}D\)</span> model visualization</h4>
+<h4 class="unnumbered" data-number="2.9.2" id="ptext-d-model-visualization"><span class="math inline">\(p\text{-}D\)</span> model visualization</h4>
 <p>Displaying the <span class="math inline">\(p\text{-}D\)</span> model overlaid on the data is done using the function <code>show_langevitour()</code>. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, <span class="math inline">\(2\text{-}D\)</span> and <span class="math inline">\(p\text{-}D\)</span> model points, the threshold for removing long edges, and the distance data set.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2172,7 +2175,7 @@ attr(,&quot;class&quot;)
 <span>  <span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<h4 class="unnumbered" data-number="2.7.3" id="link-plots">Link plots</h4>
+<h4 class="unnumbered" data-number="2.9.3" id="link-plots">Link plots</h4>
 <p>There are mainly two interactive link plots can be generated. <code>show_link_plots()</code> helps to examine the fit. The function requires several arguments: points data which contain Non-linear dimension reduction data, high-dimensional data, and high-dimensional model data, and edge data where the from and to links of the edges.</p>
 <p><code>show_error_link_plots()</code> helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern. The function requires several arguments: points data which contain Non-linear dimension reduction data, high-dimensional data, high-dimensional model data, and model error, and edge data where the from and to links of the edges.</p>
 <div class="layout-chunk" data-layout="l-body">
