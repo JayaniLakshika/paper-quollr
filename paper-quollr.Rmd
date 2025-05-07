@@ -240,19 +240,27 @@ The following demonstration of the package's functionality assumes `quollr` has 
 
 `s_curve_noise_training` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to train the model. `s_curve_noise_umap` is the UMAP $2\text{-}D$ embedding for `s_curve_noise_training` data set. Each data set contains a unique ID column.
 
+Add a table of data sets that quollr have
+
 ### Scaling the data
 
-The algorithm begins by scaling NLDR data to a standard scale using the `gen_scaled_data()` function. This function standardizes the data and provides the original limits of embeddings and the aspect ratio.
+The algorithm begins by scaling NLDR data to a standard scale using the `gen_scaled_data()` function. This function standardizes the data with first embedding scale to 0 and 1, The second embedding scales to 0 and the maximum of the second embedding. The resulting output provides the scaled NLDR data and the original limits of embeddings.
 
 ```{r, echo=TRUE}
-scaled_nldr_obj_scurve <- gen_scaled_data(data = s_curve_noise_umap)
+scurve_nldr_obj <- gen_scaled_data(nldr_data = scurve_umap)
 
-s_curve_noise_umap_scaled <- scaled_nldr_obj_scurve$scaled_nldr
+scurve_nldr_obj
+```
 
-lim1 <- scaled_nldr_obj_scurve$lim1
-lim2 <- scaled_nldr_obj_scurve$lim2
+```{r, echo=TRUE}
+scurve_umap_scaled <- scurve_nldr_obj$scaled_nldr
+
+lim1 <- scurve_nldr_obj$lim1
+lim2 <- scurve_nldr_obj$lim2
 r2 <- diff(lim2)/diff(lim1) 
 ```
+
+We can compute the `r2` which is the ratio of the ranges of the original embedding components.
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the $2\text{-}D$ model, the user can choose either to fit the $2\text{-}D$ model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
 
