@@ -242,7 +242,7 @@ Add a table of data sets that quollr have
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `scurve` and `scurve_umap`. 
 
-`scurve` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to build the model. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data set with `n_neighbors` is $15$ and `min_dist` is $0.1$. Each data set contains a unique ID column that mapping `scurve` and `scurve_umap`.
+`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $5000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4, X_5, X_6, X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $15$ and `min_dist` is $0.1$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
 
 ### Scaling the Data
 
