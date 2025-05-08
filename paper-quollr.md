@@ -338,9 +338,9 @@ Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data
 The algorithm starts by scaling the NLDR data to a standard range using the `gen_scaled_data()` function. This function standardizes the data so that the first embedding ranges from $0$ to $1$, while the second embedding scales from $0$ to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>scurve_nldr_obj</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span><span class='op'>)</span></span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>scurve_umap_obj</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span><span class='op'>)</span></span>
 <span></span>
-<span><span class='va'>scurve_nldr_obj</span></span></code></pre></div>
+<span><span class='va'>scurve_umap_obj</span></span></code></pre></div>
 
 ```
 $scaled_nldr
@@ -371,23 +371,23 @@ $lim2
 
 ### Computing hexagon grid configurations
 
-The configurations of the hexagonal grid is defined by the number of bins in each direction. To find the number of bins along the y-axis, `calc_bins_y()` is used. This function takes as input the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. Additionally, this function provides the bin width.
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (`bin1`), and the buffer amount as a proportion.
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>calc_bins_y</span><span class='op'>(</span></span>
-<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_nldr_obj</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>4</span>, </span>
+<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_umap_obj</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, </span>
 <span>  q <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span></code></pre></div>
 
 ```
 $bin2
-[1] 5
+[1] 16
 
 $a1
-[1] 0.3122301
+[1] 0.08326136
 
 $a2
-[1] 0.2703992
+[1] 0.07210645
 ```
 
 </div>
@@ -395,135 +395,13 @@ $a2
 
 ### Binning the data
 
-Points are allocated to the bins they fall into based on the nearest centroid. The main steps of the hexagonal binning algorithm can be executed using the `hex_binning()` function, or they can be run separately for greater flexibility. The parameters used within `hex_binning()` include the scaled NLDR data, the number of bins along the x-axis, the ratio of the ranges of the original embedding components, and the buffer amount as a proportion of the data. The output is an object of the `hex_bin_obj` class, which contains the number of bins in each direction, the coordinates of the hexagonal grid starting point, the details of bin centroids, the coordinates of bins, embedding components with their corresponding hexagon IDs, hex bins with their corresponding standardized counts, the total number of bins, the number of non-empty bins, and the points within each hexagon.  
+Points are allocated to bins based on the nearest centroid. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`bin1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>hex_binning</span><span class='op'>(</span></span>
-<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_nldr_obj</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>4</span>, </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>hb_obj</span> <span class='op'>&lt;-</span> <span class='fu'>hex_binning</span><span class='op'>(</span></span>
+<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_umap_obj</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, </span>
 <span>  q <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span></code></pre></div>
-
-```
-$a1
-[1] 0.3122301
-
-$a2
-[1] 0.2703992
-
-$bins
-[1] 4 5
-
-$start_point
-[1] -0.10000000 -0.08923607
-
-$centroids
-# A tibble: 20 × 3
-   hexID     c_x     c_y
-   <int>   <dbl>   <dbl>
- 1     1 -0.1    -0.0892
- 2     2  0.212  -0.0892
- 3     3  0.524  -0.0892
- 4     4  0.837  -0.0892
- 5     5  0.0561  0.181 
- 6     6  0.368   0.181 
- 7     7  0.681   0.181 
- 8     8  0.993   0.181 
- 9     9 -0.1     0.452 
-10    10  0.212   0.452 
-11    11  0.524   0.452 
-12    12  0.837   0.452 
-13    13  0.0561  0.722 
-14    14  0.368   0.722 
-15    15  0.681   0.722 
-16    16  0.993   0.722 
-17    17 -0.1     0.992 
-18    18  0.212   0.992 
-19    19  0.524   0.992 
-20    20  0.837   0.992 
-
-$hex_poly
-# A tibble: 120 × 3
-   hex_poly_id       x         y
-         <int>   <dbl>     <dbl>
- 1           1 -0.1     0.0910  
- 2           1 -0.256   0.000897
- 3           1 -0.256  -0.179   
- 4           1 -0.1    -0.270   
- 5           1  0.0561 -0.179   
- 6           1  0.0561  0.000897
- 7           2  0.212   0.0910  
- 8           2  0.0561  0.000897
- 9           2  0.0561 -0.179   
-10           2  0.212  -0.270   
-# ℹ 110 more rows
-
-$data_hb_id
-# A tibble: 5,000 × 4
-    emb1  emb2    ID hexID
-   <dbl> <dbl> <int> <int>
- 1 0.707 0.839     1    15
- 2 0.231 0.401     2    10
- 3 0.232 0.215     3     6
- 4 0.790 0.564     4    12
- 5 0.761 0.551     5    12
- 6 0.445 0.721     6    14
- 7 0.900 0.137     7     8
- 8 0.247 0.392     8    10
- 9 0.325 0.542     9    10
-10 0.278 0.231    10     6
-# ℹ 4,990 more rows
-
-$std_cts
-# A tibble: 16 × 3
-   hexID bin_counts std_counts
-   <int>      <int>      <dbl>
- 1     3        116    0.172  
- 2     4         82    0.122  
- 3     5        193    0.286  
- 4     6        674    1      
- 5     7        529    0.785  
- 6     8        243    0.361  
- 7     9         87    0.129  
- 8    10        601    0.892  
- 9    11        244    0.362  
-10    12        355    0.527  
-11    13        183    0.272  
-12    14        627    0.930  
-13    15        669    0.993  
-14    16        318    0.472  
-15    19          2    0.00297
-16    20         77    0.114  
-
-$tot_bins
-[1] 20
-
-$non_bins
-[1] 16
-
-$pts_bins
-# A tibble: 16 × 2
-   hexID pts_list   
-   <int> <list>     
- 1     3 <int [116]>
- 2     4 <int [82]> 
- 3     5 <int [193]>
- 4     6 <int [674]>
- 5     7 <int [529]>
- 6     8 <int [243]>
- 7     9 <int [87]> 
- 8    10 <int [601]>
- 9    11 <int [244]>
-10    12 <int [355]>
-11    13 <int [183]>
-12    14 <int [627]>
-13    15 <int [669]>
-14    16 <int [318]>
-15    19 <int [2]>  
-16    20 <int [77]> 
-
-attr(,"class")
-[1] "hex_bin_obj"
-```
 
 </div>
 
@@ -531,21 +409,64 @@ attr(,"class")
 <!--add each step separately-->
 <!--add hexbin notation image-->
 
+### Obtaining bin centroids
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_bin_centroids</span> <span class='op'>&lt;-</span> <span class='fu'>extract_hexbin_centroids</span><span class='op'>(</span></span>
+<span>  centroids_data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>centroids</span>, </span>
+<span>  counts_data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>std_cts</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>df_bin_centroids</span></span></code></pre></div>
+
+```
+# A tibble: 240 × 5
+   hexID     c_x     c_y bin_counts std_counts
+   <int>   <dbl>   <dbl>      <dbl>      <dbl>
+ 1     1 -0.1    -0.0892          0          0
+ 2     2 -0.0167 -0.0892          0          0
+ 3     3  0.0665 -0.0892          0          0
+ 4     4  0.150  -0.0892          0          0
+ 5     5  0.233  -0.0892          0          0
+ 6     6  0.316  -0.0892          0          0
+ 7     7  0.400  -0.0892          0          0
+ 8     8  0.483  -0.0892          0          0
+ 9     9  0.566  -0.0892          0          0
+10    10  0.649  -0.0892          0          0
+# ℹ 230 more rows
+```
+
+</div>
+
 
 ### Indicating neighbors by line segments connecting centroids
 
 To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate bin centroids. Following this, `gen_edges()` function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>tr1_object</span> <span class='op'>&lt;-</span> <span class='fu'>tri_bin_centroids</span><span class='op'>(</span></span>
-<span>  hex_df <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
-<span>  x <span class='op'>=</span> <span class='st'>"c_x"</span>, </span>
-<span>  y <span class='op'>=</span> <span class='st'>"c_y"</span></span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>tr_object</span> <span class='op'>&lt;-</span> <span class='fu'>tri_bin_centroids</span><span class='op'>(</span></span>
+<span>  centroids_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span></span>
 <span>  <span class='op'>)</span></span>
 <span></span>
-<span><span class='va'>tr_from_to_df</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span></span>
-<span>  tri_object <span class='op'>=</span> <span class='va'>tr1_object</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span><span class='va'>trimesh</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span>tri_object <span class='op'>=</span> <span class='va'>tr_object</span><span class='op'>)</span></span>
+<span><span class='va'>trimesh</span></span></code></pre></div>
+
+```
+# A tibble: 324 × 6
+    from    to x_from  y_from  x_to   y_to
+   <int> <int>  <dbl>   <dbl> <dbl>  <dbl>
+ 1    16    26 0.275   0.127  0.233 0.199 
+ 2    25    26 0.150   0.199  0.233 0.199 
+ 3    25    37 0.150   0.199  0.191 0.271 
+ 4    36    49 0.108   0.271  0.150 0.343 
+ 5    36    37 0.108   0.271  0.191 0.271 
+ 6     1     7 0.358  -0.0171 0.316 0.0550
+ 7    48    49 0.0665  0.343  0.150 0.343 
+ 8    37    38 0.191   0.271  0.275 0.271 
+ 9    26    27 0.233   0.199  0.316 0.199 
+10    27    38 0.316   0.199  0.275 0.271 
+# ℹ 314 more rows
+```
 
 </div>
 
@@ -558,10 +479,17 @@ In certain scenarios, hexagonal bins may contain a few number of points. To ensu
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
-<span>  <span class='va'>centroids_data</span>, </span>
+<span>  centroids_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, </span>
 <span>  benchmark_mean_dens <span class='op'>=</span> <span class='fl'>0.05</span></span>
 <span><span class='op'>)</span></span></code></pre></div>
+
+```
+ [1]   1   2   3   4   5  11  12  13  14  15  16  17  18  19  30  31
+[17]  32  33  46  47  61  75  76  90 105 120 135 150 151 166 181 182
+[33] 196 197 198 211 212 213 214 215 225 226 227 228 229 230 231 232
+[49] 233 234 235 236 237 238 239 240
+```
 
 </div>
 
@@ -573,8 +501,27 @@ The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_bin</span> <span class='op'>&lt;-</span> <span class='fu'>avg_highd_data</span><span class='op'>(</span></span>
 <span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
-<span>  <span class='va'>scaled_nldr_hexid</span></span>
-<span><span class='op'>)</span></span></code></pre></div>
+<span>  scaled_nldr_hexid <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>data_hb_id</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>df_bin</span></span></code></pre></div>
+
+```
+# A tibble: 142 × 8
+   hexID      x1    x2    x3         x4        x5       x6        x7
+   <int>   <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl>
+ 1    21 -0.992   1.91 1.11  -0.000427   0.000624  0.00749  0.00105 
+ 2    22 -0.906   1.93 1.41  -0.0000183  0.00331  -0.0204  -0.000363
+ 3    23 -0.680   1.93 1.72  -0.000810  -0.00259  -0.00449  0.00153 
+ 4    24 -0.272   1.93 1.96   0.00251    0.00668  -0.0460   0.00128 
+ 5    25  0.0760  1.93 2.00   0.00876    0.00447   0.00851 -0.00195 
+ 6    26  0.461   1.93 1.89  -0.00478    0.00492   0.00835  0.00172 
+ 7    27  0.719   1.99 1.70   0.0109    -0.00349  -0.0297  -0.00223 
+ 8    36 -0.985   1.75 0.853 -0.00202    0.000397  0.00331  0.000338
+ 9    37 -0.980   1.66 1.17  -0.000374  -0.00154   0.0165   0.000126
+10    38 -0.821   1.64 1.56  -0.000459   0.000538 -0.0123   0.000780
+# ℹ 132 more rows
+```
 
 </div>
 
@@ -592,6 +539,23 @@ In the prediction process, first, the nearest $p\text{-}D$ model point is identi
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
+```
+# A tibble: 5,000 × 4
+   pred_emb_1 pred_emb_2    ID pred_hb_id
+        <dbl>      <dbl> <int>      <int>
+ 1      0.691      0.848     1        205
+ 2      0.191      0.416     2        109
+ 3      0.316      0.199     3         66
+ 4      0.774      0.560     4        146
+ 5      0.774      0.560     5        146
+ 6      0.441      0.704     6        172
+ 7      0.941      0.127     7         58
+ 8      0.275      0.416     8        110
+ 9      0.358      0.560     9        141
+10      0.316      0.343    10         96
+# ℹ 4,990 more rows
+```
+
 </div>
 
 
@@ -605,6 +569,13 @@ As a Goodness of fit statistics for the model, `glance()` is used to compute res
 <span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
+
+```
+# A tibble: 1 × 2
+  Error    MSE
+  <dbl>  <dbl>
+1 1481. 0.0325
+```
 
 </div>
 
@@ -636,10 +607,11 @@ The `geom_hexgrid()` function is used to plot the hexagonal grid from the provid
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'>geom_hexgrid</span><span class='op'>(</span></span>
-<span>    data <span class='op'>=</span> <span class='va'>all_centroids_df</span>, </span>
+<span>    data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>centroids</span>, </span>
 <span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
 <span>    <span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-14-1.png" width="100%" />
 
 </div>
 
@@ -649,21 +621,20 @@ To visualize the $2\text{-}D$ model, mainly three functions are used. As shown i
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'>geom_trimesh</span><span class='op'>(</span></span>
-<span>    data <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>    data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>centroids</span>, </span>
 <span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
 <span>    <span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-15-1.png" width="100%" />
 
 </div>
 
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_mesh</span><span class='op'>(</span></span>
-<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
-<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
-<span>  tr_coord_df <span class='op'>=</span> <span class='va'>tr_from_to_df</span>, </span>
-<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
+<span>  trimesh_data <span class='op'>=</span> <span class='va'>trimesh</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
+<img src="paper-quollr_files/figure-html5/unnamed-chunk-16-1.png" width="100%" />
 
 </div>
 

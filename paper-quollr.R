@@ -158,67 +158,75 @@ fit_highd_model(
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-scurve_nldr_obj <- gen_scaled_data(nldr_data = scurve_umap)
+scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 
-scurve_nldr_obj
+scurve_umap_obj
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 calc_bins_y(
-  nldr_obj = scurve_nldr_obj, 
-  bin1 = 4, 
+  nldr_obj = scurve_umap_obj, 
+  bin1 = 15, 
   q = 0.1)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-hex_binning(
-  nldr_obj = scurve_nldr_obj, 
-  bin1 = 4, 
+hb_obj <- hex_binning(
+  nldr_obj = scurve_umap_obj, 
+  bin1 = 15, 
   q = 0.1)
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# tr1_object <- tri_bin_centroids(
-#   hex_df = df_bin_centroids,
-#   x = "c_x",
-#   y = "c_y"
-#   )
-# 
-# tr_from_to_df <- gen_edges(
-#   tri_object = tr1_object
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+df_bin_centroids <- extract_hexbin_centroids(
+  centroids_data = hb_obj$centroids, 
+  counts_data = hb_obj$std_cts
+  )
+
+df_bin_centroids
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# find_low_dens_hex(
-#   centroids_data,
-#   bin1 = 15,
-#   benchmark_mean_dens = 0.05
-# )
-# 
+## ----echo=TRUE----------------------------------------------------------------
+tr_object <- tri_bin_centroids(
+  centroids_data = df_bin_centroids
+  )
+
+trimesh <- gen_edges(tri_object = tr_object)
+trimesh
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# df_bin <- avg_highd_data(
-#   highd_data = scurve,
-#   scaled_nldr_hexid
-# )
+## ----echo=TRUE----------------------------------------------------------------
+find_low_dens_hex(
+  centroids_data = df_bin_centroids, 
+  bin1 = 15, 
+  benchmark_mean_dens = 0.05
+)
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# predict_emb(
-#   highd_data = scurve,
-#   model_2d = df_bin_centroids,
-#   model_highd = df_bin
-#   )
+
+## ----echo=TRUE----------------------------------------------------------------
+df_bin <- avg_highd_data(
+  highd_data = scurve, 
+  scaled_nldr_hexid = hb_obj$data_hb_id
+)
+
+df_bin
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# glance(
-#   highd_data = scurve,
-#   model_2d = df_bin_centroids,
-#   model_highd = df_bin
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+predict_emb(
+  highd_data = scurve, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
+  )
+
+
+## ----echo=TRUE----------------------------------------------------------------
+glance(
+  highd_data = scurve, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
+  )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
@@ -229,31 +237,28 @@ hex_binning(
 #   )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# ggplot() +
-#   geom_hexgrid(
-#     data = all_centroids_df,
-#     aes(x = c_x, y = c_y)
-#     ) +
-#   coord_fixed()
+## ----echo=TRUE----------------------------------------------------------------
+ggplot() + 
+  geom_hexgrid(
+    data = hb_obj$centroids, 
+    aes(x = c_x, y = c_y)
+    ) +
+  coord_fixed()
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# ggplot() +
-#   geom_trimesh(
-#     data = df_bin_centroids,
-#     aes(x = c_x, y = c_y)
-#     ) +
-#   coord_fixed()
+## ----echo=TRUE----------------------------------------------------------------
+ggplot() + 
+  geom_trimesh(
+    data = hb_obj$centroids, 
+    aes(x = c_x, y = c_y)
+    ) +
+  coord_fixed()
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# vis_mesh(
-#   distance_edges = distance_df,
-#   benchmark_value = 0.75,
-#   tr_coord_df = tr_from_to_df,
-#   distance_col = "distance"
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+vis_mesh(
+  trimesh_data = trimesh
+  )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
