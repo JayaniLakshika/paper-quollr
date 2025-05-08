@@ -1,5 +1,5 @@
 ---
-title: 'quollr: An R Package for Visualizing $2-\text{D}$ Models from Non-linear Dimension
+title: 'quollr: An R Package for Visualizing 2-D Models from Non-linear Dimension
   Reductions in High Dimensional Space'
 description: |
   Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `scurve` data from the package is used to illustrate the algorithm. scRNA-seq data for Limb muscles of mice are used to discuss the usability of the package.
@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-05-08'
+date: '2025-05-09'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -448,7 +448,7 @@ To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate
 <span>  centroids_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span></span>
 <span>  <span class='op'>)</span></span>
 <span></span>
-<span><span class='va'>trimesh</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span>tri_object <span class='op'>=</span> <span class='va'>tr_object</span>, a1 <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>a1</span>, a2 <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>a2</span><span class='op'>)</span></span>
+<span><span class='va'>trimesh</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span>tri_object <span class='op'>=</span> <span class='va'>tr_object</span>, a1 <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>a1</span><span class='op'>)</span></span>
 <span><span class='va'>trimesh</span></span></code></pre></div>
 
 ```
