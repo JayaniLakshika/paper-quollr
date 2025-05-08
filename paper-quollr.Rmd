@@ -244,6 +244,23 @@ The following demonstration of the package's functionality assumes `quollr` has 
 
 `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $5000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4, X_5, X_6, X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $15$ and `min_dist` is $0.1$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
 
+### Main function
+
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
+
+<!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly. -->
+
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`bin1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`benchmark_highdens`). The function returns an object that includes the hexagonal object, the fitted model in both $2\text{-}D$, and $p\text{-}D$, and triangular mesh.  
+
+```{r, echo=TRUE}
+fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  bin1 = 15, 
+  q = 0.1, 
+  benchmark_highdens = 5)
+```
+
 ### Scaling the Data
 
 The algorithm starts by scaling the NLDR data to a standard range using the `gen_scaled_data()` function. This function standardizes the data so that the first embedding ranges from $0$ to $1$, while the second embedding scales from $0$ to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
@@ -263,23 +280,6 @@ r2 <- diff(lim2)/diff(lim1)
 ```
 
 We can calculate the `r2`, which represents the ratio of the ranges of the original embedding components.
-
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the $2\text{-}D$ model, the user can choose either to fit the $2\text{-}D$ model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
-
-If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
-
-The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model()`, if they are not provided. They are created as they are needed throughout the following example. The function `fit_highd_model()` provides the fitted model in $2\text{-}D$, and $p\text{-}D$.  
-
-```{r, echo=TRUE}
-fit_highd_model(
-  highd_data = s_curve_noise_training,
-  nldr_data = s_curve_noise_umap_scaled, 
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1,
-  is_bin_centroid = TRUE
-  )
-```
 
 ## Constructing the $2\text{-}D$ Model
 
