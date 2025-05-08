@@ -210,7 +210,7 @@ fit_highd_model(
 #> # i 120 more rows
 #> 
 #> $trimesh_data
-#> # A tibble: 324 x 8
+#> # A tibble: 322 x 8
 #>     from    to x_from  y_from  x_to   y_to from_count to_count
 #>    <int> <int>  <dbl>   <dbl> <dbl>  <dbl>      <dbl>    <dbl>
 #>  1    50    65 0.275   0.127  0.233 0.199          65       67
@@ -223,7 +223,7 @@ fit_highd_model(
 #>  8    79    80 0.191   0.271  0.275 0.271          62       68
 #>  9    65    66 0.233   0.199  0.316 0.199          67       56
 #> 10    66    80 0.316   0.199  0.275 0.271          56       68
-#> # i 314 more rows
+#> # i 312 more rows
 \end{verbatim}
 
 \subsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
@@ -334,25 +334,25 @@ tr_object <- tri_bin_centroids(
   centroids_data = df_bin_centroids
   )
 
-trimesh <- gen_edges(tri_object = tr_object)
+trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1, a2 = hb_obj$a2)
 trimesh
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 670 x 8
+#> # A tibble: 653 x 8
 #>     from    to  x_from  y_from    x_to    y_to from_count to_count
 #>    <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
 #>  1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
 #>  2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
-#>  3     1    31 -0.1    -0.0892 -0.1     0.0550          0        0
-#>  4    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
-#>  5     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
-#>  6    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
-#>  7    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
-#>  8    31    46 -0.1     0.0550 -0.0584  0.127           0        0
-#>  9    32    47 -0.0167  0.0550  0.0249  0.127           0        0
-#> 10    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
-#> # i 660 more rows
+#>  3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+#>  4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+#>  5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+#>  6    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
+#>  7    31    46 -0.1     0.0550 -0.0584  0.127           0        0
+#>  8    32    47 -0.0167  0.0550  0.0249  0.127           0        0
+#>  9    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
+#> 10     4    18  0.150  -0.0892  0.108  -0.0171          0        0
+#> # i 643 more rows
 \end{verbatim}
 
 In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the \(2\text{-}D\) representation. To address this issue, the \texttt{find\_lg\_benchmark()} function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed.
@@ -496,8 +496,7 @@ ggplot() +
   geom_trimesh(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
-    ) +
-  coord_fixed()
+    ) 
 \end{verbatim}
 
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-15-1}

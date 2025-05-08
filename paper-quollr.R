@@ -191,7 +191,7 @@ tr_object <- tri_bin_centroids(
   centroids_data = df_bin_centroids
   )
 
-trimesh <- gen_edges(tri_object = tr_object)
+trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1, a2 = hb_obj$a2)
 trimesh
 
 
@@ -252,8 +252,7 @@ ggplot() +
   geom_trimesh(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
-    ) +
-  coord_fixed()
+    ) 
 
 
 ## ----echo=TRUE----------------------------------------------------------------

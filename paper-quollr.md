@@ -310,7 +310,7 @@ $model_2d
 # ℹ 120 more rows
 
 $trimesh_data
-# A tibble: 324 × 8
+# A tibble: 322 × 8
     from    to x_from  y_from  x_to   y_to from_count to_count
    <int> <int>  <dbl>   <dbl> <dbl>  <dbl>      <dbl>    <dbl>
  1    50    65 0.275   0.127  0.233 0.199          65       67
@@ -323,7 +323,7 @@ $trimesh_data
  8    79    80 0.191   0.271  0.275 0.271          62       68
  9    65    66 0.233   0.199  0.316 0.199          67       56
 10    66    80 0.316   0.199  0.275 0.271          56       68
-# ℹ 314 more rows
+# ℹ 312 more rows
 ```
 
 </div>
@@ -448,24 +448,24 @@ To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate
 <span>  centroids_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span></span>
 <span>  <span class='op'>)</span></span>
 <span></span>
-<span><span class='va'>trimesh</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span>tri_object <span class='op'>=</span> <span class='va'>tr_object</span><span class='op'>)</span></span>
+<span><span class='va'>trimesh</span> <span class='op'>&lt;-</span> <span class='fu'>gen_edges</span><span class='op'>(</span>tri_object <span class='op'>=</span> <span class='va'>tr_object</span>, a1 <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>a1</span>, a2 <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>a2</span><span class='op'>)</span></span>
 <span><span class='va'>trimesh</span></span></code></pre></div>
 
 ```
-# A tibble: 670 × 8
+# A tibble: 653 × 8
     from    to  x_from  y_from    x_to    y_to from_count to_count
    <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
  1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
  2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
- 3     1    31 -0.1    -0.0892 -0.1     0.0550          0        0
- 4    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
- 5     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
- 6    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
- 7    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
- 8    31    46 -0.1     0.0550 -0.0584  0.127           0        0
- 9    32    47 -0.0167  0.0550  0.0249  0.127           0        0
-10    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
-# ℹ 660 more rows
+ 3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+ 4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+ 5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+ 6    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
+ 7    31    46 -0.1     0.0550 -0.0584  0.127           0        0
+ 8    32    47 -0.0167  0.0550  0.0249  0.127           0        0
+ 9    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
+10     4    18  0.150  -0.0892  0.108  -0.0171          0        0
+# ℹ 643 more rows
 ```
 
 </div>
@@ -624,8 +624,7 @@ To visualize the $2\text{-}D$ model, mainly three functions are used. As shown i
 <span>  <span class='fu'>geom_trimesh</span><span class='op'>(</span></span>
 <span>    data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>centroids</span>, </span>
 <span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
-<span>    <span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+<span>    <span class='op'>)</span> </span></code></pre></div>
 <img src="paper-quollr_files/figure-html5/unnamed-chunk-15-1.png" width="100%" />
 
 </div>
