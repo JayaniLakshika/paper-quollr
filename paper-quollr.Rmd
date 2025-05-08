@@ -459,8 +459,8 @@ There are mainly two interactive link plots can be generated. `show_link_plots()
 df_exe <- comb_all_data_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  model_highd = scurve_model_obj$model_highd, 
-  model_2d = scurve_model_obj$model_2d
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids
   )
 ```
 
@@ -475,9 +475,10 @@ show_link_plots(
 df_exe <- comb_all_data_model_error(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  model_highd = scurve_model_obj$model_highd, 
-  model_2d = scurve_model_obj$model_2d, 
-  error_data = model_error)
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids, 
+  error_data = model_error
+  )
 ```
 
 ```{r, echo=TRUE, eval=FALSE}
