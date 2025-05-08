@@ -68,7 +68,7 @@ source("scripts/additional_functions.R")
 scurve_umap1 <- read_rds("data/scurve/s_curve_noise_umap.rds")
 
 nldr_scaled_obj <- gen_scaled_data(
-  data = scurve_umap1)
+  nldr_data = scurve_umap)
 umap_scaled1 <- nldr_scaled_obj$scaled_nldr
 
 nldr1 <- umap_scaled1 |>
@@ -80,7 +80,7 @@ nldr1 <- umap_scaled1 |>
 scurve_umap2 <- read_rds("data/scurve/s_curve_noise_umap2.rds")
 
 nldr_scaled_obj2 <- gen_scaled_data(
-  data = scurve_umap2)
+  nldr_data = scurve_umap2)
 umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
 
 nldr2 <- umap_scaled2 |>
@@ -92,7 +92,7 @@ nldr2 <- umap_scaled2 |>
 scurve_umap3 <- read_rds("data/scurve/s_curve_noise_umap3.rds")
 
 nldr_scaled_obj3 <- gen_scaled_data(
-  data = scurve_umap3)
+  nldr_data = scurve_umap3)
 umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
 
 nldr3 <- umap_scaled3 |>
@@ -104,7 +104,7 @@ nldr3 <- umap_scaled3 |>
 scurve_umap4 <- read_rds("data/scurve/s_curve_noise_umap4.rds")
 
 nldr_scaled_obj4 <- gen_scaled_data(
-  data = scurve_umap4)
+  nldr_data = scurve_umap4)
 umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
 
 nldr4 <- umap_scaled4 |>
@@ -116,7 +116,7 @@ nldr4 <- umap_scaled4 |>
 scurve_umap5 <- read_rds("data/scurve/s_curve_noise_umap5.rds")
 
 nldr_scaled_obj5 <- gen_scaled_data(
-  data = scurve_umap5)
+  nldr_data = scurve_umap5)
 umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
 
 nldr5 <- umap_scaled5 |>
@@ -128,7 +128,7 @@ nldr5 <- umap_scaled5 |>
 scurve_umap6 <- read_rds("data/scurve/s_curve_noise_umap6.rds")
 
 nldr_scaled_obj6 <- gen_scaled_data(
-  data = scurve_umap6)
+  nldr_data = scurve_umap6)
 umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
 
 nldr6 <- umap_scaled6 |>
@@ -149,50 +149,32 @@ package_dependencies("quollr")
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-scaled_nldr_obj_scurve <- gen_scaled_data(data = s_curve_noise_umap)
-
-s_curve_noise_umap_scaled <- scaled_nldr_obj_scurve$scaled_nldr
-
-lim1 <- scaled_nldr_obj_scurve$lim1
-lim2 <- scaled_nldr_obj_scurve$lim2
-r2 <- diff(lim2)/diff(lim1) 
+fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  bin1 = 15, 
+  q = 0.1, 
+  benchmark_highdens = 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-fit_highd_model(
-  highd_data = s_curve_noise_training,
-  nldr_data = s_curve_noise_umap_scaled, 
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1,
-  is_bin_centroid = TRUE
-  )
+scurve_nldr_obj <- gen_scaled_data(nldr_data = scurve_umap)
+
+scurve_nldr_obj
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 calc_bins_y(
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1
-  )
+  nldr_obj = scurve_nldr_obj, 
+  bin1 = 4, 
+  q = 0.1)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 hex_binning(
-  data = s_curve_noise_umap_scaled, 
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1
-  )
-
-
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# find_low_dens_hex(
-#   df_bin_centroids_all = df_bin_centroids,
-#   bin1 = 12,
-#   df_bin_centroids_low = df_bin_centroids_low
-#   )
-# 
+  nldr_obj = scurve_nldr_obj, 
+  bin1 = 4, 
+  q = 0.1)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
@@ -208,28 +190,24 @@ hex_binning(
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# find_lg_benchmark(
-#   distance_edges = distance_df,
-#   distance_col = "distance"
-#   )
+# find_low_dens_hex(
+#   centroids_data,
+#   bin1 = 15,
+#   benchmark_mean_dens = 0.05
+# )
+# 
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# umap_data_with_hb_id <- hb_obj$data_hb_id
-# 
-# df_all <- bind_cols(
-#   s_curve_noise_training |> dplyr::select(-ID),
-#   umap_data_with_hb_id
-#   )
-# 
 # df_bin <- avg_highd_data(
-#   data = df_all
-#   )
+#   highd_data = scurve,
+#   scaled_nldr_hexid
+# )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # predict_emb(
-#   highd_data = s_curve_noise_training,
+#   highd_data = scurve,
 #   model_2d = df_bin_centroids,
 #   model_highd = df_bin
 #   )
@@ -237,7 +215,7 @@ hex_binning(
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # glance(
-#   highd_data = s_curve_noise_training,
+#   highd_data = scurve,
 #   model_2d = df_bin_centroids,
 #   model_highd = df_bin
 #   )
@@ -245,7 +223,7 @@ hex_binning(
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # augment(
-#   highd_data = s_curve_noise_training,
+#   highd_data = scurve,
 #   model_2d = df_bin_centroids,
 #   model_highd = df_bin
 #   )
@@ -270,7 +248,7 @@ hex_binning(
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# vis_lg_mesh(
+# vis_mesh(
 #   distance_edges = distance_df,
 #   benchmark_value = 0.75,
 #   tr_coord_df = tr_from_to_df,
@@ -279,24 +257,17 @@ hex_binning(
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# vis_rmlg_mesh(
-#   distance_edges = distance_df,
-#   benchmark_value = 0.75,
-#   tr_coord_df = tr_from_to_df,
-#   distance_col = "distance"
+# df_exe <- comb_data_mode(
+#   highd_data = scurve,
+#   model_highd = scurve_model_obj$model_highd,
+#   model_2d = scurve_model_obj$model_2d
 #   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # show_langevitour(
-#   df = df_all,
-#   df_b = df_bin,
-#   df_b_with_center_data = df_bin_centroids,
-#   benchmark_value = 0.75,
-#   distance = distance_df,
-#   distance_col = "distance",
-#   use_default_benchmark_val = FALSE,
-#   col_start = "x"
+#   point_df,
+#   edge_df
 #   )
 
 

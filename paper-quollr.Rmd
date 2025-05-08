@@ -125,7 +125,7 @@ Add the image generated with S-curve data
 scurve_umap1 <- read_rds("data/scurve/s_curve_noise_umap.rds")
 
 nldr_scaled_obj <- gen_scaled_data(
-  data = scurve_umap1)
+  nldr_data = scurve_umap)
 umap_scaled1 <- nldr_scaled_obj$scaled_nldr
 
 nldr1 <- umap_scaled1 |>
@@ -137,7 +137,7 @@ nldr1 <- umap_scaled1 |>
 scurve_umap2 <- read_rds("data/scurve/s_curve_noise_umap2.rds")
 
 nldr_scaled_obj2 <- gen_scaled_data(
-  data = scurve_umap2)
+  nldr_data = scurve_umap2)
 umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
 
 nldr2 <- umap_scaled2 |>
@@ -149,7 +149,7 @@ nldr2 <- umap_scaled2 |>
 scurve_umap3 <- read_rds("data/scurve/s_curve_noise_umap3.rds")
 
 nldr_scaled_obj3 <- gen_scaled_data(
-  data = scurve_umap3)
+  nldr_data = scurve_umap3)
 umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
 
 nldr3 <- umap_scaled3 |>
@@ -161,7 +161,7 @@ nldr3 <- umap_scaled3 |>
 scurve_umap4 <- read_rds("data/scurve/s_curve_noise_umap4.rds")
 
 nldr_scaled_obj4 <- gen_scaled_data(
-  data = scurve_umap4)
+  nldr_data = scurve_umap4)
 umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
 
 nldr4 <- umap_scaled4 |>
@@ -173,7 +173,7 @@ nldr4 <- umap_scaled4 |>
 scurve_umap5 <- read_rds("data/scurve/s_curve_noise_umap5.rds")
 
 nldr_scaled_obj5 <- gen_scaled_data(
-  data = scurve_umap5)
+  nldr_data = scurve_umap5)
 umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
 
 nldr5 <- umap_scaled5 |>
@@ -185,7 +185,7 @@ nldr5 <- umap_scaled5 |>
 scurve_umap6 <- read_rds("data/scurve/s_curve_noise_umap6.rds")
 
 nldr_scaled_obj6 <- gen_scaled_data(
-  data = scurve_umap6)
+  nldr_data = scurve_umap6)
 umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
 
 nldr6 <- umap_scaled6 |>
@@ -242,7 +242,7 @@ Add a table of data sets that quollr have
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `scurve` and `scurve_umap`. 
 
-`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $5000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4, X_5, X_6, X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $15$ and `min_dist` is $0.1$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
+`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $5000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4, X_5, X_6, X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $46$ and `min_dist` is $0.9$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
 
 ## Main function
 
@@ -281,10 +281,9 @@ The configurations of the hexagonal grid is defined by the number of bins in eac
 
 ```{r, echo=TRUE}
 calc_bins_y(
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1
-  )
+  nldr_obj = scurve_nldr_obj, 
+  bin1 = 4, 
+  q = 0.1)
 ```
 
 ### Binning the data
@@ -293,28 +292,14 @@ Points are allocated to the bins they fall into based on the nearest centroid. T
 
 ```{r, echo=TRUE}
 hex_binning(
-  data = s_curve_noise_umap_scaled, 
-  bin1 = 12, 
-  r2 = r2,
-  q = 0.1
-  )
+  nldr_obj = scurve_nldr_obj, 
+  bin1 = 4, 
+  q = 0.1)
 ```
 
 <!--add each step separately-->
 <!--add hexbin notation image-->
 
-### Remove low-density hexagons
-
-In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
-
-```{r, echo=TRUE, eval=FALSE}
-find_low_dens_hex(
-  df_bin_centroids_all = df_bin_centroids, 
-  bin1 = 12, 
-  df_bin_centroids_low = df_bin_centroids_low
-  )
-
-```
 
 ### Indicating neighbors by line segments connecting centroids
 
@@ -334,28 +319,28 @@ tr_from_to_df <- gen_edges(
 
 In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the $2\text{-}D$ representation. To address this issue, the `find_lg_benchmark()` function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed. 
 
+### Remove low-density hexagons
+
+In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
+
 ```{r, echo=TRUE, eval=FALSE}
-find_lg_benchmark(
-  distance_edges = distance_df, 
-  distance_col = "distance"
-  )
+find_low_dens_hex(
+  centroids_data, 
+  bin1 = 15, 
+  benchmark_mean_dens = 0.05
+)
+
 ```
 
 ## Lifting the model into high dimensions
 
-The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data and their corresponding hexagonal bin IDs as inputs.
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each hexgaonal bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 
 ```{r, echo=TRUE, eval=FALSE}
-umap_data_with_hb_id <- hb_obj$data_hb_id
-
-df_all <- bind_cols(
-  s_curve_noise_training |> dplyr::select(-ID), 
-  umap_data_with_hb_id
-  )
-
 df_bin <- avg_highd_data(
-  data = df_all
-  )
+  highd_data = scurve, 
+  scaled_nldr_hexid
+)
 ```
 
 ## Prediction
@@ -366,7 +351,7 @@ In the prediction process, first, the nearest $p\text{-}D$ model point is identi
 
 ```{r, echo=TRUE, eval=FALSE}
 predict_emb(
-  highd_data = s_curve_noise_training, 
+  highd_data = scurve, 
   model_2d = df_bin_centroids, 
   model_highd = df_bin
   )
@@ -378,7 +363,7 @@ As a Goodness of fit statistics for the model, `glance()` is used to compute res
 
 ```{r, echo=TRUE, eval=FALSE}
 glance(
-  highd_data = s_curve_noise_training, 
+  highd_data = scurve, 
   model_2d = df_bin_centroids, 
   model_highd = df_bin
   )
@@ -392,7 +377,7 @@ The augmented dataset is always returned as a `tibble::tibble` with the same num
 
 ```{r, echo=TRUE, eval=FALSE}
 augment(
-  highd_data = s_curve_noise_training, 
+  highd_data = scurve, 
   model_2d = df_bin_centroids, 
   model_highd = df_bin
   )
@@ -427,16 +412,7 @@ ggplot() +
 ```
 
 ```{r, echo=TRUE, eval=FALSE}
-vis_lg_mesh(
-  distance_edges = distance_df, 
-  benchmark_value = 0.75, 
-  tr_coord_df = tr_from_to_df, 
-  distance_col = "distance"
-  )
-```
-
-```{r, echo=TRUE, eval=FALSE}
-vis_rmlg_mesh(
+vis_mesh(
   distance_edges = distance_df, 
   benchmark_value = 0.75, 
   tr_coord_df = tr_from_to_df, 
@@ -449,15 +425,17 @@ vis_rmlg_mesh(
 Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 ```{r, echo=TRUE, eval=FALSE}
+df_exe <- comb_data_mode(
+  highd_data = scurve, 
+  model_highd = scurve_model_obj$model_highd, 
+  model_2d = scurve_model_obj$model_2d
+  )
+```
+
+```{r, echo=TRUE, eval=FALSE}
 show_langevitour(
-  df = df_all, 
-  df_b = df_bin, 
-  df_b_with_center_data = df_bin_centroids, 
-  benchmark_value = 0.75, 
-  distance = distance_df, 
-  distance_col = "distance", 
-  use_default_benchmark_val = FALSE, 
-  col_start = "x"
+  point_df, 
+  edge_df
   )
 ```
 

@@ -1,8 +1,8 @@
 ---
-title: 'quollr: An R Package for Visualizing $2-D$ Models from Non-linear Dimension
+title: 'quollr: An R Package for Visualizing $2-\text{D}$ Models from Non-linear Dimension
   Reductions in High Dimensional Space'
 description: |
-  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `triangular_3d_data` data from the \CRANpkg{cardinalR} package is used to illustrate the algorithm and its application within the package.
+  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (p\text{-}D) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `scurve` data from the package is used to illustrate the algorithm. scRNA-seq data for Limb muscles of mice are used to discuss the usability of the package.
 draft: yes
 author:
 - name: Jayani P. Gamage
@@ -35,7 +35,7 @@ author:
   orcid_id: 0000-0002-0656-9789
 type: package
 creative_commons: CC BY
-date: '2025-05-07'
+date: '2025-05-08'
 preamble: |
   \usepackage{amsmath} \usepackage{array}
 output:
@@ -54,7 +54,6 @@ pdf_url: paper-quollr.pdf
 packages:
   cran:
   - quollr
-  - cardinalR
   - knitr
   - rmarkdown
   bioc: []
@@ -146,87 +145,229 @@ $quollr
 </div>
 
 
-## Usage
+## Data sets
+
+Add a table of data sets that quollr have
+
+<!-- ## Usage -->
 
 <!-- add about main function to gen 2D and highD models-->
 <!--Discuss the model can be generated with bin centroids or bin means-->
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `s_curve_noise_training` and `s_curve_noise_umap`. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `scurve` and `scurve_umap`. 
 
-`s_curve_noise_training` is a $3\text{-}D$ S-curve data set with additional four noise dimensions which is used to train the model. `s_curve_noise_umap` is the UMAP $2\text{-}D$ embedding for `s_curve_noise_training` data set. Each data set contains a unique ID column.
+`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $5000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4, X_5, X_6, X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $46$ and `min_dist` is $0.9$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
 
-### Scaling the data
+## Main function
 
-The algorithm begins by scaling NLDR data to a standard scale using the `gen_scaled_data()` function. This function standardizes the data and provides the original limits of embeddings and the aspect ratio.
+The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
 
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>scaled_nldr_obj_scurve</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>s_curve_noise_umap</span><span class='op'>)</span></span>
-<span></span>
-<span><span class='va'>s_curve_noise_umap_scaled</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>scaled_nldr</span></span>
-<span></span>
-<span><span class='va'>lim1</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>lim1</span></span>
-<span><span class='va'>lim2</span> <span class='op'>&lt;-</span> <span class='va'>scaled_nldr_obj_scurve</span><span class='op'>$</span><span class='va'>lim2</span></span>
-<span><span class='va'>r2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diff.html'>diff</a></span><span class='op'>(</span><span class='va'>lim2</span><span class='op'>)</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/diff.html'>diff</a></span><span class='op'>(</span><span class='va'>lim1</span><span class='op'>)</span> </span></code></pre></div>
+<!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly. -->
 
-</div>
-
-
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. When constructing the $2\text{-}D$ model, the user can choose either to fit the $2\text{-}D$ model with hexagonal bin centroids or bin means using `is_bin_centroid` argument.
-
-If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly.
-
-The number of bins along the x-axis, the ratio of the ranges of the original embedding components, the buffer amount as a proportion of data, and if `is_rm_lwd_hex = TRUE`, benchmark value to remove low density hexagons are parameters that will be determined within `fit_highd_model()`, if they are not provided. They are created as they are needed throughout the following example. The function `fit_highd_model()` provides the fitted model in $2\text{-}D$, and $p\text{-}D$.  
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`bin1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`benchmark_highdens`). The function returns an object that includes the hexagonal object, the fitted model in both $2\text{-}D$, and $p\text{-}D$, and triangular mesh.  
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>fit_highd_model</span><span class='op'>(</span></span>
-<span>  highd_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>,</span>
-<span>  nldr_data <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
-<span>  r2 <span class='op'>=</span> <span class='va'>r2</span>,</span>
-<span>  q <span class='op'>=</span> <span class='fl'>0.1</span>,</span>
-<span>  is_bin_centroid <span class='op'>=</span> <span class='cn'>TRUE</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
+<span>  nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, </span>
+<span>  q <span class='op'>=</span> <span class='fl'>0.1</span>, </span>
+<span>  benchmark_highdens <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></span></code></pre></div>
 
 ```
-$df_bin
-# A tibble: 86 × 8
-   hb_id       x1    x2    x3        x4        x5        x6        x7
-   <int>    <dbl> <dbl> <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
- 1    15  0.968   0.198  1.21  0.000518  0.00161   0.00240  -0.000547
- 2    16  0.730   0.142  1.67 -0.000689  0.000495  0.00168   0.000794
- 3    17  0.323   0.158  1.94 -0.00265  -0.00523  -0.00942  -0.00115 
- 4    18 -0.203   0.154  1.98 -0.00269  -0.00107  -0.0382   -0.00167 
- 5    19 -0.628   0.114  1.78 -0.000131 -0.00323   0.0347   -0.00288 
- 6    27  0.987   0.579  1.14 -0.00124  -0.00121   0.0199   -0.00363 
- 7    28  0.847   0.537  1.51  0.000374 -0.00215  -0.00901  -0.000548
- 8    29  0.469   0.476  1.87  0.00117  -0.000439 -0.0191    0.000251
- 9    30 -0.00747 0.491  1.99 -0.000570  0.00114  -0.000815  0.000786
-10    31 -0.525   0.449  1.84  0.00141  -0.000575 -0.0112    0.000714
-# ℹ 76 more rows
+$hb_obj
+$a1
+[1] 0.08326136
 
-$df_bin_centroids
-# A tibble: 86 × 6
-   hexID   c_x      c_y bin_counts std_counts drop_empty
-   <int> <dbl>    <dbl>      <int>      <dbl> <lgl>     
- 1    15 0.158 0.000959         43     0.518  FALSE     
- 2    16 0.262 0.000959         35     0.422  FALSE     
- 3    17 0.365 0.000959         21     0.253  FALSE     
- 4    18 0.468 0.000959         11     0.133  FALSE     
- 5    19 0.571 0.000959          8     0.0964 FALSE     
- 6    27 0.107 0.0904           10     0.120  FALSE     
- 7    28 0.210 0.0904           56     0.675  FALSE     
- 8    29 0.313 0.0904           43     0.518  FALSE     
- 9    30 0.416 0.0904           54     0.651  FALSE     
-10    31 0.520 0.0904           42     0.506  FALSE     
-# ℹ 76 more rows
+$a2
+[1] 0.07210645
+
+$bins
+[1] 15 16
+
+$start_point
+[1] -0.10000000 -0.08923607
+
+$centroids
+# A tibble: 240 × 3
+   hexID     c_x     c_y
+   <int>   <dbl>   <dbl>
+ 1     1 -0.1    -0.0892
+ 2     2 -0.0167 -0.0892
+ 3     3  0.0665 -0.0892
+ 4     4  0.150  -0.0892
+ 5     5  0.233  -0.0892
+ 6     6  0.316  -0.0892
+ 7     7  0.400  -0.0892
+ 8     8  0.483  -0.0892
+ 9     9  0.566  -0.0892
+10    10  0.649  -0.0892
+# ℹ 230 more rows
+
+$hex_poly
+# A tibble: 1,440 × 3
+   hex_poly_id       x       y
+         <int>   <dbl>   <dbl>
+ 1           1 -0.1    -0.0412
+ 2           1 -0.142  -0.0652
+ 3           1 -0.142  -0.113 
+ 4           1 -0.1    -0.137 
+ 5           1 -0.0584 -0.113 
+ 6           1 -0.0584 -0.0652
+ 7           2 -0.0167 -0.0412
+ 8           2 -0.0584 -0.0652
+ 9           2 -0.0584 -0.113 
+10           2 -0.0167 -0.137 
+# ℹ 1,430 more rows
+
+$data_hb_id
+# A tibble: 5,000 × 4
+    emb1  emb2    ID hexID
+   <dbl> <dbl> <int> <int>
+ 1 0.707 0.839     1   205
+ 2 0.231 0.401     2   109
+ 3 0.232 0.215     3    65
+ 4 0.790 0.564     4   146
+ 5 0.761 0.551     5   146
+ 6 0.445 0.721     6   172
+ 7 0.900 0.137     7    58
+ 8 0.247 0.392     8   110
+ 9 0.325 0.542     9   141
+10 0.278 0.231    10    80
+# ℹ 4,990 more rows
+
+$std_cts
+# A tibble: 142 × 3
+   hexID bin_counts std_counts
+   <int>      <int>      <dbl>
+ 1    21         12     0.16  
+ 2    22         17     0.227 
+ 3    23         22     0.293 
+ 4    24         10     0.133 
+ 5    25          7     0.0933
+ 6    26         12     0.16  
+ 7    27          1     0.0133
+ 8    36         42     0.56  
+ 9    37         42     0.56  
+10    38         44     0.587 
+# ℹ 132 more rows
+
+$tot_bins
+[1] 240
+
+$non_bins
+[1] 142
+
+$pts_bins
+# A tibble: 142 × 2
+   hexID pts_list  
+   <int> <list>    
+ 1    21 <int [12]>
+ 2    22 <int [17]>
+ 3    23 <int [22]>
+ 4    24 <int [10]>
+ 5    25 <int [7]> 
+ 6    26 <int [12]>
+ 7    27 <int [1]> 
+ 8    36 <int [42]>
+ 9    37 <int [42]>
+10    38 <int [44]>
+# ℹ 132 more rows
+
+attr(,"class")
+[1] "hex_bin_obj"
+
+$model_highd
+# A tibble: 130 × 8
+   hexID      x1    x2    x3         x4        x5       x6        x7
+   <int>   <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl>
+ 1    21 -0.992   1.91 1.11  -0.000427   0.000624  0.00749  0.00105 
+ 2    22 -0.906   1.93 1.41  -0.0000183  0.00331  -0.0204  -0.000363
+ 3    23 -0.680   1.93 1.72  -0.000810  -0.00259  -0.00449  0.00153 
+ 4    24 -0.272   1.93 1.96   0.00251    0.00668  -0.0460   0.00128 
+ 5    25  0.0760  1.93 2.00   0.00876    0.00447   0.00851 -0.00195 
+ 6    26  0.461   1.93 1.89  -0.00478    0.00492   0.00835  0.00172 
+ 7    36 -0.985   1.75 0.853 -0.00202    0.000397  0.00331  0.000338
+ 8    37 -0.980   1.66 1.17  -0.000374  -0.00154   0.0165   0.000126
+ 9    38 -0.821   1.64 1.56  -0.000459   0.000538 -0.0123   0.000780
+10    39 -0.484   1.68 1.87   0.00313    0.00241   0.00823 -0.00117 
+# ℹ 120 more rows
+
+$model_2d
+# A tibble: 130 × 5
+   hexID   c_x     c_y bin_counts std_counts
+   <int> <dbl>   <dbl>      <dbl>      <dbl>
+ 1    21 0.358 -0.0171         12     0.16  
+ 2    22 0.441 -0.0171         17     0.227 
+ 3    23 0.524 -0.0171         22     0.293 
+ 4    24 0.608 -0.0171         10     0.133 
+ 5    25 0.691 -0.0171          7     0.0933
+ 6    26 0.774 -0.0171         12     0.16  
+ 7    36 0.316  0.0550         42     0.56  
+ 8    37 0.400  0.0550         42     0.56  
+ 9    38 0.483  0.0550         44     0.587 
+10    39 0.566  0.0550         39     0.52  
+# ℹ 120 more rows
+
+$trimesh_data
+# A tibble: 324 × 6
+    from    to x_from  y_from  x_to   y_to
+   <int> <int>  <dbl>   <dbl> <dbl>  <dbl>
+ 1    16    26 0.275   0.127  0.233 0.199 
+ 2    25    26 0.150   0.199  0.233 0.199 
+ 3    25    37 0.150   0.199  0.191 0.271 
+ 4    36    49 0.108   0.271  0.150 0.343 
+ 5    36    37 0.108   0.271  0.191 0.271 
+ 6     1     7 0.358  -0.0171 0.316 0.0550
+ 7    48    49 0.0665  0.343  0.150 0.343 
+ 8    37    38 0.191   0.271  0.275 0.271 
+ 9    26    27 0.233   0.199  0.316 0.199 
+10    27    38 0.316   0.199  0.275 0.271 
+# ℹ 314 more rows
 ```
 
 </div>
 
 
-## Constructing the $2\text{-}D$ model
+## Constructing the $2\text{-}D$ Model
 
-Constructing the $2\text{-}D$ model mainly contains (i) binning data, (ii) obtaining bin centroids, and (iii) indicating neighbors by line segments connecting centroids.
+Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) Remove low-density hexagons.
+
+### Scaling the Data
+
+The algorithm starts by scaling the NLDR data to a standard range using the `gen_scaled_data()` function. This function standardizes the data so that the first embedding ranges from $0$ to $1$, while the second embedding scales from $0$ to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>scurve_nldr_obj</span> <span class='op'>&lt;-</span> <span class='fu'>gen_scaled_data</span><span class='op'>(</span>nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>scurve_nldr_obj</span></span></code></pre></div>
+
+```
+$scaled_nldr
+# A tibble: 5,000 × 3
+    emb1  emb2    ID
+   <dbl> <dbl> <int>
+ 1 0.707 0.839     1
+ 2 0.231 0.401     2
+ 3 0.232 0.215     3
+ 4 0.790 0.564     4
+ 5 0.761 0.551     5
+ 6 0.445 0.721     6
+ 7 0.900 0.137     7
+ 8 0.247 0.392     8
+ 9 0.325 0.542     9
+10 0.278 0.231    10
+# ℹ 4,990 more rows
+
+$lim1
+[1] -14.42166  13.32655
+
+$lim2
+[1] -12.43687  12.32455
+```
+
+</div>
+
 
 ### Computing hexagon grid configurations
 
@@ -234,20 +375,19 @@ The configurations of the hexagonal grid is defined by the number of bins in eac
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>calc_bins_y</span><span class='op'>(</span></span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
-<span>  r2 <span class='op'>=</span> <span class='va'>r2</span>,</span>
-<span>  q <span class='op'>=</span> <span class='fl'>0.1</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_nldr_obj</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>4</span>, </span>
+<span>  q <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span></code></pre></div>
 
 ```
 $bin2
-[1] 13
+[1] 5
 
 $a1
-[1] 0.1032943
+[1] 0.3122301
 
 $a2
-[1] 0.08945548
+[1] 0.2703992
 ```
 
 </div>
@@ -259,110 +399,127 @@ Points are allocated to the bins they fall into based on the nearest centroid. T
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>hex_binning</span><span class='op'>(</span></span>
-<span>  data <span class='op'>=</span> <span class='va'>s_curve_noise_umap_scaled</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
-<span>  r2 <span class='op'>=</span> <span class='va'>r2</span>,</span>
-<span>  q <span class='op'>=</span> <span class='fl'>0.1</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span>  nldr_obj <span class='op'>=</span> <span class='va'>scurve_nldr_obj</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>4</span>, </span>
+<span>  q <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span></span></code></pre></div>
 
 ```
 $a1
-[1] 0.1032943
+[1] 0.3122301
 
 $a2
-[1] 0.08945548
+[1] 0.2703992
 
 $bins
-[1] 12 13
+[1] 4 5
 
 $start_point
-[1] -0.10000000 -0.08849688
+[1] -0.10000000 -0.08923607
 
 $centroids
-# A tibble: 156 × 3
-   hexID      c_x     c_y
-   <int>    <dbl>   <dbl>
- 1     1 -0.1     -0.0885
- 2     2  0.00329 -0.0885
- 3     3  0.107   -0.0885
- 4     4  0.210   -0.0885
- 5     5  0.313   -0.0885
- 6     6  0.416   -0.0885
- 7     7  0.520   -0.0885
- 8     8  0.623   -0.0885
- 9     9  0.726   -0.0885
-10    10  0.830   -0.0885
-# ℹ 146 more rows
+# A tibble: 20 × 3
+   hexID     c_x     c_y
+   <int>   <dbl>   <dbl>
+ 1     1 -0.1    -0.0892
+ 2     2  0.212  -0.0892
+ 3     3  0.524  -0.0892
+ 4     4  0.837  -0.0892
+ 5     5  0.0561  0.181 
+ 6     6  0.368   0.181 
+ 7     7  0.681   0.181 
+ 8     8  0.993   0.181 
+ 9     9 -0.1     0.452 
+10    10  0.212   0.452 
+11    11  0.524   0.452 
+12    12  0.837   0.452 
+13    13  0.0561  0.722 
+14    14  0.368   0.722 
+15    15  0.681   0.722 
+16    16  0.993   0.722 
+17    17 -0.1     0.992 
+18    18  0.212   0.992 
+19    19  0.524   0.992 
+20    20  0.837   0.992 
 
 $hex_poly
-# A tibble: 936 × 3
-   hex_poly_id        x       y
-         <int>    <dbl>   <dbl>
- 1           1 -0.1     -0.0289
- 2           1 -0.152   -0.0587
- 3           1 -0.152   -0.118 
- 4           1 -0.1     -0.148 
- 5           1 -0.0484  -0.118 
- 6           1 -0.0484  -0.0587
- 7           2  0.00329 -0.0289
- 8           2 -0.0484  -0.0587
- 9           2 -0.0484  -0.118 
-10           2  0.00329 -0.148 
-# ℹ 926 more rows
+# A tibble: 120 × 3
+   hex_poly_id       x         y
+         <int>   <dbl>     <dbl>
+ 1           1 -0.1     0.0910  
+ 2           1 -0.256   0.000897
+ 3           1 -0.256  -0.179   
+ 4           1 -0.1    -0.270   
+ 5           1  0.0561 -0.179   
+ 6           1  0.0561  0.000897
+ 7           2  0.212   0.0910  
+ 8           2  0.0561  0.000897
+ 9           2  0.0561 -0.179   
+10           2  0.212  -0.270   
+# ℹ 110 more rows
 
 $data_hb_id
-# A tibble: 3,750 × 4
-    emb1   emb2    ID hb_id
-   <dbl>  <dbl> <int> <int>
- 1 0.270 0.839      1   125
- 2 0.788 0.466      2    82
- 3 0.771 0.319      3    69
- 4 0.306 0.542      5    88
- 5 0.549 0.806      6   127
- 6 0.166 0.259      7    52
- 7 0.672 0.596      9   104
- 8 0.735 0.354     10    69
- 9 0.839 0.467     11    82
-10 0.240 0.0903    12    28
-# ℹ 3,740 more rows
+# A tibble: 5,000 × 4
+    emb1  emb2    ID hexID
+   <dbl> <dbl> <int> <int>
+ 1 0.707 0.839     1    15
+ 2 0.231 0.401     2    10
+ 3 0.232 0.215     3     6
+ 4 0.790 0.564     4    12
+ 5 0.761 0.551     5    12
+ 6 0.445 0.721     6    14
+ 7 0.900 0.137     7     8
+ 8 0.247 0.392     8    10
+ 9 0.325 0.542     9    10
+10 0.278 0.231    10     6
+# ℹ 4,990 more rows
 
 $std_cts
-# A tibble: 86 × 3
-   hb_id     n std_counts
-   <int> <int>      <dbl>
- 1    15    43     0.518 
- 2    16    35     0.422 
- 3    17    21     0.253 
- 4    18    11     0.133 
- 5    19     8     0.0964
- 6    27    10     0.120 
- 7    28    56     0.675 
- 8    29    43     0.518 
- 9    30    54     0.651 
-10    31    42     0.506 
-# ℹ 76 more rows
+# A tibble: 16 × 3
+   hexID bin_counts std_counts
+   <int>      <int>      <dbl>
+ 1     3        116    0.172  
+ 2     4         82    0.122  
+ 3     5        193    0.286  
+ 4     6        674    1      
+ 5     7        529    0.785  
+ 6     8        243    0.361  
+ 7     9         87    0.129  
+ 8    10        601    0.892  
+ 9    11        244    0.362  
+10    12        355    0.527  
+11    13        183    0.272  
+12    14        627    0.930  
+13    15        669    0.993  
+14    16        318    0.472  
+15    19          2    0.00297
+16    20         77    0.114  
 
 $tot_bins
-[1] 156
+[1] 20
 
 $non_bins
-[1] 86
+[1] 16
 
 $pts_bins
-# A tibble: 86 × 2
-   hb_id pts_list  
-   <int> <list>    
- 1    15 <int [43]>
- 2    16 <int [35]>
- 3    17 <int [21]>
- 4    18 <int [11]>
- 5    19 <int [8]> 
- 6    27 <int [10]>
- 7    28 <int [56]>
- 8    29 <int [43]>
- 9    30 <int [54]>
-10    31 <int [42]>
-# ℹ 76 more rows
+# A tibble: 16 × 2
+   hexID pts_list   
+   <int> <list>     
+ 1     3 <int [116]>
+ 2     4 <int [82]> 
+ 3     5 <int [193]>
+ 4     6 <int [674]>
+ 5     7 <int [529]>
+ 6     8 <int [243]>
+ 7     9 <int [87]> 
+ 8    10 <int [601]>
+ 9    11 <int [244]>
+10    12 <int [355]>
+11    13 <int [183]>
+12    14 <int [627]>
+13    15 <int [669]>
+14    16 <int [318]>
+15    19 <int [2]>  
+16    20 <int [77]> 
 
 attr(,"class")
 [1] "hex_bin_obj"
@@ -373,19 +530,6 @@ attr(,"class")
 
 <!--add each step separately-->
 <!--add hexbin notation image-->
-
-### Remove low-density hexagons
-
-In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
-
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
-<span>  df_bin_centroids_all <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
-<span>  bin1 <span class='op'>=</span> <span class='fl'>12</span>, </span>
-<span>  df_bin_centroids_low <span class='op'>=</span> <span class='va'>df_bin_centroids_low</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
-
-</div>
 
 
 ### Indicating neighbors by line segments connecting centroids
@@ -408,30 +552,29 @@ To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate
 
 In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the $2\text{-}D$ representation. To address this issue, the `find_lg_benchmark()` function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed. 
 
+### Remove low-density hexagons
+
+In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
+
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_lg_benchmark</span><span class='op'>(</span></span>
-<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
-<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>find_low_dens_hex</span><span class='op'>(</span></span>
+<span>  <span class='va'>centroids_data</span>, </span>
+<span>  bin1 <span class='op'>=</span> <span class='fl'>15</span>, </span>
+<span>  benchmark_mean_dens <span class='op'>=</span> <span class='fl'>0.05</span></span>
+<span><span class='op'>)</span></span></code></pre></div>
 
 </div>
 
 
 ## Lifting the model into high dimensions
 
-The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data and their corresponding hexagonal bin IDs as inputs.
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each hexgaonal bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>umap_data_with_hb_id</span> <span class='op'>&lt;-</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>data_hb_id</span></span>
-<span></span>
-<span><span class='va'>df_all</span> <span class='op'>&lt;-</span> <span class='fu'>bind_cols</span><span class='op'>(</span></span>
-<span>  <span class='va'>s_curve_noise_training</span> <span class='op'>|&gt;</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>ID</span><span class='op'>)</span>, </span>
-<span>  <span class='va'>umap_data_with_hb_id</span></span>
-<span>  <span class='op'>)</span></span>
-<span></span>
-<span><span class='va'>df_bin</span> <span class='op'>&lt;-</span> <span class='fu'>avg_highd_data</span><span class='op'>(</span></span>
-<span>  data <span class='op'>=</span> <span class='va'>df_all</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_bin</span> <span class='op'>&lt;-</span> <span class='fu'>avg_highd_data</span><span class='op'>(</span></span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
+<span>  <span class='va'>scaled_nldr_hexid</span></span>
+<span><span class='op'>)</span></span></code></pre></div>
 
 </div>
 
@@ -444,7 +587,7 @@ In the prediction process, first, the nearest $p\text{-}D$ model point is identi
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>predict_emb</span><span class='op'>(</span></span>
-<span>  highd_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
 <span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
@@ -458,7 +601,7 @@ As a Goodness of fit statistics for the model, `glance()` is used to compute res
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>glance</span><span class='op'>(</span></span>
-<span>  highd_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
 <span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
@@ -474,7 +617,7 @@ The augmented dataset is always returned as a `tibble::tibble` with the same num
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>augment</span><span class='op'>(</span></span>
-<span>  highd_data <span class='op'>=</span> <span class='va'>s_curve_noise_training</span>, </span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
 <span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
@@ -515,18 +658,7 @@ To visualize the $2\text{-}D$ model, mainly three functions are used. As shown i
 
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_lg_mesh</span><span class='op'>(</span></span>
-<span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
-<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
-<span>  tr_coord_df <span class='op'>=</span> <span class='va'>tr_from_to_df</span>, </span>
-<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
-
-</div>
-
-
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_rmlg_mesh</span><span class='op'>(</span></span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>vis_mesh</span><span class='op'>(</span></span>
 <span>  distance_edges <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
 <span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
 <span>  tr_coord_df <span class='op'>=</span> <span class='va'>tr_from_to_df</span>, </span>
@@ -541,15 +673,19 @@ To visualize the $2\text{-}D$ model, mainly three functions are used. As shown i
 Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_exe</span> <span class='op'>&lt;-</span> <span class='fu'>comb_data_mode</span><span class='op'>(</span></span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
+<span>  model_highd <span class='op'>=</span> <span class='va'>scurve_model_obj</span><span class='op'>$</span><span class='va'>model_highd</span>, </span>
+<span>  model_2d <span class='op'>=</span> <span class='va'>scurve_model_obj</span><span class='op'>$</span><span class='va'>model_2d</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_langevitour</span><span class='op'>(</span></span>
-<span>  df <span class='op'>=</span> <span class='va'>df_all</span>, </span>
-<span>  df_b <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
-<span>  df_b_with_center_data <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
-<span>  benchmark_value <span class='op'>=</span> <span class='fl'>0.75</span>, </span>
-<span>  distance <span class='op'>=</span> <span class='va'>distance_df</span>, </span>
-<span>  distance_col <span class='op'>=</span> <span class='st'>"distance"</span>, </span>
-<span>  use_default_benchmark_val <span class='op'>=</span> <span class='cn'>FALSE</span>, </span>
-<span>  col_start <span class='op'>=</span> <span class='st'>"x"</span></span>
+<span>  <span class='va'>point_df</span>, </span>
+<span>  <span class='va'>edge_df</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
@@ -679,7 +815,7 @@ This article is created using \CRANpkg{knitr} [@knitr] and \CRANpkg{rmarkdown} [
 
 ## CRAN packages used {.appendix}
 
-[quollr](https://cran.r-project.org/package=quollr), [cardinalR](https://cran.r-project.org/package=cardinalR), [knitr](https://cran.r-project.org/package=knitr), [rmarkdown](https://cran.r-project.org/package=rmarkdown)
+[quollr](https://cran.r-project.org/package=quollr), [knitr](https://cran.r-project.org/package=knitr), [rmarkdown](https://cran.r-project.org/package=rmarkdown)
 
 ## CRAN Task Views implied by cited packages {.appendix}
 
