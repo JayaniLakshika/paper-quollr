@@ -230,11 +230,13 @@ glance(
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# augment(
+# model_error <- augment(
 #   highd_data = scurve,
 #   model_2d = df_bin_centroids,
 #   model_highd = df_bin
 #   )
+# 
+# model_error
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -242,8 +244,7 @@ ggplot() +
   geom_hexgrid(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
-    ) +
-  coord_fixed()
+    ) 
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -262,31 +263,52 @@ vis_mesh(
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# df_exe <- comb_data_mode(
+# df_exe <- comb_data_model(
 #   highd_data = scurve,
-#   model_highd = scurve_model_obj$model_highd,
-#   model_2d = scurve_model_obj$model_2d
+#   model_highd = df_bin,
+#   model_2d = df_bin_centroids
 #   )
+# 
+# df_exe
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # show_langevitour(
-#   point_df,
-#   edge_df
+#   point_data = df_exe,
+#   edge_data = trimesh
+#   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# df_exe <- comb_all_data_model(
+#   highd_data = scurve,
+#   nldr_data = scurve_umap,
+#   model_highd = df_bin,
+#   model_2d = df_bin_centroids
 #   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # show_link_plots(
-#   point_df = df_exe,
-#   edge_df = distance_small_df
+#   point_data = df_exe,
+#   edge_data = trimesh
+#   )
+
+
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# df_exe <- comb_all_data_model_error(
+#   highd_data = scurve,
+#   nldr_data = scurve_umap,
+#   model_highd = df_bin,
+#   model_2d = df_bin_centroids,
+#   error_data = model_error
 #   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # show_error_link_plots(
-#   point_df = df_exe,
-#   edge_df = distance_small_df
+#   point_data = df_exe,
+#   edge_data = trimesh
 #   )
 
 

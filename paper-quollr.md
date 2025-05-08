@@ -310,19 +310,19 @@ $model_2d
 # ℹ 120 more rows
 
 $trimesh_data
-# A tibble: 324 × 6
-    from    to x_from  y_from  x_to   y_to
-   <int> <int>  <dbl>   <dbl> <dbl>  <dbl>
- 1    16    26 0.275   0.127  0.233 0.199 
- 2    25    26 0.150   0.199  0.233 0.199 
- 3    25    37 0.150   0.199  0.191 0.271 
- 4    36    49 0.108   0.271  0.150 0.343 
- 5    36    37 0.108   0.271  0.191 0.271 
- 6     1     7 0.358  -0.0171 0.316 0.0550
- 7    48    49 0.0665  0.343  0.150 0.343 
- 8    37    38 0.191   0.271  0.275 0.271 
- 9    26    27 0.233   0.199  0.316 0.199 
-10    27    38 0.316   0.199  0.275 0.271 
+# A tibble: 324 × 8
+    from    to x_from  y_from  x_to   y_to from_count to_count
+   <int> <int>  <dbl>   <dbl> <dbl>  <dbl>      <dbl>    <dbl>
+ 1    50    65 0.275   0.127  0.233 0.199          65       67
+ 2    64    65 0.150   0.199  0.233 0.199          39       67
+ 3    64    79 0.150   0.199  0.191 0.271          39       62
+ 4    78    94 0.108   0.271  0.150 0.343          62       34
+ 5    78    79 0.108   0.271  0.191 0.271          62       62
+ 6    21    36 0.358  -0.0171 0.316 0.0550         12       42
+ 7    93    94 0.0665  0.343  0.150 0.343          45       34
+ 8    79    80 0.191   0.271  0.275 0.271          62       68
+ 9    65    66 0.233   0.199  0.316 0.199          67       56
+10    66    80 0.316   0.199  0.275 0.271          56       68
 # ℹ 314 more rows
 ```
 
@@ -452,20 +452,20 @@ To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate
 <span><span class='va'>trimesh</span></span></code></pre></div>
 
 ```
-# A tibble: 324 × 6
-    from    to x_from  y_from  x_to   y_to
-   <int> <int>  <dbl>   <dbl> <dbl>  <dbl>
- 1    16    26 0.275   0.127  0.233 0.199 
- 2    25    26 0.150   0.199  0.233 0.199 
- 3    25    37 0.150   0.199  0.191 0.271 
- 4    36    49 0.108   0.271  0.150 0.343 
- 5    36    37 0.108   0.271  0.191 0.271 
- 6     1     7 0.358  -0.0171 0.316 0.0550
- 7    48    49 0.0665  0.343  0.150 0.343 
- 8    37    38 0.191   0.271  0.275 0.271 
- 9    26    27 0.233   0.199  0.316 0.199 
-10    27    38 0.316   0.199  0.275 0.271 
-# ℹ 314 more rows
+# A tibble: 670 × 8
+    from    to  x_from  y_from    x_to    y_to from_count to_count
+   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
+ 1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
+ 2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
+ 3     1    31 -0.1    -0.0892 -0.1     0.0550          0        0
+ 4    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+ 5     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+ 6    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+ 7    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
+ 8    31    46 -0.1     0.0550 -0.0584  0.127           0        0
+ 9    32    47 -0.0167  0.0550  0.0249  0.127           0        0
+10    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
+# ℹ 660 more rows
 ```
 
 </div>
@@ -587,11 +587,13 @@ Users can pass data to `augment()` via either the `training_data` argument or th
 The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>augment</span><span class='op'>(</span></span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>model_error</span> <span class='op'>&lt;-</span> <span class='fu'>augment</span><span class='op'>(</span></span>
 <span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
 <span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
 <span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>model_error</span></span></code></pre></div>
 
 </div>
 
@@ -609,8 +611,7 @@ The `geom_hexgrid()` function is used to plot the hexagonal grid from the provid
 <span>  <span class='fu'>geom_hexgrid</span><span class='op'>(</span></span>
 <span>    data <span class='op'>=</span> <span class='va'>hb_obj</span><span class='op'>$</span><span class='va'>centroids</span>, </span>
 <span>    <span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>c_x</span>, y <span class='op'>=</span> <span class='va'>c_y</span><span class='op'>)</span></span>
-<span>    <span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'>coord_fixed</span><span class='op'>(</span><span class='op'>)</span></span></code></pre></div>
+<span>    <span class='op'>)</span> </span></code></pre></div>
 <img src="paper-quollr_files/figure-html5/unnamed-chunk-14-1.png" width="100%" />
 
 </div>
@@ -644,19 +645,21 @@ To visualize the $2\text{-}D$ model, mainly three functions are used. As shown i
 Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 <div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_exe</span> <span class='op'>&lt;-</span> <span class='fu'>comb_data_mode</span><span class='op'>(</span></span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_exe</span> <span class='op'>&lt;-</span> <span class='fu'>comb_data_model</span><span class='op'>(</span></span>
 <span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
-<span>  model_highd <span class='op'>=</span> <span class='va'>scurve_model_obj</span><span class='op'>$</span><span class='va'>model_highd</span>, </span>
-<span>  model_2d <span class='op'>=</span> <span class='va'>scurve_model_obj</span><span class='op'>$</span><span class='va'>model_2d</span></span>
-<span>  <span class='op'>)</span></span></code></pre></div>
+<span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>df_exe</span></span></code></pre></div>
 
 </div>
 
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_langevitour</span><span class='op'>(</span></span>
-<span>  <span class='va'>point_df</span>, </span>
-<span>  <span class='va'>edge_df</span></span>
+<span>  point_data <span class='op'>=</span> <span class='va'>df_exe</span>, </span>
+<span>  edge_data <span class='op'>=</span> <span class='va'>trimesh</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
@@ -669,9 +672,32 @@ There are mainly two interactive link plots can be generated. `show_link_plots()
 `show_error_link_plots()` helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern. The function requires several arguments: points data which contain Non-linear dimension reduction data, high-dimensional data, high-dimensional model data, and model error, and edge data where the from and to links of the edges.
 
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_exe</span> <span class='op'>&lt;-</span> <span class='fu'>comb_all_data_model</span><span class='op'>(</span></span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
+<span>  nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span>, </span>
+<span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_link_plots</span><span class='op'>(</span></span>
-<span>  point_df <span class='op'>=</span> <span class='va'>df_exe</span>, </span>
-<span>  edge_df <span class='op'>=</span> <span class='va'>distance_small_df</span></span>
+<span>  point_data <span class='op'>=</span> <span class='va'>df_exe</span>, </span>
+<span>  edge_data <span class='op'>=</span> <span class='va'>trimesh</span></span>
+<span>  <span class='op'>)</span></span></code></pre></div>
+
+</div>
+
+
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>df_exe</span> <span class='op'>&lt;-</span> <span class='fu'>comb_all_data_model_error</span><span class='op'>(</span></span>
+<span>  highd_data <span class='op'>=</span> <span class='va'>scurve</span>, </span>
+<span>  nldr_data <span class='op'>=</span> <span class='va'>scurve_umap</span>, </span>
+<span>  model_highd <span class='op'>=</span> <span class='va'>df_bin</span>, </span>
+<span>  model_2d <span class='op'>=</span> <span class='va'>df_bin_centroids</span>, </span>
+<span>  error_data <span class='op'>=</span> <span class='va'>model_error</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
@@ -679,8 +705,8 @@ There are mainly two interactive link plots can be generated. `show_link_plots()
 
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>show_error_link_plots</span><span class='op'>(</span></span>
-<span>  point_df <span class='op'>=</span> <span class='va'>df_exe</span>, </span>
-<span>  edge_df <span class='op'>=</span> <span class='va'>distance_small_df</span></span>
+<span>  point_data <span class='op'>=</span> <span class='va'>df_exe</span>, </span>
+<span>  edge_data <span class='op'>=</span> <span class='va'>trimesh</span></span>
 <span>  <span class='op'>)</span></span></code></pre></div>
 
 </div>
