@@ -174,10 +174,12 @@ scurve_umap_obj
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-calc_bins_y(
+bin_configs <- calc_bins_y(
   nldr_obj = scurve_umap_obj, 
   bin1 = 15, 
   q = 0.1)
+
+bin_configs
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -347,8 +349,52 @@ hex_param_vis
 
 
 ## ----echo=TRUE----------------------------------------------------------------
+all_centroids_df <- gen_centroids(
+  nldr_obj = scurve_umap_obj, 
+  bin1 = 15, 
+  q = 0.1
+  )
+
+all_centroids_df
+
+
+## ----echo=TRUE----------------------------------------------------------------
+all_hex_coord <- gen_hex_coord(
+  centroids_data = all_centroids_df, 
+  a1 = bin_configs$a1
+  )
+
+all_hex_coord
+
+
+## ----echo=TRUE----------------------------------------------------------------
+umap_hex_id <- assign_data(
+  nldr_obj = scurve_umap_obj, 
+  centroids_data = all_centroids_df
+  )
+
+umap_hex_id
+
+
+## ----echo=TRUE----------------------------------------------------------------
+std_df <- compute_std_counts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+std_df
+
+
+## ----echo=TRUE----------------------------------------------------------------
+pts_df <- find_pts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+pts_df
+
+
+## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- extract_hexbin_centroids(
-  centroids_data = hb_obj$centroids, 
+  centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
 

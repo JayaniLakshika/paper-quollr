@@ -290,10 +290,12 @@ scurve_umap_obj
 The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (`bin1`), and the buffer amount as a proportion.
 
 ```{r, echo=TRUE}
-calc_bins_y(
+bin_configs <- calc_bins_y(
   nldr_obj = scurve_umap_obj, 
   bin1 = 15, 
   q = 0.1)
+
+bin_configs
 ```
 
 ### Binning the data
@@ -469,11 +471,55 @@ hex_param_vis <- ggplot() +
 hex_param_vis
 ```
 
+```{r, echo=TRUE}
+all_centroids_df <- gen_centroids(
+  nldr_obj = scurve_umap_obj, 
+  bin1 = 15, 
+  q = 0.1
+  )
+
+all_centroids_df
+```
+
+```{r, echo=TRUE}
+all_hex_coord <- gen_hex_coord(
+  centroids_data = all_centroids_df, 
+  a1 = bin_configs$a1
+  )
+
+all_hex_coord
+```
+
+```{r, echo=TRUE}
+umap_hex_id <- assign_data(
+  nldr_obj = scurve_umap_obj, 
+  centroids_data = all_centroids_df
+  )
+
+umap_hex_id
+```
+
+```{r, echo=TRUE}
+std_df <- compute_std_counts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+std_df
+```
+
+```{r, echo=TRUE}
+pts_df <- find_pts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+pts_df
+```
+
 ### Obtaining bin centroids
 
 ```{r, echo=TRUE}
 df_bin_centroids <- extract_hexbin_centroids(
-  centroids_data = hb_obj$centroids, 
+  centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
 

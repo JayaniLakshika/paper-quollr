@@ -269,10 +269,12 @@ scurve_umap_obj
 The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (\texttt{bin1}), and the buffer amount as a proportion.
 
 \begin{verbatim}
-calc_bins_y(
+bin_configs <- calc_bins_y(
   nldr_obj = scurve_umap_obj, 
   bin1 = 15, 
   q = 0.1)
+
+bin_configs
 \end{verbatim}
 
 \begin{verbatim}
@@ -301,11 +303,140 @@ hb_obj <- hex_binning(
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/fig-hex-param-1} \caption{The components of the hexagon grid illustrating notation.}\label{fig:fig-hex-param}
 \end{figure}
 
+\begin{verbatim}
+all_centroids_df <- gen_centroids(
+  nldr_obj = scurve_umap_obj, 
+  bin1 = 15, 
+  q = 0.1
+  )
+
+all_centroids_df
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 240 x 3
+#>    hexID     c_x     c_y
+#>    <int>   <dbl>   <dbl>
+#>  1     1 -0.1    -0.0892
+#>  2     2 -0.0167 -0.0892
+#>  3     3  0.0665 -0.0892
+#>  4     4  0.150  -0.0892
+#>  5     5  0.233  -0.0892
+#>  6     6  0.316  -0.0892
+#>  7     7  0.400  -0.0892
+#>  8     8  0.483  -0.0892
+#>  9     9  0.566  -0.0892
+#> 10    10  0.649  -0.0892
+#> # i 230 more rows
+\end{verbatim}
+
+\begin{verbatim}
+all_hex_coord <- gen_hex_coord(
+  centroids_data = all_centroids_df, 
+  a1 = bin_configs$a1
+  )
+
+all_hex_coord
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 1,440 x 3
+#>    hex_poly_id       x       y
+#>          <int>   <dbl>   <dbl>
+#>  1           1 -0.1    -0.0412
+#>  2           1 -0.142  -0.0652
+#>  3           1 -0.142  -0.113 
+#>  4           1 -0.1    -0.137 
+#>  5           1 -0.0584 -0.113 
+#>  6           1 -0.0584 -0.0652
+#>  7           2 -0.0167 -0.0412
+#>  8           2 -0.0584 -0.0652
+#>  9           2 -0.0584 -0.113 
+#> 10           2 -0.0167 -0.137 
+#> # i 1,430 more rows
+\end{verbatim}
+
+\begin{verbatim}
+umap_hex_id <- assign_data(
+  nldr_obj = scurve_umap_obj, 
+  centroids_data = all_centroids_df
+  )
+
+umap_hex_id
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 5,000 x 4
+#>     emb1  emb2    ID hexID
+#>    <dbl> <dbl> <int> <int>
+#>  1 0.707 0.839     1   205
+#>  2 0.231 0.401     2   109
+#>  3 0.232 0.215     3    65
+#>  4 0.790 0.564     4   146
+#>  5 0.761 0.551     5   146
+#>  6 0.445 0.721     6   172
+#>  7 0.900 0.137     7    58
+#>  8 0.247 0.392     8   110
+#>  9 0.325 0.542     9   141
+#> 10 0.278 0.231    10    80
+#> # i 4,990 more rows
+\end{verbatim}
+
+\begin{verbatim}
+std_df <- compute_std_counts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+std_df
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 142 x 3
+#>    hexID bin_counts std_counts
+#>    <int>      <int>      <dbl>
+#>  1    21         12     0.16  
+#>  2    22         17     0.227 
+#>  3    23         22     0.293 
+#>  4    24         10     0.133 
+#>  5    25          7     0.0933
+#>  6    26         12     0.16  
+#>  7    27          1     0.0133
+#>  8    36         42     0.56  
+#>  9    37         42     0.56  
+#> 10    38         44     0.587 
+#> # i 132 more rows
+\end{verbatim}
+
+\begin{verbatim}
+pts_df <- find_pts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+pts_df
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 142 x 2
+#>    hexID pts_list  
+#>    <int> <list>    
+#>  1    21 <int [12]>
+#>  2    22 <int [17]>
+#>  3    23 <int [22]>
+#>  4    24 <int [10]>
+#>  5    25 <int [7]> 
+#>  6    26 <int [12]>
+#>  7    27 <int [1]> 
+#>  8    36 <int [42]>
+#>  9    37 <int [42]>
+#> 10    38 <int [44]>
+#> # i 132 more rows
+\end{verbatim}
+
 \subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
 \begin{verbatim}
 df_bin_centroids <- extract_hexbin_centroids(
-  centroids_data = hb_obj$centroids, 
+  centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
 
@@ -514,7 +645,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-14-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
 
 To visualize the \(2\text{-}D\) model, mainly three functions are used. As shown in Figure \ref{fig:mesh-plots}a, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \ref{fig:mesh-plots}b, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed \(2\text{-}D\) model which is the \(2\text{-}D\) model after removing the long edges (see Figure \ref{fig:mesh-plots}c). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in \(2\text{-}D\). Using small value of \texttt{benchmark\_value}, will produce a triangular mesh with missing data structure; for example \texttt{benchmark\_value\ =\ 0.3} shows two clusters rather than continuous structure, while \texttt{benchmark\_value\ =\ 0.8} creates long edges and mislead the data structure in \(p\text{-}D\) space.
 
@@ -526,7 +657,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-15-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-20-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -616,7 +747,7 @@ show_error_link_plots(
 
 \subsection{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
 
 \section{Application}\label{application}
 
