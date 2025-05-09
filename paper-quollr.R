@@ -429,12 +429,6 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-vis_mesh(
-  trimesh_data = trimesh
-  )
-
-
-## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
   dplyr::filter(bin_counts > 10)
 
@@ -500,66 +494,72 @@ nldr_scaled_obj <- gen_scaled_data(
   nldr_data = scurve_umap)
 umap_scaled1 <- nldr_scaled_obj$scaled_nldr
 
-nldr1 <- umap_scaled1 |>
+scurve_nldr1 <- umap_scaled1 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#e41a1c') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("a", c(0.08, 0.9))
 
 nldr_scaled_obj2 <- gen_scaled_data(
   nldr_data = scurve_umap2)
 umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
 
-nldr2 <- umap_scaled2 |>
+scurve_nldr2 <- umap_scaled2 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#ff7f00') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("b")
 
 nldr_scaled_obj3 <- gen_scaled_data(
   nldr_data = scurve_umap3)
 umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
 
-nldr3 <- umap_scaled3 |>
+scurve_nldr3 <- umap_scaled3 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#4daf4a') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("c", c(0.08, 0.9))
 
 nldr_scaled_obj4 <- gen_scaled_data(
   nldr_data = scurve_umap4)
 umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
 
-nldr4 <- umap_scaled4 |>
+scurve_nldr4 <- umap_scaled4 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#a65628') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("d")
 
 nldr_scaled_obj5 <- gen_scaled_data(
   nldr_data = scurve_umap5)
 umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
 
-nldr5 <- umap_scaled5 |>
+scurve_nldr5 <- umap_scaled5 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#636363') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("e")
 
 nldr_scaled_obj6 <- gen_scaled_data(
   nldr_data = scurve_umap6)
 umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
 
-nldr6 <- umap_scaled6 |>
+scurve_nldr6 <- umap_scaled6 |>
   ggplot(aes(x = emb1,
              y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#984ea3') +
-  theme(aspect.ratio = 1)
+  theme(aspect.ratio = 1) +
+  interior_annotation("f")
 
 
 ## -----------------------------------------------------------------------------
-nldr1 + nldr2 + nldr3 + 
-  nldr4 + nldr5 + nldr6 +
+scurve_nldr1 + scurve_nldr2 + scurve_nldr3 + 
+  scurve_nldr4 + scurve_nldr5 + scurve_nldr6 +
   plot_layout(ncol = 3)
 
 
