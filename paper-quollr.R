@@ -229,14 +229,14 @@ glance(
   )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# model_error <- augment(
-#   highd_data = scurve,
-#   model_2d = df_bin_centroids,
-#   model_highd = df_bin
-#   )
-# 
-# model_error
+## ----echo=TRUE----------------------------------------------------------------
+model_error <- augment(
+  highd_data = scurve, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
+  )
+
+model_error
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -261,50 +261,56 @@ vis_mesh(
   )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# df_exe <- comb_data_model(
-#   highd_data = scurve,
-#   model_highd = df_bin,
-#   model_2d = df_bin_centroids
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+# df_bin_centroids <- df_bin_centroids |>
+#   dplyr::filter(bin_counts > 10)
+
+df_exe <- comb_data_model(
+  highd_data = scurve, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids
+  )
+
+df_exe
+
+
+## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
+# # trimesh <- trimesh |>
+# #   dplyr::filter(bin_counts > 10)
 # 
-# df_exe
-
-
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # show_langevitour(
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# df_exe <- comb_all_data_model(
-#   highd_data = scurve,
-#   nldr_data = scurve_umap,
-#   model_highd = df_bin,
-#   model_2d = df_bin_centroids
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+df_exe <- comb_all_data_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids
+  )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
+## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
 # show_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# df_exe <- comb_all_data_model_error(
-#   highd_data = scurve,
-#   nldr_data = scurve_umap,
-#   model_highd = df_bin,
-#   model_2d = df_bin_centroids,
-#   error_data = model_error
-#   )
+## ----echo=TRUE----------------------------------------------------------------
+df_exe <- comb_all_data_model_error(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids, 
+  error_data = model_error
+  )
 
 
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
+## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
 # show_error_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh

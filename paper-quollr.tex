@@ -471,6 +471,29 @@ model_error <- augment(
 model_error
 \end{verbatim}
 
+\begin{verbatim}
+#> # A tibble: 5,000 x 32
+#>       ID      x1     x2       x3       x4       x5       x6        x7 pred_hb_id
+#>    <int>   <dbl>  <dbl>    <dbl>    <dbl>    <dbl>    <dbl>     <dbl>      <int>
+#>  1     1 -0.120  1.64   -1.99     0.0104   0.0125   0.0923  -0.00128         205
+#>  2     2 -0.0492 1.51    0.00121 -0.0177   0.00726 -0.0362  -0.00535         109
+#>  3     3 -0.774  1.30    0.367   -0.00173  0.0156  -0.0962   0.00335          66
+#>  4     4 -0.606  0.246  -1.80    -0.00897 -0.0187  -0.0716   0.00126         146
+#>  5     5 -0.478  0.0177 -1.88     0.00848  0.00533  0.0998   0.000677        146
+#>  6     6  0.818  0.927  -1.58    -0.00318 -0.00980  0.0989   0.00696         172
+#>  7     7  0.910  1.40    1.42     0.00699 -0.0182  -0.0710   0.00966          58
+#>  8     8 -0.0691 1.59    0.00239  0.0127  -0.0130   0.0396  -0.000185        110
+#>  9     9  0.859  1.59   -0.488   -0.0119   0.00421 -0.00440 -0.00595         141
+#> 10    10 -0.727  1.62    0.314    0.00251  0.0177  -0.0755  -0.00369          96
+#> # i 4,990 more rows
+#> # i 23 more variables: model_high_d_x1 <dbl>, model_high_d_x2 <dbl>,
+#> #   model_high_d_x3 <dbl>, model_high_d_x4 <dbl>, model_high_d_x5 <dbl>,
+#> #   model_high_d_x6 <dbl>, model_high_d_x7 <dbl>, error_square_x1 <dbl>,
+#> #   error_square_x2 <dbl>, error_square_x3 <dbl>, error_square_x4 <dbl>,
+#> #   error_square_x5 <dbl>, error_square_x6 <dbl>, error_square_x7 <dbl>,
+#> #   row_wise_total_error <dbl>, abs_error_x1 <dbl>, abs_error_x2 <dbl>, ...
+\end{verbatim}
+
 \subsection{Visualizations}\label{visualizations}
 
 The package provides five basic visualizations which includes one to visualize the full hexagonal grid in \(2\text{-}D\), three visualizations related to the \(2\text{-}D\) model (static visualizations), and one related to the \(p\text{-}D\) model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.
@@ -514,6 +537,9 @@ vis_mesh(
 Displaying the \(p\text{-}D\) model overlaid on the data is done using the function \texttt{show\_langevitour()}. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, \(2\text{-}D\) and \(p\text{-}D\) model points, the threshold for removing long edges, and the distance data set.
 
 \begin{verbatim}
+# df_bin_centroids <- df_bin_centroids |>
+#   dplyr::filter(bin_counts > 10)
+
 df_exe <- comb_data_model(
   highd_data = scurve, 
   model_highd = df_bin, 
@@ -524,6 +550,26 @@ df_exe
 \end{verbatim}
 
 \begin{verbatim}
+#> # A tibble: 5,142 x 8
+#>         x1    x2    x3         x4        x5       x6        x7 type 
+#>      <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl> <chr>
+#>  1 -0.992   1.91 1.11  -0.000427   0.000624  0.00749  0.00105  model
+#>  2 -0.906   1.93 1.41  -0.0000183  0.00331  -0.0204  -0.000363 model
+#>  3 -0.680   1.93 1.72  -0.000810  -0.00259  -0.00449  0.00153  model
+#>  4 -0.272   1.93 1.96   0.00251    0.00668  -0.0460   0.00128  model
+#>  5  0.0760  1.93 2.00   0.00876    0.00447   0.00851 -0.00195  model
+#>  6  0.461   1.93 1.89  -0.00478    0.00492   0.00835  0.00172  model
+#>  7  0.719   1.99 1.70   0.0109    -0.00349  -0.0297  -0.00223  model
+#>  8 -0.985   1.75 0.853 -0.00202    0.000397  0.00331  0.000338 model
+#>  9 -0.980   1.66 1.17  -0.000374  -0.00154   0.0165   0.000126 model
+#> 10 -0.821   1.64 1.56  -0.000459   0.000538 -0.0123   0.000780 model
+#> # i 5,132 more rows
+\end{verbatim}
+
+\begin{verbatim}
+# trimesh <- trimesh |>
+#   dplyr::filter(bin_counts > 10)
+
 show_langevitour(
   point_data = df_exe, 
   edge_data = trimesh
