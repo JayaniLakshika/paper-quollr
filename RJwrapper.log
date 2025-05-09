@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  9 MAY 2025 10:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  9 MAY 2025 11:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -821,85 +821,93 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 
 
 [5]
+<paper-quollr_files/figure-latex/fig-hex-param-1.pdf, id=117, 312.16624pt x 312.16624pt>
+File: paper-quollr_files/figure-latex/fig-hex-param-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/fig-hex-param-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/fig-hex-param-1.pdf  used on input line 301.
+(pdftex.def)             Requested size: 398.33858pt x 398.34727pt.
+
 
 [6]
 
-[7]
+[7 <./paper-quollr_files/figure-latex/fig-hex-param-1.pdf>]
 
 [8]
-<paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf, id=130, 312.16624pt x 312.16624pt>
+
+[9]
+<paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf, id=144, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf  used on input line 513.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf  used on input line 517.
 (pdftex.def)             Requested size: 398.33858pt x 398.34727pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 513--514
+Overfull \hbox (15.0pt too wide) in paragraph at lines 517--518
 [][] 
  []
 
 
 
-[9]
+[10]
 
-LaTeX Warning: Reference `fig:mesh-plots' on page 10 undefined on input line 515.
-
-
-LaTeX Warning: Reference `fig:mesh-plots' on page 10 undefined on input line 515.
+LaTeX Warning: Reference `fig:mesh-plots' on page 11 undefined on input line 519.
 
 
-LaTeX Warning: Reference `fig:mesh-plots' on page 10 undefined on input line 515.
+LaTeX Warning: Reference `fig:mesh-plots' on page 11 undefined on input line 519.
 
 
-Overfull \hbox (5.81674pt too wide) in paragraph at lines 515--516
+LaTeX Warning: Reference `fig:mesh-plots' on page 11 undefined on input line 519.
+
+
+Overfull \hbox (5.81674pt too wide) in paragraph at lines 519--520
 []\T1/ppl/m/n/9 (-20) To vi-su-al-ize the $\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) model, mainly three func-tions are used. As shown in Fig-ure []a, \T1/zi4/m/n/9 geom_trimesh()
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf, id=135, 312.16624pt x 312.16624pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf, id=149, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf  used on input line 525.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf  used on input line 529.
 (pdftex.def)             Requested size: 398.33858pt x 398.34727pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 525--526
+Overfull \hbox (15.0pt too wide) in paragraph at lines 529--530
 [][] 
  []
 
 
 
-[10 <./paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=145, 312.16624pt x 312.16624pt>
+[11 <./paper-quollr_files/figure-latex/unnamed-chunk-14-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf, id=160, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf  used on input line 533.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf  used on input line 537.
 (pdftex.def)             Requested size: 398.33858pt x 398.34727pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 533--534
+Overfull \hbox (15.0pt too wide) in paragraph at lines 537--538
 [][] 
  []
 
 
 
-[11 <./paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>]
+[12 <./paper-quollr_files/figure-latex/unnamed-chunk-15-1.pdf>]
 
-[12 <./paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>]
-Overfull \hbox (2.7194pt too wide) in paragraph at lines 622--624
+[13 <./paper-quollr_files/figure-latex/unnamed-chunk-16-1.pdf>]
+Overfull \hbox (2.7194pt too wide) in paragraph at lines 626--628
 [][][]$\T1/zi4/m/n/9 https : / / www . nature . com / articles / s41586 -[] 018 -[] 0590 -[] 4 # data -[] availability$[][] [][]$https : / / figshare .
  []
 
-<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=167, 438.63875pt x 303.1325pt>
+<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=182, 438.63875pt x 303.1325pt>
 File: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 626.
+Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 630.
 (pdftex.def)             Requested size: 398.33858pt x 275.2867pt.
 
 
-[13]
-Overfull \hbox (63.49947pt too wide) in paragraph at lines 640--641
+[14]
+Overfull \hbox (63.49947pt too wide) in paragraph at lines 644--645
 \T1/ppl/m/n/9 (-20) This ar-ti-cle is cre-ated us-ing [][]\T1/ppl/b/n/9 (-20) knitr[][] \T1/ppl/m/n/9 (-20) ([][][]Xie[][], [][]2015[][]) and [][]\T1/ppl/b/n/9 (-20) rmark-down[][] \T1/ppl/m/n/9 (-20) ([][][]Xie et al.[][], [][]2018[][]) in R with the \T1/zi4/m/n/9 rjtools::rjournal_article
  []
 
 
-Overfull \hbox (26.07806pt too wide) in paragraph at lines 640--641
+Overfull \hbox (26.07806pt too wide) in paragraph at lines 644--645
 \T1/ppl/m/n/9 (-20) tem-plate. The source code for re-pro-duc-ing this pa-per can be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
  []
 
@@ -910,16 +918,16 @@ Overfull \hbox (26.07806pt too wide) in paragraph at lines 640--641
 )
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 652.
+(Font)              using `T1/zi4/m/n' instead on input line 656.
 
 
 
-[14 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>]
+[15 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>]
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 662.
+(Font)              scaled to size 9.18004pt on input line 666.
 )
 
-[15] (./RJwrapper.aux)
+[16] (./RJwrapper.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-04-14>
@@ -933,21 +941,21 @@ LaTeX Warning: There were undefined references.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 7BA5D940607EFCC3343D5830A9973516;2926.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 20E526A171E77D883EC8741B8D32591B;131.
+(rerunfilecheck)             Checksum: 38F5F01C2D43D5945B6F7A6BCC16BC5F;131.
  ) 
 Here is how much of TeX's memory you used:
- 27068 strings out of 471589
- 495501 string characters out of 5520134
- 897779 words of memory out of 5000000
- 52888 multiletter control sequences out of 15000+600000
+ 27083 strings out of 471589
+ 496134 string characters out of 5520134
+ 897867 words of memory out of 5000000
+ 52901 multiletter control sequences out of 15000+600000
  674591 words of font info for 261 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1303b,943s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (15 pages, 1913040 bytes).
+Output written on RJwrapper.pdf (16 pages, 1924075 bytes).
 PDF statistics:
- 270 PDF objects out of 1000 (max. 8388607)
- 221 compressed objects within 3 object streams
- 38 named destinations out of 1000 (max. 500000)
- 67238 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 284 PDF objects out of 1000 (max. 8388607)
+ 231 compressed objects within 3 object streams
+ 40 named destinations out of 1000 (max. 500000)
+ 67243 words of extra memory for PDF output out of 74296 (max. 10000000)
 
