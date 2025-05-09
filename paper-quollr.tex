@@ -213,16 +213,16 @@ fit_highd_model(
 #> # A tibble: 322 x 8
 #>     from    to x_from  y_from  x_to   y_to from_count to_count
 #>    <int> <int>  <dbl>   <dbl> <dbl>  <dbl>      <dbl>    <dbl>
-#>  1    50    65 0.275   0.127  0.233 0.199          65       67
-#>  2    64    65 0.150   0.199  0.233 0.199          39       67
-#>  3    64    79 0.150   0.199  0.191 0.271          39       62
-#>  4    78    94 0.108   0.271  0.150 0.343          62       34
-#>  5    78    79 0.108   0.271  0.191 0.271          62       62
-#>  6    21    36 0.358  -0.0171 0.316 0.0550         12       42
-#>  7    93    94 0.0665  0.343  0.150 0.343          45       34
-#>  8    79    80 0.191   0.271  0.275 0.271          62       68
-#>  9    65    66 0.233   0.199  0.316 0.199          67       56
-#> 10    66    80 0.316   0.199  0.275 0.271          56       68
+#>  1    16    26 0.275   0.127  0.233 0.199          65       67
+#>  2    25    26 0.150   0.199  0.233 0.199          39       67
+#>  3    25    37 0.150   0.199  0.191 0.271          39       62
+#>  4    36    49 0.108   0.271  0.150 0.343          62       34
+#>  5    36    37 0.108   0.271  0.191 0.271          62       62
+#>  6     1     7 0.358  -0.0171 0.316 0.0550         12       42
+#>  7    48    49 0.0665  0.343  0.150 0.343          45       34
+#>  8    37    38 0.191   0.271  0.275 0.271          62       68
+#>  9    26    27 0.233   0.199  0.316 0.199          67       56
+#> 10    27    38 0.316   0.199  0.275 0.271          56       68
 #> # i 312 more rows
 \end{verbatim}
 
@@ -541,8 +541,8 @@ vis_mesh(
 Displaying the \(p\text{-}D\) model overlaid on the data is done using the function \texttt{show\_langevitour()}. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, \(2\text{-}D\) and \(p\text{-}D\) model points, the threshold for removing long edges, and the distance data set.
 
 \begin{verbatim}
-# df_bin_centroids <- df_bin_centroids |>
-#   dplyr::filter(bin_counts > 10)
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
 
 df_exe <- comb_data_model(
   highd_data = scurve, 
@@ -554,25 +554,28 @@ df_exe
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5,142 x 8
+#> # A tibble: 5,122 x 8
 #>         x1    x2    x3         x4        x5       x6        x7 type 
 #>      <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl> <chr>
 #>  1 -0.992   1.91 1.11  -0.000427   0.000624  0.00749  0.00105  model
 #>  2 -0.906   1.93 1.41  -0.0000183  0.00331  -0.0204  -0.000363 model
 #>  3 -0.680   1.93 1.72  -0.000810  -0.00259  -0.00449  0.00153  model
-#>  4 -0.272   1.93 1.96   0.00251    0.00668  -0.0460   0.00128  model
-#>  5  0.0760  1.93 2.00   0.00876    0.00447   0.00851 -0.00195  model
-#>  6  0.461   1.93 1.89  -0.00478    0.00492   0.00835  0.00172  model
-#>  7  0.719   1.99 1.70   0.0109    -0.00349  -0.0297  -0.00223  model
-#>  8 -0.985   1.75 0.853 -0.00202    0.000397  0.00331  0.000338 model
-#>  9 -0.980   1.66 1.17  -0.000374  -0.00154   0.0165   0.000126 model
-#> 10 -0.821   1.64 1.56  -0.000459   0.000538 -0.0123   0.000780 model
-#> # i 5,132 more rows
+#>  4  0.461   1.93 1.89  -0.00478    0.00492   0.00835  0.00172  model
+#>  5 -0.985   1.75 0.853 -0.00202    0.000397  0.00331  0.000338 model
+#>  6 -0.980   1.66 1.17  -0.000374  -0.00154   0.0165   0.000126 model
+#>  7 -0.821   1.64 1.56  -0.000459   0.000538 -0.0123   0.000780 model
+#>  8 -0.484   1.68 1.87   0.00313    0.00241   0.00823 -0.00117  model
+#>  9 -0.0991  1.70 1.99   0.00103    0.00150   0.00877 -0.000193 model
+#> 10  0.295   1.74 1.95  -0.00165    0.000459  0.00330  0.000257 model
+#> # i 5,112 more rows
 \end{verbatim}
 
 \begin{verbatim}
-# trimesh <- trimesh |>
-#   dplyr::filter(bin_counts > 10)
+trimesh <- trimesh |>
+  dplyr::filter(from_count > 10,
+                to_count > 10)
+
+trimesh <- update_trimesh_index(trimesh)
 
 show_langevitour(
   point_data = df_exe, 

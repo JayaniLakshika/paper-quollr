@@ -590,8 +590,8 @@ vis_mesh(
 Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 ```{r, echo=TRUE}
-# df_bin_centroids <- df_bin_centroids |>
-#   dplyr::filter(bin_counts > 10)
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
 
 df_exe <- comb_data_model(
   highd_data = scurve, 
@@ -603,8 +603,11 @@ df_exe
 ```
 
 ```{r, echo=TRUE, eval=knitr::is_html_output()}
-# trimesh <- trimesh |>
-#   dplyr::filter(bin_counts > 10)
+trimesh <- trimesh |>
+  dplyr::filter(from_count > 10,
+                to_count > 10)
+
+trimesh <- update_trimesh_index(trimesh)
 
 show_langevitour(
   point_data = df_exe, 

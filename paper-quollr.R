@@ -421,8 +421,8 @@ vis_mesh(
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-# df_bin_centroids <- df_bin_centroids |>
-#   dplyr::filter(bin_counts > 10)
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
 
 df_exe <- comb_data_model(
   highd_data = scurve, 
@@ -434,8 +434,11 @@ df_exe
 
 
 ## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
-# # trimesh <- trimesh |>
-# #   dplyr::filter(bin_counts > 10)
+# trimesh <- trimesh |>
+#   dplyr::filter(from_count > 10,
+#                 to_count > 10)
+# 
+# trimesh <- update_trimesh_index(trimesh)
 # 
 # show_langevitour(
 #   point_data = df_exe,
