@@ -63,84 +63,98 @@ source("scripts/additional_functions.R")
 
 
 ## -----------------------------------------------------------------------------
-#| label: scurve-diff-umap-layouts
+#| label: read-limb-nldr
+# Read a variety of different NLDR representations of limb
+# and plot them on same aspect ratio
+clr_choice <- "#000000"
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
 
-scurve_umap1 <- read_rds("data/scurve/s_curve_noise_umap.rds")
-
-nldr_scaled_obj <- gen_scaled_data(
-  nldr_data = scurve_umap)
-umap_scaled1 <- nldr_scaled_obj$scaled_nldr
-
-nldr1 <- umap_scaled1 |>
+nldr1 <- umap_limb |>
   ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
-  theme(aspect.ratio = 1)
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
+  interior_annotation("a")
 
-scurve_umap2 <- read_rds("data/scurve/s_curve_noise_umap2.rds")
-
-nldr_scaled_obj2 <- gen_scaled_data(
-  nldr_data = scurve_umap2)
-umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
-
-nldr2 <- umap_scaled2 |>
+nldr1_org <- umap_limb |>
   ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
-  theme(aspect.ratio = 1)
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("a")
 
-scurve_umap3 <- read_rds("data/scurve/s_curve_noise_umap3.rds")
+tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
 
-nldr_scaled_obj3 <- gen_scaled_data(
-  nldr_data = scurve_umap3)
-umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
-
-nldr3 <- umap_scaled3 |>
+nldr2 <- tsne_limb |>
   ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
-  theme(aspect.ratio = 1)
-
-scurve_umap4 <- read_rds("data/scurve/s_curve_noise_umap4.rds")
-
-nldr_scaled_obj4 <- gen_scaled_data(
-  nldr_data = scurve_umap4)
-umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
-
-nldr4 <- umap_scaled4 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
+             y = emb2)) +
   geom_point(alpha=0.1, size=1, colour='#a65628') +
-  theme(aspect.ratio = 1)
+  interior_annotation("b")
 
-scurve_umap5 <- read_rds("data/scurve/s_curve_noise_umap5.rds")
-
-nldr_scaled_obj5 <- gen_scaled_data(
-  nldr_data = scurve_umap5)
-umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
-
-nldr5 <- umap_scaled5 |>
+nldr2_org <- tsne_limb |>
   ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#636363') +
-  theme(aspect.ratio = 1)
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("b")
 
-scurve_umap6 <- read_rds("data/scurve/s_curve_noise_umap6.rds")
+phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
 
-nldr_scaled_obj6 <- gen_scaled_data(
-  nldr_data = scurve_umap6)
-umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
-
-nldr6 <- umap_scaled6 |>
+nldr3 <- phate_limb |>
   ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#984ea3') +
-  theme(aspect.ratio = 1)
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  interior_annotation("c")
+
+nldr3_org <- phate_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("c")
+
+trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+
+nldr4 <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#377eb8') +
+  interior_annotation("d")
+
+nldr4_org <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("d")
+
+pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+nldr5 <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  interior_annotation("e")
+
+nldr5_org <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("e")
+
+tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
+
+nldr6 <- tsne_limb2 |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
+  interior_annotation("f")
+
+nldr6_org <- tsne_limb2 |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour=clr_choice) +
+  interior_annotation("f")
 
 
 ## -----------------------------------------------------------------------------
-nldr1 + nldr2 + nldr3 + 
-  nldr4 + nldr5 + nldr6 +
+nldr1_org + nldr2_org + nldr3_org + 
+  nldr4_org + nldr5_org + nldr6_org +
   plot_layout(ncol = 3)
 
 
@@ -480,57 +494,73 @@ df_exe <- comb_all_data_model_error(
 
 
 ## -----------------------------------------------------------------------------
-#| label: read-limb-nldr
-# Read a variety of different NLDR representations of limb
-# and plot them on same aspect ratio
-clr_choice <- "#0077A3"
-umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+#| label: scurve-diff-umap-layouts
 
-nldr1 <- umap_limb |>
+nldr_scaled_obj <- gen_scaled_data(
+  nldr_data = scurve_umap)
+umap_scaled1 <- nldr_scaled_obj$scaled_nldr
+
+nldr1 <- umap_scaled1 |>
   ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#999999') +
-  interior_annotation("a")
-
-tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
-
-nldr2 <- tsne_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#a65628') +
-  interior_annotation("b")
-
-phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
-
-nldr3 <- phate_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
+             y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#e41a1c') +
-  interior_annotation("c")
+  theme(aspect.ratio = 1)
 
-trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+nldr_scaled_obj2 <- gen_scaled_data(
+  nldr_data = scurve_umap2)
+umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
 
-nldr4 <- trimap_limb |>
+nldr2 <- umap_scaled2 |>
   ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#377eb8') +
-  interior_annotation("d")
-
-pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
-
-nldr5 <- pacmap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
-  interior_annotation("e")
-
-tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
-
-nldr6 <- tsne_limb2 |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
+             y = emb2))+
   geom_point(alpha=0.1, size=1, colour='#ff7f00') +
-  interior_annotation("f")
+  theme(aspect.ratio = 1)
+
+nldr_scaled_obj3 <- gen_scaled_data(
+  nldr_data = scurve_umap3)
+umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
+
+nldr3 <- umap_scaled3 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  theme(aspect.ratio = 1)
+
+nldr_scaled_obj4 <- gen_scaled_data(
+  nldr_data = scurve_umap4)
+umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
+
+nldr4 <- umap_scaled4 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  theme(aspect.ratio = 1)
+
+nldr_scaled_obj5 <- gen_scaled_data(
+  nldr_data = scurve_umap5)
+umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
+
+nldr5 <- umap_scaled5 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#636363') +
+  theme(aspect.ratio = 1)
+
+nldr_scaled_obj6 <- gen_scaled_data(
+  nldr_data = scurve_umap6)
+umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
+
+nldr6 <- umap_scaled6 |>
+  ggplot(aes(x = emb1,
+             y = emb2))+
+  geom_point(alpha=0.1, size=1, colour='#984ea3') +
+  theme(aspect.ratio = 1)
+
+
+## -----------------------------------------------------------------------------
+nldr1 + nldr2 + nldr3 + 
+  nldr4 + nldr5 + nldr6 +
+  plot_layout(ncol = 3)
 
 
 ## -----------------------------------------------------------------------------
