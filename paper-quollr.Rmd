@@ -211,7 +211,7 @@ nldr1_org + nldr2_org + nldr3_org +
   plot_layout(ncol = 3)
 ```
 
-The paper is organized as follows. In next section, introduces the implementation of `quollr` package on CRAN, including demonstration of the package's key functions and visualization capabilities. We illustrate the algorithm's functionality to study about clustering data structure in **Application** section, and describe a visual heuristic to describe parameter selection. Finally, we give a brief conclusion of the paper and discuss potential opportunities for use of our algorithm.
+The paper is organized as follows. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying clustering data structures. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
 # Implementation
 
