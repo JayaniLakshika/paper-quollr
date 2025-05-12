@@ -321,7 +321,7 @@ scurve_umap_obj
 
 \subsubsection{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (\texttt{bin1}), and the buffer amount as a proportion.
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (\texttt{bin1}), and the buffer amount as a proportion (\texttt{q}).
 
 \begin{verbatim}
 bin_configs <- calc_bins_y(
