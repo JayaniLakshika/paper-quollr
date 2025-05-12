@@ -537,6 +537,10 @@ pts_df
 
 \subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
+The \texttt{extract\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
+
+This function begins by arranging the \texttt{counts\_data} by \texttt{hexID} to ensure consistent ordering. It then performs a full join with \texttt{centroids\_data}, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{std\_counts} or \texttt{bin\_counts} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
+
 \begin{verbatim}
 df_bin_centroids <- extract_hexbin_centroids(
   centroids_data = all_centroids_df, 
@@ -592,8 +596,6 @@ trimesh
 #> 10     4    18  0.150  -0.0892  0.108  -0.0171          0        0
 #> # i 643 more rows
 \end{verbatim}
-
-In some cases, distant centroids may be connected, resulting in long line segments that can affect the smoothness of the \(2\text{-}D\) representation. To address this issue, the \texttt{find\_lg\_benchmark()} function is used. This function computes a threshold based on the distances of line segments, determining when long edges should be removed.
 
 \subsubsection{Remove low-density hexagons}\label{remove-low-density-hexagons}
 
