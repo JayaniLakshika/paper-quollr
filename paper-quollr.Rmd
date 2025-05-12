@@ -544,6 +544,16 @@ all_centroids_df
 
 #### Creating the coordinates of the hexagons
 
+Following the generation of hexagonal centroids, the `gen_hex_coord()` function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
+
+Each hexagon is defined relative to its centroid $(C_x, C_y)$, with six vertices positioned equidistantly around the center. The function first verifies the presence of the required hexagon width parameter `a1`. This width determines the horizontal spacing.
+
+Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as $dx = \frac{a_1}{2}$, and $dy = \frac{a_1}{\sqrt{3}}$ repectively. A vertical spacing factor $v = \frac{a_1}{2\sqrt{3}}$ refines vertical placement in staggered rows.
+
+With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (`x_add_factor` and `y_add_factor`) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
+
+For each centroid, six vertices are computed and assigned a polygon ID (`hex_poly_id`) corresponding to the centroid’s `hexID`. These points are aggregated into a tibble that includes the polygon ID (`hex_poly_id`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
+
 ```{r, echo=TRUE}
 all_hex_coord <- gen_hex_coord(
   centroids_data = all_centroids_df, 
