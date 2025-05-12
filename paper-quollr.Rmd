@@ -205,7 +205,7 @@ nldr6_org <- tsne_limb2 |>
   interior_annotation("f")
 ```
 
-```{r fig-example, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "", out.width = "100%", fig.width= 6, fig.height= 4}
+```{r fig-example, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "Six different NLDR representations of Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles have been generated using different techniques and different (hyper)parameter choices. Researchers may have seen any of these in their analysis of this data, depending on their choice of method, or typical (hyper)parameter choice. Would their downstream analysis decisions vary based on the version they observe? Which representation most accurately represents the structure in high-dimensional space?", out.width = "100%", fig.width= 6, fig.height= 4}
 
 nldr1_org + nldr2_org + nldr3_org + 
   nldr4_org + nldr5_org + nldr6_org +
