@@ -264,19 +264,19 @@ datasets_tb <- tibble(dt = c("scurve",
                              "scurve_umap_mse6"), 
                       text = c("Simulated data to generate a S-curve with additional noise dimensions.",
                              "The UMAP embedding with n_neighbors $46$ and min_dist $0.9$ for `S-curve`.",
-                             "scurve_umap_predict",
+                             "The predicted UMAP embedding with n_neighbors $46$ and min_dist $0.9$ for `S-curve`.",
                              "The UMAP embedding with n_neighbors $10$ and min_dist $0.4$ for `S-curve`.",
                              "The UMAP embedding with n_neighbors $62$ and min_dist $0.1$ for `S-curve`.",
                              "The UMAP embedding with n_neighbors $30$ and min_dist $0.5$ for `S-curve`.",
                              "The UMAP embedding with n_neighbors $15$ and min_dist $0.5$ for `S-curve`.",
                              "The UMAP embedding with n_neighbors $15$ and min_dist $0.1$ for `S-curve`.",
-                             "scurve_model_obj",
-                             "scurve_umap_mse",
-                             "scurve_umap_mse2",
-                             "scurve_umap_mse3",
-                             "scurve_umap_mse4",
-                             "scurve_umap_mse5",
-                             "scurve_umap_mse6"))
+                             "The object contains the scaled NLDR object (`nldr_obj`), the hexagonal object (`hb_obj`), the fitted model in both $2\\text{-}D$ (`model_2d`), and $p\\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap`.",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap2`.",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap3`.",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap4`.",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap5`.",
+                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap6`."))
 ```
 
 ```{r datasets-tb-html, eval=knitr::is_html_output()}
