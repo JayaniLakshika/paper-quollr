@@ -59,21 +59,21 @@ The \texttt{quollr} package comes with several data sets that load with the pack
 
 \begin{table}
 
-\caption{\label{tab:datasets-tb-pdf}cquollr data sets}
+\caption{\label{tab:datasets-tb-pdf}quollr data sets}
 \centering
 \begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
 \toprule
 data & explanation\\
 \midrule
-scurve & scurve\\
-scurve\_umap & scurve\_umap\\
+scurve & Simulated data to generate a S-curve with additional noise dimensions.\\
+scurve\_umap & The UMAP embedding with n\_neighbors \$46\$ and min\_dist \$0.9\$ for `S-curve`.\\
 scurve\_umap\_predict & scurve\_umap\_predict\\
-scurve\_umap2 & scurve\_umap2\\
-scurve\_umap3 & scurve\_umap3\\
+scurve\_umap2 & The UMAP embedding with n\_neighbors \$10\$ and min\_dist \$0.4\$ for `S-curve`.\\
+scurve\_umap3 & The UMAP embedding with n\_neighbors \$62\$ and min\_dist \$0.1\$ for `S-curve`.\\
 \addlinespace
-scurve\_umap4 & scurve\_umap4\\
-scurve\_umap5 & scurve\_umap5\\
-scurve\_umap6 & scurve\_umap6\\
+scurve\_umap4 & The UMAP embedding with n\_neighbors \$30\$ and min\_dist \$0.5\$ for `S-curve`.\\
+scurve\_umap5 & The UMAP embedding with n\_neighbors \$15\$ and min\_dist \$0.5\$ for `S-curve`.\\
+scurve\_umap6 & The UMAP embedding with n\_neighbors \$15\$ and min\_dist \$0.1\$ for `S-curve`.\\
 scurve\_model\_obj & scurve\_model\_obj\\
 scurve\_umap\_mse & scurve\_umap\_mse\\
 \addlinespace
@@ -94,7 +94,7 @@ The following demonstration of the package's functionality assumes \texttt{quoll
 
 The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility.
 
-This function requires several parameters: the high-dimensional data (\texttt{highd\_data}), the emdedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{bin1}), the buffer amount as a proportion of data (\texttt{q}), and benchmark value to extract high density hexagons (\texttt{benchmark\_highdens}). The function returns an object that includes the hexagonal object, the fitted model in both \(2\text{-}D\), and \(p\text{-}D\), and triangular mesh.
+This function requires several parameters: the high-dimensional data (\texttt{highd\_data}), the emdedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{bin1}), the buffer amount as a proportion of data (\texttt{q}), and benchmark value to extract high density hexagons (\texttt{benchmark\_highdens}). The function returns an object that includes the scaled NLDR object (\texttt{nldr\_obj}), the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
 
 \begin{verbatim}
 fit_highd_model(

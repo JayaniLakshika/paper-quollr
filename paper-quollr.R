@@ -175,14 +175,14 @@ datasets_tb <- tibble(dt = c("scurve",
                              "scurve_umap_mse4",
                              "scurve_umap_mse5",
                              "scurve_umap_mse6"), 
-                      text = c("scurve",
-                             "scurve_umap",
+                      text = c("Simulated data to generate a S-curve with additional noise dimensions.",
+                             "The UMAP embedding with n_neighbors $46$ and min_dist $0.9$ for `S-curve`.",
                              "scurve_umap_predict",
-                             "scurve_umap2",
-                             "scurve_umap3",
-                             "scurve_umap4",
-                             "scurve_umap5",
-                             "scurve_umap6",
+                             "The UMAP embedding with n_neighbors $10$ and min_dist $0.4$ for `S-curve`.",
+                             "The UMAP embedding with n_neighbors $62$ and min_dist $0.1$ for `S-curve`.",
+                             "The UMAP embedding with n_neighbors $30$ and min_dist $0.5$ for `S-curve`.",
+                             "The UMAP embedding with n_neighbors $15$ and min_dist $0.5$ for `S-curve`.",
+                             "The UMAP embedding with n_neighbors $15$ and min_dist $0.1$ for `S-curve`.",
                              "scurve_model_obj",
                              "scurve_umap_mse",
                              "scurve_umap_mse2",
@@ -194,12 +194,12 @@ datasets_tb <- tibble(dt = c("scurve",
 
 ## ----datasets-tb-html, eval=knitr::is_html_output()---------------------------
 # datasets_tb |>
-#   kable(caption = "cardinalR data sets", col.names = c("data", "explanation"))
+#   kable(caption = "quollr data sets", col.names = c("data", "explanation"))
 
 
 ## ----datasets-tb-pdf, eval=knitr::is_latex_output()---------------------------
 datasets_tb |> 
-  kable(caption = "cquollr data sets", format="latex", col.names = c("data", "explanation"), booktabs = T)  |>
+  kable(caption = "quollr data sets", format="latex", col.names = c("data", "explanation"), booktabs = T)  |>
   column_spec(1, width = "4cm") |>
   column_spec(2, width = "8cm")
 
