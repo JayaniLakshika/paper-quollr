@@ -712,7 +712,7 @@ tsne_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb, 
   bin1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 2)
+  benchmark_highdens = 5)
 
 df_bin_centroids_limb <- tsne_limb_obj$model_2d
 df_bin_limb <- tsne_limb_obj$model_highd
@@ -745,6 +745,18 @@ trimesh_limb <- ggplot() +
   theme(
     aspect.ratio = 1
   )
+
+# hex_grid <- tsne_limb_obj$hb_obj$hex_poly
+# counts_df <- tsne_limb_obj$hb_obj$std_cts
+# 
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# 
+# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
+#   coord_fixed() +
+#   theme_minimal()
 
 
 ## -----------------------------------------------------------------------------
@@ -791,4 +803,110 @@ scaled_limb_data_model <- scaled_limb |>
 #                          group = factor(df_model_data_limb_n$type,
 #                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
 #                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
+
+
+## -----------------------------------------------------------------------------
+#| label: tsne-best-model-limb
+
+tsne_best_limb_obj <- fit_highd_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb2, 
+  bin1 = 19, 
+  q = 0.1, 
+  benchmark_highdens = 1)
+
+df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
+df_bin_limb <- tsne_best_limb_obj$model_highd
+trimesh_data_limb <- tsne_best_limb_obj$trimesh_data
+tsne_limb_scaled <- tsne_best_limb_obj$nldr_obj$scaled_nldr
+
+tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+  mutate(cluster = as.character(cluster.ids))
+
+trimesh_limb_best <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_with_cluster,
+    aes(
+      x = emb1,
+      y = emb2,
+      color = cluster
+    ),
+    alpha = 0.3
+  ) +
+  geom_segment(data = trimesh_data_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+  interior_annotation("b1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
+
+# hex_grid <- tsne_best_limb_obj$hb_obj$hex_poly
+# counts_df <- tsne_best_limb_obj$hb_obj$std_cts
+# 
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# 
+# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
+#   coord_fixed() +
+#   theme_minimal()
+
+
+## -----------------------------------------------------------------------------
+#| label: prep-limb-tsne-best-model-proj
+
+data_limb_n <- data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(hexID %in% df_bin_centroids_limb$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hexID),] |>
+  dplyr::select(-hexID) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
+scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
+  as_tibble()
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
+
+
+## ----eval=knitr::is_html_output()---------------------------------------------
+#| label: langevitour-limb-tsne-best-proj
+
+# data_limb_n <- data_limb_n |>
+#   select(-type) |>
+#   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
+# 
+# df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+# 
+# langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+#                          lineFrom = trimesh_data_limb$from,
+#                          lineTo = trimesh_data_limb$to,
+#                          group = factor(df_model_data_limb_n$type,
+#                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
+#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
+
+
+## -----------------------------------------------------------------------------
+trimesh_limb + trimesh_limb_best +
+  plot_layout(ncol = 2)
 
