@@ -12,11 +12,12 @@ Non-linear dimension reduction (NLDR) methods provide a low-dimensional represen
 
 \section{Introduction}\label{introduction}
 
-This paper presents the R package, \texttt{quollr} which introduce a new visual tool in determining which Non-linear dimension reduction (NLDR) technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in \emph{cite the methodology paper}. Furthermore, the \texttt{quollr} package enables users to perform hexagonal binning \citep{dan2023}, resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at \url{https://CRAN.R-project.org/package=quollr}.
+Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) \citep{laurens2008}, uniform manifold approximation and projection (UMAP) \citep{leland2018}, potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm \citep{moon2019}, large-scale dimensionality reduction Using triplets (TriMAP) \citep{amid2019}, and pairwise controlled manifold approximation (PaCMAP) \citep{yingfan2021}, create wildly different representations depending on the selected method and (hyper)parameter choices (Figure \ref{fig:example}). It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures.
 
-Add the image generated with the application
+This paper presents the R package, \texttt{quollr} which introduce a new visual tool to evaluate which NLDR method and which (hyper)parameter choice gives the most accurate representation of high-dimensional data. The methodology of this algorithm is explained in \emph{cite the methodology paper}. The software is available from the Comprehensive R Archive Network (CARN) at \url{https://CRAN.R-project.org/package=quollr}.
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-1-1}
+\begin{figure}
+\includegraphics[width=1\linewidth,alt={NLDR representations with different methods and (hyper)parameter choices.}]{paper-quollr_files/figure-latex/fig-example-1} \end{figure}
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying clustering data structures. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
@@ -645,7 +646,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-18-1}
 
 To visualize the \(2\text{-}D\) model, mainly three functions are used. As shown in Figure \ref{fig:mesh-plots}a, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \ref{fig:mesh-plots}b, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed \(2\text{-}D\) model which is the \(2\text{-}D\) model after removing the long edges (see Figure \ref{fig:mesh-plots}c). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in \(2\text{-}D\). Using small value of \texttt{benchmark\_value}, will produce a triangular mesh with missing data structure; for example \texttt{benchmark\_value\ =\ 0.3} shows two clusters rather than continuous structure, while \texttt{benchmark\_value\ =\ 0.8} creates long edges and mislead the data structure in \(p\text{-}D\) space.
 
@@ -657,7 +658,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-20-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -747,7 +748,7 @@ show_error_link_plots(
 
 \subsection{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
 
 \section{Application}\label{application}
 

@@ -111,9 +111,9 @@ source("scripts/additional_functions.R")
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
-This paper presents the R package, `quollr` which introduce a new visual tool in determining which Non-linear dimension reduction (NLDR) technique and which (hyper)parameter choice gives most accurate representation of high-dimensional data. The methodology of the algorithm is explained in *cite the methodology paper*. Furthermore, the `quollr` package enables users to perform hexagonal binning [@dan2023], resulting in the generation of regular hexagons. The software is available from the Comprehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
+Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and (hyper)parameter choices (Figure \@ref(fig:example)). It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-Add the image generated with the application
+This paper presents the R package, `quollr` which introduce a new visual tool to evaluate which NLDR method and which (hyper)parameter choice gives the most accurate representation of high-dimensional data. The methodology of this algorithm is explained in *cite the methodology paper*. The software is available from the Comprehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
 
 ```{r}
 #| label: read-limb-nldr
@@ -205,7 +205,8 @@ nldr6_org <- tsne_limb2 |>
   interior_annotation("f")
 ```
 
-```{r}
+```{r fig-example, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "", out.width = "100%", fig.width= 6, fig.height= 4}
+
 nldr1_org + nldr2_org + nldr3_org + 
   nldr4_org + nldr5_org + nldr6_org +
   plot_layout(ncol = 3)

@@ -148,7 +148,8 @@ nldr6_org <- tsne_limb2 |>
   interior_annotation("f")
 
 
-## -----------------------------------------------------------------------------
+## ----fig-example, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "", out.width = "100%", fig.width= 6, fig.height= 4----
+
 nldr1_org + nldr2_org + nldr3_org + 
   nldr4_org + nldr5_org + nldr6_org +
   plot_layout(ncol = 3)
