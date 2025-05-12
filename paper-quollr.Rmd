@@ -565,6 +565,14 @@ all_hex_coord
 
 #### Assigning data points to their respective hexagons
 
+After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The `assign_data()` function performs this assignment by calculating the $2-\text{D}$ Euclidean distance between each point in the $2-\text{D}$ embedding and all hexagon centroids.
+
+First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the $2-\text{D}$ layout. It then selects the corresponding x and y coordinates of each hexagon’s centroid.
+
+Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`hexID`) to the point.
+
+The result is a data frame of the scaled $2-\text{D}$ embedding with an additional `hexID` column, indicating the hexagonal bin to which each point belongs. 
+
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
   nldr_obj = scurve_umap_obj, 
