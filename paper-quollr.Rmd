@@ -1089,12 +1089,12 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 ```
 
-```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (\\@ref(fig:nldr-layouts) b) and the $2-\\text{D}$ layout selected (\\@ref(fig:nldr-layouts) f) by RMSE plot (\\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=10, fig.height=15}
+```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (\\@ref(fig:nldr-layouts) b) and the $2-\\text{D}$ layout selected (\\@ref(fig:nldr-layouts) f) by RMSE plot (\\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10}
 
 trimesh_limb + trimesh_limb_best +
   trimesh_limb + trimesh_limb_best +
   trimesh_limb + trimesh_limb_best +
-  plot_layout(ncol = 2)
+  plot_layout(nrow = 2)
 ```
 
 # Discussion
