@@ -358,6 +358,10 @@ hb_obj <- hex_binning(
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/fig-hex-param-1} \caption{The components of the hexagon grid illustrating notation.}\label{fig:fig-hex-param}
 \end{figure}
 
+If the hexagonal binning process is run separately, it involves several steps: (i) generating all possible centroids in a hexagonal grid, (ii) creating the coordinates of the hexagons, (iii) assigning data points to their respective hexagons, (iv) computing the standardized number of points within each hexagon, and (v) mapping the points to their corresponding hexagonal bins.
+
+\paragraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
+
 \begin{verbatim}
 all_centroids_df <- gen_centroids(
   nldr_obj = scurve_umap_obj, 
@@ -385,6 +389,8 @@ all_centroids_df
 #> # i 230 more rows
 \end{verbatim}
 
+\paragraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
+
 \begin{verbatim}
 all_hex_coord <- gen_hex_coord(
   centroids_data = all_centroids_df, 
@@ -410,6 +416,8 @@ all_hex_coord
 #> 10           2 -0.0167 -0.137 
 #> # i 1,430 more rows
 \end{verbatim}
+
+\paragraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
 
 \begin{verbatim}
 umap_hex_id <- assign_data(
@@ -437,6 +445,8 @@ umap_hex_id
 #> # i 4,990 more rows
 \end{verbatim}
 
+\paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
+
 \begin{verbatim}
 std_df <- compute_std_counts(
   scaled_nldr_hexid = umap_hex_id
@@ -461,6 +471,8 @@ std_df
 #> 10    38         44     0.587 
 #> # i 132 more rows
 \end{verbatim}
+
+\paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
 
 \begin{verbatim}
 pts_df <- find_pts(

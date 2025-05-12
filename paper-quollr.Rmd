@@ -517,6 +517,11 @@ hex_param_vis <- ggplot() +
 hex_param_vis
 ```
 
+
+If the hexagonal binning process is run separately, it involves several steps: (i) generating all possible centroids in a hexagonal grid, (ii) creating the coordinates of the hexagons, (iii) assigning data points to their respective hexagons, (iv) computing the standardized number of points within each hexagon, and (v) mapping the points to their corresponding hexagonal bins. 
+
+#### Generating all possible centroids in a hexagonal grid
+
 ```{r, echo=TRUE}
 all_centroids_df <- gen_centroids(
   nldr_obj = scurve_umap_obj, 
@@ -527,6 +532,8 @@ all_centroids_df <- gen_centroids(
 all_centroids_df
 ```
 
+#### Creating the coordinates of the hexagons
+
 ```{r, echo=TRUE}
 all_hex_coord <- gen_hex_coord(
   centroids_data = all_centroids_df, 
@@ -535,6 +542,8 @@ all_hex_coord <- gen_hex_coord(
 
 all_hex_coord
 ```
+
+#### Assigning data points to their respective hexagons
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
@@ -545,6 +554,8 @@ umap_hex_id <- assign_data(
 umap_hex_id
 ```
 
+#### Computing the standardized number of points within each hexagon
+
 ```{r, echo=TRUE}
 std_df <- compute_std_counts(
   scaled_nldr_hexid = umap_hex_id
@@ -552,6 +563,8 @@ std_df <- compute_std_counts(
 
 std_df
 ```
+
+#### Mapping the points to their corresponding hexagonal bins
 
 ```{r, echo=TRUE}
 pts_df <- find_pts(
