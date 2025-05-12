@@ -629,9 +629,13 @@ trimesh
 #> # i 643 more rows
 \end{verbatim}
 
-\subsubsection{Remove low-density hexagons}\label{remove-low-density-hexagons}
+\subsubsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
-In certain scenarios, hexagonal bins may contain a few number of points. To ensure comprehensive coverage of NLDR data, it is important to select hexagonal bins with a suitable number of data points. The \texttt{find\_low\_dens\_hex()} function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. Users can initially identify low-density hexagons and then use this function to evaluate how removing them might affect the model fit by examining their neighbors.
+Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2-\text{D}\) structure, potentially disrupting the continuity of the representation.
+
+To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The \texttt{find\_low\_dens\_hex()} function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., 0.05), the hexagon is flagged for removal.
+
+The \texttt{find\_low\_dens\_hex()} function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. The \texttt{find\_low\_dens\_hex()} function relies on a helper, \texttt{compute\_mean\_density\_hex()}, which iterates over all hexagons and computes the average density across neighbors based on their \texttt{hexID} and a defined number of bins along the x-axis (\texttt{bin1}). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
 \begin{verbatim}
 find_low_dens_hex(
@@ -649,7 +653,7 @@ find_low_dens_hex(
 
 \subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
 
-The final step involves lifting the fitted \(2\text{-}D\) model into \(p\text{-}D\) by computing the \(p\text{-}D\) mean of data points within each hexgaonal bin to represent bin centroids. This transformation is performed using the \texttt{avg\_highd\_data()} function, which takes \(p\text{-}D\) data (\texttt{highd\_data}) and embedding data with their corresponding hexagonal bin IDs as inputs (\texttt{scaled\_nldr\_hexid}).
+The final step involves lifting the fitted \(2\text{-}D\) model into \(p\text{-}D\) by computing the \(p\text{-}D\) mean of data points within each hexagonal bin to represent bin centroids. This transformation is performed using the \texttt{avg\_highd\_data()} function, which takes \(p\text{-}D\) data (\texttt{highd\_data}) and embedding data with their corresponding hexagonal bin IDs as inputs (\texttt{scaled\_nldr\_hexid}).
 
 \begin{verbatim}
 df_bin <- avg_highd_data(
