@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  12 MAY 2025 13:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  12 MAY 2025 13:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -801,12 +801,12 @@ Package natbib Warning: Citation `amid2019' on page 1 undefined on input line 15
 Package natbib Warning: Citation `yingfan2021' on page 1 undefined on input line 15.
 
 
-Package natbib Warning: Citation `fig-nldrlayouts' on page 1 undefined on input line 15.
+LaTeX Warning: Reference `fig:nldr-layouts' on page 1 undefined on input line 15.
 
-<paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf, id=9, 404.51125pt x 265.99374pt>
-File: paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf  used on input line 20.
+<paper-quollr_files/figure-latex/nldr-layouts-1.pdf, id=9, 404.51125pt x 265.99374pt>
+File: paper-quollr_files/figure-latex/nldr-layouts-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/nldr-layouts-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/nldr-layouts-1.pdf  used on input line 20.
 (pdftex.def)             Requested size: 398.33858pt x 261.9384pt.
 
 
@@ -814,7 +814,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf  
 
 {/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}]
 
-[2 <./paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf>]
+[2 <./paper-quollr_files/figure-latex/nldr-layouts-1.pdf>]
 
 [3]
 
@@ -911,18 +911,21 @@ Package natbib Warning: Citation `tabula2018' on page 16 undefined on input line
 
 Package natbib Warning: Citation `fig-NLDR-variety' on page 16 undefined on input line 784.
 
-<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=134, 438.63875pt x 303.1325pt>
-File: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 787.
+
+LaTeX Warning: Reference `fig:limb-rmse' on page 16 undefined on input line 786.
+
+<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=134, 438.63875pt x 303.1325pt>
+File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 789.
 (pdftex.def)             Requested size: 398.33858pt x 275.2867pt.
 <paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf, id=135, 446.66875pt x 216.81pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf  used on input line 790.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf  used on input line 792.
 (pdftex.def)             Requested size: 398.33858pt x 193.35396pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 790--791
+Overfull \hbox (15.0pt too wide) in paragraph at lines 792--793
 [][] 
  []
 
@@ -930,13 +933,13 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 790--791
 
 [16 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf> <./paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>]
 
-Package natbib Warning: Citation `knitr' on page 17 undefined on input line 804.
+Package natbib Warning: Citation `knitr' on page 17 undefined on input line 806.
 
 
-Package natbib Warning: Citation `rmarkdown' on page 17 undefined on input line 804.
+Package natbib Warning: Citation `rmarkdown' on page 17 undefined on input line 806.
 
 
-Overfull \hbox (26.07806pt too wide) in paragraph at lines 804--805
+Overfull \hbox (26.07806pt too wide) in paragraph at lines 806--807
 \T1/ppl/m/n/9 (-20) tem-plate. The source code for re-pro-duc-ing this pa-per can be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
  []
 
@@ -954,11 +957,11 @@ you can ask a wizard to enlarge me.
 
  
 Here is how much of TeX's memory you used:
- 27037 strings out of 471589
- 495433 string characters out of 5520134
- 1574454 words of memory out of 5000000
- 52839 multiletter control sequences out of 15000+600000
- 675502 words of font info for 277 fonts, out of 8000000 for 9000
+ 27036 strings out of 471589
+ 495385 string characters out of 5520134
+ 1575104 words of memory out of 5000000
+ 52841 multiletter control sequences out of 15000+600000
+ 675417 words of font info for 275 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 10000i,12n,9995p,1303b,952s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 10000i,12n,9995p,1303b,953s stack positions out of 10000i,1000n,20000p,200000b,200000s
 !  ==> Fatal error occurred, no output PDF file produced!

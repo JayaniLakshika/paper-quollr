@@ -148,7 +148,7 @@ nldr6_org <- tsne_limb2 |>
   interior_annotation("f")
 
 
-## ----fig-nldrlayouts, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "Six different NLDR representations of Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles have been generated using different techniques and different (hyper)parameter choices. Researchers may have seen any of these in their analysis of this data, depending on their choice of method, or typical (hyper)parameter choice. Would their downstream analysis decisions vary based on the version they observe? Which representation most accurately represents the structure in high-dimensional space?", out.width = "100%", fig.width= 6, fig.height= 4----
+## ----nldr-layouts, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "Six different NLDR representations of Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles have been generated using different techniques and different (hyper)parameter choices. Researchers may have seen any of these in their analysis of this data, depending on their choice of method, or typical (hyper)parameter choice. Would their downstream analysis decisions vary based on the version they observe? Which representation most accurately represents the structure in high-dimensional space?", out.width = "100%", fig.width= 6, fig.height= 4----
 
 nldr1_org + nldr2_org + nldr3_org + 
   nldr4_org + nldr5_org + nldr6_org +
@@ -686,10 +686,7 @@ error_plot_limb <- plot_mse(error_limb) +
 
 
 
-## -----------------------------------------------------------------------------
-#| fig-cap: "Assessing which of the 6 NLDR layouts on the limb3k data  (shown in @fig-nldrlayouts) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f)."
-#| label: fig-limb-mse
-#| out-width: 100%
+## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb3k data  (shown in @fig-nldrlayouts) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", out.width="100%"----
 
 free(error_plot_limb) + wrap_plots(
   nldr1, nldr2, nldr3, 
