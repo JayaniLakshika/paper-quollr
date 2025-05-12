@@ -475,6 +475,10 @@ umap_hex_id
 
 \paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
 
+The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts for each hexagon.
+
+The function begins by grouping the data by \texttt{hexID} and counting the number of NLDR points falling within each bin. These raw counts are stored as \texttt{bin\_counts}. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin's count by the maximum count across all bins. This yields a normalized metric, \texttt{std\_counts}, ranging from 0 to 1.
+
 \begin{verbatim}
 std_df <- compute_std_counts(
   scaled_nldr_hexid = umap_hex_id
@@ -501,6 +505,10 @@ std_df
 \end{verbatim}
 
 \paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
+
+The \texttt{find\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
+
+The function first groups the input data by \texttt{hexID}, which represents the hexagon label associated with each point in the \(2-\text{D}\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
 
 \begin{verbatim}
 pts_df <- find_pts(
