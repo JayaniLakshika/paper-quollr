@@ -1,9 +1,38 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Amid and Warmuth(2019)]{amid2019}
+E.~Amid and M.~K. Warmuth.
+\newblock Trimap: Large-scale dimensionality reduction using triplets.
+\newblock \emph{ArXiv}, abs/1910.00204, 2019.
+\newblock URL \url{\url{https://api.semanticscholar.org/CorpusID:203610264}.}
+
+\bibitem[Maaten and Hinton(2008)]{laurens2008}
+L.~V.~D. Maaten and G.~E. Hinton.
+\newblock Visualizing data using t-sne.
+\newblock \emph{Journal of Machine Learning Research}, 9:\penalty0 2579--2605, 2008.
+
+\bibitem[McInnes et~al.(2018)McInnes, Healy, Saul, and Gro\ss{}berger]{leland2018}
+L.~McInnes, J.~Healy, N.~Saul, and L.~Gro\ss{}berger.
+\newblock Umap: Uniform manifold approximation and projection.
+\newblock \emph{Journal of Open Source Software}, 3\penalty0 (29):\penalty0 861, 2018.
+\newblock \doi{10.21105/joss.00861}.
+\newblock URL \url{\url{https://doi.org/10.21105/joss.00861}.}
+
+\bibitem[Moon et~al.(2019)Moon, van Dijk, Wang, Gigante, Burkhardt, Chen, Yim, van~den Elzen, Hirn, Coifman, Ivanova, Wolf, and Krishnaswamy]{moon2019}
+K.~R. Moon, D.~van Dijk, Z.~Wang, S.~A. Gigante, D.~B. Burkhardt, W.~S. Chen, K.~Yim, A.~van~den Elzen, M.~J. Hirn, R.~R. Coifman, N.~B. Ivanova, G.~Wolf, and S.~Krishnaswamy.
+\newblock Visualizing structure and transitions in high-dimensional biological data.
+\newblock \emph{Nature Biotechnology}, 37:\penalty0 1482--1492, 2019.
+
+\bibitem[Wang et~al.(2021)Wang, Huang, Rudin, and Shaposhnik]{yingfan2021}
+Y.~Wang, H.~Huang, C.~Rudin, and Y.~Shaposhnik.
+\newblock Understanding how dimension reduction tools work: An empirical approach to deciphering t-sne, umap, trimap, and pacmap for data visualization.
+\newblock \emph{Journal of Machine Learning Research}, 22\penalty0 (201):\penalty0 1--73, 2021.
+\newblock URL \url{\url{http://jmlr.org/papers/v22/20-1061.html}.}
 
 \bibitem[Xie(2015)]{knitr}
 Y.~Xie.

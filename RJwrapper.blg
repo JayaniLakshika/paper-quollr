@@ -3,50 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: RJwrapper.aux
 The style file: abbrvnat.bst
 Database file #1: paper-quollr.bib
-Warning--I didn't find a database entry for "laurens2008"
-Warning--I didn't find a database entry for "leland2018"
-Warning--I didn't find a database entry for "moon2019"
-Warning--I didn't find a database entry for "amid2019"
-Warning--I didn't find a database entry for "yingfan2021"
-You've used 2 entries,
+You've used 7 entries,
             2773 wiz_defined-function locations,
-            612 strings with 4900 characters,
-and the built_in function-call counts, 794 in all, are:
-= -- 66
-> -- 40
-< -- 1
-+ -- 14
-- -- 12
-* -- 59
-:= -- 137
-add.period$ -- 10
-call.type$ -- 2
-change.case$ -- 9
-chr.to.int$ -- 2
-cite$ -- 4
-duplicate$ -- 41
-empty$ -- 66
-format.name$ -- 14
-if$ -- 159
+            644 strings with 6063 characters,
+and the built_in function-call counts, 3731 in all, are:
+= -- 319
+> -- 280
+< -- 3
++ -- 94
+- -- 87
+* -- 333
+:= -- 610
+add.period$ -- 29
+call.type$ -- 7
+change.case$ -- 49
+chr.to.int$ -- 7
+cite$ -- 14
+duplicate$ -- 143
+empty$ -- 254
+format.name$ -- 98
+if$ -- 754
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 4
-newline$ -- 22
-num.names$ -- 8
-pop$ -- 20
+missing$ -- 9
+newline$ -- 51
+num.names$ -- 28
+pop$ -- 86
 preamble$ -- 1
-purify$ -- 8
+purify$ -- 43
 quote$ -- 0
-skip$ -- 27
+skip$ -- 117
 stack$ -- 0
-substring$ -- 4
-swap$ -- 2
+substring$ -- 97
+swap$ -- 7
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
+type$ -- 67
 warning$ -- 0
-while$ -- 6
+while$ -- 27
 width$ -- 0
-write$ -- 42
-(There were 5 warnings)
+write$ -- 115

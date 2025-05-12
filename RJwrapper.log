@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  12 MAY 2025 10:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  12 MAY 2025 11:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -633,7 +633,8 @@ LaTeX Info: Redefining \addtolength on input line 81.
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-04-14 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count351
-) (./RJwrapper.aux)
+)
+No file RJwrapper.aux.
 \openout1 = `RJwrapper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
@@ -722,7 +723,6 @@ Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verbat
 )
 Package backref Info: ** backref set up for natbib ** on input line 56.
 Package hyperref Info: Link coloring ON on input line 56.
-(./RJwrapper.out) (./RJwrapper.out)
 \@outlinefile=\write5
 \openout5 = `RJwrapper.out'.
 
@@ -801,12 +801,12 @@ Package natbib Warning: Citation `amid2019' on page 1 undefined on input line 15
 Package natbib Warning: Citation `yingfan2021' on page 1 undefined on input line 15.
 
 
-LaTeX Warning: Reference `fig:example' on page 1 undefined on input line 15.
+Package natbib Warning: Citation `fig-nldrlayouts' on page 1 undefined on input line 15.
 
-<paper-quollr_files/figure-latex/fig-example-1.pdf, id=77, 404.51125pt x 265.99374pt>
-File: paper-quollr_files/figure-latex/fig-example-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/fig-example-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/fig-example-1.pdf  used on input line 20.
+<paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf, id=9, 404.51125pt x 265.99374pt>
+File: paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf  used on input line 20.
 (pdftex.def)             Requested size: 398.33858pt x 261.9384pt.
 
 
@@ -814,7 +814,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/fig-example-1.pdf  used
 
 {/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}]
 
-[2 <./paper-quollr_files/figure-latex/fig-example-1.pdf>]
+[2 <./paper-quollr_files/figure-latex/fig-nldrlayouts-1.pdf>]
 
 [3]
 
@@ -834,7 +834,7 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 
 
 [5]
-<paper-quollr_files/figure-latex/fig-hex-param-1.pdf, id=123, 312.16624pt x 312.16624pt>
+<paper-quollr_files/figure-latex/fig-hex-param-1.pdf, id=64, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/fig-hex-param-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/fig-hex-param-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/fig-hex-param-1.pdf  used on input line 305.
@@ -852,7 +852,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/fig-hex-param-1.pdf  us
 [10]
 
 [11]
-<paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf, id=159, 312.16624pt x 312.16624pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf, id=102, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf  used on input line 650.
@@ -879,7 +879,7 @@ Overfull \hbox (5.81674pt too wide) in paragraph at lines 652--653
 []\T1/ppl/m/n/9 (-20) To vi-su-al-ize the $\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) model, mainly three func-tions are used. As shown in Fig-ure []a, \T1/zi4/m/n/9 geom_trimesh()
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf, id=164, 312.16624pt x 312.16624pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf, id=108, 312.16624pt x 312.16624pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf  used on input line 662.
@@ -894,7 +894,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 662--663
 [13 <./paper-quollr_files/figure-latex/unnamed-chunk-18-1.pdf>]
 
 [14 <./paper-quollr_files/figure-latex/unnamed-chunk-19-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf, id=184, 430.60875pt x 302.12875pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf, id=128, 430.60875pt x 302.12875pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf  used on input line 752.
@@ -906,7 +906,7 @@ Overfull \hbox (2.7194pt too wide) in paragraph at lines 758--760
 [][][]$\T1/zi4/m/n/9 https : / / www . nature . com / articles / s41586 -[] 018 -[] 0590 -[] 4 # data -[] availability$[][] [][]$https : / / figshare .
  []
 
-<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=191, 438.63875pt x 303.1325pt>
+<paper-quollr_files/figure-latex/fig-limb-mse-1.pdf, id=136, 438.63875pt x 303.1325pt>
 File: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/fig-limb-mse-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  used on input line 762.
@@ -914,9 +914,11 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/fig-limb-mse-1.pdf  use
 
 
 [16 <./paper-quollr_files/figure-latex/fig-limb-mse-1.pdf> <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
-Overfull \hbox (63.49947pt too wide) in paragraph at lines 776--777
-\T1/ppl/m/n/9 (-20) This ar-ti-cle is cre-ated us-ing [][]\T1/ppl/b/n/9 (-20) knitr[][] \T1/ppl/m/n/9 (-20) ([][][]Xie[][], [][]2015[][]) and [][]\T1/ppl/b/n/9 (-20) rmark-down[][] \T1/ppl/m/n/9 (-20) ([][][]Xie et al.[][], [][]2018[][]) in R with the \T1/zi4/m/n/9 rjtools::rjournal_article
- []
+
+Package natbib Warning: Citation `knitr' on page 17 undefined on input line 776.
+
+
+Package natbib Warning: Citation `rmarkdown' on page 17 undefined on input line 776.
 
 
 Overfull \hbox (26.07806pt too wide) in paragraph at lines 776--777
@@ -927,48 +929,21 @@ Overfull \hbox (26.07806pt too wide) in paragraph at lines 776--777
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
-)
+! TeX capacity exceeded, sorry [input stack size=10000].
+\hyper@normalise ->\begingroup \@makeother {:}
+                                              \catcode `\^^M\active \def ^^M...
+l.13 
+     
+If you really absolutely need more capacity,
+you can ask a wizard to enlarge me.
 
-LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 788.
-
-LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 798.
-)
-
-Package natbib Warning: There were undefined citations.
-
-
-
-[17] (./RJwrapper.aux)
- ***********
-LaTeX2e <2024-11-01> patch level 2
-L3 programming layer <2025-04-14>
- ***********
-
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
-
-
-LaTeX Warning: There were undefined references.
-
-Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
-(rerunfilecheck)             Checksum: 356FEA6FBFE3CBABA44BC7476D120206;3146.
-Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: A85155C1DB0768FDF19D096F7B0EA979;88.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 27102 strings out of 471589
- 496284 string characters out of 5520134
- 896331 words of memory out of 5000000
- 52899 multiletter control sequences out of 15000+600000
- 675439 words of font info for 274 fonts, out of 8000000 for 9000
+ 27019 strings out of 471589
+ 494799 string characters out of 5520134
+ 1569325 words of memory out of 5000000
+ 52830 multiletter control sequences out of 15000+600000
+ 675138 words of font info for 271 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1303b,953s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (17 pages, 2629141 bytes).
-PDF statistics:
- 297 PDF objects out of 1000 (max. 8388607)
- 243 compressed objects within 3 object streams
- 42 named destinations out of 1000 (max. 500000)
- 67251 words of extra memory for PDF output out of 74296 (max. 10000000)
-
+ 10000i,12n,9995p,1303b,952s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!
