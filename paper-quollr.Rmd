@@ -829,12 +829,10 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, tSNE was performed using ten principal components. @fig-NLDR-variety (a) is the reproduction of the published plot, with colour indicating the clustering results overlaid on the NLDR layout.The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better $2-\text{D}$ layout, as needed. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, tSNE was performed using ten principal components. \@ref(fig:nldr-layouts) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better $2-\text{D}$ layout, as needed. 
 
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
 <!-- https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1 -->
-
-\@ref(fig:limb-rmse)
 
 ```{r}
 #| label: combine-error-data-muscles
@@ -864,7 +862,7 @@ error_limb <- error_limb |>
 
 error_limb <- error_limb |>
   mutate(method = factor(method,
-                         levels = c("UMAP_15_min_dist_0.1","tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
+                         levels = c("UMAP_15_min_dist_0.1", "tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
 ```
 
 ```{r}
@@ -876,16 +874,14 @@ error_plot_limb <- plot_mse(error_limb) +
 
 ```
 
-```{r limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb3k data  (shown in @fig-nldrlayouts) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", out.width="100%"}
+```{r limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data  (shown in \\@ref(fig:nldr-layouts)) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", out.width="100%"}
 
 free(error_plot_limb) + wrap_plots(
   nldr1, nldr2, nldr3, 
   nldr4, nldr5, nldr6, ncol = 2)
 ```
 
-```{r}
-#| label: data-limb
-
+```{r data-limb}
 data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
 
 cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
@@ -1093,9 +1089,11 @@ langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)
                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 ```
 
+```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (\\@ref(fig:nldr-layouts) b) and the $2-\\text{D}$ layout selected (\\@ref(fig:nldr-layouts) f) by RMSE plot (\\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=10, fig.height=15}
 
-```{r}
 trimesh_limb + trimesh_limb_best +
+  trimesh_limb + trimesh_limb_best +
+  trimesh_limb + trimesh_limb_best +
   plot_layout(ncol = 2)
 ```
 
