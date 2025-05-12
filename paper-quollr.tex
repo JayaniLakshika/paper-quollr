@@ -55,7 +55,36 @@ Understanding the dependencies of the \texttt{quollr} package is essential for s
 
 \subsection{Data sets}\label{data-sets}
 
-Add a table of data sets that quollr have
+The \texttt{quollr} package comes with several data sets that load with the package. These are described in Table \ref{tab:datasets-tb-pdf}.
+
+\begin{table}
+
+\caption{\label{tab:datasets-tb-pdf}cquollr data sets}
+\centering
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
+\toprule
+data & explanation\\
+\midrule
+scurve & scurve\\
+scurve\_umap & scurve\_umap\\
+scurve\_umap\_predict & scurve\_umap\_predict\\
+scurve\_umap2 & scurve\_umap2\\
+scurve\_umap3 & scurve\_umap3\\
+\addlinespace
+scurve\_umap4 & scurve\_umap4\\
+scurve\_umap5 & scurve\_umap5\\
+scurve\_umap6 & scurve\_umap6\\
+scurve\_model\_obj & scurve\_model\_obj\\
+scurve\_umap\_mse & scurve\_umap\_mse\\
+\addlinespace
+scurve\_umap\_mse2 & scurve\_umap\_mse2\\
+scurve\_umap\_mse3 & scurve\_umap\_mse3\\
+scurve\_umap\_mse4 & scurve\_umap\_mse4\\
+scurve\_umap\_mse5 & scurve\_umap\_mse5\\
+scurve\_umap\_mse6 & scurve\_umap\_mse6\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{scurve} and \texttt{scurve\_umap}.
 
@@ -671,7 +700,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-18-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
 
 To visualize the \(2\text{-}D\) model, mainly three functions are used. As shown in Figure \ref{fig:mesh-plots}a, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \ref{fig:mesh-plots}b, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed \(2\text{-}D\) model which is the \(2\text{-}D\) model after removing the long edges (see Figure \ref{fig:mesh-plots}c). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in \(2\text{-}D\). Using small value of \texttt{benchmark\_value}, will produce a triangular mesh with missing data structure; for example \texttt{benchmark\_value\ =\ 0.3} shows two clusters rather than continuous structure, while \texttt{benchmark\_value\ =\ 0.8} creates long edges and mislead the data structure in \(p\text{-}D\) space.
 
@@ -683,7 +712,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-20-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -773,7 +802,7 @@ show_error_link_plots(
 
 \subsection{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
 
 \section{Application}\label{application}
 

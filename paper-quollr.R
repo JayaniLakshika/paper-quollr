@@ -159,6 +159,51 @@ nldr1_org + nldr2_org + nldr3_org +
 package_dependencies("quollr")
 
 
+## -----------------------------------------------------------------------------
+datasets_tb <- tibble(dt = c("scurve",
+                             "scurve_umap",
+                             "scurve_umap_predict",
+                             "scurve_umap2",
+                             "scurve_umap3",
+                             "scurve_umap4",
+                             "scurve_umap5",
+                             "scurve_umap6",
+                             "scurve_model_obj",
+                             "scurve_umap_mse",
+                             "scurve_umap_mse2",
+                             "scurve_umap_mse3",
+                             "scurve_umap_mse4",
+                             "scurve_umap_mse5",
+                             "scurve_umap_mse6"), 
+                      text = c("scurve",
+                             "scurve_umap",
+                             "scurve_umap_predict",
+                             "scurve_umap2",
+                             "scurve_umap3",
+                             "scurve_umap4",
+                             "scurve_umap5",
+                             "scurve_umap6",
+                             "scurve_model_obj",
+                             "scurve_umap_mse",
+                             "scurve_umap_mse2",
+                             "scurve_umap_mse3",
+                             "scurve_umap_mse4",
+                             "scurve_umap_mse5",
+                             "scurve_umap_mse6"))
+
+
+## ----datasets-tb-html, eval=knitr::is_html_output()---------------------------
+# datasets_tb |>
+#   kable(caption = "cardinalR data sets", col.names = c("data", "explanation"))
+
+
+## ----datasets-tb-pdf, eval=knitr::is_latex_output()---------------------------
+datasets_tb |> 
+  kable(caption = "cquollr data sets", format="latex", col.names = c("data", "explanation"), booktabs = T)  |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "8cm")
+
+
 ## ----echo=TRUE----------------------------------------------------------------
 fit_highd_model(
   highd_data = scurve, 
