@@ -569,14 +569,46 @@ df_bin_centroids
 
 \subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
-To indicate neighbors, the \texttt{tri\_bin\_centroids()} function is used to triangulate bin centroids. Following this, \texttt{gen\_edges()} function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
+To represent the neighborhood structure of hexagonal bins in a \(2-\text{D}\) layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+
+The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{tripack::tri.mesh()} function. This triangulation forms the structural basis for identifying adjacent bins.
 
 \begin{verbatim}
 tr_object <- tri_bin_centroids(
   centroids_data = df_bin_centroids
   )
+\end{verbatim}
 
+The \texttt{gen\_edges()} function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function \texttt{calc\_2d\_dist()}. Only edges within a hexagon's neighborhood radius (based on the hexagon side length \texttt{a1}) are retained.
+
+\begin{verbatim}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
+
+trimesh
+\end{verbatim}
+
+\begin{verbatim}
+#> # A tibble: 653 x 8
+#>     from    to  x_from  y_from    x_to    y_to from_count to_count
+#>    <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
+#>  1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
+#>  2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
+#>  3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+#>  4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+#>  5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+#>  6    17    33  0.0249 -0.0171  0.0665  0.0550          0        0
+#>  7    31    46 -0.1     0.0550 -0.0584  0.127           0        0
+#>  8    32    47 -0.0167  0.0550  0.0249  0.127           0        0
+#>  9    32    33 -0.0167  0.0550  0.0665  0.0550          0        0
+#> 10     4    18  0.150  -0.0892  0.108  -0.0171          0        0
+#> # i 643 more rows
+\end{verbatim}
+
+The \texttt{update\_trimesh\_index()} function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
+
+\begin{verbatim}
+trimesh <- update_trimesh_index(trimesh_data = trimesh)
+
 trimesh
 \end{verbatim}
 
@@ -750,7 +782,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-19-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-21-1}
 
 To visualize the \(2\text{-}D\) model, mainly three functions are used. As shown in Figure \ref{fig:mesh-plots}a, \texttt{geom\_trimesh()} to visualize the triangular mesh by adding a new layer to \texttt{ggplot()}. After identifying benchmark value to remove long edge, \texttt{vis\_lg\_mesh()} is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \ref{fig:mesh-plots}b, the small and long edges are colored by black and red respectively. Following this, \texttt{vis\_rmlg\_mesh()} is used to visualize smoothed \(2\text{-}D\) model which is the \(2\text{-}D\) model after removing the long edges (see Figure \ref{fig:mesh-plots}c). In \texttt{vis\_lg\_mesh()} and \texttt{vis\_rmlg\_mesh()}, \texttt{benchmark\_value} argument controls the edge removal in \(2\text{-}D\). Using small value of \texttt{benchmark\_value}, will produce a triangular mesh with missing data structure; for example \texttt{benchmark\_value\ =\ 0.3} shows two clusters rather than continuous structure, while \texttt{benchmark\_value\ =\ 0.8} creates long edges and mislead the data structure in \(p\text{-}D\) space.
 
@@ -762,7 +794,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-20-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-22-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -852,7 +884,7 @@ show_error_link_plots(
 
 \subsection{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-30-1}
 
 \section{Application}\label{application}
 

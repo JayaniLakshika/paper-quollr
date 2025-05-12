@@ -616,7 +616,6 @@ The `extract_hexbin_centroids()` function combines hexagonal bin coordinates, ra
 
 This function begins by arranging the `counts_data` by `hexID` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `std_counts` or `bin_counts` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
 
-
 ```{r, echo=TRUE}
 df_bin_centroids <- extract_hexbin_centroids(
   centroids_data = all_centroids_df, 
@@ -628,14 +627,29 @@ df_bin_centroids
 
 ### Indicating neighbors by line segments connecting centroids
 
-To indicate neighbors, the `tri_bin_centroids()` function is used to triangulate bin centroids. Following this, `gen_edges()` function computes the line segments that connect neighboring bins by providing the triangulated data. This results the coordinates that generate the connecting lines.
+To represent the neighborhood structure of hexagonal bins in a $2-\text{D}$ layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+
+The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `tripack::tri.mesh()` function. This triangulation forms the structural basis for identifying adjacent bins.
 
 ```{r, echo=TRUE}
 tr_object <- tri_bin_centroids(
   centroids_data = df_bin_centroids
   )
+```
 
+The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function `calc_2d_dist()`. Only edges within a hexagon’s neighborhood radius (based on the hexagon side length `a1`) are retained.
+
+```{r, echo=TRUE}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
+
+trimesh
+```
+
+The `update_trimesh_index()` function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
+
+```{r, echo=TRUE}
+trimesh <- update_trimesh_index(trimesh_data = trimesh)
+
 trimesh
 ```
 

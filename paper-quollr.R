@@ -452,7 +452,16 @@ tr_object <- tri_bin_centroids(
   centroids_data = df_bin_centroids
   )
 
+
+## ----echo=TRUE----------------------------------------------------------------
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
+
+trimesh
+
+
+## ----echo=TRUE----------------------------------------------------------------
+trimesh <- update_trimesh_index(trimesh_data = trimesh)
+
 trimesh
 
 
