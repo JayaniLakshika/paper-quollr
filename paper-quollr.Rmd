@@ -522,6 +522,16 @@ If the hexagonal binning process is run separately, it involves several steps: (
 
 #### Generating all possible centroids in a hexagonal grid
 
+The `gen_centroids()` function calculates the centroids of a hexagonal grid. 
+
+The coordinate limits of the embedding (`lim1` and `lim2`) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls `calc_bins_y()`, a helper function that determines the appropriate number of hexagonal rows (`bin2`) and the width of each hexagon (`a1`) given the specified number of bins along the x-axis (`bin1`) and buffer (`q`).
+
+Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (`a2`) is derived by $\sqrt{3}/2 \times a_1$.
+
+The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
+
+Finally, a tibble is returned containing a unique hexagon ID (`hexID`) along with the corresponding x and y centroid coordinates (`c_x`, `c_y`), which define the layout of the hexagonal grid over the $2-\text{D}$ space.
+
 ```{r, echo=TRUE}
 all_centroids_df <- gen_centroids(
   nldr_obj = scurve_umap_obj, 
