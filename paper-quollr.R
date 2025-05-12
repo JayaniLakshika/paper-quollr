@@ -687,7 +687,7 @@ error_plot_limb <- plot_mse(error_limb) +
 
 
 ## -----------------------------------------------------------------------------
-#| fig-cap: ""
+#| fig-cap: "Assessing which of the 6 NLDR layouts on the limb3k data  (shown in @fig-nldrlayouts) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f)."
 #| label: fig-limb-mse
 #| out-width: 100%
 

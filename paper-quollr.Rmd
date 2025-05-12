@@ -877,7 +877,7 @@ error_plot_limb <- plot_mse(error_limb) +
 <!-- Assessing which of the 8 NLDR layouts on the limb3k data  (shown in @fig-NLDR-variety) is the better representation using MSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-h). Layout f is universally poor. Layouts a, c, g, h that show large separations between clusters are universally suboptimal. Layout d with little separation performs well at tiny binwidth (where most points are in their own bin) and poorly as binwidth increases. The choice of best is between layouts b and e, that have small separations between oddly shaped clusters. Layout e is the best choice.-->
 
 ```{r}
-#| fig-cap: ""
+#| fig-cap: "Assessing which of the 6 NLDR layouts on the limb3k data  (shown in @fig-nldrlayouts) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f)."
 #| label: fig-limb-mse
 #| out-width: 100%
 
