@@ -670,6 +670,20 @@ find_low_dens_hex(
 
 ```
 
+For simplicity, we remove low-density hexagons using a threshold of $10$.
+
+```{r, echo=TRUE}
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
+
+trimesh <- trimesh |>
+  dplyr::filter(from_count > 10,
+                to_count > 10)
+
+trimesh <- update_trimesh_index(trimesh)
+
+```
+
 ## Lifting the model into high dimensions
 
 The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each hexagonal bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
@@ -768,9 +782,6 @@ ggplot() +
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
 ```{r, echo=TRUE}
-df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(bin_counts > 10)
-
 ggplot() + 
   geom_hexgrid(
     data = df_bin_centroids, 
@@ -807,8 +818,6 @@ ggplot() +
 Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
 
 ```{r, echo=TRUE}
-df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(bin_counts > 10)
 
 df_exe <- comb_data_model(
   highd_data = scurve, 
@@ -820,12 +829,6 @@ df_exe
 ```
 
 ```{r, echo=TRUE, eval=knitr::is_html_output()}
-trimesh <- trimesh |>
-  dplyr::filter(from_count > 10,
-                to_count > 10)
-
-trimesh <- update_trimesh_index(trimesh)
-
 show_langevitour(
   point_data = df_exe, 
   edge_data = trimesh
