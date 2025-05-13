@@ -716,6 +716,14 @@ predict_emb(
 
 As a Goodness of fit statistics for the model, \texttt{glance()} is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the \(p\text{-}D\) data.
 
+This function begins by renaming the columns of the input \texttt{model\_highd} data frame to avoid naming conflicts during subsequent joins. It then uses the \texttt{predict\_emb()} function to assign each point in the high-dimensional dataset to a corresponding bin in the 2D model, producing a prediction data frame that contains both the predicted bin assignment (\texttt{pred\_hb\_id}) and the original observation \texttt{ID}.
+
+The function joins this prediction output with both the high-dimensional model (to get mean bin coordinates in the original space) and the original high-dimensional data (to retrieve true coordinates). It then calculates squared differences between the true and predicted high-dimensional coordinates for each dimension, storing these as \texttt{error\_square\_x1}, \texttt{error\_square\_x2}, \ldots, up to the dimensionality of the data.
+
+From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the Mean squared error (MSE) which is the average of the total squared error per point.
+
+These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{MSE} (mean squared error).
+
 \begin{verbatim}
 glance(
   highd_data = scurve, 
@@ -846,6 +854,8 @@ show_langevitour(
   edge_data = trimesh
   )
 \end{verbatim}
+
+\subsubsection{\texorpdfstring{\(2\text{-}D\) projection}{2\textbackslash text\{-\}D projection}}\label{text-d-projection}
 
 \subsubsection{Link plots}\label{link-plots}
 
