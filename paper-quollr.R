@@ -518,6 +518,17 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
+
+ggplot() + 
+  geom_hexgrid(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+
+
+## ----echo=TRUE----------------------------------------------------------------
 ggplot() + 
   geom_trimesh(
     data = hb_obj$centroids, 

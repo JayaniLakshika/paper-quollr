@@ -751,9 +751,11 @@ Furthermore, there are two interactive plots, `show_link_plots` and `show_error_
 
 Each visualization can be generated using its respective function, as described in this section.
 
-### $2\text{-}D$ model visualization
+### Hexagonal grid
 
-The `geom_hexgrid()` function is used to plot the hexagonal grid from the provided centroid data set.
+The `geom_hexgrid()` function introduces a custom `ggplot2` layer designed for visualizing hexagonal grid on a provided set of bin centroids.
+
+To display the complete grid, users should supply all available bin centroids. 
 
 ```{r, echo=TRUE}
 ggplot() + 
@@ -762,6 +764,21 @@ ggplot() +
     aes(x = c_x, y = c_y)
     ) 
 ```
+
+If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
+
+```{r, echo=TRUE}
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(bin_counts > 10)
+
+ggplot() + 
+  geom_hexgrid(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+```
+
+### Triangular mesh
 
 To visualize the $2\text{-}D$ model, mainly three functions are used. As shown in Figure \@ref(fig:mesh-plots)a, `geom_trimesh()` to visualize the triangular mesh by adding a new layer to `ggplot()`. After identifying benchmark value to remove long edge, `vis_lg_mesh()` is used to visualize the triangular mesh by coloring the small and long edges. As shown in Figure \@ref(fig:mesh-plots)b, the small and long edges are colored by black and red respectively. Following this, `vis_rmlg_mesh()` is used to visualize smoothed $2\text{-}D$ model which is the $2\text{-}D$ model after removing the long edges (see Figure \@ref(fig:mesh-plots)c). In `vis_lg_mesh()` and `vis_rmlg_mesh()`, `benchmark_value` argument controls the edge removal in $2\text{-}D$. Using small value of `benchmark_value`, will produce a triangular mesh with missing data structure; for example `benchmark_value = 0.3` shows two clusters rather than continuous structure, while `benchmark_value = 0.8` creates long edges and mislead the data structure in $p\text{-}D$ space.
 
