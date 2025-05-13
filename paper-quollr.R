@@ -537,6 +537,14 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
+ggplot() + 
+  geom_trimesh(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+
+
+## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
   dplyr::filter(bin_counts > 10)
 
