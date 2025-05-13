@@ -717,11 +717,13 @@ glance(
   )
 ```
 
-Furthermore, `augment()` accepts $2\text{-}D$ and $p\text{-}D$ model points, and the $p\text{-}D$ data and adds information about each observation in the data set. Most commonly, this includes predicted values, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error. 
+Furthermore, `augment()` accepts $2\text{-}D$ and $p\text{-}D$ model points, and the $p\text{-}D$ data and adds information about each observation in the data set. 
 
-Users can pass data to `augment()` via either the `highd_data` argument. This requires that at least all predictor variable columns used to fit the model are present. If the original outcome variable used to fit the model is not included in `newdata`, then no corresponding column will be included in the output.
+The function starts by renaming columns in the `model_highd` data frame to avoid conflicts. It then predicts the high-dimensional bin assignments for each point using the `predict_emb()` function, mapping each observation to its nearest $2-\text{D}$ bin (`pred_hb_id`). This prediction is joined with the mean high-dimensional coordinates of each bin from the model and with the original high-dimensional data.
 
-The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
+Next, the function computes residuals between each original coordinate (`x1`, `x2`, ..., `xp`) and the corresponding modeled coordinate (`model_high_d_x1`, ..., `model_high_d_xp`) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the `row_wise_total_error` which is the total squared error across all dimensions, and the `row_wise_abs_error` which is the total absolute error across all dimensions.
+
+The final output is a data frame that combines the original IDs, high-dimensional coordinates, predicted bin IDs, modeled coordinates, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error for each observation. The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
 
 ```{r, echo=TRUE}
 model_error <- augment(
