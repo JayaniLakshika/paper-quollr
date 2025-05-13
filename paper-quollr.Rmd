@@ -815,7 +815,11 @@ ggplot() +
 
 ### $p\text{-}D$ model visualization
 
-Displaying the $p\text{-}D$ model overlaid on the data is done using the function `show_langevitour()`. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, $2\text{-}D$ and $p\text{-}D$ model points, the threshold for removing long edges, and the distance data set.
+To evaluate how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a visualization using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` package.
+
+Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
+
+In this structure, the `type` variable distinguishes between original observations (`"data"`) and the bin-averaged model representation (`"model"`).
 
 ```{r, echo=TRUE}
 
@@ -827,6 +831,10 @@ df_exe <- comb_data_model(
 
 df_exe
 ```
+
+The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
+
+In the resulting interactive visualization black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the $2-\text{D}$ wireframe structure mapped back to high-dimensional space.
 
 ```{r, echo=TRUE, eval=knitr::is_html_output()}
 show_langevitour(

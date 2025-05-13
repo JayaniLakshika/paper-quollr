@@ -875,7 +875,11 @@ ggplot() +
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
-Displaying the \(p\text{-}D\) model overlaid on the data is done using the function \texttt{show\_langevitour()}. This visualization is helpful for visually evaluating how well the model fits the data. The function requires several arguments: data along with their corresponding hexagonal bin ID, \(2\text{-}D\) and \(p\text{-}D\) model points, the threshold for removing long edges, and the distance data set.
+To evaluate how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a visualization using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} package.
+
+Before plotting, the data needs to be organized into a combined format through the \texttt{comb\_data\_model()} function. This function takes three inputs: \texttt{highd\_data} (the high-dimensional observations), \texttt{model\_highd} (high-dimensional summaries for each bin), and \texttt{model\_2d} (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
+
+In this structure, the \texttt{type} variable distinguishes between original observations (\texttt{"data"}) and the bin-averaged model representation (\texttt{"model"}).
 
 \begin{verbatim}
 df_exe <- comb_data_model(
@@ -903,6 +907,10 @@ df_exe
 #> 10  0.295   1.74 1.95  -0.00165    0.000459  0.00330  0.000257 model
 #> # i 5,112 more rows
 \end{verbatim}
+
+The \texttt{show\_langevitour()} function then renders the visualization using the \texttt{langevitour} interface, displaying both types of points in a dynamic tour. The \texttt{edge\_data} input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model's structure.
+
+In the resulting interactive visualization black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \(2-\text{D}\) wireframe structure mapped back to high-dimensional space.
 
 \begin{verbatim}
 show_langevitour(

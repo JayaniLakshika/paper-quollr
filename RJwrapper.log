@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  13 MAY 2025 14:02
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.6)  13 MAY 2025 14:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -920,43 +920,53 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 874--875
 
 
 [18 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
+Overfull \hbox (12.52875pt too wide) in paragraph at lines 880--881
+[]\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
+ []
+
+
+Overfull \hbox (7.46678pt too wide) in paragraph at lines 880--881
+\T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
+ []
+
+
 
 [19 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>]
 <paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf, id=163, 430.60875pt x 302.12875pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf  used on input line 957.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf  used on input line 965.
 (pdftex.def)             Requested size: 398.33858pt x 279.49237pt.
 
 
 [20]
 
-Package natbib Warning: Citation `andrews2021' on page 21 undefined on input line 961.
+Package natbib Warning: Citation `andrews2021' on page 21 undefined on input line 969.
 
 
-Package natbib Warning: Citation `tabula2018' on page 21 undefined on input line 965.
+Package natbib Warning: Citation `tabula2018' on page 21 undefined on input line 973.
 
 
-LaTeX Warning: Reference `fig:nldr-layouts' on page 21 undefined on input line 965.
+LaTeX Warning: Reference `fig:nldr-layouts' on page 21 undefined on input line 973.
 
 <paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=169, 438.63875pt x 303.1325pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 968.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 976.
 (pdftex.def)             Requested size: 398.33858pt x 275.2867pt.
 <paper-quollr_files/figure-latex/model-limb-1.pdf, id=170, 1054.94125pt x 699.61375pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 972.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 980.
 (pdftex.def)             Requested size: 398.33858pt x 264.1693pt.
 
-Package natbib Warning: Citation `knitr' on page 21 undefined on input line 987.
+Package natbib Warning: Citation `knitr' on page 21 undefined on input line 995.
 
 
-Package natbib Warning: Citation `rmarkdown' on page 21 undefined on input line 987.
+Package natbib Warning: Citation `rmarkdown' on page 21 undefined on input line 995.
 
 
-Overfull \hbox (26.07806pt too wide) in paragraph at lines 987--988
+Overfull \hbox (26.07806pt too wide) in paragraph at lines 995--996
 \T1/ppl/m/n/9 (-20) tem-plate. The source code for re-pro-duc-ing this pa-per can be found at: [][]$\T1/zi4/m/n/9 https : / / github . com / JayaniLakshika /
  []
 
