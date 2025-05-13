@@ -782,7 +782,27 @@ model_error
 
 \subsection{Visualizations}\label{visualizations}
 
-The package provides five basic visualizations which includes one to visualize the full hexagonal grid in \(2\text{-}D\), three visualizations related to the \(2\text{-}D\) model (static visualizations), and one related to the \(p\text{-}D\) model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.
+The package offers several \(2-\text{D}\) visualizations, including:
+
+\begin{itemize}
+\tightlist
+\item
+  A full hexagonal grid,
+\item
+  A hexagonal grid that matches the data,
+\item
+  A full grid based on centroid triangulation,
+\item
+  A centroid triangulation grid that aligns with the data,
+\item
+  A triangular mesh for any provided set of points.
+\end{itemize}
+
+The generated p-D model, overlaid with the data, can also be visualized using \texttt{show\_langevitour}. Additionally, it features a function for visualizing the \(2-\text{D}\) projection of the fitted model overlaid on the data, called \texttt{plot\_proj}.
+
+Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \texttt{show\_error\_link\_plots}, which are designed to help diagnose the model.
+
+Each visualization can be generated using its respective function, as described in this section.
 
 \subsubsection{\texorpdfstring{\(2\text{-}D\) model visualization}{2\textbackslash text\{-\}D model visualization}}\label{text-d-model-visualization}
 
@@ -898,7 +918,7 @@ show_error_link_plots(
   )
 \end{verbatim}
 
-\subsection{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
+\section{Find the most appropriate fit}\label{find-the-most-appropriate-fit}
 
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-30-1}
 

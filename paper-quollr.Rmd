@@ -737,7 +737,19 @@ model_error
 
 ## Visualizations
 
-The package provides five basic visualizations which includes one to visualize the full hexagonal grid in $2\text{-}D$, three visualizations related to the $2\text{-}D$ model (static visualizations), and one related to the $p\text{-}D$ model (dynamic visualization). Each visualization can be generated using its respective function, as described in this section.
+The package offers several $2-\text{D}$ visualizations, including:
+
+- A full hexagonal grid,
+- A hexagonal grid that matches the data,
+- A full grid based on centroid triangulation,
+- A centroid triangulation grid that aligns with the data, 
+- A triangular mesh for any provided set of points.
+
+The generated p-D model, overlaid with the data, can also be visualized using `show_langevitour`. Additionally, it features a function for visualizing the $2-\text{D}$ projection of the fitted model overlaid on the data, called `plot_proj`. 
+
+Furthermore, there are two interactive plots, `show_link_plots` and `show_error_link_plots`, which are designed to help diagnose the model.
+
+Each visualization can be generated using its respective function, as described in this section.
 
 ### $2\text{-}D$ model visualization
 
@@ -832,7 +844,7 @@ show_error_link_plots(
   )
 ```
 
-## Find the most appropriate fit
+# Find the most appropriate fit
 
 ```{r}
 #| label: scurve-diff-umap-layouts
