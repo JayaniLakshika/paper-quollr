@@ -1,7 +1,7 @@
 ---
 title: "quollr: An R Package for Visualizing 2-D Models from Non-linear Dimension Reductions in High Dimensional Space"
 abstract: >
-  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data ($p\text{-}D$) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper)parameter choices provide the most accurate representation of high-dimensional data. The `scurve` data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
+  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data ($p\text{-}D$) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and (hyper-)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which (hyper-)parameter choices provide the most accurate representation of high-dimensional data. The `scurve` data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
 draft: true
 author:  
   - name: Jayani P. Gamage
@@ -66,6 +66,8 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 library(readr)
+library(plotly)
+library(crosstalk)
 #library(tools)
 
 set.seed(20240110)
@@ -92,7 +94,8 @@ theme_set(theme_linedraw() +
      legend.title = element_text(size=5), 
      legend.text = element_text(size=4),
      legend.key.height = unit(0.25, 'cm'),
-     legend.key.width = unit(0.25, 'cm')
+     legend.key.width = unit(0.25, 'cm'),
+     plot.margin = margin(0, 0, 0, 0)
    )
 
 )
@@ -111,13 +114,83 @@ source("scripts/additional_functions.R")
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
-Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and (hyper)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
+Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and (hyper-)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr` which introduce a new visual tool to evaluate which NLDR method and which (hyper)parameter choice gives the most accurate representation of high-dimensional data. The methodology of this algorithm is explained in *cite the methodology paper*. The software is available from the Comprehensive R Archive Network (CARN) at [https://CRAN.R-project.org/package=quollr](https://CRAN.R-project.org/package=quollr).
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data.
 
-Objective: From this, we can understand how an NLDR warps the high-dimensional space and fits the data.
+```{r}
+clr_choice <- "#000000"
 
-Add software descriptive figure
+scurve_model_obj <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  bin1 = 15, 
+  q = 0.1, 
+  benchmark_highdens = 5)
+
+scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
+tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
+df_bin_centroids_scurve <- scurve_model_obj$model_2d
+df_bin_scurve <- scurve_model_obj$model_highd
+hex_grid_scurve <- scurve_model_obj$hb_obj$hex_poly
+counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
+
+hex_grid_with_counts_scurve <- left_join(
+  hex_grid_scurve, counts_df_scurve, 
+  by = c("hex_poly_id" = "hexID"))
+
+hex_grid_nonempty_scurve <- hex_grid_scurve |>
+  filter(hex_poly_id %in% df_bin_centroids_scurve$hexID)
+
+scurve_umap_plt <- ggplot(
+  scurve_umap_scaled, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
+
+hex_grid_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = hex_poly_id), 
+               fill = "#ffffff") +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             alpha = 0.2, size = 0.5, color = clr_choice) +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#33a02c")
+
+hex_grid_scurve <- ggplotly(hex_grid_scurve, width = "600", 
+                     height = "600", tooltip = "none")
+
+df_exe <- comb_data_model(
+    highd_data = scurve, 
+    model_highd = df_bin_scurve, 
+    model_2d = df_bin_centroids_scurve
+)
+
+scurve_umap_model_vis <- show_langevitour(
+    point_data = df_exe, 
+    edge_data = tr_from_to_df_scurve
+)
+```
+
+```{r, eval=knitr::is_html_output()}
+
+crosstalk::bscols(
+    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+                   hex_grid_scurve,
+                   scurve_umap_model_vis),
+    device = "sm"
+  )
+```
 
 The paper is organized as follows. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 

@@ -21,6 +21,8 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 library(readr)
+library(plotly)
+library(crosstalk)
 #library(tools)
 
 set.seed(20240110)
@@ -47,7 +49,8 @@ theme_set(theme_linedraw() +
      legend.title = element_text(size=5), 
      legend.text = element_text(size=4),
      legend.key.height = unit(0.25, 'cm'),
-     legend.key.width = unit(0.25, 'cm')
+     legend.key.width = unit(0.25, 'cm'),
+     plot.margin = margin(0, 0, 0, 0)
    )
 
 )
@@ -56,6 +59,80 @@ theme_set(theme_linedraw() +
 ## -----------------------------------------------------------------------------
 #| label: import-scripts
 source("scripts/additional_functions.R")
+
+
+## -----------------------------------------------------------------------------
+clr_choice <- "#000000"
+
+scurve_model_obj <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  bin1 = 15, 
+  q = 0.1, 
+  benchmark_highdens = 5)
+
+scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
+tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
+df_bin_centroids_scurve <- scurve_model_obj$model_2d
+df_bin_scurve <- scurve_model_obj$model_highd
+hex_grid_scurve <- scurve_model_obj$hb_obj$hex_poly
+counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
+
+hex_grid_with_counts_scurve <- left_join(
+  hex_grid_scurve, counts_df_scurve, 
+  by = c("hex_poly_id" = "hexID"))
+
+hex_grid_nonempty_scurve <- hex_grid_scurve |>
+  filter(hex_poly_id %in% df_bin_centroids_scurve$hexID)
+
+scurve_umap_plt <- ggplot(
+  scurve_umap_scaled, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
+
+hex_grid_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = hex_poly_id), 
+               fill = "#ffffff") +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             alpha = 0.2, size = 0.5, color = clr_choice) +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#33a02c")
+
+hex_grid_scurve <- ggplotly(hex_grid_scurve, width = "600", 
+                     height = "600", tooltip = "none")
+
+df_exe <- comb_data_model(
+    highd_data = scurve, 
+    model_highd = df_bin_scurve, 
+    model_2d = df_bin_centroids_scurve
+)
+
+scurve_umap_model_vis <- show_langevitour(
+    point_data = df_exe, 
+    edge_data = tr_from_to_df_scurve
+)
+
+
+## ----eval=knitr::is_html_output()---------------------------------------------
+# 
+# crosstalk::bscols(
+#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+#                    hex_grid_scurve,
+#                    scurve_umap_model_vis),
+#     device = "sm"
+#   )
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
