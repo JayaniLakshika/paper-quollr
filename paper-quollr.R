@@ -596,128 +596,14 @@ df_exe <- comb_all_data_model_error(
   error_data = model_error
   )
 
+df_exe
+
 
 ## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
 # show_error_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
-
-
-## -----------------------------------------------------------------------------
-#| label: scurve-diff-umap-layouts
-
-nldr_scaled_obj <- gen_scaled_data(
-  nldr_data = scurve_umap)
-umap_scaled1 <- nldr_scaled_obj$scaled_nldr
-
-scurve_nldr1 <- umap_scaled1 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
-  interior_annotation("a", c(0.08, 0.9))
-
-nldr_scaled_obj2 <- gen_scaled_data(
-  nldr_data = scurve_umap2)
-umap_scaled2 <- nldr_scaled_obj2$scaled_nldr
-
-scurve_nldr2 <- umap_scaled2 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
-  interior_annotation("b")
-
-nldr_scaled_obj3 <- gen_scaled_data(
-  nldr_data = scurve_umap3)
-umap_scaled3 <- nldr_scaled_obj3$scaled_nldr
-
-scurve_nldr3 <- umap_scaled3 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
-  interior_annotation("c", c(0.08, 0.9))
-
-nldr_scaled_obj4 <- gen_scaled_data(
-  nldr_data = scurve_umap4)
-umap_scaled4 <- nldr_scaled_obj4$scaled_nldr
-
-scurve_nldr4 <- umap_scaled4 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#a65628') +
-  interior_annotation("d")
-
-nldr_scaled_obj5 <- gen_scaled_data(
-  nldr_data = scurve_umap5)
-umap_scaled5 <- nldr_scaled_obj5$scaled_nldr
-
-scurve_nldr5 <- umap_scaled5 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#636363') +
-  interior_annotation("e")
-
-nldr_scaled_obj6 <- gen_scaled_data(
-  nldr_data = scurve_umap6)
-umap_scaled6 <- nldr_scaled_obj6$scaled_nldr
-
-scurve_nldr6 <- umap_scaled6 |>
-  ggplot(aes(x = emb1,
-             y = emb2))+
-  geom_point(alpha=0.1, size=1, colour='#984ea3') +
-  interior_annotation("f")
-
-
-## -----------------------------------------------------------------------------
-scurve_error <- dplyr::bind_rows(scurve_umap_mse,
-                                 scurve_umap_mse2,
-                                 scurve_umap_mse3,
-                                 scurve_umap_mse4,
-                                 scurve_umap_mse5,
-                                 scurve_umap_mse6)
-
-scurve_error <- scurve_error |>
-  mutate(a1 = round(a1, 2)) |>
-  filter(bin1 >= 5) |>
-  group_by(method, a1) |>
-  filter(MSE == min(MSE)) |>
-  ungroup()
-
-error_plot <- ggplot(scurve_error,
-         aes(x = a1,
-             y = sqrt(MSE),
-             color = method)) +
-    geom_point(size = 0.8) +
-    geom_line(linewidth = 0.3) +
-  scale_x_continuous(breaks =
-    sort(unique(scurve_error$a1))[
-      seq(1, length(
-        unique(scurve_error$a1)), 
-        by = 5)]) +
-  scale_color_manual(
-    values=c('#e41a1c','#ff7f00','#4daf4a', 
-             "#a65628",'#636363', '#984ea3'))+
-    ylab("RMSE") +
-    xlab(expression(paste("binwidth (", a[1], ")"))) +
-    theme_minimal() +
-    theme(panel.border = element_rect(fill = 'transparent'),
-          plot.title = element_text(size = 12, hjust = 0.5, vjust = -0.5),
-          axis.ticks.x = element_line(),
-          axis.ticks.y = element_line(),
-          legend.position = "none",
-          axis.text.x = element_text(size = 7),
-          axis.text.y = element_text(size = 7),
-          axis.title.x = element_text(size = 7),
-          axis.title.y = element_text(size = 7),
-          aspect.ratio = 1.5)
-
-
-## -----------------------------------------------------------------------------
-free(error_plot) + wrap_plots(
-  scurve_nldr1, scurve_nldr2, 
-  scurve_nldr3, scurve_nldr4,
-  scurve_nldr5, scurve_nldr6, 
-  ncol = 2)
 
 
 ## -----------------------------------------------------------------------------
