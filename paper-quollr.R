@@ -90,6 +90,19 @@ scurve_umap_plt <- ggplot(
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
 
+scurve_umap_plt_int <- ggplotly(scurve_umap_plt, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
 hex_grid_poly_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
@@ -100,6 +113,19 @@ hex_grid_poly_scurve <- ggplot(
              aes(x = emb1, y = emb2), 
              alpha = 0.2, size = 0.5, color = clr_choice)
 
+hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
 hex_centroids_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
@@ -109,6 +135,19 @@ hex_centroids_scurve <- ggplot(
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#33a02c")
+
+hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
 
 wireframe_scurve <- ggplot() +
   geom_segment(data = tr_from_to_df_scurve,
@@ -121,6 +160,19 @@ wireframe_scurve <- ggplot() +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#33a02c")
+
+wireframe_scurve_int <- ggplotly(wireframe_scurve, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
 
 ## 2-d vis model
 hex_grid_scurve <- ggplot(
@@ -329,10 +381,26 @@ hex_grid_scurve + wrap_plots(
   ncol = 2)
 
 
-## ----eval=knitr::is_latex_output()--------------------------------------------
-scurve_umap_plt + hex_grid_poly_scurve + 
+## ----eval=knitr::is_html_output()---------------------------------------------
+# 
+# crosstalk::bscols(
+#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+#                    scurve_umap_plt_int, hex_grid_poly_scurve_int,
+#                    hex_centroids_scurve_int, wireframe_scurve_int,
+#                     htmltools::div(
+#                       style = "margin-top: 13px;",  # adjust px as needed
+#                       scurve_umap_model_vis
+#                     )),
+#     device = "xs"
+#   )
+
+
+## ----eval=knitr::is_latex_output(), out.width="100%"--------------------------
+scurve_umap_plt + hex_grid_poly_scurve +
+  scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   hex_centroids_scurve + wireframe_scurve + 
-  plot_layout(ncol = 5)
+  scurve_proj_umap_model3 + scurve_proj_umap_model4 +
+  plot_layout(ncol = 4)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
