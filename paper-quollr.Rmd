@@ -66,7 +66,7 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 library(readr)
-library(tools)
+#library(tools)
 
 set.seed(20240110)
 ```
@@ -138,14 +138,6 @@ devtools::install_github("JayaniLakshika/quollr")
 ## Web site
 
 More documentation of the package can be found at the web site [https://jayanilakshika.github.io/quollr/](https://jayanilakshika.github.io/quollr/).
-
-## Package dependencies
-
-Understanding the dependencies of the `quollr` package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that `quollr` relies on to execute its functions effectively. 
-
-```{r}
-package_dependencies("quollr")
-```
 
 ## Data sets
 
@@ -1265,4 +1257,6 @@ This new tool provides an effective start point for automatically creating regul
 
 # Acknowledgements
 
-This article is created using \CRANpkg{knitr} [@knitr] and \CRANpkg{rmarkdown} [@rmarkdown] in R with the `rjtools::rjournal_article` template. The source code for reproducing this paper can be found at: <https://github.com/JayaniLakshika/paper-quollr>.
+This article is created using \CRANpkg{knitr} [@knitr] and \CRANpkg{rmarkdown} [@rmarkdown] in R with the `rjtools::rjournal_article` template. These `R` packages were used for this work: `cli` [@gabor2025], `dplyr`, `ggplot2`, `interp` (>= 1.1-6), `langevitour`, `proxy`, `stats`, `tibble`, `tidyselect`, `crosstalk`, `plotly`, `kableExtra`, `patchwork`, and `readr`.
+
+The source code for reproducing this paper can be found at: <https://github.com/JayaniLakshika/paper-quollr>.

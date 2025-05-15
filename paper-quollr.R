@@ -21,7 +21,7 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 library(readr)
-library(tools)
+#library(tools)
 
 set.seed(20240110)
 
@@ -56,10 +56,6 @@ theme_set(theme_linedraw() +
 ## -----------------------------------------------------------------------------
 #| label: import-scripts
 source("scripts/additional_functions.R")
-
-
-## -----------------------------------------------------------------------------
-package_dependencies("quollr")
 
 
 ## -----------------------------------------------------------------------------

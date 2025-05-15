@@ -40,17 +40,6 @@ devtools::install_github("JayaniLakshika/quollr")
 
 More documentation of the package can be found at the web site \url{https://jayanilakshika.github.io/quollr/}.
 
-\subsection{Package dependencies}\label{package-dependencies}
-
-Understanding the dependencies of the \texttt{quollr} package is essential for smooth operation and error prevention. The following dependencies refer to the other R packages that \texttt{quollr} relies on to execute its functions effectively.
-
-\begin{verbatim}
-#> $quollr
-#>  [1] "dplyr"       "ggplot2"     "grid"        "interp"      "langevitour"
-#>  [6] "proxy"       "rlang"       "rsample"     "stats"       "tibble"     
-#> [11] "tidyselect"
-\end{verbatim}
-
 \subsection{Data sets}\label{data-sets}
 
 The \texttt{quollr} package comes with several data sets that load with the package. These are described in Table \ref{tab:datasets-tb-pdf}.
@@ -653,7 +642,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-22-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-21-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -665,7 +654,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-22-1}
 
 \subsubsection{Triangular mesh}\label{triangular-mesh}
 
@@ -681,7 +670,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-24-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -693,7 +682,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-25-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-24-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -848,7 +837,9 @@ This new tool provides an effective start point for automatically creating regul
 
 \section{Acknowledgements}\label{acknowledgements}
 
-This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdown} \citep{rmarkdown} in R with the \texttt{rjtools::rjournal\_article} template. The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
+This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdown} \citep{rmarkdown} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{interp} (\textgreater= 1.1-6), \texttt{langevitour}, \texttt{proxy}, \texttt{stats}, \texttt{tibble}, \texttt{tidyselect}, \texttt{crosstalk}, \texttt{plotly}, \texttt{kableExtra}, \texttt{patchwork}, and \texttt{readr}.
+
+The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
 
 \bibliography{paper-quollr.bib}
 
