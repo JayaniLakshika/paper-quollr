@@ -91,8 +91,8 @@ scurve_umap_plt <- ggplot(
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
 
 scurve_umap_plt_int <- ggplotly(scurve_umap_plt, 
-                                width = "350", 
-                                height = "350", 
+                                width = "250", 
+                                height = "250", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -114,8 +114,8 @@ hex_grid_poly_scurve <- ggplot(
              alpha = 0.2, size = 0.5, color = clr_choice)
 
 hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "250", 
+                                height = "250", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -137,8 +137,8 @@ hex_centroids_scurve <- ggplot(
              size = 1, color = "#33a02c")
 
 hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "250", 
+                                height = "250", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -162,8 +162,8 @@ wireframe_scurve <- ggplot() +
              size = 1, color = "#33a02c")
 
 wireframe_scurve_int <- ggplotly(wireframe_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "250", 
+                                height = "250", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -384,7 +384,7 @@ hex_grid_scurve + wrap_plots(
 ## ----eval=knitr::is_html_output()---------------------------------------------
 # 
 # crosstalk::bscols(
-#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;",
 #                    scurve_umap_plt_int, hex_grid_poly_scurve_int,
 #                    hex_centroids_scurve_int, wireframe_scurve_int,
 #                     htmltools::div(
@@ -395,12 +395,11 @@ hex_grid_scurve + wrap_plots(
 #   )
 
 
-## ----eval=knitr::is_latex_output(), out.width="100%"--------------------------
-scurve_umap_plt + hex_grid_poly_scurve +
-  scurve_proj_umap_model1 + scurve_proj_umap_model2 +
-  hex_centroids_scurve + wireframe_scurve + 
-  scurve_proj_umap_model3 + scurve_proj_umap_model4 +
-  plot_layout(ncol = 4)
+## ----eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25----
+# scurve_umap_plt + hex_grid_poly_scurve +
+#   hex_centroids_scurve + wireframe_scurve +
+#   scurve_proj_umap_model1 +
+#   plot_layout(ncol = 5)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
