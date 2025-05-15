@@ -20,7 +20,7 @@ Add software descriptive figure
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying clustering data structures. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
-\section{Methods}\label{methods}
+\section{Algorithm}\label{algorithm}
 
 \section{Implementation}\label{implementation}
 
@@ -31,39 +31,6 @@ The development version can be installed from GitHub:
 \begin{verbatim}
 devtools::install_github("JayaniLakshika/quollr")
 \end{verbatim}
-
-\subsection{Data sets}\label{data-sets}
-
-The \texttt{quollr} package comes with several data sets that load with the package. These are described in Table \ref{tab:datasets-tb-pdf}.
-
-\begin{table}
-
-\caption{\label{tab:datasets-tb-pdf}quollr data sets}
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{8cm}}
-\toprule
-data & explanation\\
-\midrule
-scurve & Simulated data to generate a S-curve with additional noise dimensions.\\
-scurve\_umap & The UMAP embedding with n\_neighbors \$46\$ and min\_dist \$0.9\$ for `S-curve`.\\
-scurve\_umap\_predict & The predicted UMAP embedding with n\_neighbors \$46\$ and min\_dist \$0.9\$ for `S-curve`.\\
-scurve\_umap2 & The UMAP embedding with n\_neighbors \$10\$ and min\_dist \$0.4\$ for `S-curve`.\\
-scurve\_umap3 & The UMAP embedding with n\_neighbors \$62\$ and min\_dist \$0.1\$ for `S-curve`.\\
-\addlinespace
-scurve\_umap4 & The UMAP embedding with n\_neighbors \$30\$ and min\_dist \$0.5\$ for `S-curve`.\\
-scurve\_umap5 & The UMAP embedding with n\_neighbors \$15\$ and min\_dist \$0.5\$ for `S-curve`.\\
-scurve\_umap6 & The UMAP embedding with n\_neighbors \$15\$ and min\_dist \$0.1\$ for `S-curve`.\\
-scurve\_model\_obj & The object contains the scaled NLDR object (`nldr\_obj`), the hexagonal object (`hb\_obj`), the fitted model in both \$2\textbackslash{}text\{-\}D\$ (`model\_2d`), and \$p\textbackslash{}text\{-\}D\$ (`model\_highd`), and triangular mesh (`trimesh\_data`).\\
-scurve\_umap\_mse & The MSE corresponding to different binwidths for the model generated using `scurve\_umap`.\\
-\addlinespace
-scurve\_umap\_mse2 & The MSE corresponding to different binwidths for the model generated using `scurve\_umap2`.\\
-scurve\_umap\_mse3 & The MSE corresponding to different binwidths for the model generated using `scurve\_umap3`.\\
-scurve\_umap\_mse4 & The MSE corresponding to different binwidths for the model generated using `scurve\_umap4`.\\
-scurve\_umap\_mse5 & The MSE corresponding to different binwidths for the model generated using `scurve\_umap5`.\\
-scurve\_umap\_mse6 & The MSE corresponding to different binwidths for the model generated using `scurve\_umap6`.\\
-\bottomrule
-\end{tabular}
-\end{table}
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{scurve} and \texttt{scurve\_umap}.
 
@@ -634,7 +601,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-21-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-20-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -646,7 +613,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-22-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-21-1}
 
 \subsubsection{Triangular mesh}\label{triangular-mesh}
 
@@ -662,7 +629,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-22-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -674,7 +641,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-24-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 

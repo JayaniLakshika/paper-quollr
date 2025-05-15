@@ -119,7 +119,7 @@ Add software descriptive figure
 
 The paper is organized as follows. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying clustering data structures. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
-# Methods
+# Algorithm
 
 # Implementation
 
@@ -129,55 +129,6 @@ The development version can be installed from GitHub:
 
 ```r
 devtools::install_github("JayaniLakshika/quollr")
-```
-
-## Data sets
-
-The `quollr` package comes with several data sets that load with the package. These are described in Table `r knitr::asis_output(ifelse(knitr::is_html_output(), '\\@ref(tab:datasets-tb-html)', '\\@ref(tab:datasets-tb-pdf)'))`.
-
-```{r}
-datasets_tb <- tibble(dt = c("scurve",
-                             "scurve_umap",
-                             "scurve_umap_predict",
-                             "scurve_umap2",
-                             "scurve_umap3",
-                             "scurve_umap4",
-                             "scurve_umap5",
-                             "scurve_umap6",
-                             "scurve_model_obj",
-                             "scurve_umap_mse",
-                             "scurve_umap_mse2",
-                             "scurve_umap_mse3",
-                             "scurve_umap_mse4",
-                             "scurve_umap_mse5",
-                             "scurve_umap_mse6"), 
-                      text = c("Simulated data to generate a S-curve with additional noise dimensions.",
-                             "The UMAP embedding with n_neighbors $46$ and min_dist $0.9$ for `S-curve`.",
-                             "The predicted UMAP embedding with n_neighbors $46$ and min_dist $0.9$ for `S-curve`.",
-                             "The UMAP embedding with n_neighbors $10$ and min_dist $0.4$ for `S-curve`.",
-                             "The UMAP embedding with n_neighbors $62$ and min_dist $0.1$ for `S-curve`.",
-                             "The UMAP embedding with n_neighbors $30$ and min_dist $0.5$ for `S-curve`.",
-                             "The UMAP embedding with n_neighbors $15$ and min_dist $0.5$ for `S-curve`.",
-                             "The UMAP embedding with n_neighbors $15$ and min_dist $0.1$ for `S-curve`.",
-                             "The object contains the scaled NLDR object (`nldr_obj`), the hexagonal object (`hb_obj`), the fitted model in both $2\\text{-}D$ (`model_2d`), and $p\\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap`.",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap2`.",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap3`.",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap4`.",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap5`.",
-                             "The MSE corresponding to different binwidths for the model generated using `scurve_umap6`."))
-```
-
-```{r datasets-tb-html, eval=knitr::is_html_output()}
-datasets_tb |> 
-  kable(caption = "quollr data sets", col.names = c("data", "explanation")) 
-```
-
-```{r datasets-tb-pdf, eval=knitr::is_latex_output()}
-datasets_tb |> 
-  kable(caption = "quollr data sets", format="latex", col.names = c("data", "explanation"), booktabs = T)  |>
-  column_spec(1, width = "4cm") |>
-  column_spec(2, width = "8cm")
 ```
 
 <!-- ## Usage -->
