@@ -147,8 +147,6 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          enableControls = FALSE,
                          width = "421px", height = "421px")
 
-## Generate 2D projections
-
 
 
 ## ----eval=knitr::is_html_output()---------------------------------------------
@@ -156,16 +154,73 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
 # crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
 #                    hex_grid_scurve_int,
-#                   htmltools::div(
-#                     style = "margin-top: 13px;",  # adjust px as needed
-#                     scurve_umap_model_vis
-#                   )),
+#                     htmltools::div(
+#                       style = "margin-top: 13px;",  # adjust px as needed
+#                       scurve_umap_model_vis
+#                     )),
 #     device = "xs"
 #   )
 
 
-## ----eval=knitr::is_latex_output()--------------------------------------------
+## ----scurve-projections-------------------------------------------------------
 
+df_b_scurve <- df_bin_scurve |>
+  dplyr::filter(hexID %in% df_bin_centroids_scurve$hexID) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
+df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$hexID, df_b_scurve$hexID),] |>
+  dplyr::select(-hexID) 
+
+scurve_labeled <- scurve |>
+  select(-ID) |>
+  mutate(type = "data")
+
+# Apply the scaling
+df_model_data_scurve <- bind_rows(scurve_labeled, df_b_scurve)
+scaled_scurve <- scale_data_manual(df_model_data_scurve, "type") |>
+  as_tibble()
+
+scaled_scurve_data <- scaled_scurve |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_scurve_data_model <- scaled_scurve |>
+  filter(type == "model") |>
+  select(-type)
+
+
+## First projection
+projection <- cbind(
+  c(0.10479,0.06673,0.19430,-0.14763,0.02861,-0.04302,0.06601),
+  c(0.11421,0.18556,-0.16860,-0.05033,-0.00219,0.04159,0.04285))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 2,
+                                              axis_pos_x = -0.25, 
+                                              axis_pos_y = -0.25, 
+                                              threshold = 0.0259))
+
+scurve_proj_umap_model1 <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 4,
+  is_category = FALSE) +
+  interior_annotation(label = "a1", cex = 2) 
+
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+hex_grid_scurve + wrap_plots(
+  scurve_proj_umap_model1, scurve_proj_umap_model1,
+  scurve_proj_umap_model1, scurve_proj_umap_model1, 
+  ncol = 2)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
