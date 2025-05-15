@@ -59,103 +59,6 @@ source("scripts/additional_functions.R")
 
 
 ## -----------------------------------------------------------------------------
-#| label: read-limb-nldr
-# Read a variety of different NLDR representations of limb
-# and plot them on same aspect ratio
-clr_choice <- "#000000"
-umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
-
-nldr1 <- umap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#999999') +
-  interior_annotation("a")
-
-nldr1_org <- umap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("a")
-
-tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
-
-nldr2 <- tsne_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#a65628') +
-  interior_annotation("b")
-
-nldr2_org <- tsne_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("b")
-
-phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
-
-nldr3 <- phate_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
-  interior_annotation("c")
-
-nldr3_org <- phate_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("c")
-
-trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
-
-nldr4 <- trimap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#377eb8') +
-  interior_annotation("d")
-
-nldr4_org <- trimap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("d")
-
-pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
-
-nldr5 <- pacmap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
-  interior_annotation("e")
-
-nldr5_org <- pacmap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("e")
-
-tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
-
-nldr6 <- tsne_limb2 |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
-  interior_annotation("f")
-
-nldr6_org <- tsne_limb2 |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour=clr_choice) +
-  interior_annotation("f")
-
-
-## ----nldr-layouts, fig.alt = "NLDR representations with different methods and (hyper)parameter choices.", fig.cap = "Six different NLDR representations of Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles have been generated using different techniques and different (hyper)parameter choices. Researchers may have seen any of these in their analysis of this data, depending on their choice of method, or typical (hyper)parameter choice. Would their downstream analysis decisions vary based on the version they observe? Which representation most accurately represents the structure in high-dimensional space?", out.width = "100%", fig.width= 6, fig.height= 4----
-
-nldr1_org + nldr2_org + nldr3_org + 
-  nldr4_org + nldr5_org + nldr6_org +
-  plot_layout(ncol = 3)
-
-
-## -----------------------------------------------------------------------------
 package_dependencies("quollr")
 
 
@@ -604,6 +507,60 @@ df_exe
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
+
+
+## -----------------------------------------------------------------------------
+#| label: read-limb-nldr
+# Read a variety of different NLDR representations of limb
+# and plot them on same aspect ratio
+
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+
+nldr1 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
+  interior_annotation("a")
+
+tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
+
+nldr2 <- tsne_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("b")
+
+phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
+
+nldr3 <- phate_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  interior_annotation("c")
+
+trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+
+nldr4 <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#377eb8') +
+  interior_annotation("d")
+
+pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+nldr5 <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  interior_annotation("e")
+
+tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
+
+nldr6 <- tsne_limb2 |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
+  interior_annotation("f")
 
 
 ## -----------------------------------------------------------------------------
