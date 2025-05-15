@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  15 MAY 2025 17:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  15 MAY 2025 18:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -858,20 +858,20 @@ Overfull \hbox (0.18141pt too wide) in paragraph at lines 590--591
 
 
 [11]
-<paper-quollr_files/figure-latex/unnamed-chunk-22-1.pdf, id=79, 323.2075pt x 323.2075pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-22-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-22-1.pdf  used on input line 608.
+<paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf, id=79, 323.2075pt x 323.2075pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf  used on input line 608.
 (pdftex.def)             Requested size: 398.33858pt x 398.36154pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 608--609
 [][] 
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf, id=80, 323.2075pt x 323.2075pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf  used on input line 620.
+<paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf, id=80, 323.2075pt x 323.2075pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf  used on input line 620.
 (pdftex.def)             Requested size: 398.33858pt x 398.36154pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 620--621
@@ -880,11 +880,11 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 620--621
 
 
 
-[12 <./paper-quollr_files/figure-latex/unnamed-chunk-22-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf, id=90, 323.2075pt x 323.2075pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf  used on input line 636.
+[12 <./paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf, id=90, 323.2075pt x 323.2075pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf  used on input line 636.
 (pdftex.def)             Requested size: 398.33858pt x 398.36154pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 636--637
@@ -893,11 +893,11 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 636--637
 
 
 
-[13 <./paper-quollr_files/figure-latex/unnamed-chunk-23-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf, id=101, 323.2075pt x 323.2075pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf  used on input line 648.
+[13 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf, id=101, 323.2075pt x 323.2075pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf  used on input line 648.
 (pdftex.def)             Requested size: 398.33858pt x 398.36154pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 648--649
@@ -906,7 +906,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 648--649
 
 
 
-[14 <./paper-quollr_files/figure-latex/unnamed-chunk-24-1.pdf>]
+[14 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>]
 Overfull \hbox (12.52875pt too wide) in paragraph at lines 654--655
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
  []
@@ -918,7 +918,7 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 654--655
 
 
 
-[15 <./paper-quollr_files/figure-latex/unnamed-chunk-25-1.pdf>]
+[15 <./paper-quollr_files/figure-latex/unnamed-chunk-26-1.pdf>]
 
 [16]
 

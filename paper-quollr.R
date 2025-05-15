@@ -90,6 +90,7 @@ scurve_umap_plt <- ggplot(
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
 
+## 2-d vis model
 hex_grid_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
@@ -110,29 +111,61 @@ hex_grid_scurve <- ggplot(
              aes(x = c_x, y = c_y), 
              size = 1, color = "#33a02c")
 
-hex_grid_scurve <- ggplotly(hex_grid_scurve, width = "600", 
-                     height = "600", tooltip = "none")
+hex_grid_scurve_int <- ggplotly(hex_grid_scurve, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
 
+
+## High-d vis model
 df_exe <- comb_data_model(
     highd_data = scurve, 
     model_highd = df_bin_scurve, 
     model_2d = df_bin_centroids_scurve
 )
 
-scurve_umap_model_vis <- show_langevitour(
-    point_data = df_exe, 
-    edge_data = tr_from_to_df_scurve
-)
+df <- df_exe |>
+    dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from,
+                         lineTo = tr_from_to_df_scurve$to,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c("#000000", "#33a02c"),
+                         enableControls = FALSE,
+                         width = "421px", height = "421px")
+
+## Generate 2D projections
+
 
 
 ## ----eval=knitr::is_html_output()---------------------------------------------
 # 
 # crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-#                    hex_grid_scurve,
-#                    scurve_umap_model_vis),
-#     device = "sm"
+#                    hex_grid_scurve_int,
+#                   htmltools::div(
+#                     style = "margin-top: 13px;",  # adjust px as needed
+#                     scurve_umap_model_vis
+#                   )),
+#     device = "xs"
 #   )
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
@@ -502,6 +535,10 @@ df_exe
 #   )
 
 
+## ----eval=knitr::is_latex_output()--------------------------------------------
+
+
+
 ## ----echo=TRUE----------------------------------------------------------------
 df_exe <- comb_all_data_model(
   highd_data = scurve, 
@@ -516,6 +553,10 @@ df_exe <- comb_all_data_model(
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -535,6 +576,10 @@ df_exe
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+
 
 
 ## -----------------------------------------------------------------------------
