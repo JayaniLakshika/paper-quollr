@@ -32,11 +32,13 @@ The development version can be installed from GitHub:
 devtools::install_github("JayaniLakshika/quollr")
 \end{verbatim}
 
+\subsection{Usage}\label{usage}
+
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{scurve} and \texttt{scurve\_umap}.
 
 \texttt{scurve} is a \(7\text{-}D\) simulated dataset. It is constructed by simulating \(5000\) observations from \(\theta \sim U(-3\pi/2, 3\pi/2)\), \(X_1 = \sin(\theta)\), \(X_2 \sim U(0, 2)\) (adding thickness to the S), \(X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)\). The remaining variables \(X_4, X_5, X_6, X_7\) are all uniform error, with small variance. \texttt{scurve\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{scurve} data with \texttt{n\_neighbors} is \(46\) and \texttt{min\_dist} is \(0.9\). Each data set contains a unique ID column that maps \texttt{scurve} and \texttt{scurve\_umap}.
 
-\subsection{Main function}\label{main-function}
+\subsubsection{Main function}\label{main-function}
 
 The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility.
 
@@ -51,11 +53,11 @@ fit_highd_model(
   benchmark_highdens = 5)
 \end{verbatim}
 
-\subsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
+\subsubsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
 
 Constructing the \(2\text{-}D\) model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) Remove low-density hexagons.
 
-\subsubsection{Scaling the Data}\label{scaling-the-data}
+\paragraph{Scaling the Data}\label{scaling-the-data}
 
 The algorithm starts by scaling the NLDR data to a standard range using the \texttt{gen\_scaled\_data()} function. This function standardizes the data so that the first embedding ranges from \(0\) to \(1\), while the second embedding scales from \(0\) to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
 
@@ -89,7 +91,7 @@ scurve_umap_obj
 #> [1] -12.43687  12.32455
 \end{verbatim}
 
-\subsubsection{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
+\paragraph{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
 
 The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (\texttt{bin1}), and the buffer amount as a proportion (\texttt{q}).
 
@@ -113,7 +115,7 @@ bin_configs
 #> [1] 0.07210645
 \end{verbatim}
 
-\subsubsection{Binning the data}\label{binning-the-data}
+\paragraph{Binning the data}\label{binning-the-data}
 
 Points are allocated to bins based on the nearest centroid. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its components can be run separately for added flexibility. The parameters used within \texttt{hex\_binning()} include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (\texttt{nldr\_obj}), the number of bins along the x-axis (\texttt{bin1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{tot\_bins}), the number of non-empty bins (\texttt{non\_bins}), and the points within each hexagon (\texttt{pts\_bins}).
 
@@ -130,7 +132,7 @@ hb_obj <- hex_binning(
 
 If the hexagonal binning process is run separately, it involves several steps: (i) generating all possible centroids in a hexagonal grid, (ii) creating the coordinates of the hexagons, (iii) assigning data points to their respective hexagons, (iv) computing the standardized number of points within each hexagon, and (v) mapping the points to their corresponding hexagonal bins.
 
-\paragraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
+\subparagraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
 
 The \texttt{gen\_centroids()} function calculates the centroids of a hexagonal grid.
 
@@ -169,7 +171,7 @@ all_centroids_df
 #> # i 230 more rows
 \end{verbatim}
 
-\paragraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
+\subparagraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
 
 Following the generation of hexagonal centroids, the \texttt{gen\_hex\_coord()} function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
 
@@ -207,7 +209,7 @@ all_hex_coord
 #> # i 1,430 more rows
 \end{verbatim}
 
-\paragraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
+\subparagraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
 
 After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The \texttt{assign\_data()} function performs this assignment by calculating the \(2-\text{D}\) Euclidean distance between each point in the \(2-\text{D}\) embedding and all hexagon centroids.
 
@@ -243,7 +245,7 @@ umap_hex_id
 #> # i 4,990 more rows
 \end{verbatim}
 
-\paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
+\subparagraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts for each hexagon.
 
@@ -274,7 +276,7 @@ std_df
 #> # i 132 more rows
 \end{verbatim}
 
-\paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
+\subparagraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
 
 The \texttt{find\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
 
@@ -305,7 +307,7 @@ pts_df
 #> # i 132 more rows
 \end{verbatim}
 
-\subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
+\paragraph{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
 The \texttt{extract\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -337,7 +339,7 @@ df_bin_centroids
 #> # i 230 more rows
 \end{verbatim}
 
-\subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
+\paragraph{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
 To represent the neighborhood structure of hexagonal bins in a \(2-\text{D}\) layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
@@ -399,7 +401,7 @@ trimesh
 #> # i 643 more rows
 \end{verbatim}
 
-\subsubsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
+\paragraph{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2-\text{D}\) structure, potentially disrupting the continuity of the representation.
 
@@ -434,7 +436,7 @@ trimesh <- trimesh |>
 trimesh <- update_trimesh_index(trimesh)
 \end{verbatim}
 
-\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
+\subsubsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
 
 The final step involves lifting the fitted \(2\text{-}D\) model into \(p\text{-}D\) by computing the \(p\text{-}D\) mean of data points within each hexagonal bin to represent bin centroids. This transformation is performed using the \texttt{avg\_highd\_data()} function, which takes \(p\text{-}D\) data (\texttt{highd\_data}) and embedding data with their corresponding hexagonal bin IDs as inputs (\texttt{scaled\_nldr\_hexid}).
 
@@ -464,7 +466,7 @@ df_bin
 #> # i 132 more rows
 \end{verbatim}
 
-\subsection{Prediction}\label{prediction}
+\subsubsection{Prediction}\label{prediction}
 
 The \texttt{predict\_emb()} function is used to predict \(2\text{-}D\) embedding for a new \(p\text{-}D\) data point using the fitted model. This function is useful to predict \(2\text{-}D\) embedding irrespective of the NLDR technique.
 
@@ -495,17 +497,17 @@ predict_emb(
 #> # i 4,990 more rows
 \end{verbatim}
 
-\subsection{Compute residuals and Mean Square Error (MSE)}\label{compute-residuals-and-mean-square-error-mse}
+\subsubsection{Compute residuals and Root Mean Square Error (RMSE)}\label{compute-residuals-and-root-mean-square-error-rmse}
 
-As a Goodness of fit statistics for the model, \texttt{glance()} is used to compute residuals and MSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the \(p\text{-}D\) data.
+As a Goodness of fit statistics for the model, \texttt{glance()} is used to compute residuals and RMSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the \(p\text{-}D\) data.
 
 This function begins by renaming the columns of the input \texttt{model\_highd} data frame to avoid naming conflicts during subsequent joins. It then uses the \texttt{predict\_emb()} function to assign each point in the high-dimensional dataset to a corresponding bin in the 2D model, producing a prediction data frame that contains both the predicted bin assignment (\texttt{pred\_hb\_id}) and the original observation \texttt{ID}.
 
 The function joins this prediction output with both the high-dimensional model (to get mean bin coordinates in the original space) and the original high-dimensional data (to retrieve true coordinates). It then calculates squared differences between the true and predicted high-dimensional coordinates for each dimension, storing these as \texttt{error\_square\_x1}, \texttt{error\_square\_x2}, \ldots, up to the dimensionality of the data.
 
-From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the Mean squared error (MSE) which is the average of the total squared error per point.
+From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RMSE which is the average of the total squared error per point.
 
-These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{MSE} (mean squared error).
+These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{RMSE} (root mean squared error).
 
 \begin{verbatim}
 glance(
@@ -563,7 +565,7 @@ model_error
 #> #   row_wise_total_error <dbl>, abs_error_x1 <dbl>, abs_error_x2 <dbl>, ...
 \end{verbatim}
 
-\subsection{Visualizations}\label{visualizations}
+\subsubsection{Visualizations}\label{visualizations}
 
 The package offers several \(2-\text{D}\) visualizations, including:
 
@@ -587,7 +589,7 @@ Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \te
 
 Each visualization can be generated using its respective function, as described in this section.
 
-\subsubsection{Hexagonal grid}\label{hexagonal-grid}
+\paragraph{Hexagonal grid}\label{hexagonal-grid}
 
 The \texttt{geom\_hexgrid()} function introduces a custom \texttt{ggplot2} layer designed for visualizing hexagonal grid on a provided set of bin centroids.
 
@@ -615,7 +617,7 @@ ggplot() +
 
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-21-1}
 
-\subsubsection{Triangular mesh}\label{triangular-mesh}
+\paragraph{Triangular mesh}\label{triangular-mesh}
 
 The \texttt{geom\_trimesh()} function introduces a custom \texttt{ggplot2} layer designed for visualizing \(2\text{-}D\) wireframe on a provided set of bin centroids.
 
@@ -643,7 +645,7 @@ ggplot() +
 
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
 
-\subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
+\paragraph{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
 To evaluate how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a visualization using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} package.
 
@@ -689,7 +691,7 @@ show_langevitour(
   )
 \end{verbatim}
 
-\subsubsection{Link plots}\label{link-plots}
+\paragraph{Link plots}\label{link-plots}
 
 There are mainly two interactive link plots can be generated.
 
