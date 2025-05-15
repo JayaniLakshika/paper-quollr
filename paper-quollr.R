@@ -90,6 +90,38 @@ scurve_umap_plt <- ggplot(
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
 
+hex_grid_poly_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = hex_poly_id), 
+               fill = "#ffffff") +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             alpha = 0.2, size = 0.5, color = clr_choice)
+
+hex_centroids_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = hex_poly_id), 
+               fill = "#ffffff")  +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#33a02c")
+
+wireframe_scurve <- ggplot() +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#33a02c")
+
 ## 2-d vis model
 hex_grid_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
@@ -295,6 +327,12 @@ hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
   scurve_proj_umap_model3, scurve_proj_umap_model4, 
   ncol = 2)
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+scurve_umap_plt + hex_grid_poly_scurve + 
+  hex_centroids_scurve + wireframe_scurve + 
+  plot_layout(ncol = 5)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
