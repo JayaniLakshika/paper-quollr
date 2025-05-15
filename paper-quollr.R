@@ -395,11 +395,11 @@ hex_grid_scurve + wrap_plots(
 #   )
 
 
-## ----eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25----
-# scurve_umap_plt + hex_grid_poly_scurve +
-#   hex_centroids_scurve + wireframe_scurve +
-#   scurve_proj_umap_model1 +
-#   plot_layout(ncol = 5)
+## ----eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25----
+scurve_umap_plt + hex_grid_poly_scurve +
+  hex_centroids_scurve + wireframe_scurve + 
+  scurve_proj_umap_model1 +
+  plot_layout(ncol = 5)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
