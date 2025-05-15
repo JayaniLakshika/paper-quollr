@@ -107,13 +107,13 @@ datasets_tb |>
   column_spec(2, width = "8cm")
 
 
-## ----echo=TRUE----------------------------------------------------------------
-fit_highd_model(
-  highd_data = scurve, 
-  nldr_data = scurve_umap, 
-  bin1 = 15, 
-  q = 0.1, 
-  benchmark_highdens = 5)
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# fit_highd_model(
+#   highd_data = scurve,
+#   nldr_data = scurve_umap,
+#   bin1 = 15,
+#   q = 0.1,
+#   benchmark_highdens = 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -586,7 +586,7 @@ error_limb <- error_limb |>
   filter(bin1 >= 5) |>
   filter(a1 >= 0.03) |>
   group_by(method, a1) |>
-  filter(MSE == min(MSE)) |>
+  filter(RMSE == min(RMSE)) |>
   ungroup()
 
 error_limb <- error_limb |>
@@ -597,13 +597,13 @@ error_limb <- error_limb |>
 ## -----------------------------------------------------------------------------
 #| label: error-comp-muscles
 
-error_plot_limb <- plot_mse(error_limb) +
+error_plot_limb <- plot_rmse(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
   scale_color_manual(values=c('#999999','#a65628','#e41a1c','#377eb8','#4daf4a','#ff7f00','#984ea3','#f781bf')) 
 
 
 
-## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data  (shown in \\@ref(fig:nldr-layouts)) is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", out.width="100%"----
+## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", out.width="100%"----
 
 free(error_plot_limb) + wrap_plots(
   nldr1, nldr2, nldr3, 
@@ -700,9 +700,8 @@ scaled_limb_data_model <- scaled_limb |>
   select(-type)
 
 
-## ----eval=knitr::is_html_output()---------------------------------------------
-#| label: langevitour-limb-tsne-author-proj
-
+## ----langevitour-limb-tsne-author-proj, eval=knitr::is_html_output()----------
+# 
 # data_limb_n <- data_limb_n |>
 #   select(-type) |>
 #   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
@@ -801,9 +800,8 @@ scaled_limb_data_model <- scaled_limb |>
   select(-type)
 
 
-## ----eval=knitr::is_html_output()---------------------------------------------
-#| label: langevitour-limb-tsne-best-proj
-
+## ----langevitour-limb-tsne-best-proj, eval=knitr::is_html_output()------------
+# 
 # data_limb_n <- data_limb_n |>
 #   select(-type) |>
 #   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
@@ -818,7 +816,7 @@ scaled_limb_data_model <- scaled_limb |>
 #                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
 
 
-## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (\\@ref(fig:nldr-layouts) b) and the $2-\\text{D}$ layout selected (\\@ref(fig:nldr-layouts) f) by RMSE plot (\\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10----
+## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10----
 
 trimesh_limb + trimesh_limb_best +
   trimesh_limb + trimesh_limb_best +
