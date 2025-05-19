@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: RJwrapper.aux
 The style file: abbrvnat.bst
 Database file #1: paper-quollr.bib
-You've used 7 entries,
+You've used 23 entries,
             2773 wiz_defined-function locations,
-            644 strings with 6063 characters,
-and the built_in function-call counts, 3731 in all, are:
-= -- 319
-> -- 280
-< -- 3
-+ -- 94
-- -- 87
-* -- 333
-:= -- 610
-add.period$ -- 29
-call.type$ -- 7
-change.case$ -- 49
-chr.to.int$ -- 7
-cite$ -- 14
-duplicate$ -- 143
-empty$ -- 254
-format.name$ -- 98
-if$ -- 754
+            739 strings with 9204 characters,
+and the built_in function-call counts, 9554 in all, are:
+= -- 863
+> -- 582
+< -- 15
++ -- 200
+- -- 177
+* -- 765
+:= -- 1555
+add.period$ -- 95
+call.type$ -- 23
+change.case$ -- 114
+chr.to.int$ -- 23
+cite$ -- 46
+duplicate$ -- 434
+empty$ -- 713
+format.name$ -- 212
+if$ -- 1937
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 9
-newline$ -- 51
-num.names$ -- 28
-pop$ -- 86
+missing$ -- 16
+newline$ -- 149
+num.names$ -- 92
+pop$ -- 210
 preamble$ -- 1
-purify$ -- 43
+purify$ -- 105
 quote$ -- 0
-skip$ -- 117
+skip$ -- 343
 stack$ -- 0
-substring$ -- 97
-swap$ -- 7
+substring$ -- 188
+swap$ -- 34
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 67
+type$ -- 233
 warning$ -- 0
-while$ -- 27
+while$ -- 80
 width$ -- 0
-write$ -- 115
+write$ -- 347
