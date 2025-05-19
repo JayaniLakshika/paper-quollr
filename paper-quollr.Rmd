@@ -995,7 +995,7 @@ The `geom_hexgrid()` function introduces a custom `ggplot2` layer designed for v
 To display the complete grid, users should supply all available bin centroids. 
 
 ```{r, echo=TRUE}
-ggplot() + 
+full_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
@@ -1005,7 +1005,7 @@ ggplot() +
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
 ```{r, echo=TRUE}
-ggplot() + 
+data_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
@@ -1019,7 +1019,7 @@ The `geom_trimesh()` function introduces a custom `ggplot2` layer designed for v
 To display the complete wireframe, users should supply all available bin centroids. 
 
 ```{r, echo=TRUE}
-ggplot() + 
+full_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
@@ -1029,11 +1029,25 @@ ggplot() +
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
 ```{r, echo=TRUE}
-ggplot() + 
+data_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
     ) 
+```
+
+```{r geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', eval=knitr::is_html_output()}
+
+full_hexgrid + data_hexgrid + 
+  full_triangulation_grid + data_triangulation_grid +
+  plot_layout(ncol = 4)
+```
+
+```{r geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', eval=knitr::is_latex_output()}
+
+full_hexgrid + data_hexgrid + 
+  full_triangulation_grid + data_triangulation_grid +
+  plot_layout(ncol = 4)
 ```
 
 #### $p\text{-}D$ model visualization

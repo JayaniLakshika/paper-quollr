@@ -609,26 +609,22 @@ The \texttt{geom\_hexgrid()} function introduces a custom \texttt{ggplot2} layer
 To display the complete grid, users should supply all available bin centroids.
 
 \begin{verbatim}
-ggplot() + 
+full_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
-
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
 \begin{verbatim}
-ggplot() + 
+data_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
     ) 
 \end{verbatim}
-
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-24-1}
 
 \paragraph{Triangular mesh}\label{triangular-mesh}
 
@@ -637,26 +633,31 @@ The \texttt{geom\_trimesh()} function introduces a custom \texttt{ggplot2} layer
 To display the complete wireframe, users should supply all available bin centroids.
 
 \begin{verbatim}
-ggplot() + 
+full_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-25-1}
-
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
 \begin{verbatim}
-ggplot() + 
+data_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-26-1}
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/geom-outputs-pdf-1} 
+
+}
+
+\caption{The outputs of `geom\_hexgrid` and `geom\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.}\label{fig:geom-outputs-pdf}
+\end{figure}
 
 \paragraph{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 

@@ -761,7 +761,7 @@ model_error
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-ggplot() + 
+full_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
@@ -769,7 +769,7 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-ggplot() + 
+data_hexgrid <- ggplot() + 
   geom_hexgrid(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
@@ -777,7 +777,7 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-ggplot() + 
+full_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = hb_obj$centroids, 
     aes(x = c_x, y = c_y)
@@ -785,11 +785,25 @@ ggplot() +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-ggplot() + 
+data_triangulation_grid <- ggplot() + 
   geom_trimesh(
     data = df_bin_centroids, 
     aes(x = c_x, y = c_y)
     ) 
+
+
+## ----geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', eval=knitr::is_html_output()----
+# 
+# full_hexgrid + data_hexgrid +
+#   full_triangulation_grid + data_triangulation_grid +
+#   plot_layout(ncol = 4)
+
+
+## ----geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', eval=knitr::is_latex_output()----
+
+full_hexgrid + data_hexgrid + 
+  full_triangulation_grid + data_triangulation_grid +
+  plot_layout(ncol = 4)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
