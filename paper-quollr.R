@@ -23,6 +23,7 @@ library(patchwork)
 library(readr)
 library(plotly)
 library(crosstalk)
+library(htmltools)
 #library(tools)
 
 set.seed(20240110)
@@ -257,17 +258,25 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----eval=knitr::is_html_output(), fig.cap="algorithm"------------------------
+## ----eval=knitr::is_html_output()---------------------------------------------
 # 
-# crosstalk::bscols(
-#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-#                    hex_grid_scurve_int,
-#                     htmltools::div(
-#                       style = "margin-top: 13px;",  # adjust px as needed
-#                       scurve_umap_model_vis
-#                     )),
-#     device = "xs"
+# htmltools::browsable(
+#   tagList(
+#     tags$div(
+#       id = "fig-algo",  # This is the anchor
+#       crosstalk::bscols(
+#         htmltools::div(
+#           style = "display: grid; grid-template-columns: 1fr 1fr;",
+#           hex_grid_scurve_int,
+#           htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
+#         ),
+#         device = "xs"
+#       ),
+#       tags$p(tags$strong("Figure 1:"), " Algorithm to visualize the 2D model.")
+#     )
 #   )
+# )
+# 
 
 
 ## ----scurve-projections-------------------------------------------------------

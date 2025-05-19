@@ -69,6 +69,7 @@ library(patchwork)
 library(readr)
 library(plotly)
 library(crosstalk)
+library(htmltools)
 #library(tools)
 
 set.seed(20240110)
@@ -117,7 +118,7 @@ source("scripts/additional_functions.R")
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and (hyper-)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data.
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data ([Figure 1](#fig-algo)).
 
 ```{r}
 clr_choice <- "#000000"
@@ -315,17 +316,25 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 ```
 
-```{r, eval=knitr::is_html_output(), fig.cap="algorithm"}
+```{r, eval=knitr::is_html_output()}
 
-crosstalk::bscols(
-    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-                   hex_grid_scurve_int,
-                    htmltools::div(
-                      style = "margin-top: 13px;",  # adjust px as needed
-                      scurve_umap_model_vis
-                    )),
-    device = "xs"
+htmltools::browsable(
+  tagList(
+    tags$div(
+      id = "fig-algo",  # This is the anchor
+      crosstalk::bscols(
+        htmltools::div(
+          style = "display: grid; grid-template-columns: 1fr 1fr;",
+          hex_grid_scurve_int,
+          htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
+        ),
+        device = "xs"
+      ),
+      tags$p(tags$strong("Figure 1:"), " Algorithm to visualize the 2D model.")
+    )
   )
+)
+
 ```
 
 ```{r scurve-projections}
