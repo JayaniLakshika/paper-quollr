@@ -416,21 +416,29 @@ hex_grid_scurve + wrap_plots(
 
 ## ----eval=knitr::is_html_output()---------------------------------------------
 # 
-# crosstalk::bscols(
-#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
-#     htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_plt_int),
-#     htmltools::div(style = "margin: 0; padding: 0;", hex_grid_poly_scurve_int),
-#     htmltools::div(style = "margin: 0; padding: 0;", hex_centroids_scurve_int),
-#     htmltools::div(style = "margin: 0; padding: 0;", wireframe_scurve_int),
-#     htmltools::div(
-#       style = "margin-top: 13px;t",
-#       scurve_umap_model_vis_n
-#     )),
-#     device = "xs"
+# htmltools::browsable(
+#   tagList(
+#     tags$div(
+#       id = "fig-algo-steps",  # This is the anchor
+#       crosstalk::bscols(
+#         htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
+#                        htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_plt_int),
+#                        htmltools::div(style = "margin: 0; padding: 0;", hex_grid_poly_scurve_int),
+#                        htmltools::div(style = "margin: 0; padding: 0;", hex_centroids_scurve_int),
+#                        htmltools::div(style = "margin: 0; padding: 0;", wireframe_scurve_int),
+#                        htmltools::div(
+#                          style = "margin-top: 13px;t",
+#                          scurve_umap_model_vis_n
+#                        )),
+#         device = "xs"
+#       ),
+#       tags$p(tags$strong("Figure 2:"), "Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.")
+#     )
 #   )
+# )
 
 
-## ----eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout ($k=2$): (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
+## ----eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
 scurve_umap_plt + hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1 +

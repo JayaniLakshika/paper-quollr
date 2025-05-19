@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  19 MAY 2025 18:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  19 MAY 2025 18:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -802,6 +802,9 @@ File: paper-quollr_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type p
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 20.
 (pdftex.def)             Requested size: 398.33858pt x 198.32417pt.
 
+LaTeX Warning: Hyper reference `fig-algo-steps' on page 1 undefined on input line 27.
+
+
 
 [1{/Users/jpiy0001/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
@@ -996,15 +999,15 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 493A16C725C0EA1966C9C7F3392AF09C;1060.
  ) 
 Here is how much of TeX's memory you used:
- 27451 strings out of 471571
- 503018 string characters out of 5519689
- 905379 words of memory out of 5000000
- 53169 multiletter control sequences out of 15000+600000
+ 27452 strings out of 471571
+ 503034 string characters out of 5519689
+ 905371 words of memory out of 5000000
+ 53170 multiletter control sequences out of 15000+600000
  682441 words of font info for 323 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1303b,930s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,1303b,931s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (21 pages, 4401445 bytes).
+Output written on RJwrapper.pdf (21 pages, 4401432 bytes).
 PDF statistics:
  437 PDF objects out of 1000 (max. 8388607)
  366 compressed objects within 4 object streams
