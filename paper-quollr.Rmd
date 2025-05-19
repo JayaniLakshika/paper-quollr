@@ -468,13 +468,15 @@ Our algorithm includes the following steps: (1) scaling the NLDR data, (2) compu
 ```{r, eval=knitr::is_html_output()}
 
 crosstalk::bscols(
-    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;",
-                   scurve_umap_plt_int, hex_grid_poly_scurve_int,
-                   hex_centroids_scurve_int, wireframe_scurve_int,
-                    htmltools::div(
-                      style = "margin-top: 13px;",  # adjust px as needed
-                      scurve_umap_model_vis_n
-                    )),
+    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
+    htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_plt_int),
+    htmltools::div(style = "margin: 0; padding: 0;", hex_grid_poly_scurve_int),
+    htmltools::div(style = "margin: 0; padding: 0;", hex_centroids_scurve_int),
+    htmltools::div(style = "margin: 0; padding: 0;", wireframe_scurve_int),
+    htmltools::div(
+      style = "margin-top: 13px;",
+      scurve_umap_model_vis_n
+    )),
     device = "xs"
   )
 ```
