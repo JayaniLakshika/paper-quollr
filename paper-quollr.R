@@ -628,9 +628,7 @@ hex_param_vis <- ggplot() +
   coord_equal()
 
 
-## -----------------------------------------------------------------------------
-#| label: fig-hex-param
-#| fig-cap: "The components of the hexagon grid illustrating notation."
+## ----hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H'----
 
 hex_param_vis
 
