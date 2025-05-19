@@ -118,7 +118,9 @@ source("scripts/additional_functions.R")
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and (hyper-)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data ([Figure 1](#fig-algo)).
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data (`r knitr::asis_output(if (knitr::is_html_output()) { "[Figure 1](#fig-overview)"} else { "Figure \\@ref(fig:overview)"})`).
+
+
 
 ```{r}
 clr_choice <- "#000000"
@@ -321,7 +323,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 htmltools::browsable(
   tagList(
     tags$div(
-      id = "fig-algo",  # This is the anchor
+      id = "fig-overview",  # This is the anchor
       crosstalk::bscols(
         htmltools::div(
           style = "display: grid; grid-template-columns: 1fr 1fr;",
@@ -465,7 +467,7 @@ scurve_proj_umap_model4 <- plot_proj(
   interior_annotation(label = "a4", cex = 1) 
 ```
 
-```{r, eval=knitr::is_latex_output(), fig.cap="algorithm", fig.pos='H'}
+```{r overview, eval=knitr::is_latex_output(), fig.cap="algorithm", fig.pos='H'}
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
   scurve_proj_umap_model3, scurve_proj_umap_model4, 
@@ -476,7 +478,7 @@ The paper is organized as follows. The next section introduces the implementatio
 
 # Algorithm
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions ([Figure 2](#fig-algo-steps)). A detailed description of the algorithm can be found in **cite the methodology paper**.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "[Figure 2](#fig-algo-steps)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in **cite the methodology paper**.
 
 ```{r, eval=knitr::is_html_output()}
 
@@ -502,7 +504,7 @@ htmltools::browsable(
 )
 ```
 
-```{r, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."}
+```{r algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."}
 scurve_umap_plt + hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1 +

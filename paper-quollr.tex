@@ -14,20 +14,20 @@ Non-linear dimension reduction (NLDR) methods provide a low-dimensional represen
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) \citep{laurens2008}, uniform manifold approximation and projection (UMAP) \citep{leland2018}, potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm \citep{moon2019}, large-scale dimensionality reduction Using triplets (TriMAP) \citep{amid2019}, and pairwise controlled manifold approximation (PaCMAP) \citep{yingfan2021}, create wildly different representations depending on the selected method and (hyper-)parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures.
 
-This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data (\hyperref[fig-algo]{Figure 1}).
+This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data (Figure \ref{fig:overview}).
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-3-1} \caption{algorithm}\label{fig:unnamed-chunk-3}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{algorithm}\label{fig:overview}
 \end{figure}
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
 \section{Algorithm}\label{algorithm}
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (\hyperref[fig-algo-steps]{Figure 2}). A detailed description of the algorithm can be found in \textbf{cite the methodology paper}.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \textbf{cite the methodology paper}.
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-5-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:unnamed-chunk-5}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
 \section{Implementation}\label{implementation}
@@ -611,7 +611,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-25-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-23-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -623,7 +623,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-26-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-24-1}
 
 \paragraph{Triangular mesh}\label{triangular-mesh}
 
@@ -639,7 +639,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-25-1}
 
 If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
 
@@ -651,7 +651,7 @@ ggplot() +
     ) 
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-26-1}
 
 \paragraph{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
@@ -699,7 +699,7 @@ show_langevitour(
   )
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-31-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1}
 
 \paragraph{Link plots}\label{link-plots}
 
