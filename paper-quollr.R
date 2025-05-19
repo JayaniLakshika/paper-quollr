@@ -966,11 +966,11 @@ error_plot_limb <- plot_rmse(error_limb) +
 
 
 
-## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", fig.pos='H', out.width="100%"----
+## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.", fig.pos='H'----
 
-free(error_plot_limb) + wrap_plots(
-  nldr1, nldr2, nldr3, 
-  nldr4, nldr5, nldr6, ncol = 2)
+error_plot_limb + 
+  wrap_plots(nldr1, nldr2, nldr3, 
+  nldr4, nldr5, nldr6, ncol = 2) 
 
 
 ## ----data-limb----------------------------------------------------------------
@@ -1019,6 +1019,19 @@ trimesh_limb <- ggplot() +
   interior_annotation("a1", cex = 2) +
   theme(
     aspect.ratio = 1
+  )
+
+trimesh_limb_int <- ggplotly(trimesh_limb, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
   )
 
 # hex_grid <- tsne_limb_obj$hb_obj$hex_poly
@@ -1071,12 +1084,14 @@ scaled_limb_data_model <- scaled_limb |>
 # 
 # df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 # 
-# langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+# limb_highd_vis <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
 #                          lineFrom = trimesh_data_limb$from,
 #                          lineTo = trimesh_data_limb$to,
 #                          group = factor(df_model_data_limb_n$type,
 #                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
-#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
+#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+#                          enableControls = FALSE,
+#                          width = "421px", height = "421px")
 
 
 ## -----------------------------------------------------------------------------
@@ -1119,6 +1134,19 @@ trimesh_limb_best <- ggplot() +
   interior_annotation("b1", cex = 2) +
   theme(
     aspect.ratio = 1
+  )
+
+trimesh_limb_best_int <- ggplotly(trimesh_limb_best, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
   )
 
 # hex_grid <- tsne_best_limb_obj$hb_obj$hex_poly
@@ -1171,18 +1199,43 @@ scaled_limb_data_model <- scaled_limb |>
 # 
 # df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 # 
-# langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+# limb_highd_vis_best <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
 #                          lineFrom = trimesh_data_limb$from,
 #                          lineTo = trimesh_data_limb$to,
 #                          group = factor(df_model_data_limb_n$type,
 #                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
-#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"))
+#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+#                          enableControls = FALSE,
+#                          width = "421px", height = "421px")
 
 
-## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10----
+## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
 trimesh_limb + trimesh_limb_best +
   trimesh_limb + trimesh_limb_best +
   trimesh_limb + trimesh_limb_best +
   plot_layout(nrow = 2)
+
+
+## ----eval=knitr::is_html_output()---------------------------------------------
+# 
+# htmltools::browsable(
+#   tagList(
+#     tags$div(
+#       id = "fig-limb-model",  # This is the anchor
+#       crosstalk::bscols(
+#         htmltools::div(
+#           style = "display: grid; grid-template-columns: 1fr 1fr;",
+#           trimesh_limb_int,
+#           htmltools::div(style = "margin-top: 13px;", limb_highd_vis),
+#           trimesh_limb_best_int,
+#           htmltools::div(style = "margin-top: 13px;", limb_highd_vis_best),
+#         ),
+#         device = "xs"
+#       ),
+#       tags$p(tags$strong("Figure 6:"), "Compare the published.")
+#     )
+#   )
+# )
+# 
 

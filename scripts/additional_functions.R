@@ -64,7 +64,8 @@ plot_rmse <- function(error_df) {
           axis.text.x = element_text(size = 7),
           axis.text.y = element_text(size = 7),
           axis.title.x = element_text(size = 7),
-          axis.title.y = element_text(size = 7))
+          axis.title.y = element_text(size = 7),
+          plot.margin = margin(0, 0, 0, 0))
 
 }
 
