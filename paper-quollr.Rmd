@@ -39,7 +39,7 @@ preamble: >
   \usepackage{amsmath}
   \usepackage{array}
 output: 
- rjtools::rjournal_article:
+ rjtools::rjournal_web_article:
     keep_md: true
 bibliography: paper-quollr.bib
 editor_options: 
