@@ -96,8 +96,8 @@ scurve_umap_plt <- ggplot(
   ylim(sc_ylims)
 
 scurve_umap_plt_int <- ggplotly(scurve_umap_plt, 
-                                width = "350", 
-                                height = "350", 
+                                width = "230", 
+                                height = "230", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -121,8 +121,8 @@ hex_grid_poly_scurve <- ggplot(
   ylim(sc_ylims)
 
 hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "230", 
+                                height = "230", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -146,8 +146,8 @@ hex_centroids_scurve <- ggplot(
   ylim(sc_ylims)
 
 hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "230", 
+                                height = "230", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -173,8 +173,8 @@ wireframe_scurve <- ggplot() +
   ylim(sc_ylims)
 
 wireframe_scurve_int <- ggplotly(wireframe_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "230", 
+                                height = "230", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -241,6 +241,15 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          levelColors = c("#000000", "#33a02c"),
                          enableControls = FALSE,
                          width = "421px", height = "421px")
+
+scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from,
+                         lineTo = tr_from_to_df_scurve$to,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c("#000000", "#33a02c"),
+                         enableControls = FALSE,
+                         width = "300px", height = "300px")
 
 
 
@@ -400,7 +409,7 @@ hex_grid_scurve + wrap_plots(
 #                    hex_centroids_scurve_int, wireframe_scurve_int,
 #                     htmltools::div(
 #                       style = "margin-top: 13px;",  # adjust px as needed
-#                       scurve_umap_model_vis
+#                       scurve_umap_model_vis_n
 #                     )),
 #     device = "xs"
 #   )
