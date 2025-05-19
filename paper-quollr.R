@@ -85,14 +85,19 @@ hex_grid_with_counts_scurve <- left_join(
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
   filter(hex_poly_id %in% df_bin_centroids_scurve$hexID)
 
+sc_xlims <- c(-0.15, 1.15)
+sc_ylims <- c(-0.14, 1.05)
+
 scurve_umap_plt <- ggplot(
   scurve_umap_scaled, 
   aes(x = emb1, y = emb2)) +
-  geom_point(alpha = 0.5, color = clr_choice, size = 0.5)
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
 
 scurve_umap_plt_int <- ggplotly(scurve_umap_plt, 
-                                width = "250", 
-                                height = "250", 
+                                width = "350", 
+                                height = "350", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -111,11 +116,13 @@ hex_grid_poly_scurve <- ggplot(
                fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
-             alpha = 0.2, size = 0.5, color = clr_choice)
+             alpha = 0.2, size = 0.5, color = clr_choice) + 
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
 
 hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
-                                width = "250", 
-                                height = "250", 
+                                width = "350", 
+                                height = "350", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -134,11 +141,13 @@ hex_centroids_scurve <- ggplot(
                fill = "#ffffff")  +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c")
+             size = 1, color = "#33a02c") +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
 
 hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
-                                width = "250", 
-                                height = "250", 
+                                width = "350", 
+                                height = "350", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -159,11 +168,13 @@ wireframe_scurve <- ggplot() +
                colour = "#000000") +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c")
+             size = 1, color = "#33a02c") + 
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
 
 wireframe_scurve_int <- ggplotly(wireframe_scurve, 
-                                width = "250", 
-                                height = "250", 
+                                width = "350", 
+                                height = "350", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
