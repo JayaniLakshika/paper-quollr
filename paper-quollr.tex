@@ -24,9 +24,11 @@ The paper is organized as follows. The next section introduces the implementatio
 
 \section{Algorithm}\label{algorithm}
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, (6) identifying and removing low-density hexagons, and (7) lifting the model into higher dimensions. A detailed description of the algorithm can be found in \textbf{cite the methodology paper}.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in \textbf{cite the methodology paper}.
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-5-1}
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-5-1} \caption{Key steps for constructing the model on the UMAP layout ($k=2$): (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:unnamed-chunk-5}
+\end{figure}
 
 \section{Implementation}\label{implementation}
 

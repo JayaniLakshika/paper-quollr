@@ -92,6 +92,7 @@ scurve_umap_plt <- ggplot(
   scurve_umap_scaled, 
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  interior_annotation("a") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -117,6 +118,7 @@ hex_grid_poly_scurve <- ggplot(
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
              alpha = 0.2, size = 0.5, color = clr_choice) + 
+  interior_annotation("b") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -142,6 +144,7 @@ hex_centroids_scurve <- ggplot(
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#33a02c") +
+  interior_annotation("c") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -168,7 +171,8 @@ wireframe_scurve <- ggplot() +
                colour = "#000000") +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c") + 
+             size = 1, color = "#33a02c") +
+  interior_annotation("d") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -410,14 +414,14 @@ hex_grid_scurve + wrap_plots(
 #     htmltools::div(style = "margin: 0; padding: 0;", hex_centroids_scurve_int),
 #     htmltools::div(style = "margin: 0; padding: 0;", wireframe_scurve_int),
 #     htmltools::div(
-#       style = "margin-top: 13px;",
+#       style = "margin-top: 13px;t",
 #       scurve_umap_model_vis_n
 #     )),
 #     device = "xs"
 #   )
 
 
-## ----eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H'----
+## ----eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout ($k=2$): (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
 scurve_umap_plt + hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1 +
