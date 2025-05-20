@@ -252,9 +252,6 @@ wireframe_scurve_int <- ggplotly(wireframe_scurve,
 hex_grid_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
-  geom_polygon(color = "grey70", 
-               aes(group = hex_poly_id), 
-               fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
              alpha = 0.2, size = 0.5, color = clr_choice) +
