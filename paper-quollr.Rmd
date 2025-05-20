@@ -1739,7 +1739,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 ```
 
 
-```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
+```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
