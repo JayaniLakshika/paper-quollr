@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  20 MAY 2025 11:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.5.15)  20 MAY 2025 12:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -640,7 +640,11 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-04-14 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count352
-) (./RJwrapper.aux)
+) (./RJwrapper.aux
+
+LaTeX Warning: Label `fig:limb-rmse' multiply defined.
+
+)
 \openout1 = `RJwrapper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
@@ -941,6 +945,9 @@ L3 programming layer <2025-04-29>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 62E0070934BFE25927DC0BCA6FDFC96B;1536.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
@@ -949,16 +956,16 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 Here is how much of TeX's memory you used:
  27425 strings out of 471571
  501203 string characters out of 5519689
- 903655 words of memory out of 5000000
+ 903683 words of memory out of 5000000
  53142 multiletter control sequences out of 15000+600000
  682526 words of font info for 325 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1303b,955s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (18 pages, 4388028 bytes).
+Output written on RJwrapper.pdf (18 pages, 4388169 bytes).
 PDF statistics:
- 411 PDF objects out of 1000 (max. 8388607)
- 352 compressed objects within 4 object streams
+ 417 PDF objects out of 1000 (max. 8388607)
+ 355 compressed objects within 4 object streams
  59 named destinations out of 1000 (max. 500000)
  77432 words of extra memory for PDF output out of 89155 (max. 10000000)
 
