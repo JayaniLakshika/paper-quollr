@@ -1766,7 +1766,7 @@ htmltools::browsable(
       # Caption
       tags$p(
         tags$strong("Figure 6:"), 
-        " Comparison of the published model with the best selected model."
+        "Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."
       )
     )
   )
