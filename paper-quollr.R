@@ -63,7 +63,7 @@ source("scripts/additional_functions.R")
 
 
 ## -----------------------------------------------------------------------------
-clr_choice <- "#000000"
+clr_choice <- "#bcbddc"
 
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 
@@ -196,7 +196,7 @@ hex_grid_scurve <- ggplot(
   aes(x = x, y = y)) +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
-             alpha = 0.2, size = 0.5, color = clr_choice) +
+             size = 0.5, color = clr_choice) +
   geom_segment(data = tr_from_to_df_scurve,
                aes(
                  x = x_from,
@@ -240,7 +240,7 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          lineTo = tr_from_to_df_scurve$to,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
-                         levelColors = c("#000000", "#33a02c"),
+                         levelColors = c(clr_choice, "#33a02c"),
                          enableControls = FALSE,
                          width = "421px", height = "421px")
 
@@ -249,7 +249,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
                          lineTo = tr_from_to_df_scurve$to,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
-                         levelColors = c("#000000", "#33a02c"),
+                         levelColors = c(clr_choice, "#33a02c"),
                          enableControls = FALSE,
                          width = "300px", height = "300px")
 
