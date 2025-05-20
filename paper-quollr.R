@@ -1076,22 +1076,81 @@ scaled_limb_data_model <- scaled_limb |>
   select(-type)
 
 
-## ----langevitour-limb-tsne-author-proj, eval=knitr::is_html_output()----------
-# 
-# data_limb_n <- data_limb_n |>
-#   select(-type) |>
-#   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
-# 
-# df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
-# 
-# limb_highd_vis <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-#                          lineFrom = trimesh_data_limb$from,
-#                          lineTo = trimesh_data_limb$to,
-#                          group = factor(df_model_data_limb_n$type,
-#                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
-#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
-#                          enableControls = FALSE,
-#                          width = "421px", height = "421px")
+## ----langevitour-limb-tsne-author-proj----------------------------------------
+
+data_limb_n <- data_limb_n |>
+  select(-type) |>
+  mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
+
+df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+
+limb_highd_vis <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+                         lineFrom = trimesh_data_limb$from,
+                         lineTo = trimesh_data_limb$to,
+                         group = factor(df_model_data_limb_n$type,
+                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
+                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                         enableControls = FALSE,
+                         width = "421px", height = "421px")
+
+
+## ----plot-proj----------------------------------------------------------------
+
+## First projection
+projection <- cbind(
+  c(-0.021068,0.007018,0.008770,0.016884,-0.008135,0.011458,-0.022323,0.007231,0.004976,-0.019298),
+  c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 0.05,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -0.04, 
+                                              axis_pos_y = -0.04, 
+                                              threshold = 0.004))
+
+proj_obj1[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_model1 <- plot_proj(
+  proj_obj = proj_obj1, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-0.05, 0.03), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "a2", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+
+## Second projection
+projection <- cbind(
+  c(-0.025678,-0.017472,0.015634,-0.014868,-0.000752,0.001050,-0.019524,-0.008076,-0.010808,-0.002319),
+  c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 0.05,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -0.03, 
+                                              axis_pos_y = -0.03, 
+                                              threshold = 0.004))
+
+proj_obj2[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_model2 <- plot_proj(
+  proj_obj = proj_obj2, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-0.04, 0.04), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "a3", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+
+
 
 
 ## -----------------------------------------------------------------------------
@@ -1191,29 +1250,88 @@ scaled_limb_data_model <- scaled_limb |>
   select(-type)
 
 
-## ----langevitour-limb-tsne-best-proj, eval=knitr::is_html_output()------------
-# 
-# data_limb_n <- data_limb_n |>
-#   select(-type) |>
-#   mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
-# 
-# df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
-# 
-# limb_highd_vis_best <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-#                          lineFrom = trimesh_data_limb$from,
-#                          lineTo = trimesh_data_limb$to,
-#                          group = factor(df_model_data_limb_n$type,
-#                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
-#                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
-#                          enableControls = FALSE,
-#                          width = "421px", height = "421px")
+## ----langevitour-limb-tsne-best-proj------------------------------------------
+
+data_limb_n <- data_limb_n |>
+  select(-type) |>
+  mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
+
+df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+
+limb_highd_vis_best <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
+                         lineFrom = trimesh_data_limb$from,
+                         lineTo = trimesh_data_limb$to,
+                         group = factor(df_model_data_limb_n$type,
+                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
+                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                         enableControls = FALSE,
+                         width = "421px", height = "421px")
+
+
+## ----plot-proj-best-----------------------------------------------------------
+
+## First projection
+projection <- cbind(
+  c(-0.021068,0.007018,0.008770,0.016884,-0.008135,0.011458,-0.022323,0.007231,0.004976,-0.019298),
+  c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 0.05,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -0.04, 
+                                              axis_pos_y = -0.04, 
+                                              threshold = 0.004))
+
+proj_obj1[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_best_model1 <- plot_proj(
+  proj_obj = proj_obj1, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-0.05, 0.03), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "b2", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+
+## Second projection
+projection <- cbind(
+  c(-0.025678,-0.017472,0.015634,-0.014868,-0.000752,0.001050,-0.019524,-0.008076,-0.010808,-0.002319),
+  c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 0.05,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -0.03, 
+                                              axis_pos_y = -0.03, 
+                                              threshold = 0.004))
+
+proj_obj2[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_best_model2 <- plot_proj(
+  proj_obj = proj_obj2, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-0.04, 0.04), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "b3", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+
+
 
 
 ## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", out.width="100%", fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
-trimesh_limb + trimesh_limb_best +
-  trimesh_limb + trimesh_limb_best +
-  trimesh_limb + trimesh_limb_best +
+trimesh_limb + limb_proj_tsne_model1 +
+  limb_proj_tsne_model2 + trimesh_limb_best +
+  limb_proj_tsne_best_model1 + limb_proj_tsne_best_model2 +
   plot_layout(nrow = 2)
 
 
