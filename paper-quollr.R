@@ -960,7 +960,7 @@ error_plot_limb <- plot_rmse(error_limb) +
 
 
 
-## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-rmse}", fig.pos='H'----
+## ----limb-rmse, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-rmse}", fig.pos='H', echo=TRUE----
 
 design <- gen_design(n_right = 6, ncol_right = 2)
 
