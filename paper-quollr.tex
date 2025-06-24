@@ -692,7 +692,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to \emph{illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data}.
 
-Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, tSNE was performed using ten principal components. Figure \ref{fig:limb-rmse} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better \(2-\text{D}\) layout, as needed.
+Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \ref{fig:limb-rmse} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better \(2-\text{D}\) layout, as needed.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/limb-rmse-1} \caption{Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\label{fig:limb-rmse}}\label{fig:limb-rmse}
@@ -714,9 +714,9 @@ This new tool provides an effective start point for automatically creating regul
 
 \section{Acknowledgements}\label{acknowledgements}
 
-This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdown} \citep{rmarkdown} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr} \citep{hadley2023}, \texttt{ggplot2} \citep{hadley2016}, \texttt{interp} (\textgreater= 1.1-6) \citep{albrecht2024}, \texttt{langevitour} \citep{paul2023}, \texttt{proxy}\citep{david2022}, \texttt{stats} \citep{core2025}, \texttt{tibble} \citep{kirill2023}, \texttt{tidyselect} \citep{lionel2024}, \texttt{crosstalk} \citep{joe2023}, \texttt{plotly} \citep{chapman2020}, \texttt{kableExtra} \citep{hao2024}, \texttt{patchwork} \citep{thomas2024}, and \texttt{readr} \citep{hadley2024}.
-
 The source code for reproducing this paper can be found at: \url{https://github.com/JayaniLakshika/paper-quollr}.
+
+This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdown} \citep{rmarkdown} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr} \citep{hadley2023}, \texttt{ggplot2} \citep{hadley2016}, \texttt{interp} (\textgreater= 1.1-6) \citep{albrecht2024}, \texttt{langevitour} \citep{paul2023}, \texttt{proxy}\citep{david2022}, \texttt{stats} \citep{core2025}, \texttt{tibble} \citep{kirill2023}, \texttt{tidyselect} \citep{lionel2024}, \texttt{crosstalk} \citep{joe2023}, \texttt{plotly} \citep{chapman2020}, \texttt{kableExtra} \citep{hao2024}, \texttt{patchwork} \citep{thomas2024}, and \texttt{readr} \citep{hadley2024}.
 
 \bibliography{paper-quollr.bib}
 
