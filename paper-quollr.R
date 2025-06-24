@@ -646,7 +646,7 @@ all_hex_coord <- gen_hex_coord(
   a1 = bin_configs$a1
   )
 
-all_hex_coord
+head(all_hex_coord, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -655,7 +655,7 @@ umap_hex_id <- assign_data(
   centroids_data = all_centroids_df
   )
 
-umap_hex_id
+head(umap_hex_id, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -663,7 +663,7 @@ std_df <- compute_std_counts(
   scaled_nldr_hexid = umap_hex_id
   )
 
-std_df
+head(std_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -671,7 +671,7 @@ pts_df <- find_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
-pts_df
+head(pts_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -680,7 +680,7 @@ df_bin_centroids <- extract_hexbin_centroids(
   counts_data = hb_obj$std_cts
   )
 
-df_bin_centroids
+head(df_bin_centroids, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -692,13 +692,13 @@ tr_object <- tri_bin_centroids(
 ## ----echo=TRUE----------------------------------------------------------------
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
 
-trimesh
+head(trimesh, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 trimesh <- update_trimesh_index(trimesh_data = trimesh)
 
-trimesh
+head(trimesh, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -728,15 +728,17 @@ df_bin <- avg_highd_data(
   scaled_nldr_hexid = hb_obj$data_hb_id
 )
 
-df_bin
+head(df_bin, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-predict_emb(
+predict_data <- predict_emb(
   highd_data = scurve, 
   model_2d = df_bin_centroids, 
   model_highd = df_bin
   )
+
+head(predict_data, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -754,7 +756,7 @@ model_error <- augment(
   model_highd = df_bin
   )
 
-model_error
+head(model_error, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -804,14 +806,11 @@ full_hexgrid + data_hexgrid +
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-
 df_exe <- comb_data_model(
   highd_data = scurve, 
   model_highd = df_bin, 
   model_2d = df_bin_centroids
   )
-
-df_exe
 
 
 ## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
@@ -854,8 +853,6 @@ df_exe <- comb_all_data_model_error(
   model_2d = df_bin_centroids, 
   error_data = model_error
   )
-
-df_exe
 
 
 ## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------

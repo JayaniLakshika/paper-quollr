@@ -780,7 +780,7 @@ all_hex_coord <- gen_hex_coord(
   a1 = bin_configs$a1
   )
 
-all_hex_coord
+head(all_hex_coord, 5)
 ```
 
 ##### Assigning data points to their respective hexagons
@@ -799,7 +799,7 @@ umap_hex_id <- assign_data(
   centroids_data = all_centroids_df
   )
 
-umap_hex_id
+head(umap_hex_id, 5)
 ```
 
 ##### Computing the standardized number of points within each hexagon
@@ -813,7 +813,7 @@ std_df <- compute_std_counts(
   scaled_nldr_hexid = umap_hex_id
   )
 
-std_df
+head(std_df, 5)
 ```
 
 ##### Mapping the points to their corresponding hexagonal bins
@@ -827,7 +827,7 @@ pts_df <- find_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
-pts_df
+head(pts_df, 5)
 ```
 
 #### Obtaining bin centroids
@@ -842,7 +842,7 @@ df_bin_centroids <- extract_hexbin_centroids(
   counts_data = hb_obj$std_cts
   )
 
-df_bin_centroids
+head(df_bin_centroids, 5)
 ```
 
 #### Indicating neighbors by line segments connecting centroids
@@ -862,7 +862,7 @@ The `gen_edges()` function uses this triangulation object to extract line segmen
 ```{r, echo=TRUE}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
 
-trimesh
+head(trimesh, 5)
 ```
 
 The `update_trimesh_index()` function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
@@ -870,7 +870,7 @@ The `update_trimesh_index()` function re-indexes the node IDs to ensure that edg
 ```{r, echo=TRUE}
 trimesh <- update_trimesh_index(trimesh_data = trimesh)
 
-trimesh
+head(trimesh, 5)
 ```
 
 #### Identifying and removing low-density hexagons
@@ -914,7 +914,7 @@ df_bin <- avg_highd_data(
   scaled_nldr_hexid = hb_obj$data_hb_id
 )
 
-df_bin
+head(df_bin, 5)
 ```
 
 ### Prediction
@@ -924,11 +924,13 @@ The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new
 In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point.
 
 ```{r, echo=TRUE}
-predict_emb(
+predict_data <- predict_emb(
   highd_data = scurve, 
   model_2d = df_bin_centroids, 
   model_highd = df_bin
   )
+
+head(predict_data, 5)
 ```
 
 ### Compute residuals and Root Mean Square Error (RMSE)
@@ -966,7 +968,7 @@ model_error <- augment(
   model_highd = df_bin
   )
 
-model_error
+head(model_error, 5)
 ```
 
 ### Visualizations
@@ -1056,14 +1058,11 @@ Before plotting, the data needs to be organized into a combined format through t
 In this structure, the `type` variable distinguishes between original observations (`"data"`) and the bin-averaged model representation (`"model"`).
 
 ```{r, echo=TRUE}
-
 df_exe <- comb_data_model(
   highd_data = scurve, 
   model_highd = df_bin, 
   model_2d = df_bin_centroids
   )
-
-df_exe
 ```
 
 The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
@@ -1130,8 +1129,6 @@ df_exe <- comb_all_data_model_error(
   model_2d = df_bin_centroids, 
   error_data = model_error
   )
-
-df_exe
 ```
 
 The function `show_error_link_plots()` generates three side-by-side, interactively linked plots; a error distribution, a $2-\text{D}$ NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the `langevitour` package), displaying both the data and the model. The function takes the output from `comb_all_data_model_error()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
@@ -1275,7 +1272,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, tSNE was performed using ten principal components. Figure \@ref(fig:limb-rmse) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better $2-\text{D}$ layout, as needed. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-rmse) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better $2-\text{D}$ layout, as needed. 
 
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
 <!-- https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1 -->
