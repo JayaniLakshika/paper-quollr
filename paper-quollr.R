@@ -68,7 +68,7 @@ clr_choice <- "#bcbddc"
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1, 
   benchmark_highdens = 5)
 
@@ -81,10 +81,10 @@ counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
 
 hex_grid_with_counts_scurve <- left_join(
   hex_grid_scurve, counts_df_scurve, 
-  by = c("hex_poly_id" = "hexID"))
+  by = c("hex_poly_id" = "h"))
 
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
-  filter(hex_poly_id %in% df_bin_centroids_scurve$hexID)
+  filter(hex_poly_id %in% df_bin_centroids_scurve$h)
 
 sc_xlims <- c(-0.15, 1.15)
 sc_ylims <- c(-0.14, 1.05)
@@ -279,12 +279,12 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 ## ----scurve-projections-------------------------------------------------------
 
 df_b_scurve <- df_bin_scurve |>
-  dplyr::filter(hexID %in% df_bin_centroids_scurve$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_scurve$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$hexID, df_b_scurve$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$h, df_b_scurve$h),] |>
+  dplyr::select(-h) 
 
 scurve_labeled <- scurve |>
   select(-ID) |>
@@ -446,7 +446,7 @@ scurve_umap_plt + hex_grid_poly_scurve +
 # fit_highd_model(
 #   highd_data = scurve,
 #   nldr_data = scurve_umap,
-#   bin1 = 15,
+#   b1 = 15,
 #   q = 0.1,
 #   benchmark_highdens = 5)
 
@@ -460,7 +460,7 @@ scurve_umap_obj
 ## ----echo=TRUE----------------------------------------------------------------
 bin_configs <- calc_bins_y(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1)
 
 bin_configs
@@ -469,7 +469,7 @@ bin_configs
 ## ----echo=TRUE----------------------------------------------------------------
 hb_obj <- hex_binning(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1)
 
 
@@ -479,7 +479,7 @@ hb_obj <- hex_binning(
 ## hexagon binning to have regular hexagons
 hb_obj_notation <- hex_binning(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 9, 
+  b1 = 9, 
   q = 0.1)
 
 a1_temp <- hb_obj_notation$a1
@@ -494,7 +494,7 @@ hex_grid_temp45 <- hex_grid_temp |>
   filter(hex_poly_id == 45)
 
 start_pt <- all_centroids_df_temp |> 
-  filter(hexID == 1)
+  filter(h == 1)
 d_rect <- tibble(x1min = 0, 
                  x1max = 1,
                  x2min = 0,
@@ -633,7 +633,7 @@ hex_param_vis
 ## ----echo=TRUE----------------------------------------------------------------
 all_centroids_df <- gen_centroids(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1
   )
 
@@ -660,7 +660,7 @@ head(umap_hex_id, 5)
 
 ## ----echo=TRUE----------------------------------------------------------------
 std_df <- compute_std_counts(
-  scaled_nldr_hexid = umap_hex_id
+  scaled_nldr_h = umap_hex_id
   )
 
 head(std_df, 5)
@@ -704,7 +704,7 @@ head(trimesh, 5)
 ## ----echo=TRUE----------------------------------------------------------------
 find_low_dens_hex(
   centroids_data = df_bin_centroids, 
-  bin1 = 15, 
+  b1 = 15, 
   benchmark_mean_dens = 0.05
 )
 
@@ -712,7 +712,7 @@ find_low_dens_hex(
 
 ## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(bin_counts > 10)
+  dplyr::filter(n_h > 10)
 
 trimesh <- trimesh |>
   dplyr::filter(from_count > 10,
@@ -940,7 +940,7 @@ error_limb <- bind_rows(error_limb_umap,
 
 error_limb <- error_limb |>
   mutate(a1 = round(a1, 2)) |>
-  filter(bin1 >= 5) |>
+  filter(b1 >= 5) |>
   filter(a1 >= 0.03) |>
   group_by(method, a1) |>
   filter(RMSE == min(RMSE)) |>
@@ -981,7 +981,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 tsne_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb, 
-  bin1 = 19, 
+  b1 = 19, 
   q = 0.1, 
   benchmark_highdens = 5)
 
@@ -1033,11 +1033,11 @@ trimesh_limb_int <- ggplotly(trimesh_limb,
 # hex_grid <- tsne_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
 #   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
 #   coord_fixed() +
 #   theme_minimal()
@@ -1051,12 +1051,12 @@ data_limb_n <- data_limb |>
   mutate(type = "data")
 
 df_b_limb <- df_bin_limb |>
-  dplyr::filter(hexID %in% df_bin_centroids_limb$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
@@ -1155,7 +1155,7 @@ limb_proj_tsne_model2 <- plot_proj(
 tsne_best_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb2, 
-  bin1 = 19, 
+  b1 = 19, 
   q = 0.1, 
   benchmark_highdens = 1)
 
@@ -1207,11 +1207,11 @@ trimesh_limb_best_int <- ggplotly(trimesh_limb_best,
 # hex_grid <- tsne_best_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_best_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
 #   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
 #   coord_fixed() +
 #   theme_minimal()
@@ -1225,12 +1225,12 @@ data_limb_n <- data_limb |>
   mutate(type = "data")
 
 df_b_limb <- df_bin_limb |>
-  dplyr::filter(hexID %in% df_bin_centroids_limb$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)

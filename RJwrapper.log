@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.11)  25 JUN 2025 07:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  1 JUL 2025 10:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **RJwrapper.tex
 (./RJwrapper.tex
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-05-26>
+L3 programming layer <2025-06-09>
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/base/size10.clo
@@ -631,7 +631,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks49
 \@floatcapt=\box77
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2025-04-14 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count355
 ) (./RJwrapper.aux
 
@@ -849,11 +849,11 @@ Overfull \hbox (3.4411pt too wide) in paragraph at lines 249--250
 [8]
 
 [9]
-LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 527.
+LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 538.
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
 )
-Overfull \hbox (0.18141pt too wide) in paragraph at lines 540--541
+Overfull \hbox (0.18141pt too wide) in paragraph at lines 551--552
 []\T1/ppl/m/n/9 (-20) Furthermore, there are two in-ter-ac-tive plots, \T1/zi4/m/n/9 show_link_plots \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 show_error_link_plots\T1/ppl/m/n/9 (-20) , which
  []
 
@@ -863,15 +863,15 @@ Overfull \hbox (0.18141pt too wide) in paragraph at lines 540--541
 <paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=153, 1443.3925pt x 359.3425pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 594.
+Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 605.
 (pdftex.def)             Requested size: 398.33858pt x 99.16766pt.
 
-Overfull \hbox (12.52875pt too wide) in paragraph at lines 605--606
+Overfull \hbox (12.52875pt too wide) in paragraph at lines 616--617
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
  []
 
 
-Overfull \hbox (7.46678pt too wide) in paragraph at lines 605--606
+Overfull \hbox (7.46678pt too wide) in paragraph at lines 616--617
 \T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
  []
 
@@ -881,10 +881,10 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 605--606
 <paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=164, 467.7475pt x 115.43124pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 628.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 639.
 (pdftex.def)             Requested size: 398.33858pt x 98.30724pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 628--629
+Overfull \hbox (15.0pt too wide) in paragraph at lines 639--640
 [][] 
  []
 
@@ -894,7 +894,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 628--629
 <paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=186, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 706.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 717.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
 
 
@@ -902,7 +902,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used o
 <paper-quollr_files/figure-latex/model-limb-1.pdf, id=195, 1082.0425pt x 720.6925pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 710.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 721.
 (pdftex.def)             Requested size: 398.33858pt x 265.31044pt.
 
 
@@ -915,10 +915,10 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used 
 [15])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 739.
+(Font)              using `T1/zi4/m/n' instead on input line 750.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 749.
+(Font)              scaled to size 9.18004pt on input line 760.
 
 
 [16])
@@ -926,7 +926,7 @@ LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
 [17] (./RJwrapper.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-05-26>
+L3 programming layer <2025-06-09>
  ***********
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -940,15 +940,15 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 1221424FAF587D7578FACCD36DCE57D8;1060.
  ) 
 Here is how much of TeX's memory you used:
- 27377 strings out of 469867
- 499866 string characters out of 5483388
- 917315 words of memory out of 5000000
- 54811 multiletter control sequences out of 15000+600000
- 682218 words of font info for 321 fonts, out of 8000000 for 9000
+ 27385 strings out of 469869
+ 499917 string characters out of 5483410
+ 916316 words of memory out of 5000000
+ 54808 multiletter control sequences out of 15000+600000
+ 682675 words of font info for 327 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,11n,131p,1303b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,1301b,987s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (17 pages, 4382592 bytes).
+Output written on RJwrapper.pdf (17 pages, 4382841 bytes).
 PDF statistics:
  414 PDF objects out of 1000 (max. 8388607)
  353 compressed objects within 4 object streams

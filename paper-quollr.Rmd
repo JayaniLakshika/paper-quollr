@@ -126,7 +126,7 @@ clr_choice <- "#bcbddc"
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1, 
   benchmark_highdens = 5)
 
@@ -139,10 +139,10 @@ counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
 
 hex_grid_with_counts_scurve <- left_join(
   hex_grid_scurve, counts_df_scurve, 
-  by = c("hex_poly_id" = "hexID"))
+  by = c("hex_poly_id" = "h"))
 
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
-  filter(hex_poly_id %in% df_bin_centroids_scurve$hexID)
+  filter(hex_poly_id %in% df_bin_centroids_scurve$h)
 
 sc_xlims <- c(-0.15, 1.15)
 sc_ylims <- c(-0.14, 1.05)
@@ -337,12 +337,12 @@ htmltools::browsable(
 ```{r scurve-projections}
 
 df_b_scurve <- df_bin_scurve |>
-  dplyr::filter(hexID %in% df_bin_centroids_scurve$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_scurve$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$hexID, df_b_scurve$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$h, df_b_scurve$h),] |>
+  dplyr::select(-h) 
 
 scurve_labeled <- scurve |>
   select(-ID) |>
@@ -528,13 +528,13 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 
 <!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly. -->
 
-This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`bin1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`benchmark_highdens`). The function returns an object that includes the scaled NLDR object (`nldr_obj`), the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`benchmark_highdens`). The function returns an object that includes the scaled NLDR object (`nldr_obj`), the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
 
 ```{r, echo=TRUE, eval=FALSE}
 fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1, 
   benchmark_highdens = 5)
 ```
@@ -555,12 +555,12 @@ scurve_umap_obj
 
 #### Computing hexagon grid configurations
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (`bin1`), and the buffer amount as a proportion (`q`).
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (`b1`), and the buffer amount as a proportion (`q`).
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1)
 
 bin_configs
@@ -568,12 +568,12 @@ bin_configs
 
 #### Binning the data
 
-Points are allocated to bins based on the nearest centroid. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`bin1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
+Points are allocated to bins based on the nearest centroid. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1)
 ```
 
@@ -586,7 +586,7 @@ hb_obj <- hex_binning(
 ## hexagon binning to have regular hexagons
 hb_obj_notation <- hex_binning(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 9, 
+  b1 = 9, 
   q = 0.1)
 
 a1_temp <- hb_obj_notation$a1
@@ -601,7 +601,7 @@ hex_grid_temp45 <- hex_grid_temp |>
   filter(hex_poly_id == 45)
 
 start_pt <- all_centroids_df_temp |> 
-  filter(hexID == 1)
+  filter(h == 1)
 d_rect <- tibble(x1min = 0, 
                  x1max = 1,
                  x2min = 0,
@@ -744,18 +744,18 @@ If the hexagonal binning process is run separately, it involves several steps: (
 
 The `gen_centroids()` function calculates the centroids of a hexagonal grid. 
 
-The coordinate limits of the embedding (`lim1` and `lim2`) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls `calc_bins_y()`, a helper function that determines the appropriate number of hexagonal rows (`bin2`) and the width of each hexagon (`a1`) given the specified number of bins along the x-axis (`bin1`) and buffer (`q`).
+The coordinate limits of the embedding (`lim1` and `lim2`) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls `calc_bins_y()`, a helper function that determines the appropriate number of hexagonal rows (`bin2`) and the width of each hexagon (`a1`) given the specified number of bins along the x-axis (`b1`) and buffer (`q`).
 
 Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (`a2`) is derived by $\sqrt{3}/2 \times a_1$.
 
 The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
 
-Finally, a tibble is returned containing a unique hexagon ID (`hexID`) along with the corresponding x and y centroid coordinates (`c_x`, `c_y`), which define the layout of the hexagonal grid over the $2-\text{D}$ space.
+Finally, a tibble is returned containing a unique hexagon ID (`h`) along with the corresponding x and y centroid coordinates (`c_x`, `c_y`), which define the layout of the hexagonal grid over the $2-\text{D}$ space.
 
 ```{r, echo=TRUE}
 all_centroids_df <- gen_centroids(
   nldr_obj = scurve_umap_obj, 
-  bin1 = 15, 
+  b1 = 15, 
   q = 0.1
   )
 
@@ -772,7 +772,7 @@ Two derived constants are calculated to define the relative distances to the ver
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (`x_add_factor` and `y_add_factor`) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
-For each centroid, six vertices are computed and assigned a polygon ID (`hex_poly_id`) corresponding to the centroid’s `hexID`. These points are aggregated into a tibble that includes the polygon ID (`hex_poly_id`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
+For each centroid, six vertices are computed and assigned a polygon ID (`hex_poly_id`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`hex_poly_id`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
 ```{r, echo=TRUE}
 all_hex_coord <- gen_hex_coord(
@@ -789,9 +789,9 @@ After generating the centroids that define the hexagonal grid, the next step is 
 
 First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the $2-\text{D}$ layout. It then selects the corresponding x and y coordinates of each hexagon’s centroid.
 
-Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`hexID`) to the point.
+Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`h`) to the point.
 
-The result is a data frame of the scaled $2-\text{D}$ embedding with an additional `hexID` column, indicating the hexagonal bin to which each point belongs. 
+The result is a data frame of the scaled $2-\text{D}$ embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
@@ -806,11 +806,11 @@ head(umap_hex_id, 5)
 
 The `compute_std_counts()` function calculates both the raw and standardized counts for each hexagon.
 
-The function begins by grouping the data by `hexID` and counting the number of NLDR points falling within each bin. These raw counts are stored as `bin_counts`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a normalized metric, `std_counts`, ranging from 0 to 1.
+The function begins by grouping the data by `h` and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a normalized metric, `w_h`, ranging from 0 to 1.
 
 ```{r, echo=TRUE}
 std_df <- compute_std_counts(
-  scaled_nldr_hexid = umap_hex_id
+  scaled_nldr_h = umap_hex_id
   )
 
 head(std_df, 5)
@@ -820,7 +820,7 @@ head(std_df, 5)
 
 The `find_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
 
-The function first groups the input data by `hexID`, which represents the hexagon label associated with each point in the $2-\text{D}$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
+The function first groups the input data by `h`, which represents the hexagon label associated with each point in the $2-\text{D}$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
 
 ```{r, echo=TRUE}
 pts_df <- find_pts(
@@ -834,7 +834,7 @@ head(pts_df, 5)
 
 The `extract_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
-This function begins by arranging the `counts_data` by `hexID` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `std_counts` or `bin_counts` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
+This function begins by arranging the `counts_data` by `h` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `w_h` or `n_h` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
 
 ```{r, echo=TRUE}
 df_bin_centroids <- extract_hexbin_centroids(
@@ -879,12 +879,12 @@ Not all hexagons contain meaningful information. Some may have very few or no da
 
 To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., 0.05), the hexagon is flagged for removal.
 
-The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their `hexID` and a defined number of bins along the x-axis (`bin1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
+The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their `h` and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
 ```{r, echo=TRUE}
 find_low_dens_hex(
   centroids_data = df_bin_centroids, 
-  bin1 = 15, 
+  b1 = 15, 
   benchmark_mean_dens = 0.05
 )
 
@@ -894,7 +894,7 @@ For simplicity, we remove low-density hexagons using a threshold of $10$.
 
 ```{r, echo=TRUE}
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(bin_counts > 10)
+  dplyr::filter(n_h > 10)
 
 trimesh <- trimesh |>
   dplyr::filter(from_count > 10,
@@ -1224,7 +1224,7 @@ show_error_link_plots(
 
 <!-- scurve_error <- scurve_error |> -->
 <!--   mutate(a1 = round(a1, 2)) |> -->
-<!--   filter(bin1 >= 5) |> -->
+<!--   filter(b1 >= 5) |> -->
 <!--   group_by(method, a1) |> -->
 <!--   filter(MSE == min(MSE)) |> -->
 <!--   ungroup() -->
@@ -1351,7 +1351,7 @@ error_limb <- bind_rows(error_limb_umap,
 
 error_limb <- error_limb |>
   mutate(a1 = round(a1, 2)) |>
-  filter(bin1 >= 5) |>
+  filter(b1 >= 5) |>
   filter(a1 >= 0.03) |>
   group_by(method, a1) |>
   filter(RMSE == min(RMSE)) |>
@@ -1392,7 +1392,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 tsne_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb, 
-  bin1 = 19, 
+  b1 = 19, 
   q = 0.1, 
   benchmark_highdens = 5)
 
@@ -1444,11 +1444,11 @@ trimesh_limb_int <- ggplotly(trimesh_limb,
 # hex_grid <- tsne_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
 #   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
 #   coord_fixed() +
 #   theme_minimal()
@@ -1462,12 +1462,12 @@ data_limb_n <- data_limb |>
   mutate(type = "data")
 
 df_b_limb <- df_bin_limb |>
-  dplyr::filter(hexID %in% df_bin_centroids_limb$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
@@ -1566,7 +1566,7 @@ limb_proj_tsne_model2 <- plot_proj(
 tsne_best_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb2, 
-  bin1 = 19, 
+  b1 = 19, 
   q = 0.1, 
   benchmark_highdens = 1)
 
@@ -1618,11 +1618,11 @@ trimesh_limb_best_int <- ggplotly(trimesh_limb_best,
 # hex_grid <- tsne_best_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_best_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "hexID"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = bin_counts)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = hexID)) +
+#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
+#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
 #   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
 #   coord_fixed() +
 #   theme_minimal()
@@ -1636,12 +1636,12 @@ data_limb_n <- data_limb |>
   mutate(type = "data")
 
 df_b_limb <- df_bin_limb |>
-  dplyr::filter(hexID %in% df_bin_centroids_limb$hexID) |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
   dplyr::mutate(type = "model") ## Data with summarized mean
 
-## Reorder the rows of df_b according to the hexID order in df_b_with_center_data
-df_b_limb <- df_b_limb[match(df_bin_centroids_limb$hexID, df_b_limb$hexID),] |>
-  dplyr::select(-hexID) 
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
