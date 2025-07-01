@@ -255,25 +255,20 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----eval=knitr::is_html_output()---------------------------------------------
+## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="algorithm", fig.pos='H'----
 # 
-# htmltools::browsable(
-#   tagList(
-#     tags$div(
-#       id = "fig-overview",  # This is the anchor
-#       crosstalk::bscols(
-#         htmltools::div(
-#           style = "display: grid; grid-template-columns: 1fr 1fr;",
-#           hex_grid_scurve_int,
-#           htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
-#         ),
-#         device = "xs"
-#       ),
-#       tags$p(tags$strong("Figure 1:"), " Algorithm to visualize the 2D model.")
-#     )
-#   )
+# overviewfig <- bscols(
+#   htmltools::div(
+#     style = "display: grid; grid-template-columns: 1fr 1fr;",
+#     hex_grid_scurve_int,
+#     htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
+#   ),
+#   device = "xs"
 # )
 # 
+# class(overviewfig) <- c(class(overviewfig), "htmlwidget")
+# 
+# overviewfig
 
 
 ## ----scurve-projections-------------------------------------------------------
@@ -834,7 +829,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"------
 # show_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh

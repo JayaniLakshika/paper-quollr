@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  1 JUL 2025 10:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  1 JUL 2025 19:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -878,10 +878,10 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 616--617
 
 
 [11 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=164, 467.7475pt x 115.43124pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 639.
+<paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf, id=164, 467.7475pt x 115.43124pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf  used on input line 639.
 (pdftex.def)             Requested size: 398.33858pt x 98.30724pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 639--640
@@ -890,7 +890,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 639--640
 
 
 
-[12 <./paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>]
+[12 <./paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>]
 <paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=186, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
@@ -948,7 +948,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1301b,987s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (17 pages, 4382841 bytes).
+Output written on RJwrapper.pdf (17 pages, 4382817 bytes).
 PDF statistics:
  414 PDF objects out of 1000 (max. 8388607)
  353 compressed objects within 4 object streams

@@ -118,7 +118,7 @@ source("scripts/additional_functions.R")
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (`r knitr::asis_output(if (knitr::is_html_output()) { "[Figure 1](#fig-overview)"} else { "Figure \\@ref(fig:overview)"})`).
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
 ```{r}
 clr_choice <- "#bcbddc"
@@ -313,25 +313,20 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 ```
 
-```{r, eval=knitr::is_html_output()}
+```{r overviewhtml, eval=knitr::is_html_output(), fig.cap="algorithm", fig.pos='H'}
 
-htmltools::browsable(
-  tagList(
-    tags$div(
-      id = "fig-overview",  # This is the anchor
-      crosstalk::bscols(
-        htmltools::div(
-          style = "display: grid; grid-template-columns: 1fr 1fr;",
-          hex_grid_scurve_int,
-          htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
-        ),
-        device = "xs"
-      ),
-      tags$p(tags$strong("Figure 1:"), " Algorithm to visualize the 2D model.")
-    )
-  )
+overviewfig <- bscols(
+  htmltools::div(
+    style = "display: grid; grid-template-columns: 1fr 1fr;",
+    hex_grid_scurve_int,
+    htmltools::div(style = "margin-top: 13px;", scurve_umap_model_vis)
+  ),
+  device = "xs"
 )
 
+class(overviewfig) <- c(class(overviewfig), "htmlwidget")
+
+overviewfig
 ```
 
 ```{r scurve-projections}
@@ -1104,7 +1099,7 @@ The function `show_link_plots()` generates two side-by-side, interactively linke
 
 These two views are linked using `crosstalk`, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the `langevitour` output. 
 
-```{r, echo=TRUE, eval=knitr::is_html_output()}
+```{r linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"}
 show_link_plots(
   point_data = df_exe, 
   edge_data = trimesh
@@ -1272,7 +1267,9 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-rmse) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method can help here, and also help to provide a better $2-\text{D}$ layout, as needed. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-rmse) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2-\text{D}$ layout. 
+
+<!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
 
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
 <!-- https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1 -->
