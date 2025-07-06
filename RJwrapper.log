@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  6 JUL 2025 17:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  6 JUL 2025 17:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -886,27 +886,27 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf 
 
 
 [12 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
-Overfull \hbox (42.75717pt too wide) in paragraph at lines 708--709
+Overfull \hbox (42.75717pt too wide) in paragraph at lines 710--711
 \OT1/ppl/m/n/9 (-20) 2 \OMS/zplm/m/n/9 ^^@ []$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
 
 
 
 [13]
-<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=199, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=198, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 727.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 729.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=200, 1082.0425pt x 720.6925pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=199, 1082.0425pt x 720.6925pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 731.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 733.
 (pdftex.def)             Requested size: 398.33858pt x 265.31044pt.
 
 
 [14 <./paper-quollr_files/figure-latex/limb-rmse-1.pdf>]
-Overfull \hbox (3.26198pt too wide) in paragraph at lines 740--741
+Overfull \hbox (3.26198pt too wide) in paragraph at lines 742--743
 \T1/ppl/m/n/9 (-20) resid-ual er-rors, and gen-er-at-ing polyg-o-nal co-or-di-nates of hexagons. For in-stance, \T1/zi4/m/n/9 compute_highd_dist()
  []
 
@@ -921,10 +921,10 @@ Overfull \hbox (3.26198pt too wide) in paragraph at lines 740--741
 [16])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 762.
+(Font)              using `T1/zi4/m/n' instead on input line 764.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 772.
+(Font)              scaled to size 9.18004pt on input line 774.
 )
 
 [17] (./RJwrapper.aux)
@@ -950,9 +950,9 @@ Here is how much of TeX's memory you used:
  54811 multiletter control sequences out of 15000+600000
  681346 words of font info for 322 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1301b,1003s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,1301b,992s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (17 pages, 4386635 bytes).
+Output written on RJwrapper.pdf (17 pages, 4386708 bytes).
 PDF statistics:
  419 PDF objects out of 1000 (max. 8388607)
  358 compressed objects within 4 object streams

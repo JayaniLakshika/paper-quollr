@@ -1108,7 +1108,8 @@ These two views are linked using `crosstalk`, allowing interactive selection of 
 ```{r linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"}
 show_link_plots(
   point_data = df_exe, 
-  edge_data = trimesh
+  edge_data = trimesh, 
+  point_colour = clr_choice
   )
 ```
 
@@ -1141,7 +1142,8 @@ These three views are linked using `crosstalk`, allowing interactive selection o
 ```{r, echo=TRUE, eval=knitr::is_html_output()}
 show_error_link_plots(
   point_data = df_exe, 
-  edge_data = trimesh
+  edge_data = trimesh, 
+  point_colour = clr_choice
   )
 ```
 

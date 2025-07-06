@@ -834,7 +834,8 @@ df_exe <- comb_all_data_model(
 ## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"------
 # show_link_plots(
 #   point_data = df_exe,
-#   edge_data = trimesh
+#   edge_data = trimesh,
+#   point_colour = clr_choice
 #   )
 
 
@@ -855,7 +856,8 @@ df_exe <- comb_all_data_model_error(
 ## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
 # show_error_link_plots(
 #   point_data = df_exe,
-#   edge_data = trimesh
+#   edge_data = trimesh,
+#   point_colour = clr_choice
 #   )
 
 
