@@ -8,6 +8,7 @@ knitr::opts_chunk$set(
   cache=FALSE, 
   message=FALSE, 
   warning=FALSE,
+  comment = ">",
   out.width = "100%")
 
 

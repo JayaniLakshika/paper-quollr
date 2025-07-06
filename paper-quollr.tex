@@ -76,27 +76,27 @@ scurve_umap_obj
 \end{verbatim}
 
 \begin{verbatim}
-#> $scaled_nldr
-#> # A tibble: 5,000 x 3
-#>     emb1  emb2    ID
-#>    <dbl> <dbl> <int>
-#>  1 0.707 0.839     1
-#>  2 0.231 0.401     2
-#>  3 0.232 0.215     3
-#>  4 0.790 0.564     4
-#>  5 0.761 0.551     5
-#>  6 0.445 0.721     6
-#>  7 0.900 0.137     7
-#>  8 0.247 0.392     8
-#>  9 0.325 0.542     9
-#> 10 0.278 0.231    10
-#> # i 4,990 more rows
-#> 
-#> $lim1
-#> [1] -14.42166  13.32655
-#> 
-#> $lim2
-#> [1] -12.43687  12.32455
+> $scaled_nldr
+> # A tibble: 5,000 x 3
+>     emb1  emb2    ID
+>    <dbl> <dbl> <int>
+>  1 0.707 0.839     1
+>  2 0.231 0.401     2
+>  3 0.232 0.215     3
+>  4 0.790 0.564     4
+>  5 0.761 0.551     5
+>  6 0.445 0.721     6
+>  7 0.900 0.137     7
+>  8 0.247 0.392     8
+>  9 0.325 0.542     9
+> 10 0.278 0.231    10
+> # i 4,990 more rows
+> 
+> $lim1
+> [1] -14.42166  13.32655
+> 
+> $lim2
+> [1] -12.43687  12.32455
 \end{verbatim}
 
 \paragraph{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
@@ -113,14 +113,14 @@ bin_configs
 \end{verbatim}
 
 \begin{verbatim}
-#> $b2
-#> [1] 16
-#> 
-#> $a1
-#> [1] 0.08326136
-#> 
-#> $a2
-#> [1] 0.07210645
+> $b2
+> [1] 16
+> 
+> $a1
+> [1] 0.08326136
+> 
+> $a2
+> [1] 0.07210645
 \end{verbatim}
 
 \paragraph{Binning the data}\label{binning-the-data}
@@ -168,20 +168,20 @@ all_centroids_df
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 240 x 3
-#>        h     c_x     c_y
-#>    <int>   <dbl>   <dbl>
-#>  1     1 -0.1    -0.0892
-#>  2     2 -0.0167 -0.0892
-#>  3     3  0.0665 -0.0892
-#>  4     4  0.150  -0.0892
-#>  5     5  0.233  -0.0892
-#>  6     6  0.316  -0.0892
-#>  7     7  0.400  -0.0892
-#>  8     8  0.483  -0.0892
-#>  9     9  0.566  -0.0892
-#> 10    10  0.649  -0.0892
-#> # i 230 more rows
+> # A tibble: 240 x 3
+>        h     c_x     c_y
+>    <int>   <dbl>   <dbl>
+>  1     1 -0.1    -0.0892
+>  2     2 -0.0167 -0.0892
+>  3     3  0.0665 -0.0892
+>  4     4  0.150  -0.0892
+>  5     5  0.233  -0.0892
+>  6     6  0.316  -0.0892
+>  7     7  0.400  -0.0892
+>  8     8  0.483  -0.0892
+>  9     9  0.566  -0.0892
+> 10    10  0.649  -0.0892
+> # i 230 more rows
 \end{verbatim}
 
 \subparagraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
@@ -208,12 +208,12 @@ head(all_hex_coord, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#>   hex_poly_id           x           y
-#> 1           1 -0.10000000 -0.04116510
-#> 2           1 -0.14163068 -0.06520059
-#> 3           1 -0.14163068 -0.11327155
-#> 4           1 -0.10000000 -0.13730704
-#> 5           1 -0.05836932 -0.11327155
+>   hex_poly_id           x           y
+> 1           1 -0.10000000 -0.04116510
+> 2           1 -0.14163068 -0.06520059
+> 3           1 -0.14163068 -0.11327155
+> 4           1 -0.10000000 -0.13730704
+> 5           1 -0.05836932 -0.11327155
 \end{verbatim}
 
 \subparagraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
@@ -236,14 +236,14 @@ head(umap_hex_id, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 4
-#>    emb1  emb2    ID     h
-#>   <dbl> <dbl> <int> <int>
-#> 1 0.707 0.839     1   205
-#> 2 0.231 0.401     2   109
-#> 3 0.232 0.215     3    65
-#> 4 0.790 0.564     4   146
-#> 5 0.761 0.551     5   146
+> # A tibble: 5 x 4
+>    emb1  emb2    ID     h
+>   <dbl> <dbl> <int> <int>
+> 1 0.707 0.839     1   205
+> 2 0.231 0.401     2   109
+> 3 0.232 0.215     3    65
+> 4 0.790 0.564     4   146
+> 5 0.761 0.551     5   146
 \end{verbatim}
 
 \subparagraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
@@ -261,14 +261,14 @@ head(std_df, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 3
-#>       h   n_h    w_h
-#>   <int> <int>  <dbl>
-#> 1    21    12 0.0024
-#> 2    22    17 0.0034
-#> 3    23    22 0.0044
-#> 4    24    10 0.002 
-#> 5    25     7 0.0014
+> # A tibble: 5 x 3
+>       h   n_h    w_h
+>   <int> <int>  <dbl>
+> 1    21    12 0.0024
+> 2    22    17 0.0034
+> 3    23    22 0.0044
+> 4    24    10 0.002 
+> 5    25     7 0.0014
 \end{verbatim}
 
 \subparagraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
@@ -286,14 +286,14 @@ head(pts_df, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 2
-#>       h pts_list  
-#>   <int> <list>    
-#> 1    21 <int [12]>
-#> 2    22 <int [17]>
-#> 3    23 <int [22]>
-#> 4    24 <int [10]>
-#> 5    25 <int [7]>
+> # A tibble: 5 x 2
+>       h pts_list  
+>   <int> <list>    
+> 1    21 <int [12]>
+> 2    22 <int [17]>
+> 3    23 <int [22]>
+> 4    24 <int [10]>
+> 5    25 <int [7]>
 \end{verbatim}
 
 \paragraph{Obtaining bin centroids}\label{obtaining-bin-centroids}
@@ -312,12 +312,12 @@ head(df_bin_centroids, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#>   h         c_x         c_y n_h w_h
-#> 1 1 -0.10000000 -0.08923607   0   0
-#> 2 2 -0.01673864 -0.08923607   0   0
-#> 3 3  0.06652271 -0.08923607   0   0
-#> 4 4  0.14978407 -0.08923607   0   0
-#> 5 5  0.23304543 -0.08923607   0   0
+>   h         c_x         c_y n_h w_h
+> 1 1 -0.10000000 -0.08923607   0   0
+> 2 2 -0.01673864 -0.08923607   0   0
+> 3 3  0.06652271 -0.08923607   0   0
+> 4 4  0.14978407 -0.08923607   0   0
+> 5 5  0.23304543 -0.08923607   0   0
 \end{verbatim}
 
 \paragraph{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
@@ -341,14 +341,14 @@ head(trimesh, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 8
-#>    from    to  x_from  y_from    x_to    y_to from_count to_count
-#>   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
-#> 1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
-#> 2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
-#> 3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
-#> 4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
-#> 5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+> # A tibble: 5 x 8
+>    from    to  x_from  y_from    x_to    y_to from_count to_count
+>   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
+> 1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
+> 2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
+> 3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+> 4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+> 5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
 \end{verbatim}
 
 The \texttt{update\_trimesh\_index()} function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
@@ -360,14 +360,14 @@ head(trimesh, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 8
-#>    from    to  x_from  y_from    x_to    y_to from_count to_count
-#>   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
-#> 1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
-#> 2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
-#> 3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
-#> 4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
-#> 5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
+> # A tibble: 5 x 8
+>    from    to  x_from  y_from    x_to    y_to from_count to_count
+>   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
+> 1     1     2 -0.1    -0.0892 -0.0167 -0.0892          0        0
+> 2    16    17 -0.0584 -0.0171  0.0249 -0.0171          0        0
+> 3    16    32 -0.0584 -0.0171 -0.0167  0.0550          0        0
+> 4     3    17  0.0665 -0.0892  0.0249 -0.0171          0        0
+> 5    17    18  0.0249 -0.0171  0.108  -0.0171          0        0
 \end{verbatim}
 
 \paragraph{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
@@ -387,20 +387,20 @@ find_low_dens_hex(
 \end{verbatim}
 
 \begin{verbatim}
-#>   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18
-#>  [19]  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36
-#>  [37]  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54
-#>  [55]  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72
-#>  [73]  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90
-#>  [91]  91  92  93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108
-#> [109] 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126
-#> [127] 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144
-#> [145] 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162
-#> [163] 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180
-#> [181] 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198
-#> [199] 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216
-#> [217] 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234
-#> [235] 235 236 237 238 239 240
+>   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18
+>  [19]  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36
+>  [37]  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54
+>  [55]  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72
+>  [73]  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90
+>  [91]  91  92  93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108
+> [109] 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126
+> [127] 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144
+> [145] 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162
+> [163] 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180
+> [181] 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198
+> [199] 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216
+> [217] 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234
+> [235] 235 236 237 238 239 240
 \end{verbatim}
 
 For simplicity, we remove low-density hexagons using a threshold of \(10\).
@@ -430,14 +430,14 @@ head(df_bin, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 8
-#>       h      x1    x2    x3         x4        x5       x6        x7
-#>   <int>   <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl>
-#> 1    21 -0.992   1.91  1.11 -0.000427   0.000624  0.00749  0.00105 
-#> 2    22 -0.906   1.93  1.41 -0.0000183  0.00331  -0.0204  -0.000363
-#> 3    23 -0.680   1.93  1.72 -0.000810  -0.00259  -0.00449  0.00153 
-#> 4    24 -0.272   1.93  1.96  0.00251    0.00668  -0.0460   0.00128 
-#> 5    25  0.0760  1.93  2.00  0.00876    0.00447   0.00851 -0.00195
+> # A tibble: 5 x 8
+>       h      x1    x2    x3         x4        x5       x6        x7
+>   <int>   <dbl> <dbl> <dbl>      <dbl>     <dbl>    <dbl>     <dbl>
+> 1    21 -0.992   1.91  1.11 -0.000427   0.000624  0.00749  0.00105 
+> 2    22 -0.906   1.93  1.41 -0.0000183  0.00331  -0.0204  -0.000363
+> 3    23 -0.680   1.93  1.72 -0.000810  -0.00259  -0.00449  0.00153 
+> 4    24 -0.272   1.93  1.96  0.00251    0.00668  -0.0460   0.00128 
+> 5    25  0.0760  1.93  2.00  0.00876    0.00447   0.00851 -0.00195
 \end{verbatim}
 
 \subsubsection{Prediction}\label{prediction}
@@ -459,14 +459,14 @@ head(predict_data, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 4
-#>   pred_emb_1 pred_emb_2    ID pred_hb_id
-#>        <dbl>      <dbl> <int>      <int>
-#> 1      0.691      0.848     1        205
-#> 2      0.191      0.416     2        109
-#> 3      0.316      0.199     3         66
-#> 4      0.774      0.560     4        146
-#> 5      0.774      0.560     5        146
+> # A tibble: 5 x 4
+>   pred_emb_1 pred_emb_2    ID pred_hb_id
+>        <dbl>      <dbl> <int>      <int>
+> 1      0.691      0.848     1        205
+> 2      0.191      0.416     2        109
+> 3      0.316      0.199     3         66
+> 4      0.774      0.560     4        146
+> 5      0.774      0.560     5        146
 \end{verbatim}
 
 \subsubsection{Compute residuals and Root Mean Square Error (RMSE)}\label{compute-residuals-and-root-mean-square-error-rmse}
@@ -490,10 +490,10 @@ glance(
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 1 x 2
-#>   Error  RMSE
-#>   <dbl> <dbl>
-#> 1 1481. 0.180
+> # A tibble: 1 x 2
+>   Error  RMSE
+>   <dbl> <dbl>
+> 1 1481. 0.180
 \end{verbatim}
 
 Furthermore, \texttt{augment()} accepts \(2\text{-}D\) and \(p\text{-}D\) model points, and the \(p\text{-}D\) data and adds information about each observation in the data set.
@@ -515,21 +515,21 @@ head(model_error, 5)
 \end{verbatim}
 
 \begin{verbatim}
-#> # A tibble: 5 x 32
-#>      ID      x1     x2       x3       x4       x5      x6        x7 pred_hb_id
-#>   <int>   <dbl>  <dbl>    <dbl>    <dbl>    <dbl>   <dbl>     <dbl>      <int>
-#> 1     1 -0.120  1.64   -1.99     0.0104   0.0125   0.0923 -0.00128         205
-#> 2     2 -0.0492 1.51    0.00121 -0.0177   0.00726 -0.0362 -0.00535         109
-#> 3     3 -0.774  1.30    0.367   -0.00173  0.0156  -0.0962  0.00335          66
-#> 4     4 -0.606  0.246  -1.80    -0.00897 -0.0187  -0.0716  0.00126         146
-#> 5     5 -0.478  0.0177 -1.88     0.00848  0.00533  0.0998  0.000677        146
-#> # i 23 more variables: model_high_d_x1 <dbl>, model_high_d_x2 <dbl>,
-#> #   model_high_d_x3 <dbl>, model_high_d_x4 <dbl>, model_high_d_x5 <dbl>,
-#> #   model_high_d_x6 <dbl>, model_high_d_x7 <dbl>, error_square_x1 <dbl>,
-#> #   error_square_x2 <dbl>, error_square_x3 <dbl>, error_square_x4 <dbl>,
-#> #   error_square_x5 <dbl>, error_square_x6 <dbl>, error_square_x7 <dbl>,
-#> #   row_wise_total_error <dbl>, abs_error_x1 <dbl>, abs_error_x2 <dbl>,
-#> #   abs_error_x3 <dbl>, abs_error_x4 <dbl>, abs_error_x5 <dbl>, ...
+> # A tibble: 5 x 32
+>      ID      x1     x2       x3       x4       x5      x6        x7 pred_hb_id
+>   <int>   <dbl>  <dbl>    <dbl>    <dbl>    <dbl>   <dbl>     <dbl>      <int>
+> 1     1 -0.120  1.64   -1.99     0.0104   0.0125   0.0923 -0.00128         205
+> 2     2 -0.0492 1.51    0.00121 -0.0177   0.00726 -0.0362 -0.00535         109
+> 3     3 -0.774  1.30    0.367   -0.00173  0.0156  -0.0962  0.00335          66
+> 4     4 -0.606  0.246  -1.80    -0.00897 -0.0187  -0.0716  0.00126         146
+> 5     5 -0.478  0.0177 -1.88     0.00848  0.00533  0.0998  0.000677        146
+> # i 23 more variables: model_high_d_x1 <dbl>, model_high_d_x2 <dbl>,
+> #   model_high_d_x3 <dbl>, model_high_d_x4 <dbl>, model_high_d_x5 <dbl>,
+> #   model_high_d_x6 <dbl>, model_high_d_x7 <dbl>, error_square_x1 <dbl>,
+> #   error_square_x2 <dbl>, error_square_x3 <dbl>, error_square_x4 <dbl>,
+> #   error_square_x5 <dbl>, error_square_x6 <dbl>, error_square_x7 <dbl>,
+> #   row_wise_total_error <dbl>, abs_error_x1 <dbl>, abs_error_x2 <dbl>,
+> #   abs_error_x3 <dbl>, abs_error_x4 <dbl>, abs_error_x5 <dbl>, ...
 \end{verbatim}
 
 \subsubsection{Visualizations}\label{visualizations}
