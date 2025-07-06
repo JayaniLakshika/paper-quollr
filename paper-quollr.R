@@ -1330,29 +1330,18 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 
 
-## ----eval=knitr::is_html_output()---------------------------------------------
-# htmltools::browsable(
-#   htmltools::tagList(
-#     tags$div(
-#       id = "fig-limb-model",  # Anchor for referencing
-#       style = "text-align: center; margin-bottom: 1em;",
+## ----model-limb-html, eval=knitr::is_html_output(), fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."----
 # 
-#       # 2x2 grid layout
-#       htmltools::div(
+# 
+# modellimbfig <- htmltools::div(
 #         style = "display: grid; grid-template-columns: 1fr 1fr; row-gap: 0px; justify-items: center;",
 #         trimesh_limb_int,
 #         htmltools::div(style = "margin-top: 13px;", limb_highd_vis),
 #         trimesh_limb_best_int,
 #         htmltools::div(style = "margin-top: 13px;", limb_highd_vis_best)
-#       ),
-# 
-#       # Caption
-#       tags$p(
-#         tags$strong("Figure 6:"),
-#         "Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."
 #       )
-#     )
-#   )
-# )
 # 
+# class(modellimbfig) <- c(class(modellimbfig), "htmlwidget")
+# 
+# modellimbfig
 
