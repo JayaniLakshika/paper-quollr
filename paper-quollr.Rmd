@@ -769,6 +769,8 @@ With these values, the function determines fixed offsets in the x and y directio
 
 For each centroid, six vertices are computed and assigned a polygon ID (`hex_poly_id`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`hex_poly_id`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
+To reduce computational overhead, the geometry calculations are implemented in C++ using `gen_hex_coord_cpp()`, which returns a `data.frame` of vertex coordinates.
+
 ```{r, echo=TRUE}
 all_hex_coord <- gen_hex_coord(
   centroids_data = all_centroids_df, 
@@ -916,7 +918,9 @@ head(df_bin, 5)
 
 The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
 
-In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point.
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point. 
+
+To accelerate this process, the nearest-neighbor search is implemented in C++ using `Rcpp` via the internal function `compute_highd_dist()`.
 
 ```{r, echo=TRUE}
 predict_data <- predict_emb(
@@ -938,7 +942,7 @@ The function joins this prediction output with both the high-dimensional model (
 
 From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RMSE which is the average of the total squared error per point.
 
-These metrics are returned in a tibble as `Error` (absolute error) and `RMSE` (root mean squared error).
+These metrics are returned in a tibble as `Error` (absolute error) and `RMSE` (root mean squared error). The computation of total absolute error and RMSE is performed in C++ for efficiency using the internal `compute_errors()` function.
 
 ```{r, echo=TRUE}
 glance(
@@ -1260,6 +1264,10 @@ show_error_link_plots(
 <!--   scurve_nldr5, scurve_nldr6,  -->
 <!--   ncol = 2) -->
 <!-- ``` -->
+
+# Computational efficiency and optimization
+
+Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), $2-\text{D}$ distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
 # Application
 
@@ -1768,13 +1776,15 @@ htmltools::browsable(
 
 # Discussion
 
-This paper presents the R package `quollr` to develop a way to take the fitted model, as represented by the positions of points in $2\text{-}D$, and turn it into a high-dimensional wireframe to overlay on the data, viewing it with a tour.
+The `quollr` package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in $2-\text{D}$ and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a $2-\text{D}$ layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate $2-\text{D}$ representations.
 
-The paper includes a clustering example to illustrate how `quollr` is useful to assess which NLDR technique and which (hyper)parameter choice gives the most accurate representation. In addition, how to select parameters for hexagonal binning and fitting model are explained.
+In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, `quollr` provides a quantitative route for evaluation. It enables the computation of RMSE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualisations using the `langevitour` package, allowing users to inspect where the model fits well and where it does not.
 
-Possible future improvements would be...<!--assess the preservation of local and glocal structure w.r.t 2D and high-D distance comparison--> 
+To support efficient computation, particularly for large-scale datasets, several core functions in `quollr` are implemented in C++ using `Rcpp` and `RcppArmadillo`. These include functions for computing Euclidean distances in high-dimensional and $2-\text{D}$ space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, `compute_highd_dist()` accelerates nearest neighbor lookup in high-dimensional space, `compute_errors()` calculates RMSE and total absolute error efficiently, and `calc_2d_dist_cpp()` speeds up distance calculations in $2-\text{D}$. Additionally, `gen_hex_coord_cpp()` constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
 
-This new tool provides an effective start point for automatically creating regular hexagons and help to evaluate which NLDR technique and which hyper-parameter choice gives the most accurate representation of $p\text{-}D$ data.
+The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function `fit_highd_model()` for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
+
+There are several avenues for future development. While hexagonal binning provides a regular structure conducive to modeling, alternative spatial discretizations (e.g., adaptive binning or density-aware tessellations) could be explored to better capture varying data densities. Expanding support for additional distance metrics in the lifting and prediction steps may improve performance across different domains. Additionally, statistical inference tools could be introduced to assess the stability and robustness of the fitted model, which would enhance interpretability and confidence in the outcomes. 
 
 # Acknowledgements
 
