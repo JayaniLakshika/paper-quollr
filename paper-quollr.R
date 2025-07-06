@@ -429,6 +429,7 @@ hex_grid_scurve + wrap_plots(
 
 
 ## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
+
 scurve_umap_plt + hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1 +
@@ -806,15 +807,18 @@ df_exe <- comb_data_model(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+# 
 # show_langevitour(
 #   point_data = df_exe,
 #   edge_data = trimesh
 #   )
 
 
-## ----eval=knitr::is_latex_output()--------------------------------------------
-scurve_proj_umap_model1 + scurve_proj_umap_model2 + scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
+## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+
+scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
+  scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
   plot_layout(ncol = 4)
 
 
