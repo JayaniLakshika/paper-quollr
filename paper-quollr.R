@@ -25,6 +25,7 @@ library(readr)
 library(plotly)
 library(crosstalk)
 library(htmltools)
+library(crosstalk)
 #library(tools)
 
 set.seed(20240110)
@@ -407,13 +408,9 @@ hex_grid_scurve + wrap_plots(
   ncol = 2)
 
 
-## ----eval=knitr::is_html_output()---------------------------------------------
+## ----algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
 # 
-# htmltools::browsable(
-#   tagList(
-#     tags$div(
-#       id = "fig-algo-steps",  # This is the anchor
-#       crosstalk::bscols(
+# algofig <- crosstalk::bscols(
 #         htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
 #                        htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_plt_int),
 #                        htmltools::div(style = "margin: 0; padding: 0;", hex_grid_poly_scurve_int),
@@ -424,11 +421,11 @@ hex_grid_scurve + wrap_plots(
 #                          scurve_umap_model_vis_n
 #                        )),
 #         device = "xs"
-#       ),
-#       tags$p(tags$strong("Figure 2:"), "Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.")
-#     )
-#   )
-# )
+#       )
+# 
+# class(algofig) <- c(class(algofig), "htmlwidget")
+# 
+# algofig
 
 
 ## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----

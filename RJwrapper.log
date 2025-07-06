@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  6 JUL 2025 14:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.30)  6 JUL 2025 16:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -878,10 +878,10 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 620--621
 
 
 [11 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf, id=168, 467.7475pt x 115.43124pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf  used on input line 643.
+<paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf, id=168, 467.7475pt x 115.43124pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf  used on input line 643.
 (pdftex.def)             Requested size: 398.33858pt x 98.30724pt.
 
 Overfull \hbox (15.0pt too wide) in paragraph at lines 643--644
@@ -890,7 +890,7 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 643--644
 
 
 
-[12 <./paper-quollr_files/figure-latex/unnamed-chunk-28-1.pdf>]
+[12 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
 Overfull \hbox (42.75717pt too wide) in paragraph at lines 706--707
 \OT1/ppl/m/n/9 (-20) 2 \OMS/zplm/m/n/9 ^^@ []$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
@@ -949,18 +949,18 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: A03A31D13DA1ECC3650E11ABA04CFB6A;1060.
  ) 
 Here is how much of TeX's memory you used:
- 27388 strings out of 469869
- 499981 string characters out of 5483410
+ 27381 strings out of 469869
+ 499928 string characters out of 5483410
  916385 words of memory out of 5000000
  54810 multiletter control sequences out of 15000+600000
- 682675 words of font info for 327 fonts, out of 8000000 for 9000
+ 681346 words of font info for 322 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1301b,1014s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (17 pages, 4386286 bytes).
+Output written on RJwrapper.pdf (17 pages, 4386221 bytes).
 PDF statistics:
  418 PDF objects out of 1000 (max. 8388607)
  357 compressed objects within 4 object streams
  59 named destinations out of 1000 (max. 500000)
- 77440 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 75392 words of extra memory for PDF output out of 89155 (max. 10000000)
 

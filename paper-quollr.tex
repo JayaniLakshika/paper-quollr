@@ -190,7 +190,7 @@ Following the generation of hexagonal centroids, the \texttt{gen\_hex\_coord()} 
 
 Each hexagon is defined relative to its centroid \((C_x, C_y)\), with six vertices positioned equidistantly around the center. The function first verifies the presence of the required hexagon width parameter \texttt{a1}. This width determines the horizontal spacing.
 
-Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as \(dx = \frac{a_1}{2}\), and \(dy = \frac{a_1}{\sqrt{3}}\) repectively. A vertical spacing factor \(v = \frac{a_1}{2\sqrt{3}}\) refines vertical placement in staggered rows.
+Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as \(dx = a_1/2\), and \(dy = a_1/\sqrt{3}\) repectively. A vertical spacing factor \(v = a_1/2\sqrt{3}\) refines vertical placement in staggered rows.
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (\texttt{x\_add\_factor} and \texttt{y\_add\_factor}) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
@@ -640,7 +640,7 @@ show_langevitour(
   )
 \end{verbatim}
 
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-28-1}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1}
 
 \paragraph{Link plots}\label{link-plots}
 

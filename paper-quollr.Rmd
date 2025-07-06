@@ -71,6 +71,7 @@ library(readr)
 library(plotly)
 library(crosstalk)
 library(htmltools)
+library(crosstalk)
 #library(tools)
 
 set.seed(20240110)
@@ -469,15 +470,11 @@ The paper is organized as follows. The next section introduces the implementatio
 
 # Algorithm
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "[Figure 2](#fig-algo-steps)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in **cite the methodology paper**.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in **cite the methodology paper**.
 
-```{r, eval=knitr::is_html_output()}
+```{r algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."}
 
-htmltools::browsable(
-  tagList(
-    tags$div(
-      id = "fig-algo-steps",  # This is the anchor
-      crosstalk::bscols(
+algofig <- crosstalk::bscols(
         htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
                        htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_plt_int),
                        htmltools::div(style = "margin: 0; padding: 0;", hex_grid_poly_scurve_int),
@@ -488,11 +485,11 @@ htmltools::browsable(
                          scurve_umap_model_vis_n
                        )),
         device = "xs"
-      ),
-      tags$p(tags$strong("Figure 2:"), "Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.")
-    )
-  )
-)
+      )
+
+class(algofig) <- c(class(algofig), "htmlwidget")
+
+algofig
 ```
 
 ```{r algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."}
@@ -764,7 +761,7 @@ Following the generation of hexagonal centroids, the `gen_hex_coord()` function 
 
 Each hexagon is defined relative to its centroid $(C_x, C_y)$, with six vertices positioned equidistantly around the center. The function first verifies the presence of the required hexagon width parameter `a1`. This width determines the horizontal spacing.
 
-Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as $dx = \frac{a_1}{2}$, and $dy = \frac{a_1}{\sqrt{3}}$ repectively. A vertical spacing factor $v = \frac{a_1}{2\sqrt{3}}$ refines vertical placement in staggered rows.
+Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as $dx = a_1/2$, and $dy = a_1/\sqrt{3}$ repectively. A vertical spacing factor $v = a_1/2\sqrt{3}$ refines vertical placement in staggered rows.
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (`x_add_factor` and `y_add_factor`) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
