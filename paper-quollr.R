@@ -13,6 +13,33 @@ knitr::opts_chunk$set(
 
 
 
+## ----install-libraries, include=FALSE, warning=FALSE, echo=FALSE--------------
+
+options(repos = c(CRAN = "https://cran.rstudio.com")) # Setup mirror
+
+packages_to_check <- c("remotes", "quollr", "tibble", "knitr", "kableExtra", "ggplot2", "dplyr", "patchwork", "readr", "plotly", "crosstalk", "htmltools")
+
+for (pkg in packages_to_check) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    message(paste("Installing package:", pkg))
+    install.packages(pkg)
+  } else {
+    installed_version <- packageVersion(pkg)
+    available_version <- tryCatch({
+      utils::packageDescription(pkg)$Version
+    }, error = function(e) NA) # Handle cases where package info isn't readily available
+
+    if (!is.na(available_version) && installed_version < package_version(available_version)) {
+      message(paste("A newer version of package", pkg, "is available. Updating..."))
+      install.packages(pkg)
+    } else {
+      message(paste("Package", pkg, "is up-to-date (version", installed_version, ")."))
+    }
+  }
+}
+
+
+
 ## ----load-libraries-----------------------------------------------------------
 library(quollr)
 library(tibble)
@@ -25,8 +52,6 @@ library(readr)
 library(plotly)
 library(crosstalk)
 library(htmltools)
-library(crosstalk)
-#library(tools)
 
 set.seed(20240110)
 
