@@ -857,11 +857,15 @@ df_exe <- comb_all_data_model(
 
 
 ## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"------
-# show_link_plots(
+# nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh,
 #   point_colour = clr_choice
 #   )
+# 
+# class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+# 
+# nldrdt_link
 
 
 ## ----eval=knitr::is_latex_output()--------------------------------------------
@@ -878,12 +882,16 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
-# show_error_link_plots(
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap=""----------------------
+# errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh,
 #   point_colour = clr_choice
-#   )
+# )
+# 
+# class(errornldrdt_link) <- c(class(errornldrdt_link), "htmlwidget")
+# 
+# errornldrdt_link
 
 
 ## ----eval=knitr::is_latex_output()--------------------------------------------

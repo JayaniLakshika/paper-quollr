@@ -1131,11 +1131,15 @@ The function `show_link_plots()` generates two side-by-side, interactively linke
 These two views are linked using `crosstalk`, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the `langevitour` output. 
 
 ```{r linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"}
-show_link_plots(
+nldrdt_link <- show_link_plots(
   point_data = df_exe, 
   edge_data = trimesh, 
   point_colour = clr_choice
   )
+
+class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+
+nldrdt_link
 ```
 
 ```{r, eval=knitr::is_latex_output()}
@@ -1164,12 +1168,16 @@ These two views are linked using `crosstalk`, allowing interactive selection of 
 
 These three views are linked using `crosstalk`, allowing interactive selection of points in error plot and the NLDR plot to highlight corresponding structures in the `langevitour` output. 
 
-```{r, echo=TRUE, eval=knitr::is_html_output()}
-show_error_link_plots(
+```{r, echo=TRUE, eval=knitr::is_html_output(), fig.cap=""}
+errornldrdt_link <- show_error_link_plots(
   point_data = df_exe, 
   edge_data = trimesh, 
   point_colour = clr_choice
-  )
+)
+
+class(errornldrdt_link) <- c(class(errornldrdt_link), "htmlwidget")
+
+errornldrdt_link
 ```
 
 ```{r, eval=knitr::is_latex_output()}

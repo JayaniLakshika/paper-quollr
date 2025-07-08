@@ -668,11 +668,15 @@ The function \texttt{show\_link\_plots()} generates two side-by-side, interactiv
 These two views are linked using \texttt{crosstalk}, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the \texttt{langevitour} output.
 
 \begin{verbatim}
-show_link_plots(
+nldrdt_link <- show_link_plots(
   point_data = df_exe, 
   edge_data = trimesh, 
   point_colour = clr_choice
   )
+
+class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+
+nldrdt_link
 \end{verbatim}
 
 \texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern.
@@ -698,11 +702,15 @@ These two views are linked using \texttt{crosstalk}, allowing interactive select
 These three views are linked using \texttt{crosstalk}, allowing interactive selection of points in error plot and the NLDR plot to highlight corresponding structures in the \texttt{langevitour} output.
 
 \begin{verbatim}
-show_error_link_plots(
+errornldrdt_link <- show_error_link_plots(
   point_data = df_exe, 
   edge_data = trimesh, 
   point_colour = clr_choice
-  )
+)
+
+class(errornldrdt_link) <- c(class(errornldrdt_link), "htmlwidget")
+
+errornldrdt_link
 \end{verbatim}
 
 \section{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
