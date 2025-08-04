@@ -20,11 +20,11 @@ This paper presents the R package, \texttt{quollr}, which is useful for understa
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{algorithm}\label{fig:overview}
 \end{figure}
 
-The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualisation capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
+The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
 \section{Algorithm}\label{algorithm}
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \textbf{cite the methodology paper}.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
@@ -44,7 +44,7 @@ pak::pak("JayaniLakshika/quollr")
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. We also want to load the built-in data sets \texttt{scurve} and \texttt{scurve\_umap}.
 
-\texttt{scurve} is a \(7\text{-}D\) simulated dataset. It is constructed by simulating \(5000\) observations from \(\theta \sim U(-3\pi/2, 3\pi/2)\), \(X_1 = \sin(\theta)\), \(X_2 \sim U(0, 2)\) (adding thickness to the S), \(X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)\). The remaining variables \(X_4\), \(X_5\), \(X_6\), \(X_7\) are all uniform error, with small variance. \texttt{scurve\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{scurve} data with \texttt{n\_neighbors} is \(46\) and \texttt{min\_dist} is \(0.9\). Each data set contains a unique ID column that maps \texttt{scurve} and \texttt{scurve\_umap}.
+\texttt{scurve} is a \(7\text{-}D\) simulated dataset. It is constructed by simulating \(1000\) observations from \(\theta \sim U(-3\pi/2, 3\pi/2)\), \(X_1 = \sin(\theta)\), \(X_2 \sim U(0, 2)\) (adding thickness to the S), \(X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)\). The remaining variables \(X_4\), \(X_5\), \(X_6\), \(X_7\) are all uniform error, with small variance. \texttt{scurve\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{scurve} data with \texttt{n\_neighbors} is \(46\) and \texttt{min\_dist} is \(0.9\). Each data set contains a unique ID column that maps \texttt{scurve} and \texttt{scurve\_umap}.
 
 \subsubsection{Main function}\label{main-function}
 
@@ -155,7 +155,7 @@ Then, the centroids are computed iteratively. The x-coordinates for centroids in
 
 The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
 
-Finally, a tibble is returned containing a unique hexagon ID (\texttt{h}) along with the corresponding x and y centroid coordinates (\texttt{c\_x}, \texttt{c\_y}), which define the layout of the hexagonal grid over the \(2-\text{D}\) space.
+Finally, a tibble is returned containing a unique hexagon ID (\texttt{h}) along with the corresponding x and y centroid coordinates (\texttt{c\_x}, \texttt{c\_y}), which define the layout of the hexagonal grid over the \(2\text{-}D\) space.
 
 \begin{verbatim}
 all_centroids_df <- gen_centroids(
@@ -218,13 +218,13 @@ head(all_hex_coord, 5)
 
 \subparagraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
 
-After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The \texttt{assign\_data()} function performs this assignment by calculating the \(2-\text{D}\) Euclidean distance between each point in the \(2-\text{D}\) embedding and all hexagon centroids.
+After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The \texttt{assign\_data()} function performs this assignment by calculating the \(2\text{-}D\) Euclidean distance between each point in the \(2\text{-}D\) embedding and all hexagon centroids.
 
-First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the \(2-\text{D}\) layout. It then selects the corresponding x and y coordinates of each hexagon's centroid.
+First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the \(2\text{-}D\) layout. It then selects the corresponding x and y coordinates of each hexagon's centroid.
 
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the \texttt{proxy::dist()} method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon---and assigns the corresponding hexagon ID (\texttt{h}) to the point.
 
-The result is a data frame of the scaled \(2-\text{D}\) embedding with an additional \texttt{h} column, indicating the hexagonal bin to which each point belongs.
+The result is a data frame of the scaled \(2\text{-}D\) embedding with an additional \texttt{h} column, indicating the hexagonal bin to which each point belongs.
 
 \begin{verbatim}
 umap_hex_id <- assign_data(
@@ -275,7 +275,7 @@ head(std_df, 5)
 
 The \texttt{find\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
 
-The function first groups the input data by \texttt{h}, which represents the hexagon label associated with each point in the \(2-\text{D}\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
+The function first groups the input data by \texttt{h}, which represents the hexagon label associated with each point in the \(2\text{-}D\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
 
 \begin{verbatim}
 pts_df <- find_pts(
@@ -322,7 +322,7 @@ head(df_bin_centroids, 5)
 
 \paragraph{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
-To represent the neighborhood structure of hexagonal bins in a \(2-\text{D}\) layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a \(2\text{-}D\) layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
 The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{tripack::tri.mesh()} function. This triangulation forms the structural basis for identifying adjacent bins.
 
@@ -372,7 +372,7 @@ head(trimesh, 5)
 
 \paragraph{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
-Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2-\text{D}\) structure, potentially disrupting the continuity of the representation.
+Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2\text{-}D\) structure, potentially disrupting the continuity of the representation.
 
 To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The \texttt{find\_low\_dens\_hex()} function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., 0.05), the hexagon is flagged for removal.
 
@@ -501,7 +501,7 @@ glance(
 
 Furthermore, \texttt{augment()} accepts \(2\text{-}D\) and \(p\text{-}D\) model points, and the \(p\text{-}D\) data and adds information about each observation in the data set.
 
-The function starts by renaming columns in the \texttt{model\_highd} data frame to avoid conflicts. It then predicts the high-dimensional bin assignments for each point using the \texttt{predict\_emb()} function, mapping each observation to its nearest \(2-\text{D}\) bin (\texttt{pred\_hb\_id}). This prediction is joined with the mean high-dimensional coordinates of each bin from the model and with the original high-dimensional data.
+The function starts by renaming columns in the \texttt{model\_highd} data frame to avoid conflicts. It then predicts the high-dimensional bin assignments for each point using the \texttt{predict\_emb()} function, mapping each observation to its nearest \(2\text{-}D\) bin (\texttt{pred\_hb\_id}). This prediction is joined with the mean high-dimensional coordinates of each bin from the model and with the original high-dimensional data.
 
 Next, the function computes residuals between each original coordinate (\texttt{x1}, \texttt{x2}, \ldots, \texttt{xp}) and the corresponding modeled coordinate (\texttt{model\_high\_d\_x1}, \ldots, \texttt{model\_high\_d\_xp}) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the \texttt{row\_wise\_total\_error} which is the total squared error across all dimensions, and the \texttt{row\_wise\_abs\_error} which is the total absolute error across all dimensions.
 
@@ -537,7 +537,7 @@ head(model_error, 5)
 
 \subsubsection{Visualisations}\label{visualisations}
 
-The package offers several \(2-\text{D}\) visualisations, including:
+The package offers several \(2\text{-}D\) visualisations, including:
 
 \begin{itemize}
 \tightlist
@@ -553,7 +553,7 @@ The package offers several \(2-\text{D}\) visualisations, including:
   A triangular mesh for any provided set of points.
 \end{itemize}
 
-The generated p-D model, overlaid with the data, can also be visualized using \texttt{show\_langevitour}. Additionally, it features a function for visualizing the \(2-\text{D}\) projection of the fitted model overlaid on the data, called \texttt{plot\_proj}.
+The generated p-D model, overlaid with the data, can also be visualized using \texttt{show\_langevitour}. Additionally, it features a function for visualizing the \(2\text{-}D\) projection of the fitted model overlaid on the data, called \texttt{plot\_proj}.
 
 Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \texttt{show\_error\_link\_plots}, which are designed to help diagnose the model.
 
@@ -634,7 +634,7 @@ df_exe <- comb_data_model(
 
 The \texttt{show\_langevitour()} function then renders the visualisation using the \texttt{langevitour} interface, displaying both types of points in a dynamic tour. The \texttt{edge\_data} input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model's structure.
 
-In the resulting interactive visualisation black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \(2-\text{D}\) wireframe structure mapped back to high-dimensional space.
+In the resulting interactive visualisation black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \(2\text{-}D\) wireframe structure mapped back to high-dimensional space.
 
 \begin{verbatim}
 show_langevitour(
@@ -653,7 +653,7 @@ There are mainly two interactive link plots can be generated.
 
 To support interactive evaluation of how well the \(p\text{-}D\) model captures the structure of the high-dimensional data, we introduce \texttt{show\_link\_plots()}. This visualisation combines two complementary views: the nonlinear dimension reduction (NLDR) representation and a dynamic tour of the model ovelaid the data in the high-dimensional space. Both views are interactively linked, enabling users to explore.
 
-Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model()} function. This function combines the high-dimensional data (\texttt{highd\_data}), the NLDR data (\texttt{nldr\_data}), and the bin-averaged high-dimensional model representation (\texttt{model\_highd}) aligned to the \(2-\text{D}\) bin layout (\texttt{model\_2d}):
+Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model()} function. This function combines the high-dimensional data (\texttt{highd\_data}), the NLDR data (\texttt{nldr\_data}), and the bin-averaged high-dimensional model representation (\texttt{model\_highd}) aligned to the \(2\text{-}D\) bin layout (\texttt{model\_2d}):
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a \texttt{type} variable for distinguishing between them.
 
@@ -666,7 +666,7 @@ df_exe <- comb_all_data_model(
   )
 \end{verbatim}
 
-The function \texttt{show\_link\_plots()} generates two side-by-side, interactively linked plots; a \(2-\text{D}\) NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the \texttt{langevitour} package), displaying both the data and the model. The function takes the output from \texttt{comb\_all\_data\_model()} (\texttt{point\_data}) and \texttt{edge\_data} which defines connections between neighboring bins.
+The function \texttt{show\_link\_plots()} generates two side-by-side, interactively linked plots; a \(2\text{-}D\) NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the \texttt{langevitour} package), displaying both the data and the model. The function takes the output from \texttt{comb\_all\_data\_model()} (\texttt{point\_data}) and \texttt{edge\_data} which defines connections between neighboring bins.
 
 These two views are linked using \texttt{crosstalk}, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the \texttt{langevitour} output.
 
@@ -684,7 +684,7 @@ nldrdt_link
 
 \texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern.
 
-Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model\_error()} function. The function requires several arguments: points data which contain high-dimensional data (\texttt{highd\_data}), NLDR data (\texttt{nldr\_data}), high-dimensional model data (\texttt{model\_highd}), \(2-\text{D}\) model data (\texttt{model\_2d}), and model error (\texttt{error\_data}).
+Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model\_error()} function. The function requires several arguments: points data which contain high-dimensional data (\texttt{highd\_data}), NLDR data (\texttt{nldr\_data}), high-dimensional model data (\texttt{model\_highd}), \(2\text{-}D\) model data (\texttt{model\_2d}), and model error (\texttt{error\_data}).
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a \texttt{type} variable for distinguishing between them.
 
@@ -698,7 +698,7 @@ df_exe <- comb_all_data_model_error(
   )
 \end{verbatim}
 
-The function \texttt{show\_error\_link\_plots()} generates three side-by-side, interactively linked plots; a error distribution, a \(2-\text{D}\) NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the \texttt{langevitour} package), displaying both the data and the model. The function takes the output from \texttt{comb\_all\_data\_model\_error()} (\texttt{point\_data}) and \texttt{edge\_data} which defines connections between neighboring bins.
+The function \texttt{show\_error\_link\_plots()} generates three side-by-side, interactively linked plots; a error distribution, a \(2\text{-}D\) NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the \texttt{langevitour} package), displaying both the data and the model. The function takes the output from \texttt{comb\_all\_data\_model\_error()} (\texttt{point\_data}) and \texttt{edge\_data} which defines connections between neighboring bins.
 
 These two views are linked using \texttt{crosstalk}, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the high-dimensional projection. This setup facilitates the diagnosis of local distortion, structural artifacts, and model fit quality.
 
@@ -718,7 +718,7 @@ errornldrdt_link
 
 \section{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
-Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2-\text{D}\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2\text{-}D\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
 \section{Application}\label{application}
 
@@ -726,7 +726,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to \emph{illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data}.
 
-Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \ref{fig:limb-rmse} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better \(2-\text{D}\) layout.
+Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \ref{fig:limb-rmse} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better \(2\text{-}D\) layout.
 
 \begin{verbatim}
 design <- gen_design(n_right = 6, ncol_right = 2)
@@ -746,11 +746,11 @@ plot_rmse_layouts(plots = list(error_plot_limb, nldr1,
 
 \section{Discussion}\label{discussion}
 
-The \texttt{quollr} package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in \(2-\text{D}\) and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a \(2-\text{D}\) layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate \(2-\text{D}\) representations.
+The \texttt{quollr} package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in \(2\text{-}D\) and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a \(2\text{-}D\) layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate \(2\text{-}D\) representations.
 
 In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, \texttt{quollr} provides a quantitative route for evaluation. It enables the computation of RMSE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualisations using the \texttt{langevitour} package, allowing users to inspect where the model fits well and where it does not.
 
-To support efficient computation, particularly for large-scale datasets, several core functions in \texttt{quollr} are implemented in C++ using \texttt{Rcpp} and \texttt{RcppArmadillo}. These include functions for computing Euclidean distances in high-dimensional and \(2-\text{D}\) space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, \texttt{compute\_highd\_dist()} accelerates nearest neighbor lookup in high-dimensional space, \texttt{compute\_errors()} calculates RMSE and total absolute error efficiently, and \texttt{calc\_2d\_dist\_cpp()} speeds up distance calculations in \(2-\text{D}\). Additionally, \texttt{gen\_hex\_coord\_cpp()} constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
+To support efficient computation, particularly for large-scale datasets, several core functions in \texttt{quollr} are implemented in C++ using \texttt{Rcpp} and \texttt{RcppArmadillo}. These include functions for computing Euclidean distances in high-dimensional and \(2\text{-}D\) space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, \texttt{compute\_highd\_dist()} accelerates nearest neighbor lookup in high-dimensional space, \texttt{compute\_errors()} calculates RMSE and total absolute error efficiently, and \texttt{calc\_2d\_dist\_cpp()} speeds up distance calculations in \(2\text{-}D\). Additionally, \texttt{gen\_hex\_coord\_cpp()} constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
 
 The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function \texttt{fit\_highd\_model()} for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
 

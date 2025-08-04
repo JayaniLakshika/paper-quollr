@@ -1,4 +1,4 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{24}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -34,6 +34,11 @@ G.~Cs\'ardi.
 \newblock \emph{cli: Helpers for Developing Command Line Interfaces}, 2025.
 \newblock URL \url{https://CRAN.R-project.org/package=cli}.
 \newblock R package version 3.6.4.
+
+\bibitem[Gamage et~al.(2025)Gamage, Cook, Harrison, Lydeamore, and Talagala]{gamage2025c}
+J.~P. Gamage, D.~Cook, P.~Harrison, M.~Lydeamore, and T.~S. Talagala.
+\newblock Stop lying to me: New visual tools to choose the most honest nonlinear dimension reduction, 2025.
+\newblock URL \url{https://arxiv.org/abs/2506.22051}.
 
 \bibitem[Gebhardt et~al.(2024)Gebhardt, Bivand, and Sinclair]{albrecht2024}
 A.~Gebhardt, R.~Bivand, and D.~Sinclair.

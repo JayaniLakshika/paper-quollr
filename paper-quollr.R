@@ -97,7 +97,7 @@ scurve_model_obj <- fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 5)
+  benchmark_highdens = 1)
 
 scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
 tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
