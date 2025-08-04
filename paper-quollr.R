@@ -933,7 +933,7 @@ trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12
 nldr4 <- trimap_limb |>
   ggplot(aes(x = emb1,
              y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#377eb8') +
+  geom_point(alpha=0.1, size=1, colour='#984ea3') +
   interior_annotation("d")
 
 pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
@@ -989,7 +989,7 @@ error_limb <- error_limb |>
 
 error_plot_limb <- plot_rmse(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
-  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#377eb8','#4daf4a','#ff7f00','#984ea3','#f781bf')) 
+  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
 
 
 
@@ -1016,7 +1016,7 @@ tsne_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 5)
+  benchmark_highdens = 0)
 
 df_bin_centroids_limb <- tsne_limb_obj$model_2d
 df_bin_limb <- tsne_limb_obj$model_highd
@@ -1190,7 +1190,7 @@ tsne_best_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb2, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 1)
+  benchmark_highdens = 0)
 
 df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
 df_bin_limb <- tsne_best_limb_obj$model_highd
