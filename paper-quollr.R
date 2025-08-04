@@ -467,7 +467,7 @@ scurve_umap_plt + hex_grid_poly_scurve +
 #   nldr_data = scurve_umap,
 #   b1 = 15,
 #   q = 0.1,
-#   benchmark_highdens = 5)
+#   benchmark_highdens = 1)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -731,11 +731,11 @@ find_low_dens_hex(
 
 ## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(n_h > 10)
+  dplyr::filter(n_h > 1)
 
 trimesh <- trimesh |>
-  dplyr::filter(from_count > 10,
-                to_count > 10)
+  dplyr::filter(from_count > 1,
+                to_count > 1)
 
 trimesh <- update_trimesh_index(trimesh)
 

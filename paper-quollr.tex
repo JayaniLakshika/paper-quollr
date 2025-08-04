@@ -58,7 +58,7 @@ fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 5)
+  benchmark_highdens = 1)
 \end{verbatim}
 
 \subsubsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
@@ -410,11 +410,11 @@ For simplicity, we remove low-density hexagons using a threshold of \(10\).
 
 \begin{verbatim}
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(n_h > 10)
+  dplyr::filter(n_h > 1)
 
 trimesh <- trimesh |>
-  dplyr::filter(from_count > 10,
-                to_count > 10)
+  dplyr::filter(from_count > 1,
+                to_count > 1)
 
 trimesh <- update_trimesh_index(trimesh)
 \end{verbatim}
@@ -465,11 +465,11 @@ head(predict_data, 5)
 > # A tibble: 5 x 4
 >   pred_emb_1 pred_emb_2    ID pred_h
 >        <dbl>      <dbl> <int>  <int>
-> 1         NA         NA     1    215
-> 2         NA         NA     2    145
-> 3         NA         NA     3    116
-> 4         NA         NA     4    229
-> 5         NA         NA     5    229
+> 1      0.234      0.896     1    215
+> 2      0.692      0.534     2    145
+> 3      0.776      0.390     3    116
+> 4      0.192      0.968     4    229
+> 5      0.192      0.968     5    229
 \end{verbatim}
 
 \subsubsection{Compute residuals and Root Mean Square Error (RMSE)}\label{compute-residuals-and-root-mean-square-error-rmse}
