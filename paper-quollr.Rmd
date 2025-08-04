@@ -148,7 +148,7 @@ Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochast
 This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
 ```{r}
-clr_choice <- "#bcbddc"
+clr_choice <- "#66B2CC"
 
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 

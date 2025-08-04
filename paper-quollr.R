@@ -90,7 +90,7 @@ source("scripts/additional_functions.R")
 
 
 ## -----------------------------------------------------------------------------
-clr_choice <- "#bcbddc"
+clr_choice <- "#66B2CC"
 
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 
