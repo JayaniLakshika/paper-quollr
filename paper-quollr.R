@@ -113,8 +113,8 @@ hex_grid_with_counts_scurve <- left_join(
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
   filter(h %in% df_bin_centroids_scurve$h)
 
-sc_xlims <- c(-0.15, 1.15)
-sc_ylims <- c(-0.14, 1.05)
+sc_xlims <- c(-0.25, 1.25)
+sc_ylims <- c(-0.25, 1.25)
 
 scurve_umap_plt <- ggplot(
   scurve_umap_scaled, 
@@ -171,7 +171,7 @@ hex_centroids_scurve <- ggplot(
                fill = "#ffffff")  +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c") +
+             size = 1, color = "#FF7755") +
   interior_annotation("c") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
@@ -199,7 +199,7 @@ wireframe_scurve <- ggplot() +
                colour = "#000000") +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c") +
+             size = 1, color = "#FF7755") +
   interior_annotation("d") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
@@ -233,7 +233,7 @@ hex_grid_scurve <- ggplot(
                colour = "#000000") +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
-             size = 1, color = "#33a02c")
+             size = 1, color = "#FF7755")
 
 hex_grid_scurve_int <- ggplotly(hex_grid_scurve, 
                                 width = "350", 
@@ -267,7 +267,7 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          lineTo = tr_from_to_df_scurve$to,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
-                         levelColors = c(clr_choice, "#33a02c"),
+                         levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
                          width = "421px", height = "421px")
 
@@ -276,7 +276,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
                          lineTo = tr_from_to_df_scurve$to,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
-                         levelColors = c(clr_choice, "#33a02c"),
+                         levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
                          width = "300px", height = "300px")
 
