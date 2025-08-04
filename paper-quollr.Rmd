@@ -166,10 +166,10 @@ counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
 
 hex_grid_with_counts_scurve <- left_join(
   hex_grid_scurve, counts_df_scurve, 
-  by = c("hex_poly_id" = "h"))
+  by = c("h" = "h"))
 
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
-  filter(hex_poly_id %in% df_bin_centroids_scurve$h)
+  filter(h %in% df_bin_centroids_scurve$h)
 
 sc_xlims <- c(-0.15, 1.15)
 sc_ylims <- c(-0.14, 1.05)
@@ -199,7 +199,7 @@ hex_grid_poly_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
   geom_polygon(color = "grey70", 
-               aes(group = hex_poly_id), 
+               aes(group = h), 
                fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
@@ -225,7 +225,7 @@ hex_centroids_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
   geom_polygon(color = "grey70", 
-               aes(group = hex_poly_id), 
+               aes(group = h), 
                fill = "#ffffff")  +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
@@ -532,7 +532,7 @@ scurve_umap_plt + hex_grid_poly_scurve +
 The development version can be installed from GitHub:
 
 ```r
-devtools::install_github("JayaniLakshika/quollr")
+pak::pak("JayaniLakshika/quollr")
 ```
 
 ## Usage
@@ -617,7 +617,7 @@ all_centroids_df_temp <- hb_obj_notation$centroids
 hex_grid_temp <- hb_obj_notation$hex_poly
 
 hex_grid_temp45 <- hex_grid_temp |> 
-  filter(hex_poly_id == 45)
+  filter(h == 45)
 
 start_pt <- all_centroids_df_temp |> 
   filter(h == 1)
@@ -651,7 +651,7 @@ hex_param_vis <- ggplot() +
     geom_polygon(data = hex_grid_temp, 
                         aes(x = x, 
                             y = y, 
-                            group = hex_poly_id),
+                            group = h),
                  fill = "white", 
                  color = "#bdbdbd") +
     geom_point(data = all_centroids_df_temp, aes(
@@ -791,7 +791,7 @@ Two derived constants are calculated to define the relative distances to the ver
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (`x_add_factor` and `y_add_factor`) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
-For each centroid, six vertices are computed and assigned a polygon ID (`hex_poly_id`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`hex_poly_id`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
+For each centroid, six vertices are computed and assigned a polygon ID (`h`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`h`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
 To reduce computational overhead, the geometry calculations are implemented in C++ using `gen_hex_coord_cpp()`, which returns a `data.frame` of vertex coordinates.
 
@@ -904,7 +904,7 @@ The `find_low_dens_hex()` function identifies hexagons with low point densities,
 
 ```{r, echo=TRUE}
 find_low_dens_hex(
-  centroids_data = df_bin_centroids, 
+  model_2d = df_bin_centroids, 
   b1 = 15, 
   benchmark_mean_dens = 0.05
 )
@@ -1130,7 +1130,8 @@ The function `show_link_plots()` generates two side-by-side, interactively linke
 
 These two views are linked using `crosstalk`, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the `langevitour` output. 
 
-```{r linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"}
+```{r linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."}
+
 nldrdt_link <- show_link_plots(
   point_data = df_exe, 
   edge_data = trimesh, 
@@ -1486,7 +1487,7 @@ trimesh_limb_int <- ggplotly(trimesh_limb,
 # hex_grid <- tsne_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("h" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
 #   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +

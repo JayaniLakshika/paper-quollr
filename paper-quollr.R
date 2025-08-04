@@ -108,10 +108,10 @@ counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
 
 hex_grid_with_counts_scurve <- left_join(
   hex_grid_scurve, counts_df_scurve, 
-  by = c("hex_poly_id" = "h"))
+  by = c("h" = "h"))
 
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
-  filter(hex_poly_id %in% df_bin_centroids_scurve$h)
+  filter(h %in% df_bin_centroids_scurve$h)
 
 sc_xlims <- c(-0.15, 1.15)
 sc_ylims <- c(-0.14, 1.05)
@@ -141,7 +141,7 @@ hex_grid_poly_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
   geom_polygon(color = "grey70", 
-               aes(group = hex_poly_id), 
+               aes(group = h), 
                fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
@@ -167,7 +167,7 @@ hex_centroids_scurve <- ggplot(
   data = hex_grid_with_counts_scurve, 
   aes(x = x, y = y)) +
   geom_polygon(color = "grey70", 
-               aes(group = hex_poly_id), 
+               aes(group = h), 
                fill = "#ffffff")  +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
@@ -510,7 +510,7 @@ all_centroids_df_temp <- hb_obj_notation$centroids
 hex_grid_temp <- hb_obj_notation$hex_poly
 
 hex_grid_temp45 <- hex_grid_temp |> 
-  filter(hex_poly_id == 45)
+  filter(h == 45)
 
 start_pt <- all_centroids_df_temp |> 
   filter(h == 1)
@@ -544,7 +544,7 @@ hex_param_vis <- ggplot() +
     geom_polygon(data = hex_grid_temp, 
                         aes(x = x, 
                             y = y, 
-                            group = hex_poly_id),
+                            group = h),
                  fill = "white", 
                  color = "#bdbdbd") +
     geom_point(data = all_centroids_df_temp, aes(
@@ -722,7 +722,7 @@ head(trimesh, 5)
 
 ## ----echo=TRUE----------------------------------------------------------------
 find_low_dens_hex(
-  centroids_data = df_bin_centroids, 
+  model_2d = df_bin_centroids, 
   b1 = 15, 
   benchmark_mean_dens = 0.05
 )
@@ -856,7 +856,8 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="jkjio"------
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+# 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh,
@@ -1065,7 +1066,7 @@ trimesh_limb_int <- ggplotly(trimesh_limb,
 # hex_grid <- tsne_limb_obj$hb_obj$hex_poly
 # counts_df <- tsne_limb_obj$hb_obj$std_cts
 # 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
+# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("h" = "h"))
 # 
 # ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
 #   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
