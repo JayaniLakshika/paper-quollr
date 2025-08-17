@@ -840,7 +840,7 @@ df_exe <- comb_data_model(
 #   )
 
 
-## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
 
 scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
@@ -869,8 +869,50 @@ df_exe <- comb_all_data_model(
 # nldrdt_link
 
 
-## ----eval=knitr::is_latex_output()--------------------------------------------
+## -----------------------------------------------------------------------------
+## Create the first row of selection
+scurve_umap_scaled_select1 <- scurve_umap_scaled |>
+  mutate(select_area = if_else(emb1 <= 0.7 & emb1 >= 0.4 & emb2 <= 0.25 & emb2 >= 0, "selected", "deselected"))
 
+scurve_umap_scaled_select1_selected <- scurve_umap_scaled_select1 |>
+  filter(select_area == "selected")
+
+scurve_umap_scaled_select1_deselected <- scurve_umap_scaled_select1 |>
+  filter(select_area == "deselected")
+
+scurve_umap_plt_select1 <- ggplot(
+  scurve_umap_scaled_select1_deselected, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  geom_point(data = scurve_umap_scaled_select1_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
+  interior_annotation("a1") +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+## Create the second row of selection
+scurve_umap_scaled_select2 <- scurve_umap_scaled |>
+  mutate(select_area = if_else(emb1 <= 0.55 & emb1 >= 0.25 & emb2 <= 1.25 & emb2 >= 0.75, "selected", "deselected"))
+
+scurve_umap_scaled_select2_selected <- scurve_umap_scaled_select2 |>
+  filter(select_area == "selected")
+
+scurve_umap_scaled_select2_deselected <- scurve_umap_scaled_select2 |>
+  filter(select_area == "deselected")
+
+scurve_umap_plt_select2 <- ggplot(
+  scurve_umap_scaled_select2_deselected, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  geom_point(data = scurve_umap_scaled_select2_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
+  interior_annotation("b1") +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+
+## ----eval=knitr::is_latex_output(), fig.pos='H'-------------------------------
+scurve_umap_plt_select1 + scurve_umap_plt_select1 +
+  scurve_umap_plt_select2 + scurve_umap_plt_select1 +
+  plot_layout(ncol = 2)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
