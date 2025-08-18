@@ -840,7 +840,7 @@ df_exe <- comb_data_model(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
 # 
 # show_langevitour(
 #   point_data = df_exe,
@@ -1109,7 +1109,7 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
         legend.position = "none")
 
 
-## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP."----
+## ----eval=knitr::is_latex_output(), fig.pos='H', fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP."----
 
 scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
   scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +
@@ -1208,7 +1208,7 @@ error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected,
         aspect.ratio = 1)
 
 
-## ----eval=knitr::is_latex_output(), fig.pos="H", fig.cap="Exploring residuals in relation to UMAP layouts using a $7\\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure."----
+## ----eval=knitr::is_latex_output(), fig.pos="H", fig.width=15, fig.height=10, fig.cap="Exploring residuals in relation to UMAP layouts using a $7\\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure."----
 
 error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_selected1_dp +
   error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_proj_umap_model1_selected2_dp +
