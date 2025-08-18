@@ -113,14 +113,14 @@ hex_grid_with_counts_scurve <- left_join(
 hex_grid_nonempty_scurve <- hex_grid_scurve |>
   filter(h %in% df_bin_centroids_scurve$h)
 
-sc_xlims <- c(-0.25, 1.25)
-sc_ylims <- c(-0.25, 1.25)
+sc_xlims <- c(-0.25, 1.35)
+sc_ylims <- c(-0.25, 1.35)
 
 scurve_umap_plt <- ggplot(
   scurve_umap_scaled, 
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
-  interior_annotation("a") +
+  interior_annotation("a", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -146,7 +146,7 @@ hex_grid_poly_scurve <- ggplot(
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
              alpha = 0.2, size = 0.5, color = clr_choice) + 
-  interior_annotation("b") +
+  interior_annotation("b", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -172,7 +172,7 @@ hex_centroids_scurve <- ggplot(
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("c") +
+  interior_annotation("c", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -200,7 +200,7 @@ wireframe_scurve <- ggplot() +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("d") +
+  interior_annotation("d", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -348,7 +348,15 @@ scurve_proj_umap_model1 <- plot_proj(
   plot_limits = c(-0.35, 0.35), 
   axis_text_size = 3,
   is_category = FALSE) +
-  interior_annotation(label = "a1", cex = 1) 
+  interior_annotation(label = "a1", cex = 1)
+
+scurve_proj_umap_model1_dp <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.2, 0, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 7,
+  is_category = FALSE) +
+  interior_annotation(label = "e", cex = 3)
 
 ## Second projection
 
@@ -457,7 +465,7 @@ hex_grid_scurve + wrap_plots(
 
 scurve_umap_plt + hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
-  scurve_proj_umap_model1 +
+  scurve_proj_umap_model1_dp +
   plot_layout(ncol = 5)
 
 
