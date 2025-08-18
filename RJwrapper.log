@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  18 AUG 2025 12:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  18 AUG 2025 12:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -913,12 +913,12 @@ Overfull \hbox (36.27023pt too wide) in paragraph at lines 725--726
 
 
 [14 <./paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>]
-<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=230, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=231, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 744.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=231, 1082.0425pt x 720.6925pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=232, 1082.0425pt x 720.6925pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 748.
@@ -969,10 +969,10 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1301b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (19 pages, 2308933 bytes).
+Output written on RJwrapper.pdf (19 pages, 2318573 bytes).
 PDF statistics:
- 462 PDF objects out of 1000 (max. 8388607)
- 393 compressed objects within 4 object streams
+ 463 PDF objects out of 1000 (max. 8388607)
+ 394 compressed objects within 4 object streams
  63 named destinations out of 1000 (max. 500000)
  75402 words of extra memory for PDF output out of 89155 (max. 10000000)
 
