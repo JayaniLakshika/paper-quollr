@@ -1118,7 +1118,8 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap=""----------------------
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+# 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
 #   edge_data = trimesh,
@@ -1663,7 +1664,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 
 
 
-## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\ref{fig:limb-rmse}b) and the $2-\\text{D}$ layout selected (Figure \\ref{fig:limb-rmse}f) by RMSE plot (Figure \\ref{fig:limb-rmse}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
+## ----model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\ref{fig:limb-rmse}b) and the $2-\\text{D}$ layout selected (Figure \\ref{fig:limb-rmse}f) by RMSE plot (Figure \\ref{fig:limb-rmse}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
@@ -1671,7 +1672,7 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 
 
-## ----model-limb-html, eval=knitr::is_html_output(), fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different (hyper)parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."----
+## ----model-limb-html, eval=knitr::is_html_output(), fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rmse) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rmse) f) by RMSE plot (Figure \\@ref(fig:limb-rmse)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."----
 # 
 # 
 # modellimbfig <- htmltools::div(
