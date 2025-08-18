@@ -346,7 +346,7 @@ scurve_proj_umap_model1 <- plot_proj(
   proj_obj = proj_obj1,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
   plot_limits = c(-0.35, 0.35), 
-  axis_text_size = 3,
+  axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a1", cex = 1)
 
@@ -379,7 +379,7 @@ scurve_proj_umap_model2 <- plot_proj(
   proj_obj = proj_obj2,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
   plot_limits = c(-0.35, 0.35), 
-  axis_text_size = 3,
+  axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a2", cex = 1) 
 
@@ -404,7 +404,7 @@ scurve_proj_umap_model3 <- plot_proj(
   proj_obj = proj_obj3,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
   plot_limits = c(-0.35, 0.35), 
-  axis_text_size = 3,
+  axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a3", cex = 1) 
 
@@ -429,7 +429,7 @@ scurve_proj_umap_model4 <- plot_proj(
   proj_obj = proj_obj4,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
   plot_limits = c(-0.35, 0.35), 
-  axis_text_size = 3,
+  axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a4", cex = 1) 
 
