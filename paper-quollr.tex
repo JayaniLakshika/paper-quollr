@@ -718,6 +718,8 @@ class(errornldrdt_link) <- c(class(errornldrdt_link), "htmlwidget")
 errornldrdt_link
 \end{verbatim}
 
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1}
+
 \section{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2\text{-}D\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.

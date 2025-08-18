@@ -937,8 +937,79 @@ df_exe <- comb_all_data_model_error(
 # errornldrdt_link
 
 
-## ----eval=knitr::is_latex_output()--------------------------------------------
+## -----------------------------------------------------------------------------
+model_error <- model_error |>
+  bind_cols(scurve_umap_scaled |>
+              select(-ID))
 
+model_error <- model_error |>
+  mutate(sqrt_row_wise_total_error = sqrt(row_wise_total_error))
+
+# Compute density
+density_data <- density(model_error$sqrt_row_wise_total_error)
+density_df <- data.frame(x = density_data$x, y = density_data$y)
+
+# Add density values to the original dataset
+model_error <- model_error |>
+  mutate(density = approx(density_df$x, density_df$y, xout = sqrt_row_wise_total_error)$y)
+
+## Create the first row of selection
+model_error_select1 <- model_error |>
+  mutate(select_area = if_else(emb1 <= 0.7 & emb1 >= 0.4 & emb2 <= 0.25 & emb2 >= 0, "selected", "deselected"))
+
+model_error_select1_selected <- model_error_select1 |>
+  filter(select_area == "selected")
+
+model_error_select1_deselected <- model_error_select1 |>
+  filter(select_area == "deselected")
+
+error_plot_scurve_hist1 <- ggplot(model_error_select1_deselected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density)) +
+  geom_point(alpha=0.7, colour = "#d9d9d9") +
+  geom_point(data = model_error_select1_selected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density),
+      alpha=0.7, colour = "#756bb1", size = 3) +
+  xlab(paste("residual")) +
+  ylab("") +
+  interior_annotation("a1") +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        aspect.ratio = 1)
+
+## Create the second row of selection
+model_error_select2 <- model_error |>
+  mutate(select_area = if_else(emb1 <= 0.55 & emb1 >= 0.25 & emb2 <= 1.25 & emb2 >= 0.75, "selected", "deselected"))
+
+model_error_select2_selected <- model_error_select2 |>
+  filter(select_area == "selected")
+
+model_error_select2_deselected <- model_error_select2 |>
+  filter(select_area == "deselected")
+
+error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density)) +
+  geom_point(alpha=0.7, colour = "#d9d9d9") +
+  geom_point(data = model_error_select2_selected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density),
+      alpha=0.7, colour = "#756bb1", size = 3) +
+  xlab(paste("residual")) +
+  ylab("") +
+  interior_annotation("b1") +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        aspect.ratio = 1)
+
+
+## ----eval=knitr::is_latex_output()--------------------------------------------
+error_plot_scurve_hist1 + scurve_umap_plt_select1 + scurve_umap_plt_select1 +
+  error_plot_scurve_hist2 + scurve_umap_plt_select2 + scurve_umap_plt_select1 +
+  plot_layout(ncol = 3)
 
 
 ## -----------------------------------------------------------------------------
