@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  18 AUG 2025 13:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  18 AUG 2025 14:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -890,11 +890,11 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf 
 [13]
 
 [14 <./paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf, id=212, 983.675pt x 710.655pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf, id=212, 946.53625pt x 708.6475pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf  used on input line 724.
-(pdftex.def)             Requested size: 398.33858pt x 287.78116pt.
+(pdftex.def)             Requested size: 398.33858pt x 298.22464pt.
 
 Overfull \hbox (36.27023pt too wide) in paragraph at lines 729--730
 \OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
@@ -959,7 +959,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1301b,951s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2276318 bytes).
+Output written on RJwrapper.pdf (20 pages, 2275943 bytes).
 PDF statistics:
  469 PDF objects out of 1000 (max. 8388607)
  399 compressed objects within 4 object streams

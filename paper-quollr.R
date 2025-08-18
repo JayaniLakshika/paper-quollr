@@ -897,10 +897,10 @@ scurve_umap_plt_select1 <- ggplot(
   ylim(sc_ylims)
 
 scurve_umap_plt_select1_lk <- scurve_umap_plt_select1 +
-  interior_annotation("a1")
+  interior_annotation("a1", cex = 3)
 
 scurve_umap_plt_select1_lk2 <- scurve_umap_plt_select1 +
-  interior_annotation("a2") 
+  interior_annotation("a2", cex = 3) 
 
 proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select1$select_area,
                                  levels=c("deselected", "selected"))
@@ -941,13 +941,13 @@ scurve_proj_umap_model1_selected1 <- ggplot() +
           aes(x=x2, y=y2),
           label=rownames(axes),
           colour="grey50",
-          size = 2.5) +
+          size = 5) +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
         xlim(c(-0.35, 0.35)) +
         ylim(c(-0.35, 0.35)) +
-  interior_annotation(label = "a2", cex = 1) +
+  interior_annotation(label = "a2", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
   theme(aspect.ratio = 1,
@@ -981,13 +981,13 @@ scurve_proj_umap_model1_selected1_dp <- ggplot() +
           aes(x=x2, y=y2),
           label=rownames(axes),
           colour="grey50",
-          size = 2) +
+          size = 5) +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
         xlim(c(-0.35, 0.35)) +
         ylim(c(-0.35, 0.35)) +
-  interior_annotation(label = "a3", cex = 1) +
+  interior_annotation(label = "a3", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
   theme(aspect.ratio = 1,
@@ -1012,10 +1012,10 @@ scurve_umap_plt_select2 <- ggplot(
   ylim(sc_ylims)
 
 scurve_umap_plt_select2_lk <- scurve_umap_plt_select2 +
-    interior_annotation("b1") 
+    interior_annotation("b1", cex = 3) 
 
 scurve_umap_plt_select2_lk2 <- scurve_umap_plt_select2 +
-    interior_annotation("b2") 
+    interior_annotation("b2", cex = 3) 
 
 proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select2$select_area,
                                  levels=c("deselected", "selected"))
@@ -1056,13 +1056,13 @@ scurve_proj_umap_model1_selected2 <- ggplot() +
           aes(x=x2, y=y2),
           label=rownames(axes),
           colour="grey50",
-          size = 2.5) +
+          size = 5) +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
         xlim(c(-0.35, 0.35)) +
         ylim(c(-0.35, 0.35)) +
-  interior_annotation(label = "b2", cex = 1) +
+  interior_annotation(label = "b2", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
   theme(aspect.ratio = 1,
@@ -1096,13 +1096,13 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
           aes(x=x2, y=y2),
           label=rownames(axes),
           colour="grey50",
-          size = 2) +
+          size = 5) +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
         xlim(c(-0.35, 0.35)) +
         ylim(c(-0.35, 0.35)) +
-  interior_annotation(label = "b3", cex = 1) +
+  interior_annotation(label = "b3", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
   theme(aspect.ratio = 1,
@@ -1175,9 +1175,11 @@ error_plot_scurve_hist1 <- ggplot(model_error_select1_deselected,
       alpha=0.7, colour = "#756bb1", size = 3) +
   xlab(paste("residual")) +
   ylab("") +
-  interior_annotation("a1") +
+  interior_annotation("a1", cex = 3) +
   theme_bw() +
   theme(axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
         axis.text.y = element_blank(),
         aspect.ratio = 1)
 
@@ -1201,9 +1203,11 @@ error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected,
       alpha=0.7, colour = "#756bb1", size = 3) +
   xlab(paste("residual")) +
   ylab("") +
-  interior_annotation("b1") +
+  interior_annotation("b1", cex = 3) +
   theme_bw() +
   theme(axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
         axis.text.y = element_blank(),
         aspect.ratio = 1)
 
