@@ -535,9 +535,9 @@ head(model_error, 5)
 > #   abs_error_x3 <dbl>, abs_error_x4 <dbl>, abs_error_x5 <dbl>, ...
 \end{verbatim}
 
-\subsubsection{Visualisations}\label{visualisations}
+\subsubsection{Visualizations}\label{visualizations}
 
-The package offers several \(2\text{-}D\) visualisations, including:
+The package offers several \(2\text{-}D\) visualizations, including:
 
 \begin{itemize}
 \tightlist
@@ -557,7 +557,7 @@ The generated \(p\text{-}D\) model, overlaid with the data, can also be visualiz
 
 Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \texttt{show\_error\_link\_plots}, which are designed to help diagnose the model.
 
-Each visualisation can be generated using its respective function, as described in this section.
+Each visualization can be generated using its respective function, as described in this section.
 
 \paragraph{Hexagonal grid}\label{hexagonal-grid}
 
@@ -616,9 +616,9 @@ data_triangulation_grid <- ggplot() +
 \caption{The outputs of `geom\_hexgrid` and `geom\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.}\label{fig:geom-outputs-pdf}
 \end{figure}
 
-\paragraph{\texorpdfstring{\(p\text{-}D\) model visualisation}{p\textbackslash text\{-\}D model visualisation}}\label{ptext-d-model-visualisation}
+\paragraph{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
-To evaluate how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a visualisation using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} package.
+To evaluate how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a visualization using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} package.
 
 Before plotting, the data needs to be organized into a combined format through the \texttt{comb\_data\_model()} function. This function takes three inputs: \texttt{highd\_data} (the high-dimensional observations), \texttt{model\_highd} (high-dimensional summaries for each bin), and \texttt{model\_2d} (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
@@ -632,9 +632,9 @@ df_exe <- comb_data_model(
   )
 \end{verbatim}
 
-The \texttt{show\_langevitour()} function then renders the visualisation using the \texttt{langevitour} interface, displaying both types of points in a dynamic tour. The \texttt{edge\_data} input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model's structure.
+The \texttt{show\_langevitour()} function then renders the visualization using the \texttt{langevitour} interface, displaying both types of points in a dynamic tour. The \texttt{edge\_data} input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model's structure.
 
-In the resulting interactive visualisation black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \(2\text{-}D\) wireframe structure mapped back to high-dimensional space.
+In the resulting interactive visualization black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \(2\text{-}D\) wireframe structure mapped back to high-dimensional space.
 
 \begin{verbatim}
 show_langevitour(
@@ -651,9 +651,9 @@ show_langevitour(
 
 There are mainly two interactive link plots can be generated.
 
-To support interactive evaluation of how well the \(p\text{-}D\) model captures the structure of the high-dimensional data, we introduce \texttt{show\_link\_plots()}. This visualisation combines two complementary views: the nonlinear dimension reduction (NLDR) representation and a dynamic tour of the model ovelaid the data in the high-dimensional space. Both views are interactively linked, enabling users to explore.
+To support interactive evaluation of how well the \(p\text{-}D\) model captures the structure of the high-dimensional data, we introduce \texttt{show\_link\_plots()}. This visualization combines two complementary views: the nonlinear dimension reduction (NLDR) representation and a dynamic tour of the model ovelaid the data in the high-dimensional space. Both views are interactively linked, enabling users to explore.
 
-Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model()} function. This function combines the high-dimensional data (\texttt{highd\_data}), the NLDR data (\texttt{nldr\_data}), and the bin-averaged high-dimensional model representation (\texttt{model\_highd}) aligned to the \(2\text{-}D\) bin layout (\texttt{model\_2d}):
+Before visualization, the input data must be prepared using the \texttt{comb\_all\_data\_model()} function. This function combines the high-dimensional data (\texttt{highd\_data}), the NLDR data (\texttt{nldr\_data}), and the bin-averaged high-dimensional model representation (\texttt{model\_highd}) aligned to the \(2\text{-}D\) bin layout (\texttt{model\_2d}):
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a \texttt{type} variable for distinguishing between them.
 
@@ -688,7 +688,7 @@ nldrdt_link
 
 \texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern.
 
-Before visualisation, the input data must be prepared using the \texttt{comb\_all\_data\_model\_error()} function. The function requires several arguments: points data which contain high-dimensional data (\texttt{highd\_data}), NLDR data (\texttt{nldr\_data}), high-dimensional model data (\texttt{model\_highd}), \(2\text{-}D\) model data (\texttt{model\_2d}), and model error (\texttt{error\_data}).
+Before visualization, the input data must be prepared using the \texttt{comb\_all\_data\_model\_error()} function. The function requires several arguments: points data which contain high-dimensional data (\texttt{highd\_data}), NLDR data (\texttt{nldr\_data}), high-dimensional model data (\texttt{model\_highd}), \(2\text{-}D\) model data (\texttt{model\_2d}), and model error (\texttt{error\_data}).
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a \texttt{type} variable for distinguishing between them.
 
@@ -756,7 +756,7 @@ plot_rmse_layouts(plots = list(error_plot_limb, nldr1,
 
 The \texttt{quollr} package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in \(2\text{-}D\) and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a \(2\text{-}D\) layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate \(2\text{-}D\) representations.
 
-In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, \texttt{quollr} provides a quantitative route for evaluation. It enables the computation of RMSE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualisations using the \texttt{langevitour} package, allowing users to inspect where the model fits well and where it does not.
+In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, \texttt{quollr} provides a quantitative route for evaluation. It enables the computation of RMSE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the \texttt{langevitour} package, allowing users to inspect where the model fits well and where it does not.
 
 To support efficient computation, particularly for large-scale datasets, several core functions in \texttt{quollr} are implemented in C++ using \texttt{Rcpp} and \texttt{RcppArmadillo}. These include functions for computing Euclidean distances in high-dimensional and \(2\text{-}D\) space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, \texttt{compute\_highd\_dist()} accelerates nearest neighbor lookup in high-dimensional space, \texttt{compute\_errors()} calculates RMSE and total absolute error efficiently, and \texttt{calc\_2d\_dist\_cpp()} speeds up distance calculations in \(2\text{-}D\). Additionally, \texttt{gen\_hex\_coord\_cpp()} constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
 
