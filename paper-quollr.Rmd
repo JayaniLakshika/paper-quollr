@@ -1159,9 +1159,14 @@ scurve_umap_plt_select1 <- ggplot(
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
   geom_point(data = scurve_umap_scaled_select1_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
-  interior_annotation("a1") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
+
+scurve_umap_plt_select1_lk <- scurve_umap_plt_select1 +
+  interior_annotation("a1")
+
+scurve_umap_plt_select1_lk2 <- scurve_umap_plt_select1 +
+  interior_annotation("a2") 
 
 ## Create the second row of selection
 scurve_umap_scaled_select2 <- scurve_umap_scaled |>
@@ -1178,14 +1183,19 @@ scurve_umap_plt_select2 <- ggplot(
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
   geom_point(data = scurve_umap_scaled_select2_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
-  interior_annotation("b1") +
   xlim(sc_xlims) +
   ylim(sc_ylims)
+
+scurve_umap_plt_select2_lk <- scurve_umap_plt_select2 +
+    interior_annotation("b1") 
+
+scurve_umap_plt_select2_lk2 <- scurve_umap_plt_select2 +
+    interior_annotation("b2") 
 ```
 
 ```{r, eval=knitr::is_latex_output(), fig.pos='H'}
-scurve_umap_plt_select1 + scurve_umap_plt_select1 +
-  scurve_umap_plt_select2 + scurve_umap_plt_select1 +
+scurve_umap_plt_select1_lk + scurve_umap_plt_select1 +
+  scurve_umap_plt_select2_lk + scurve_umap_plt_select1 +
   plot_layout(ncol = 2)
 ```
 
@@ -1293,8 +1303,8 @@ error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected,
 ```
 
 ```{r, eval=knitr::is_latex_output()}
-error_plot_scurve_hist1 + scurve_umap_plt_select1 + scurve_umap_plt_select1 +
-  error_plot_scurve_hist2 + scurve_umap_plt_select2 + scurve_umap_plt_select1 +
+error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_umap_plt_select1 +
+  error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_umap_plt_select1 +
   plot_layout(ncol = 3)
 ```
 
