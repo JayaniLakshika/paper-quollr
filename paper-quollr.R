@@ -894,6 +894,57 @@ scurve_umap_plt_select1_lk <- scurve_umap_plt_select1 +
 scurve_umap_plt_select1_lk2 <- scurve_umap_plt_select1 +
   interior_annotation("a2") 
 
+proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select1$select_area,
+                                 levels=c("deselected", "selected"))
+
+projected_df <- proj_obj2$projected_df
+model_df <- proj_obj2$model_df
+axes <- proj_obj2$axes
+circle <- proj_obj2$circle
+
+projected_df <- projected_df |>
+  dplyr::mutate(cluster = proj_obj2$cluster)
+
+scurve_proj_umap_model1_selected1 <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.8,
+        alpha = 0.4) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 2.5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.35, 0.35)) +
+        ylim(c(-0.35, 0.35)) +
+  interior_annotation(label = "a2", cex = 1) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+
 ## Create the second row of selection
 scurve_umap_scaled_select2 <- scurve_umap_scaled |>
   mutate(select_area = if_else(emb1 <= 0.55 & emb1 >= 0.25 & emb2 <= 1.25 & emb2 >= 0.75, "selected", "deselected"))
@@ -918,10 +969,61 @@ scurve_umap_plt_select2_lk <- scurve_umap_plt_select2 +
 scurve_umap_plt_select2_lk2 <- scurve_umap_plt_select2 +
     interior_annotation("b2") 
 
+proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select2$select_area,
+                                 levels=c("deselected", "selected"))
+
+projected_df <- proj_obj2$projected_df
+model_df <- proj_obj2$model_df
+axes <- proj_obj2$axes
+circle <- proj_obj2$circle
+
+projected_df <- projected_df |>
+  dplyr::mutate(cluster = proj_obj2$cluster)
+
+scurve_proj_umap_model1_selected2 <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.8,
+        alpha = 0.4) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 2.5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.35, 0.35)) +
+        ylim(c(-0.35, 0.35)) +
+  interior_annotation(label = "b2", cex = 1) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+
 
 ## ----eval=knitr::is_latex_output(), fig.pos='H'-------------------------------
-scurve_umap_plt_select1_lk + scurve_umap_plt_select1 +
-  scurve_umap_plt_select2_lk + scurve_umap_plt_select1 +
+scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
+  scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +
   plot_layout(ncol = 2)
 
 
