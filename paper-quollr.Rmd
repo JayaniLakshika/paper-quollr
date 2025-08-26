@@ -39,6 +39,8 @@ preamble: >
   \usepackage{amsmath}
   \usepackage{array}
   \usepackage{float}
+  \newcommand{\pD}{$p\text{-}D$}
+  \newcommand{\twoD}{$2\text{-}D$}
 output: 
  rjtools::rjournal_article:
     keep_md: true
@@ -58,13 +60,6 @@ knitr::opts_chunk$set(
   out.width = "100%")
 
 ```
-
-::: {.hidden}
-$$
-\newcommand{\pD}{$p\text{-}D$}
-\newcommand{\twoD}{$2\text{-}D$}
-$$
-:::
 
 ```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE}
 
