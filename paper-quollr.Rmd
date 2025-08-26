@@ -59,6 +59,13 @@ knitr::opts_chunk$set(
 
 ```
 
+::: {.hidden}
+$$
+\newcommand{\pD}{$p\text{-}D$}
+\newcommand{\twoD}{$2\text{-}D$}
+$$
+:::
+
 ```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE}
 
 options(repos = c(CRAN = "https://cran.rstudio.com")) # Setup mirror
@@ -143,7 +150,7 @@ source("scripts/additional_functions.R")
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
-Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], create wildly different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
+Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
 This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
@@ -545,9 +552,20 @@ pak::pak("JayaniLakshika/quollr")
 
 ## Usage
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. We also want to load the built-in data sets `scurve` and `scurve_umap`. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout. 
 
-`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from $\theta \sim U(-3\pi/2, 3\pi/2)$, $X_1 = \sin(\theta)$, $X_2 \sim U(0, 2)$ (adding thickness to the S), $X_3 = \text{sign}(\theta) \times (\cos(\theta) - 1)$. The remaining variables $X_4$, $X_5$, $X_6$, $X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors` is $46$ and `min_dist` is $0.9$. Each data set contains a unique ID column that maps `scurve` and `scurve_umap`. 
+`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from 
+
+$$
+\begin{aligned}
+\theta &\sim U(-3\pi/2, 3\pi/2), \\
+X_1 &= \sin(\theta), \\
+X_2 &\sim U(0, 2), \text{adding thickness to the S}, \\
+X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
+\end{aligned}
+$$
+
+The remaining variables $X_4$, $X_5$, $X_6$, $X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding $2\text{-}D$ `scurve_umap`. 
 
 ### Main function
 
@@ -568,11 +586,11 @@ fit_highd_model(
 
 ### Constructing the $2\text{-}D$ Model
 
-Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) Remove low-density hexagons.
+Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
 
 #### Scaling the data
 
-The algorithm starts by scaling the NLDR data to a standard range using the `gen_scaled_data()` function. This function standardizes the data so that the first embedding ranges from $0$ to $1$, while the second embedding scales from $0$ to the maximum value of the second embedding. The output includes the scaled NLDR data along with the original limits of the embeddings.
+The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, x_2]$, where $x_2$ is the maximum value of the second embedding, using the `gen_scaled_data()` function. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
 
 ```{r, echo=TRUE}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
@@ -582,7 +600,7 @@ scurve_umap_obj
 
 #### Computing hexagon grid configurations
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data, the number of bins along the x-axis (`b1`), and the buffer amount as a proportion (`q`).
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts (1) an object containing three elements: the first is the scaled NLDR data with two columns, and the second and third are the limits of the original NLDR data; (2) the number of bins along the x-axis (`b1`), and (3) the buffer amount as a proportion (`q`).
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
@@ -595,7 +613,7 @@ bin_configs
 
 #### Binning the data
 
-Points are allocated to bins based on the nearest centroid. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
@@ -773,7 +791,7 @@ The `gen_centroids()` function calculates the centroids of a hexagonal grid.
 
 The coordinate limits of the embedding (`lim1` and `lim2`) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls `calc_bins_y()`, a helper function that determines the appropriate number of hexagonal rows (`bin2`) and the width of each hexagon (`a1`) given the specified number of bins along the x-axis (`b1`) and buffer (`q`).
 
-Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (`a2`) is derived by $\sqrt{3}/2 \times a_1$.
+Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (`a2`) is given by the height of a hexagon, $\sqrt{3}/2 \times a_1$.
 
 The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
 
@@ -797,7 +815,7 @@ Each hexagon is defined relative to its centroid $(C_x, C_y)$, with six vertices
 
 Two derived constants are calculated to define the relative distances to the vertices. The horizontal and vertical offset is defined as $dx = a_1/2$, and $dy = a_1/\sqrt{3}$ repectively. A vertical spacing factor $v = a_1/2\sqrt{3}$ refines vertical placement in staggered rows.
 
-With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors (`x_add_factor` and `y_add_factor`) corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
+With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
 For each centroid, six vertices are computed and assigned a polygon ID (`h`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`h`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
@@ -833,9 +851,9 @@ head(umap_hex_id, 5)
 
 ##### Computing the standardized number of points within each hexagon
 
-The `compute_std_counts()` function calculates both the raw and standardized counts for each hexagon.
+The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
 
-The function begins by grouping the data by `h` and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a normalized metric, `w_h`, ranging from 0 to 1.
+The function begins by grouping the data by hexagon ID (`h`) and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a normalized metric, `w_h`, ranging from 0 to 1.
 
 ```{r, echo=TRUE}
 std_df <- compute_std_counts(
@@ -908,7 +926,7 @@ Not all hexagons contain meaningful information. Some may have very few or no da
 
 To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., 0.05), the hexagon is flagged for removal.
 
-The `find_low_dens_hex()` function identifies hexagons with low point densities, considering the densities of their neighboring bins as well. The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their `h` and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
+The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their hexagon ID (`h`) and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
 ```{r, echo=TRUE}
 find_low_dens_hex(
@@ -935,7 +953,7 @@ trimesh <- update_trimesh_index(trimesh)
 
 ### Lifting the model into high dimensions
 
-The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$ by computing the $p\text{-}D$ mean of data points within each hexagonal bin to represent bin centroids. This transformation is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
+The final step involves lifting the fitted \twoD model into \pD. This is done by modelling a point in \pD as the  \pD mean of data points in the \twoD centroid. This is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 
 ```{r, echo=TRUE}
 df_bin <- avg_highd_data(
@@ -948,9 +966,9 @@ head(df_bin, 5)
 
 ### Prediction
 
-The `predict_emb()` function is used to predict $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
+The `predict_emb()` function is used to predict a point in a $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
 
-In the prediction process, first, the nearest $p\text{-}D$ model point is identified for a given new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point. 
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for the new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point. 
 
 To accelerate this process, the nearest-neighbor search is implemented in C++ using `Rcpp` via the internal function `compute_highd_dist()`.
 
@@ -966,7 +984,7 @@ head(predict_data, 5)
 
 ### Compute residuals and Root Mean Square Error (RMSE)
 
-As a Goodness of fit statistics for the model, `glance()` is used to compute residuals and RMSE. These metrics are used to assess how well the fitted model will capture the underlying structure of the $p\text{-}D$ data. 
+Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be output using the  `glance()` function. 
 
 This function begins by renaming the columns of the input `model_highd` data frame to avoid naming conflicts during subsequent joins. It then uses the `predict_emb()` function to assign each point in the high-dimensional dataset to a corresponding bin in the 2D model, producing a prediction data frame that contains both the predicted bin assignment (`pred_hb_id`) and the original observation `ID`.
 
@@ -986,7 +1004,7 @@ glance(
 
 Furthermore, `augment()` accepts $2\text{-}D$ and $p\text{-}D$ model points, and the $p\text{-}D$ data and adds information about each observation in the data set. 
 
-The function starts by renaming columns in the `model_highd` data frame to avoid conflicts. It then predicts the high-dimensional bin assignments for each point using the `predict_emb()` function, mapping each observation to its nearest $2\text{-}D$ bin (`pred_hb_id`). This prediction is joined with the mean high-dimensional coordinates of each bin from the model and with the original high-dimensional data.
+The function starts with the same process as is used in the `glance()` function to produce a predicted point in \pD for each point in the high-dimensional dataset.
 
 Next, the function computes residuals between each original coordinate (`x1`, `x2`, ..., `xp`) and the corresponding modeled coordinate (`model_high_d_x1`, ..., `model_high_d_xp`) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the `row_wise_total_error` which is the total squared error across all dimensions, and the `row_wise_abs_error` which is the total absolute error across all dimensions.
 
@@ -1082,7 +1100,7 @@ full_hexgrid + data_hexgrid +
 
 #### $p\text{-}D$ model visualization
 
-To evaluate how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a visualization using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` package.
+To visualise how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \pD using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` package.
 
 Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
