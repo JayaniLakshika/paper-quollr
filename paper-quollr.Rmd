@@ -560,7 +560,7 @@ X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
 \end{aligned}
 $$
 
-The remaining variables $X_4$, $X_5$, $X_6$, $X_7$ are all uniform error, with small variance. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding $2\text{-}D$ `scurve_umap`. 
+The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: $X_4, X_5 \sim U(-0.02, 0.02)$, $X_6 \sim U(-0.1, 0.1)$, and $X_7 \sim U(-0.01, 0.01)$. These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding $2\text{-}D$ `scurve_umap`. 
 
 ### Main function
 
