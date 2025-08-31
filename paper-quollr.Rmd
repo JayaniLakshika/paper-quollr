@@ -977,6 +977,8 @@ predict_data <- predict_emb(
 head(predict_data, 5)
 ```
 
+It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP (@tomasz2023) supports direct prediction of embeddings for new data once a model is fitted.
+
 ### Compute residuals and Root Mean Square Error (RMSE)
 
 Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be output using the  `glance()` function. 
