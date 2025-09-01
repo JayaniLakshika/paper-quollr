@@ -595,7 +595,7 @@ scurve_umap_obj
 
 #### Computing hexagon grid configurations
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts (1) an object containing three elements: the first is the scaled NLDR data with two columns, and the second and third are the limits of the original NLDR data; (2) the number of bins along the x-axis (`b1`), and (3) the buffer amount as a proportion (`q`).
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function `calc_bins_y()` is used for this purpose. This function accepts (1) an object containing three elements: the first is the scaled NLDR data with two columns, and the second and third are the limits of the original NLDR data; (2) the number of bins along the x-axis (`b1`), and (3) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
@@ -608,7 +608,7 @@ bin_configs
 
 #### Binning the data
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its components can be run separately for added flexibility. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (`nldr_obj`), the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`tot_bins`), the number of non-empty bins (`non_bins`), and the points within each hexagon (`pts_bins`).  
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
@@ -776,9 +776,6 @@ hex_param_vis <- ggplot() +
 
 hex_param_vis
 ```
-
-
-If the hexagonal binning process is run separately, it involves several steps: (i) generating all possible centroids in a hexagonal grid, (ii) creating the coordinates of the hexagons, (iii) assigning data points to their respective hexagons, (iv) computing the standardized number of points within each hexagon, and (v) mapping the points to their corresponding hexagonal bins. 
 
 ##### Generating all possible centroids in a hexagonal grid
 
