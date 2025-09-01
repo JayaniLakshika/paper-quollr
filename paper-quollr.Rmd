@@ -585,7 +585,7 @@ Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data
 
 #### Scaling the data
 
-The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, x_2]$, where $x_2$ is the maximum value of the second embedding, using the `gen_scaled_data()` function. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
+The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
 
 ```{r, echo=TRUE}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
