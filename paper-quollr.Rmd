@@ -809,7 +809,7 @@ Two derived constants are calculated to define the relative distances to the ver
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
-For each centroid, six vertices are computed and assigned a polygon ID (`h`) corresponding to the centroid’s `h`. These points are aggregated into a tibble that includes the polygon ID (`h`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
+For each centroid, six vertices are computed and assigned a polygon ID as the centroid. These vertices are then combined into a tibble that records the polygon ID (`h`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
 To reduce computational overhead, the geometry calculations are implemented in C++ using `gen_hex_coord_cpp()`, which returns a `data.frame` of vertex coordinates.
 
