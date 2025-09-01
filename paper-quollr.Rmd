@@ -932,7 +932,7 @@ find_low_dens_hex(
 
 ```
 
-For simplicity, we remove low-density hexagons using a threshold of $10$.
+For simplicity, we remove low-density hexagons using a threshold of $1$.
 
 ```{r, echo=TRUE}
 df_bin_centroids <- df_bin_centroids |>
