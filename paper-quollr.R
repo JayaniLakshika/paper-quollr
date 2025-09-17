@@ -97,9 +97,9 @@ scurve_model_obj <- fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 1)
+  hd_thresh = 1)
 
-scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
+scurve_umap_scaled <- scurve_model_obj$nldr_scaled_obj$scaled_nldr
 tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
 df_bin_centroids_scurve <- scurve_model_obj$model_2d
 df_bin_scurve <- scurve_model_obj$model_highd
@@ -434,7 +434,7 @@ scurve_proj_umap_model4 <- plot_proj(
   interior_annotation(label = "a4", cex = 1) 
 
 
-## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'----
+## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'----
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
   scurve_proj_umap_model3, scurve_proj_umap_model4, 
@@ -475,7 +475,7 @@ scurve_umap_plt + hex_grid_poly_scurve +
 #   nldr_data = scurve_umap,
 #   b1 = 15,
 #   q = 0.1,
-#   benchmark_highdens = 1)
+#   hd_thresh = 1)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -486,7 +486,7 @@ scurve_umap_obj
 
 ## ----echo=TRUE----------------------------------------------------------------
 bin_configs <- calc_bins_y(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 
@@ -495,171 +495,171 @@ bin_configs
 
 ## ----echo=TRUE----------------------------------------------------------------
 hb_obj <- hex_binning(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 
 
-## -----------------------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #| label: code-illustration
-# Code to draw illustration for notation
-## hexagon binning to have regular hexagons
-hb_obj_notation <- hex_binning(
-  nldr_obj = scurve_umap_obj, 
-  b1 = 9, 
-  q = 0.1)
+# # Code to draw illustration for notation
+# ## hexagon binning to have regular hexagons
+# hb_obj_notation <- hex_binning(
+#   nldr_scaled_obj = scurve_umap_obj,
+#   b1 = 9,
+#   q = 0.1)
+# 
+# a1_temp <- hb_obj_notation$a1
+# a2_temp <- hb_obj_notation$a2
+# l_temp <- quad(a=3, b = 2 * a2_temp, c = -(a2_temp^2 + a1_temp^2))
+# 
+# ## Data set with all centroids
+# all_centroids_df_temp <- hb_obj_notation$centroids
+# hex_grid_temp <- hb_obj_notation$hex_poly
+# 
+# hex_grid_temp45 <- hex_grid_temp |>
+#   filter(h == 45)
+# 
+# start_pt <- all_centroids_df_temp |>
+#   filter(h == 1)
+# d_rect <- tibble(x1min = 0,
+#                  x1max = 1,
+#                  x2min = 0,
+#                  x2max = diff(scurve_umap_obj$lim2)/diff(scurve_umap_obj$lim1)) # x2max = r2
+# 
+# # To move the rectangle to ignore the overlap with the centroids
+# # rect_adj <- tibble(x1 = 0.03, x2 = 0.03)
+# rect_adj <- tibble(x1 = -0.03, x2 = 0.03)
+# 
+# 
+# a1 <- tibble(x = all_centroids_df_temp$c_x[4],
+#              xend = all_centroids_df_temp$c_x[5],
+#              y = all_centroids_df_temp$c_y[21],
+#              yend = all_centroids_df_temp$c_y[21],
+#              label = expression(a[1]))
+# a2 <- tibble(x = all_centroids_df_temp$c_x[25],
+#              xend = all_centroids_df_temp$c_x[25],
+#              y = all_centroids_df_temp$c_y[25],
+#              yend = all_centroids_df_temp$c_y[33],
+#              label = expression(a[2]))
+# l <- tibble(x = hex_grid_temp45$x[2],
+#             xend = hex_grid_temp45$x[3],
+#             y = hex_grid_temp45$y[2],
+#             yend = hex_grid_temp45$y[3],
+#             label = expression(l))
+# 
+# hex_param_vis <- ggplot() +
+#     geom_polygon(data = hex_grid_temp,
+#                         aes(x = x,
+#                             y = y,
+#                             group = h),
+#                  fill = "white",
+#                  color = "#bdbdbd") +
+#     geom_point(data = all_centroids_df_temp, aes(
+#       x = c_x,
+#       y = c_y),
+#       color = "#31a354", size = 0.9) +
+#     geom_point(data = start_pt, aes(x = c_x,
+#                                     y = c_y),
+#                color = "black") +
+#     geom_rect(data=d_rect,
+#               aes(xmin = x1min - rect_adj$x1,# - rect_adj$s1,
+#                   xmax = x1max - rect_adj$x1,# - rect_adj$s1,
+#                   ymin = x2min - rect_adj$x2,# - rect_adj$s2,
+#                   ymax = x2max - rect_adj$x2),# - rect_adj$s2),
+#               fill = "white",
+#               color = "black",
+#               alpha = 0,
+#               linewidth = 0.7) +
+#     geom_point(data=d_rect, aes(x=x1min - rect_adj$x1,
+#                                 y=x2min - rect_adj$x2)) +
+#     geom_point(data=d_rect, aes(x=x1max - rect_adj$x1,
+#                                 y=x2min - rect_adj$x2)) +
+#     geom_point(data=d_rect, aes(x=x1min - rect_adj$x1,
+#                                 y=x2max - rect_adj$x2)) +
+#     annotate("text", x=d_rect$x1min - rect_adj$x1,
+#                      y=d_rect$x2min - rect_adj$x2,
+#                      label = "(0,0)",
+#              hjust=-0.1, vjust=-0.3) +
+#     annotate("text", x=d_rect$x1max - rect_adj$x1,
+#                      y=d_rect$x2min - rect_adj$x2,
+#                      label = "(0,1)",
+#              hjust=1.1, vjust=-0.3) +
+#     annotate("text", x=d_rect$x1min - rect_adj$x1,
+#                      y=d_rect$x2max - rect_adj$x2,
+#                      label = expression(group("(",
+#                         list(0, y[2][max]),")")),
+#             hjust=-0.1, vjust=1.2) +
+#     geom_segment(data=d_rect, aes(
+#       x = x1min  - rect_adj$x1, # 0 - 0.03,
+#       y = -0.31,
+#       xend = x1max - rect_adj$x1, #1 - 0.03,
+#       yend = -0.31), #-0.35),
+#       arrow = arrow(length = unit(0.03, "npc"),
+#                                ends = "both"),
+#                  color = "black")+
+#     annotate("text", x=0.5, y=-0.36,
+#              label = expression(r[1]), color = "black") +
+#     geom_segment(data=d_rect, aes(
+#       x = -0.25,
+#       y = x2min - rect_adj$x2, #0 - 0.05,
+#       xend = -0.25,
+#       yend = x2max - rect_adj$x2), #r2 - 0.05),
+#       arrow = arrow(length = unit(0.03, "npc"),
+#                        ends = "both"),
+#                  color = "black")+
+#     annotate("text", x=-0.3, y=0.4,
+#              label = expression(r[2]), color = "black") +
+#     geom_segment(data = a1, aes(
+#       x = x, #-0.1 + 0.2087578,
+#       y = y, #-0.15,
+#       xend = xend, #-0.1 + 0.2087578*2,
+#       yend = yend), #-0.15),
+#       arrow = arrow(length = unit(0.03, "npc"),
+#         ends = "both"),
+#         color = "black")+ # a1 = 0.2087578
+#     annotate("text",
+#              x=(a1$x+a1$xend)/2,
+#              y=a1$y,
+#              label = expression(a[1]),
+#              color = "black",
+#              vjust = 1.2) +
+#     geom_segment(data = a2, aes(
+#       x = x, #-0.15,
+#       y = y, #-0.1*r2 + 0.1807896*2,
+#       xend = xend, #-0.15,
+#       yend = yend), #-0.1*r2 + 0.1807896*3),
+#       arrow = arrow(length = unit(0.03, "npc"),
+#                                ends = "both"),
+#       color = "black") + # a2 = 0.1807896
+#     annotate("text", x=a2$x, y=(a2$y+a2$yend)/2,
+#              label = expression(a[2]),
+#              color = "black", hjust=-0.2) +
+#     annotate("text", x=-0.18, y=-0.24,
+#       label = expression(group("(", list(s[1], s[2]), ")")),
+#       color = "black") +
+#   geom_segment(data = l, aes(
+#       x = x, #-0.15,
+#       y = y, #-0.1*r2 + 0.1807896*2,
+#       xend = xend, #-0.15,
+#       yend = yend), #-0.1*r2 + 0.1807896*3),
+#       arrow = arrow(length = unit(0.03, "npc"),
+#                                ends = "both"),
+#       color = "black") +
+#     annotate("text", x=l$x + 0.03, y=(l$y+l$yend)/2,
+#              label = expression(l),
+#              color = "black", hjust=-0.2) +
+#   coord_equal()
 
-a1_temp <- hb_obj_notation$a1
-a2_temp <- hb_obj_notation$a2
-l_temp <- quad(a=3, b = 2 * a2_temp, c = -(a2_temp^2 + a1_temp^2))
 
-## Data set with all centroids
-all_centroids_df_temp <- hb_obj_notation$centroids
-hex_grid_temp <- hb_obj_notation$hex_poly
-
-hex_grid_temp45 <- hex_grid_temp |> 
-  filter(h == 45)
-
-start_pt <- all_centroids_df_temp |> 
-  filter(h == 1)
-d_rect <- tibble(x1min = 0, 
-                 x1max = 1,
-                 x2min = 0,
-                 x2max = diff(scurve_umap_obj$lim2)/diff(scurve_umap_obj$lim1)) # x2max = r2
-
-# To move the rectangle to ignore the overlap with the centroids
-# rect_adj <- tibble(x1 = 0.03, x2 = 0.03)
-rect_adj <- tibble(x1 = -0.03, x2 = 0.03)
-
-
-a1 <- tibble(x = all_centroids_df_temp$c_x[4],
-             xend = all_centroids_df_temp$c_x[5],
-             y = all_centroids_df_temp$c_y[21],
-             yend = all_centroids_df_temp$c_y[21],
-             label = expression(a[1]))
-a2 <- tibble(x = all_centroids_df_temp$c_x[25],
-             xend = all_centroids_df_temp$c_x[25],
-             y = all_centroids_df_temp$c_y[25],
-             yend = all_centroids_df_temp$c_y[33],
-             label = expression(a[2]))
-l <- tibble(x = hex_grid_temp45$x[2],
-            xend = hex_grid_temp45$x[3],
-            y = hex_grid_temp45$y[2],
-            yend = hex_grid_temp45$y[3],
-            label = expression(l))
-
-hex_param_vis <- ggplot() + 
-    geom_polygon(data = hex_grid_temp, 
-                        aes(x = x, 
-                            y = y, 
-                            group = h),
-                 fill = "white", 
-                 color = "#bdbdbd") +
-    geom_point(data = all_centroids_df_temp, aes(
-      x = c_x, 
-      y = c_y), 
-      color = "#31a354", size = 0.9) +
-    geom_point(data = start_pt, aes(x = c_x, 
-                                    y = c_y), 
-               color = "black") + 
-    geom_rect(data=d_rect, 
-              aes(xmin = x1min - rect_adj$x1,# - rect_adj$s1, 
-                  xmax = x1max - rect_adj$x1,# - rect_adj$s1, 
-                  ymin = x2min - rect_adj$x2,# - rect_adj$s2, 
-                  ymax = x2max - rect_adj$x2),# - rect_adj$s2), 
-              fill = "white", 
-              color = "black", 
-              alpha = 0, 
-              linewidth = 0.7) +
-    geom_point(data=d_rect, aes(x=x1min - rect_adj$x1, 
-                                y=x2min - rect_adj$x2)) + 
-    geom_point(data=d_rect, aes(x=x1max - rect_adj$x1, 
-                                y=x2min - rect_adj$x2)) + 
-    geom_point(data=d_rect, aes(x=x1min - rect_adj$x1, 
-                                y=x2max - rect_adj$x2)) + 
-    annotate("text", x=d_rect$x1min - rect_adj$x1, 
-                     y=d_rect$x2min - rect_adj$x2,
-                     label = "(0,0)", 
-             hjust=-0.1, vjust=-0.3) + 
-    annotate("text", x=d_rect$x1max - rect_adj$x1, 
-                     y=d_rect$x2min - rect_adj$x2,
-                     label = "(0,1)", 
-             hjust=1.1, vjust=-0.3) + 
-    annotate("text", x=d_rect$x1min - rect_adj$x1, 
-                     y=d_rect$x2max - rect_adj$x2,
-                     label = expression(group("(", 
-                        list(0, y[2][max]),")")), 
-            hjust=-0.1, vjust=1.2) + 
-    geom_segment(data=d_rect, aes(
-      x = x1min  - rect_adj$x1, # 0 - 0.03, 
-      y = -0.31, 
-      xend = x1max - rect_adj$x1, #1 - 0.03, 
-      yend = -0.31), #-0.35),
-      arrow = arrow(length = unit(0.03, "npc"),
-                               ends = "both"), 
-                 color = "black")+
-    annotate("text", x=0.5, y=-0.36, 
-             label = expression(r[1]), color = "black") +
-    geom_segment(data=d_rect, aes(
-      x = -0.25, 
-      y = x2min - rect_adj$x2, #0 - 0.05, 
-      xend = -0.25, 
-      yend = x2max - rect_adj$x2), #r2 - 0.05),
-      arrow = arrow(length = unit(0.03, "npc"),
-                       ends = "both"), 
-                 color = "black")+ 
-    annotate("text", x=-0.3, y=0.4, 
-             label = expression(r[2]), color = "black") +
-    geom_segment(data = a1, aes(
-      x = x, #-0.1 + 0.2087578, 
-      y = y, #-0.15, 
-      xend = xend, #-0.1 + 0.2087578*2, 
-      yend = yend), #-0.15),
-      arrow = arrow(length = unit(0.03, "npc"),
-        ends = "both"), 
-        color = "black")+ # a1 = 0.2087578
-    annotate("text", 
-             x=(a1$x+a1$xend)/2, 
-             y=a1$y, 
-             label = expression(a[1]), 
-             color = "black",
-             vjust = 1.2) +
-    geom_segment(data = a2, aes(
-      x = x, #-0.15, 
-      y = y, #-0.1*r2 + 0.1807896*2, 
-      xend = xend, #-0.15, 
-      yend = yend), #-0.1*r2 + 0.1807896*3),
-      arrow = arrow(length = unit(0.03, "npc"),
-                               ends = "both"), 
-      color = "black") + # a2 = 0.1807896
-    annotate("text", x=a2$x, y=(a2$y+a2$yend)/2, 
-             label = expression(a[2]), 
-             color = "black", hjust=-0.2) +
-    annotate("text", x=-0.18, y=-0.24, 
-      label = expression(group("(", list(s[1], s[2]), ")")),
-      color = "black") +
-  geom_segment(data = l, aes(
-      x = x, #-0.15, 
-      y = y, #-0.1*r2 + 0.1807896*2, 
-      xend = xend, #-0.15, 
-      yend = yend), #-0.1*r2 + 0.1807896*3),
-      arrow = arrow(length = unit(0.03, "npc"),
-                               ends = "both"), 
-      color = "black") + 
-    annotate("text", x=l$x + 0.03, y=(l$y+l$yend)/2, 
-             label = expression(l), 
-             color = "black", hjust=-0.2) +
-  coord_equal()
-
-
-## ----hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H'----
-
-hex_param_vis
+## ----hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H', eval=FALSE----
+# 
+# hex_param_vis
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 all_centroids_df <- gen_centroids(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1
   )
@@ -678,7 +678,7 @@ head(all_hex_coord, 5)
 
 ## ----echo=TRUE----------------------------------------------------------------
 umap_hex_id <- assign_data(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   centroids_data = all_centroids_df
   )
 
@@ -694,7 +694,7 @@ head(std_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-pts_df <- find_pts(
+pts_df <- group_hex_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
@@ -702,7 +702,7 @@ head(pts_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-df_bin_centroids <- extract_hexbin_centroids(
+df_bin_centroids <- merge_hexbin_centroids(
   centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
@@ -732,7 +732,7 @@ head(trimesh, 5)
 find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 15, 
-  benchmark_mean_dens = 0.05
+  md_thresh = 0.05
 )
 
 
@@ -770,17 +770,15 @@ head(predict_data, 5)
 
 ## ----echo=TRUE----------------------------------------------------------------
 glance(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 model_error <- augment(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 
 head(model_error, 5)
@@ -1336,12 +1334,12 @@ tsne_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 0)
+  hd_thresh = 0)
 
 df_bin_centroids_limb <- tsne_limb_obj$model_2d
 df_bin_limb <- tsne_limb_obj$model_highd
 trimesh_data_limb <- tsne_limb_obj$trimesh_data
-tsne_limb_scaled <- tsne_limb_obj$nldr_obj$scaled_nldr
+tsne_limb_scaled <- tsne_limb_obj$nldr_scaled_obj$scaled_nldr
 
 tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
   mutate(cluster = as.character(cluster.ids))
@@ -1510,12 +1508,12 @@ tsne_best_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb2, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 0)
+  hd_thresh = 0)
 
 df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
 df_bin_limb <- tsne_best_limb_obj$model_highd
 trimesh_data_limb <- tsne_best_limb_obj$trimesh_data
-tsne_limb_scaled <- tsne_best_limb_obj$nldr_obj$scaled_nldr
+tsne_limb_scaled <- tsne_best_limb_obj$nldr_scaled_obj$scaled_nldr
 
 tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
   mutate(cluster = as.character(cluster.ids))

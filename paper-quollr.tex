@@ -17,7 +17,7 @@ Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochast
 This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (Figure \ref{fig:overview}).
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2 ext{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.}\label{fig:overview}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.}\label{fig:overview}
 \end{figure}
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
@@ -55,13 +55,13 @@ X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
 \end{aligned}
 \]
 
-The remaining variables \(X_4\), \(X_5\), \(X_6\), \(X_7\) are all uniform error, with small variance. \texttt{scurve\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{scurve} data with \texttt{n\_neighbors}\(=46\) and \texttt{min\_dist}\(=0.9\). Each data set contains a unique ID column that maps the \(7\text{-}D\) point in \texttt{scurve} to the corresponding \(2\text{-}D\) \texttt{scurve\_umap}.
+The remaining variables \(X_4\), \(X_5\), \(X_6\), and \(X_7\) are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: \(X_4, X_5 \sim U(-0.02, 0.02)\), \(X_6 \sim U(-0.1, 0.1)\), and \(X_7 \sim U(-0.01, 0.01)\). These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. \texttt{scurve\_umap} is the UMAP \(2\text{-}D\) embedding for \texttt{scurve} data with \texttt{n\_neighbors}\(=46\) and \texttt{min\_dist}\(=0.9\). Each data set contains a unique ID column that maps the \(7\text{-}D\) point in \texttt{scurve} to the corresponding \(2\text{-}D\) \texttt{scurve\_umap}.
 
 \subsubsection{Main function}\label{main-function}
 
 The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility.
 
-This function requires several parameters: the high-dimensional data (\texttt{highd\_data}), the emdedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{b1}), the buffer amount as a proportion of data (\texttt{q}), and benchmark value to extract high density hexagons (\texttt{benchmark\_highdens}). The function returns an object that includes the scaled NLDR object (\texttt{nldr\_obj}), the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
+This function requires several parameters: the high-dimensional data (\texttt{highd\_data}), the emdedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{b1}), the buffer amount as a proportion of data (\texttt{q}), and benchmark value to extract high density hexagons (\texttt{hd\_thresh}). The function returns an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
 
 \begin{verbatim}
 fit_highd_model(
@@ -69,7 +69,7 @@ fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 1)
+  hd_thresh = 1)
 \end{verbatim}
 
 \subsubsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
@@ -78,7 +78,7 @@ Constructing the \(2\text{-}D\) model primarily involves (i) scaling the NLDR da
 
 \paragraph{Scaling the data}\label{scaling-the-data}
 
-The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, x_2]\), where \(x_2\) is the maximum value of the second embedding, using the \texttt{gen\_scaled\_data()} function. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
+The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
 
 \begin{verbatim}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
@@ -112,11 +112,11 @@ scurve_umap_obj
 
 \paragraph{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts (1) an object containing three elements: the first is the scaled NLDR data with two columns, and the second and third are the limits of the original NLDR data; (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}).
+The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts (1) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 \begin{verbatim}
 bin_configs <- calc_bins_y(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 
@@ -136,25 +136,14 @@ bin_configs
 
 \paragraph{Binning the data}\label{binning-the-data}
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its components can be run separately for added flexibility. The parameters used within \texttt{hex\_binning()} include an object containing scaled NLDR data in the first and second columns, along with numeric vectors that represent the limits of the original NLDR data (\texttt{nldr\_obj}), the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{tot\_bins}), the number of non-empty bins (\texttt{non\_bins}), and the points within each hexagon (\texttt{pts\_bins}).
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} include an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{tot\_bins}), the number of non-empty bins (\texttt{non\_bins}), and the points within each hexagon (\texttt{pts\_bins}).
 
 \begin{verbatim}
 hb_obj <- hex_binning(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 \end{verbatim}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.5\linewidth]{paper-quollr_files/figure-latex/hex-param-1} 
-
-}
-
-\caption{The components of the hexagon grid illustrating notation.}\label{fig:hex-param}
-\end{figure}
-
-If the hexagonal binning process is run separately, it involves several steps: (i) generating all possible centroids in a hexagonal grid, (ii) creating the coordinates of the hexagons, (iii) assigning data points to their respective hexagons, (iv) computing the standardized number of points within each hexagon, and (v) mapping the points to their corresponding hexagonal bins.
 
 \subparagraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
 
@@ -170,7 +159,7 @@ Finally, a tibble is returned containing a unique hexagon ID (\texttt{h}) along 
 
 \begin{verbatim}
 all_centroids_df <- gen_centroids(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1
   )
@@ -205,7 +194,7 @@ Two derived constants are calculated to define the relative distances to the ver
 
 With these values, the function determines fixed offsets in the x and y directions for all six vertices relative to the centroid. These offsets form two vectors corresponding to the six compass directions used to define the polygon shape: top, top-left, bottom-left, bottom, bottom-right, and top-right.
 
-For each centroid, six vertices are computed and assigned a polygon ID (\texttt{h}) corresponding to the centroid's \texttt{h}. These points are aggregated into a tibble that includes the polygon ID (\texttt{h}) and the respective x (\texttt{x}) and y (\texttt{y}) coordinates for all hexagon corners.
+For each centroid, six vertices are computed and assigned a polygon ID as the centroid. These vertices are then combined into a tibble that records the polygon ID (\texttt{h}) and the respective x (\texttt{x}) and y (\texttt{y}) coordinates for all hexagon corners.
 
 To reduce computational overhead, the geometry calculations are implemented in C++ using \texttt{gen\_hex\_coord\_cpp()}, which returns a \texttt{data.frame} of vertex coordinates.
 
@@ -239,7 +228,7 @@ The result is a data frame of the scaled \(2\text{-}D\) embedding with an additi
 
 \begin{verbatim}
 umap_hex_id <- assign_data(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   centroids_data = all_centroids_df
   )
 
@@ -261,7 +250,7 @@ head(umap_hex_id, 5)
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
 
-The function begins by grouping the data by hexagon ID (\texttt{h}) and counting the number of NLDR points falling within each bin. These raw counts are stored as \texttt{n\_h}. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin's count by the maximum count across all bins. This yields a normalized metric, \texttt{w\_h}, ranging from 0 to 1.
+The function begins by grouping the data by hexagon ID (\texttt{h}) and counting the number of NLDR points falling within each bin. These raw counts are stored as \texttt{n\_h}. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin's count by the maximum count across all bins. This yields a standardized bin counts, \texttt{w\_h}, ranging from 0 to 1.
 
 \begin{verbatim}
 std_df <- compute_std_counts(
@@ -284,12 +273,12 @@ head(std_df, 5)
 
 \subparagraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
 
-The \texttt{find\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
+The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
 
 The function first groups the input data by \texttt{h}, which represents the hexagon label associated with each point in the \(2\text{-}D\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
 
 \begin{verbatim}
-pts_df <- find_pts(
+pts_df <- group_hex_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
@@ -309,12 +298,12 @@ head(pts_df, 5)
 
 \paragraph{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
-The \texttt{extract\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
+The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
 This function begins by arranging the \texttt{counts\_data} by \texttt{h} to ensure consistent ordering. It then performs a full join with \texttt{centroids\_data}, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{w\_h} or \texttt{n\_h} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
 
 \begin{verbatim}
-df_bin_centroids <- extract_hexbin_centroids(
+df_bin_centroids <- merge_hexbin_centroids(
   centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
@@ -335,7 +324,7 @@ head(df_bin_centroids, 5)
 
 To represent the neighborhood structure of hexagonal bins in a \(2\text{-}D\) layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
-The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{tripack::tri.mesh()} function. This triangulation forms the structural basis for identifying adjacent bins.
+The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{tripack::tri.mesh()} function (\citet{albrecht2025}). This triangulation forms the structural basis for identifying adjacent bins.
 
 \begin{verbatim}
 tr_object <- tri_bin_centroids(
@@ -371,14 +360,15 @@ head(trimesh, 5)
 \end{verbatim}
 
 \begin{verbatim}
-> # A tibble: 5 x 8
->    from    to  x_from  y_from    x_to    y_to from_count to_count
->   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
-> 1     1     2 -0.1    -0.116  -0.0166 -0.116           0        0
-> 2    16    17 -0.0583 -0.0434  0.0251 -0.0434          0        0
-> 3    16    32 -0.0583 -0.0434 -0.0166  0.0288          0        0
-> 4     3    17  0.0668 -0.116   0.0251 -0.0434          0        0
-> 5    32    33 -0.0166  0.0288  0.0668  0.0288          0        0
+> # A tibble: 5 x 10
+>    from    to  x_from  y_from    x_to    y_to from_count to_count from_reindexed
+>   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>          <int>
+> 1     1     2 -0.1    -0.116  -0.0166 -0.116           0        0              1
+> 2    16    17 -0.0583 -0.0434  0.0251 -0.0434          0        0             16
+> 3    16    32 -0.0583 -0.0434 -0.0166  0.0288          0        0             16
+> 4     3    17  0.0668 -0.116   0.0251 -0.0434          0        0              3
+> 5    32    33 -0.0166  0.0288  0.0668  0.0288          0        0             32
+> # i 1 more variable: to_reindexed <int>
 \end{verbatim}
 
 \paragraph{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
@@ -393,7 +383,7 @@ The \texttt{find\_low\_dens\_hex()} function relies on a helper, \texttt{compute
 find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 15, 
-  benchmark_mean_dens = 0.05
+  md_thresh = 0.05
 )
 \end{verbatim}
 
@@ -417,7 +407,7 @@ find_low_dens_hex(
 > [289] 289 290 291 292 293 294 295 296 297 298 299 300
 \end{verbatim}
 
-For simplicity, we remove low-density hexagons using a threshold of \(10\).
+For simplicity, we remove low-density hexagons using a threshold of \(1\).
 
 \begin{verbatim}
 df_bin_centroids <- df_bin_centroids |>
@@ -483,6 +473,8 @@ head(predict_data, 5)
 > 5      0.192      0.968     5    229
 \end{verbatim}
 
+It is worth noting that while \texttt{predict\_emb()} provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP (\citet{tomasz2023}) supports direct prediction of embeddings for new data once a model is fitted.
+
 \subsubsection{Compute residuals and Root Mean Square Error (RMSE)}\label{compute-residuals-and-root-mean-square-error-rmse}
 
 Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be output using the \texttt{glance()} function.
@@ -497,9 +489,8 @@ These metrics are returned in a tibble as \texttt{Error} (absolute error) and \t
 
 \begin{verbatim}
 glance(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 \end{verbatim}
 
@@ -507,7 +498,7 @@ glance(
 > # A tibble: 1 x 2
 >   Error  RMSE
 >   <dbl> <dbl>
-> 1  265. 0.157
+> 1  273. 0.163
 \end{verbatim}
 
 Furthermore, \texttt{augment()} accepts \(2\text{-}D\) and \(p\text{-}D\) model points, and the \(p\text{-}D\) data and adds information about each observation in the data set.
@@ -520,9 +511,8 @@ The final output is a data frame that combines the original IDs, high-dimensiona
 
 \begin{verbatim}
 model_error <- augment(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 
 head(model_error, 5)

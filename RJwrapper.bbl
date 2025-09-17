@@ -1,4 +1,4 @@
-\begin{thebibliography}{24}
+\begin{thebibliography}{26}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -46,6 +46,12 @@ A.~Gebhardt, R.~Bivand, and D.~Sinclair.
 \newblock URL \url{https://CRAN.R-project.org/package=interp}.
 \newblock R package version 1.1-6.
 
+\bibitem[Gebhardt et~al.(2025)Gebhardt, Renka, Eglen, Zuyev, and White]{albrecht2025}
+A.~Gebhardt, R.~J. Renka, S.~Eglen, S.~Zuyev, and D.~White.
+\newblock \emph{tripack: Triangulation of Irregularly Spaced Data}, 2025.
+\newblock URL \url{https://CRAN.R-project.org/package=tripack}.
+\newblock R package version 1.3-9.3.
+
 \bibitem[Harrison(2023)]{paul2023}
 P.~Harrison.
 \newblock langevitour: Smooth interactive touring of high dimensions, demonstrated with scrna-seq data.
@@ -57,6 +63,12 @@ L.~Henry and H.~Wickham.
 \newblock \emph{tidyselect: Select from a Set of Strings}, 2024.
 \newblock URL \url{https://CRAN.R-project.org/package=tidyselect}.
 \newblock R package version 1.2.1.
+
+\bibitem[Konopka(2023)]{tomasz2023}
+T.~Konopka.
+\newblock \emph{umap: Uniform Manifold Approximation and Projection}, 2023.
+\newblock URL \url{https://CRAN.R-project.org/package=umap}.
+\newblock R package version 0.2.10.0.
 
 \bibitem[Maaten and Hinton(2008)]{laurens2008}
 L.~V.~D. Maaten and G.~E. Hinton.

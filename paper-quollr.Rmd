@@ -566,7 +566,7 @@ The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magni
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
 
-<!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly. -->
+<!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `merge_hexbin_centroids()` function can be used directly. -->
 
 This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
 
@@ -871,12 +871,12 @@ head(pts_df, 5)
 
 #### Obtaining bin centroids
 
-The `extract_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
+The `merge_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
 This function begins by arranging the `counts_data` by `h` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `w_h` or `n_h` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
 
 ```{r, echo=TRUE}
-df_bin_centroids <- extract_hexbin_centroids(
+df_bin_centroids <- merge_hexbin_centroids(
   centroids_data = all_centroids_df, 
   counts_data = hb_obj$std_cts
   )
@@ -924,7 +924,7 @@ The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex
 find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 15, 
-  benchmark_mean_dens = 0.05
+  md_thresh = 0.05
 )
 
 ```
@@ -990,9 +990,8 @@ These metrics are returned in a tibble as `Error` (absolute error) and `RMSE` (r
 
 ```{r, echo=TRUE}
 glance(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 ```
 
@@ -1006,9 +1005,8 @@ The final output is a data frame that combines the original IDs, high-dimensiona
 
 ```{r, echo=TRUE}
 model_error <- augment(
-  highd_data = scurve, 
-  model_2d = df_bin_centroids, 
-  model_highd = df_bin
+  model_object = scurve_model_obj,
+  highd_data = scurve
   )
 
 head(model_error, 5)
