@@ -1697,3 +1697,22 @@ trimesh_limb + limb_proj_tsne_model1 +
 # 
 # modellimbfig
 
+
+## ----notation-tb-html, eval=knitr::is_html_output()---------------------------
+# # Notation used in the paper
+# 
+# notation_df <- read_csv("misc/notation.csv")
+# 
+# notation_df |>
+#   kable(caption = "Summary of notation for describing new methodology.")
+
+
+## ----notation-tb-pdf, eval=knitr::is_latex_output()---------------------------
+
+notation_df <- read_csv("misc/notation.csv")
+
+notation_df |> 
+  kable(caption = "Summary of notation for describing new methodology.", booktabs = T) |>
+  column_spec(1, width = "3cm") |>
+  column_spec(2, width = "12cm")
+
