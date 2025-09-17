@@ -97,7 +97,7 @@ scurve_model_obj <- fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  hd_thresh = 1)
+  hd_thresh = 0)
 
 scurve_umap_scaled <- scurve_model_obj$nldr_scaled_obj$scaled_nldr
 tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
@@ -263,8 +263,8 @@ df_b <- df_exe |>
   dplyr::filter(type == "model") ## High-d model
 
 scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = tr_from_to_df_scurve$from,
-                         lineTo = tr_from_to_df_scurve$to,
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
@@ -272,8 +272,8 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          width = "421px", height = "421px")
 
 scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = tr_from_to_df_scurve$from,
-                         lineTo = tr_from_to_df_scurve$to,
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
@@ -473,7 +473,7 @@ scurve_umap_plt + hex_grid_poly_scurve +
 # fit_highd_model(
 #   highd_data = scurve,
 #   nldr_data = scurve_umap,
-#   b1 = 15,
+#   b1 = 25,
 #   q = 0.1,
 #   hd_thresh = 1)
 
@@ -487,7 +487,7 @@ scurve_umap_obj
 ## ----echo=TRUE----------------------------------------------------------------
 bin_configs <- calc_bins_y(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 15, 
+  b1 = 25, 
   q = 0.1)
 
 bin_configs
@@ -496,7 +496,7 @@ bin_configs
 ## ----echo=TRUE----------------------------------------------------------------
 hb_obj <- hex_binning(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 15, 
+  b1 = 25, 
   q = 0.1)
 
 
@@ -660,7 +660,7 @@ hb_obj <- hex_binning(
 ## ----echo=TRUE----------------------------------------------------------------
 all_centroids_df <- gen_centroids(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 15, 
+  b1 = 25, 
   q = 0.1
   )
 
@@ -731,7 +731,7 @@ head(trimesh, 5)
 ## ----echo=TRUE----------------------------------------------------------------
 find_low_dens_hex(
   model_2d = df_bin_centroids, 
-  b1 = 15, 
+  b1 = 25, 
   md_thresh = 0.05
 )
 
@@ -1432,8 +1432,8 @@ data_limb_n <- data_limb_n |>
 df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 
 limb_highd_vis <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-                         lineFrom = trimesh_data_limb$from,
-                         lineTo = trimesh_data_limb$to,
+                         lineFrom = trimesh_data_limb$from_reindexed,
+                         lineTo = trimesh_data_limb$to_reindexed,
                          group = factor(df_model_data_limb_n$type,
                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
@@ -1606,8 +1606,8 @@ data_limb_n <- data_limb_n |>
 df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
 
 limb_highd_vis_best <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-                         lineFrom = trimesh_data_limb$from,
-                         lineTo = trimesh_data_limb$to,
+                         lineFrom = trimesh_data_limb$from_reindexed,
+                         lineTo = trimesh_data_limb$to_reindexed,
                          group = factor(df_model_data_limb_n$type,
                                         c("0", "1", "2", "3", "4", "5", "6", "model")),
                          levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
