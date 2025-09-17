@@ -159,7 +159,7 @@ scurve_model_obj <- fit_highd_model(
   q = 0.1, 
   hd_thresh = 1)
 
-scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
+scurve_umap_scaled <- scurve_model_obj$nldr_scaled_obj$scaled_nldr
 tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
 df_bin_centroids_scurve <- scurve_model_obj$model_2d
 df_bin_scurve <- scurve_model_obj$model_highd
@@ -599,7 +599,7 @@ The configurations of a hexagonal grid are determined by the number of bins and 
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 
@@ -612,7 +612,7 @@ Points are allocated to bins based on the nearest centroid of the hexagonal bins
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1)
 ```
@@ -620,12 +620,12 @@ hb_obj <- hex_binning(
 <!--add each step separately-->
 <!--add hexbin notation image-->
 
-```{r}
+```{r, eval=FALSE}
 #| label: code-illustration
 # Code to draw illustration for notation
 ## hexagon binning to have regular hexagons
 hb_obj_notation <- hex_binning(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 9, 
   q = 0.1)
 
@@ -705,11 +705,11 @@ hex_param_vis <- ggplot() +
                      y=d_rect$x2min - rect_adj$x2,
                      label = "(0,1)", 
              hjust=1.1, vjust=-0.3) + 
-    annotate("text", x=d_rect$x1min - rect_adj$x1, 
+    annotate("text", x=d_rect$x1min - rect_adj$x1,
                      y=d_rect$x2max - rect_adj$x2,
-                     label = expression(group("(", 
-                        list(0, y[2][max]),")")), 
-            hjust=-0.1, vjust=1.2) + 
+                     label = expression(group("(",
+                        list(0, y[2][max]),")")),
+            hjust=-0.1, vjust=1.2) +
     geom_segment(data=d_rect, aes(
       x = x1min  - rect_adj$x1, # 0 - 0.03, 
       y = -0.31, 
@@ -772,7 +772,7 @@ hex_param_vis <- ggplot() +
   coord_equal()
 ```
 
-```{r hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H'}
+```{r hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H', eval=FALSE}
 
 hex_param_vis
 ```
@@ -791,7 +791,7 @@ Finally, a tibble is returned containing a unique hexagon ID (`h`) along with th
 
 ```{r, echo=TRUE}
 all_centroids_df <- gen_centroids(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   b1 = 15, 
   q = 0.1
   )
@@ -834,7 +834,7 @@ The result is a data frame of the scaled $2\text{-}D$ embedding with an addition
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
-  nldr_obj = scurve_umap_obj, 
+  nldr_scaled_obj = scurve_umap_obj, 
   centroids_data = all_centroids_df
   )
 
@@ -857,12 +857,12 @@ head(std_df, 5)
 
 ##### Mapping the points to their corresponding hexagonal bins
 
-The `find_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
+The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
 
 The function first groups the input data by `h`, which represents the hexagon label associated with each point in the $2\text{-}D$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
 
 ```{r, echo=TRUE}
-pts_df <- find_pts(
+pts_df <- group_hex_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
@@ -1774,7 +1774,7 @@ tsne_limb_obj <- fit_highd_model(
 df_bin_centroids_limb <- tsne_limb_obj$model_2d
 df_bin_limb <- tsne_limb_obj$model_highd
 trimesh_data_limb <- tsne_limb_obj$trimesh_data
-tsne_limb_scaled <- tsne_limb_obj$nldr_obj$scaled_nldr
+tsne_limb_scaled <- tsne_limb_obj$nldr_scaled_obj$scaled_nldr
 
 tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
   mutate(cluster = as.character(cluster.ids))
@@ -1948,7 +1948,7 @@ tsne_best_limb_obj <- fit_highd_model(
 df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
 df_bin_limb <- tsne_best_limb_obj$model_highd
 trimesh_data_limb <- tsne_best_limb_obj$trimesh_data
-tsne_limb_scaled <- tsne_best_limb_obj$nldr_obj$scaled_nldr
+tsne_limb_scaled <- tsne_best_limb_obj$nldr_scaled_obj$scaled_nldr
 
 tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
   mutate(cluster = as.character(cluster.ids))
