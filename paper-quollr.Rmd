@@ -157,7 +157,7 @@ scurve_model_obj <- fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 1)
+  hd_thresh = 1)
 
 scurve_umap_scaled <- scurve_model_obj$nldr_obj$scaled_nldr
 tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
@@ -568,7 +568,7 @@ The mains steps for the algorithm can be executed by the main function `fit_high
 
 <!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `extract_hexbin_centroids()` function can be used directly. -->
 
-This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`benchmark_highdens`). The function returns an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
 
 ```{r, echo=TRUE, eval=FALSE}
 fit_highd_model(
@@ -576,7 +576,7 @@ fit_highd_model(
   nldr_data = scurve_umap, 
   b1 = 15, 
   q = 0.1, 
-  benchmark_highdens = 1)
+  hd_thresh = 1)
 ```
 
 ### Constructing the $2\text{-}D$ Model
@@ -1769,7 +1769,7 @@ tsne_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 0)
+  hd_thresh = 0)
 
 df_bin_centroids_limb <- tsne_limb_obj$model_2d
 df_bin_limb <- tsne_limb_obj$model_highd
@@ -1943,7 +1943,7 @@ tsne_best_limb_obj <- fit_highd_model(
   nldr_data = tsne_limb2, 
   b1 = 19, 
   q = 0.1, 
-  benchmark_highdens = 0)
+  hd_thresh = 0)
 
 df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
 df_bin_limb <- tsne_best_limb_obj$model_highd
