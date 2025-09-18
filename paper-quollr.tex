@@ -136,7 +136,7 @@ bin_configs
 
 \paragraph{Binning the data}\label{binning-the-data}
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} include an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{tot\_bins}), the number of non-empty bins (\texttt{non\_bins}), and the points within each hexagon (\texttt{pts\_bins}).
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} include an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
 \begin{verbatim}
 hb_obj <- hex_binning(
@@ -818,13 +818,13 @@ Notation & Description & Variable\\
 \$\textbackslash{}mathbfit\{\textbackslash{}theta\}\$ & (Hyper-) parameters for NLDR method & NA\\
 \$r\$ & ranges of the embedding components & NA\\
 \$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers & NA\\
-\$(b\_1, b\_2)\$ & number of bins in each direction & b1, b2\\
+\$(b\_1, b\_2)\$ & number of bins in each direction & (b1, b2) = bins\\
 \addlinespace
-\$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction & NA\\
-\$(s\_1, \textbackslash{} s\_2)\$ & starting coordinates of the hexagonal grid & NA\\
+\$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction & a1, a2\\
+\$(s\_1, \textbackslash{} s\_2)\$ & starting coordinates of the hexagonal grid & start\_point\\
 \$q\$ & buffer to ensure hexgrid covers data, proportion of data range, 0-1 & q\\
-\$m\$ & number of non-empty bins & NA\\
-\$b\$ & number of  hexagons in the grid & NA\\
+\$m\$ & number of non-empty bins & m\\
+\$b\$ & number of  hexagons in the grid & b\\
 \addlinespace
 \$h\$ & hexagonal id & NA\\
 \$l\$ & side length & NA\\
