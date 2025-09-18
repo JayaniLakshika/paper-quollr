@@ -95,7 +95,7 @@ clr_choice <- "#66B2CC"
 scurve_model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  b1 = 15, 
+  b1 = 21, 
   q = 0.1, 
   hd_thresh = 0)
 
@@ -739,11 +739,11 @@ find_low_dens_hex(
 
 ## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(n_h > 1)
+  dplyr::filter(n_h > 0)
 
 trimesh <- trimesh |>
-  dplyr::filter(from_count > 1,
-                to_count > 1)
+  dplyr::filter(from_count > 0,
+                to_count > 0)
 
 trimesh <- update_trimesh_index(trimesh)
 

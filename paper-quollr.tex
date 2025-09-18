@@ -440,11 +440,11 @@ For simplicity, we remove low-density hexagons using a threshold of \(1\).
 
 \begin{verbatim}
 df_bin_centroids <- df_bin_centroids |>
-  dplyr::filter(n_h > 1)
+  dplyr::filter(n_h > 0)
 
 trimesh <- trimesh |>
-  dplyr::filter(from_count > 1,
-                to_count > 1)
+  dplyr::filter(from_count > 0,
+                to_count > 0)
 
 trimesh <- update_trimesh_index(trimesh)
 \end{verbatim}
@@ -495,7 +495,7 @@ head(predict_data, 5)
 > # A tibble: 5 x 4
 >   pred_emb_1 pred_emb_2    ID pred_h
 >        <dbl>      <dbl> <int>  <int>
-> 1     NA         NA         1    609
+> 1      0.296      0.914     1    609
 > 2      0.717      0.528     2    392
 > 3      0.791      0.399     3    319
 > 4      0.172      0.957     4    631
@@ -527,7 +527,7 @@ glance(
 > # A tibble: 1 x 2
 >   Error  RMSE
 >   <dbl> <dbl>
-> 1  265. 0.157
+> 1  196. 0.116
 \end{verbatim}
 
 Furthermore, \texttt{augment()} accepts \(2\text{-}D\) and \(p\text{-}D\) model points, and the \(p\text{-}D\) data and adds information about each observation in the data set.
@@ -551,11 +551,11 @@ head(model_error, 5)
 > # A tibble: 5 x 32
 >      ID      x1    x2       x3       x4       x5      x6       x7 pred_h
 >   <int>   <dbl> <dbl>    <dbl>    <dbl>    <dbl>   <dbl>    <dbl>  <int>
-> 1     1 -0.120  0.819 -1.99     0.0114   0.00351  0.0334  0.00638    215
-> 2     2 -0.0492 0.166  0.00121  0.0115  -0.0166  -0.0297  0.00509    145
-> 3     3 -0.774  0.651  0.367   -0.0172   0.00600  0.0211  0.00303    116
-> 4     4 -0.606  0.952 -1.80     0.0157  -0.00978 -0.0590 -0.00754    229
-> 5     5 -0.478  1.10  -1.88    -0.00423  0.00495 -0.0482 -0.00982    229
+> 1     1 -0.120  0.819 -1.99     0.0114   0.00351  0.0334  0.00638    427
+> 2     2 -0.0492 0.166  0.00121  0.0115  -0.0166  -0.0297  0.00509    287
+> 3     3 -0.774  0.651  0.367   -0.0172   0.00600  0.0211  0.00303    226
+> 4     4 -0.606  0.952 -1.80     0.0157  -0.00978 -0.0590 -0.00754    446
+> 5     5 -0.478  1.10  -1.88    -0.00423  0.00495 -0.0482 -0.00982    468
 > # i 23 more variables: model_high_d_x1 <dbl>, model_high_d_x2 <dbl>,
 > #   model_high_d_x3 <dbl>, model_high_d_x4 <dbl>, model_high_d_x5 <dbl>,
 > #   model_high_d_x6 <dbl>, model_high_d_x7 <dbl>, error_square_x1 <dbl>,
