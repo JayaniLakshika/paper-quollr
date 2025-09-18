@@ -147,7 +147,7 @@ source("scripts/additional_functions.R")
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a wireframe model representation, that can be lifted and displayed in the high-dimensional space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a \twoD wireframe model representation, that can be lifted and displayed in the high-dimensional (\pD) space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
 ```{r}
 clr_choice <- "#66B2CC"
