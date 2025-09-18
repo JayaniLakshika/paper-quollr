@@ -1,5 +1,5 @@
 Notation ,Description
-"$n, p, k$","number of observations, variables, embedding dimension, respectively"
+"\$n, p, k\$","number of observations, variables, embedding dimension, respectively"
 "$\mathbfit{X}, \mathbfit{x}$","$p$-dimensional data (population, sample)"
 $\mathbfit{y}$,$k$-dimensional layout
 $P$,"orthonormal basis, generating a $d\text{-}dimensional$ linear projection of $p$-dimensional data"
