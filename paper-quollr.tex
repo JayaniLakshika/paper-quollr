@@ -110,9 +110,9 @@ scurve_umap_obj
 > [1] -10.36686  10.10691
 \end{verbatim}
 
-\paragraph{Computing hexagon grid configurations}\label{computing-hexagon-grid-configurations}
+\paragraph{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
 
-The configurations of a hexagonal grid are determined by the number of bins and the bin width in each direction. The function \texttt{calc\_bins\_y()} is used for this purpose. This function accepts (1) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
+The function \texttt{calc\_bins\_y()} determines the configuration of the hexagonal grid by computing the number of bins along the y-axis (\texttt{b2}), the hexagon width (\texttt{a1}), and height (\texttt{a2}). This function accepts (1) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 \begin{verbatim}
 bin_configs <- calc_bins_y(
