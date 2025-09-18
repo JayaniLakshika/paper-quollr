@@ -830,7 +830,7 @@ First, the function extracts the first two dimensions of the scaled NLDR embeddi
 
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`h`) to the point.
 
-The result is a data frame of the scaled \twoD embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
+The result is a `tibble` of the scaled \twoD embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
