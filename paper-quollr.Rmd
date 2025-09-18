@@ -9,7 +9,7 @@ author:
     address: Department of Econometrics and Business Statistics, VIC 3800 Australia
     url: https://jayanilakshika.netlify.app/
     orcid: 0000-0002-6265-6481
-    email:  \email{jayani.piyadigamage@monash.edu}
+    email: jayani.piyadigamage@monash.edu
   - name: Dianne Cook
     affiliation: Monash University
     address: Department of Econometrics and Business Statistics, VIC 3800 Australia
@@ -547,7 +547,7 @@ pak::pak("JayaniLakshika/quollr")
 
 ## Usage
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout.
 
 `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from 
 
@@ -560,15 +560,13 @@ X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
 \end{aligned}
 $$
 
-The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: $X_4, X_5 \sim U(-0.02, 0.02)$, $X_6 \sim U(-0.1, 0.1)$, and $X_7 \sim U(-0.01, 0.01)$. These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. `scurve_umap` is the UMAP $2\text{-}D$ embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding $2\text{-}D$ `scurve_umap`. 
+The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: $X_4, X_5 \sim U(-0.02, 0.02)$, $X_6 \sim U(-0.1, 0.1)$, and $X_7 \sim U(-0.01, 0.01)$. These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. `scurve_umap` is the UMAP \twoD embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding \twoD `scurve_umap`.
 
 ### Main function
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
 
-<!-- If a user would like to perform steps of the algorithm themselves, additional user input will be needed for the function that perform each step. For example, if the user wishes to use already binning data, the `merge_hexbin_centroids()` function can be used directly. -->
-
-This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both \twoD (`model_2d`), and \pD (`model_highd`), and triangular mesh (`trimesh_data`).  
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both \twoD (`model_2d`), and \pD (`model_highd`), and triangular mesh (`trimesh_data`).  
 
 ```{r, echo=TRUE, eval=FALSE}
 fit_highd_model(
@@ -811,7 +809,7 @@ With these values, the function determines fixed offsets in the x and y directio
 
 For each centroid, six vertices are computed and assigned a polygon ID as the centroid. These vertices are then combined into a tibble that records the polygon ID (`h`) and the respective x (`x`) and y (`y`) coordinates for all hexagon corners.
 
-To reduce computational overhead, the geometry calculations are implemented in C++ using `gen_hex_coord_cpp()`, which returns a `data.frame` of vertex coordinates.
+To reduce computational overhead, the geometry calculations are implemented in C++ using `gen_hex_coord_cpp()`, which returns a `tibble` of vertex coordinates.
 
 ```{r, echo=TRUE}
 all_hex_coord <- gen_hex_coord(
@@ -845,7 +843,7 @@ head(umap_hex_id, 5)
 
 The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
 
-The function begins by grouping the data by hexagon ID (`h`) and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a standardized bin counts, `w_h`, ranging from 0 to 1.
+The function begins by grouping the data by hexagon ID (`h`) and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a standardized bin counts, `w_h`, ranging from $0$ to $1$.
 
 ```{r, echo=TRUE}
 std_df <- compute_std_counts(
@@ -859,7 +857,7 @@ head(std_df, 5)
 
 The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
 
-The function first groups the input data by `h`, which represents the hexagon label associated with each point in the \twoD layout. Within each group, it collects the `ID`s into a list, resulting in a summary data frame where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
+The function first groups the input data by `h`, which represents the hexagon ID associated with each point in the \twoD layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
 
 ```{r, echo=TRUE}
 pts_df <- group_hex_pts(
@@ -873,7 +871,7 @@ head(pts_df, 5)
 
 The `merge_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
-This function begins by arranging the `counts_data` by `h` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs between the two datasets to incorporate both hexagonal bin centroids and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `w_h` or `n_h` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data frame contains the full set of hexagon centroids along with associated bin counts and standardized counts.
+This function begins by arranging the `counts_data` by `h` to ensure consistent ordering. It then performs a full join with `centroids_data`, aligning hexagon IDs (`h`) between the two datasets to incorporate both hexagonal bin centroids (`h`) and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `w_h` or `n_h` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (`n_h`) and standardized counts (`w_h`).
 
 ```{r, echo=TRUE}
 df_bin_centroids <- merge_hexbin_centroids(
@@ -886,9 +884,9 @@ head(df_bin_centroids, 5)
 
 #### Indicating neighbors by line segments connecting centroids
 
-To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation [@lee1980;@alb2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
-The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `tripack::tri.mesh()` function (@albrecht2025). This triangulation forms the structural basis for identifying adjacent bins.
+The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `tripack::tri.mesh()` function [@albrecht2025]. This triangulation forms the structural basis for identifying adjacent bins.
 
 ```{r, echo=TRUE}
 tr_object <- tri_bin_centroids(
@@ -896,7 +894,7 @@ tr_object <- tri_bin_centroids(
   )
 ```
 
-The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function `calc_2d_dist()`. Only edges within a hexagon’s neighborhood radius (based on the hexagon side length `a1`) are retained.
+The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function `calc_2d_dist()`. 
 
 ```{r, echo=TRUE}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
@@ -916,7 +914,7 @@ head(trimesh, 5)
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the \twoD structure, potentially disrupting the continuity of the representation.
 
-To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., 0.05), the hexagon is flagged for removal.
+To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., $0.05$), the hexagon is flagged for removal.
 
 The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their hexagon ID (`h`) and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
@@ -926,10 +924,9 @@ find_low_dens_hex(
   b1 = 25, 
   md_thresh = 0.05
 )
-
 ```
 
-For simplicity, we remove low-density hexagons using a threshold of $1$.
+For simplicity, we remove low-density hexagons using a threshold of $0$.
 
 ```{r, echo=TRUE}
 df_bin_centroids <- df_bin_centroids |>
@@ -940,7 +937,6 @@ trimesh <- trimesh |>
                 to_count > 0)
 
 trimesh <- update_trimesh_index(trimesh)
-
 ```
 
 ### Lifting the model into high dimensions
@@ -974,15 +970,15 @@ predict_data <- predict_emb(
 head(predict_data, 5)
 ```
 
-It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP (@tomasz2023) supports direct prediction of embeddings for new data once a model is fitted.
+It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP [@tomasz2023] supports direct prediction of embeddings for new data once a model is fitted.
 
 ### Compute residuals and Root Mean Square Error (RMSE)
 
-Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be output using the  `glance()` function. 
+Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be computed using the  `glance()` function, which provides a tidy output for evaluation.
 
-This function begins by renaming the columns of the input `model_highd` data frame to avoid naming conflicts during subsequent joins. It then uses the `predict_emb()` function to assign each point in the high-dimensional dataset to a corresponding bin in the 2D model, producing a prediction data frame that contains both the predicted bin assignment (`pred_hb_id`) and the original observation `ID`.
+The function requires both the fitted model object returned by `fit_highd_model()` and \pD data to begin. The \pD model output (`model_highd`) is first renamed to avoid naming conflicts during subsequent data joins. It then uses the `predict_emb()` function to assign each point in the \pD dataset to a corresponding hexagon bin in the \twoD model, producing a prediction data frame that contains both the predicted bin assignment (`pred_h`) and the original observation `ID`.
 
-The function joins this prediction output with both the high-dimensional model (to get mean bin coordinates in the original space) and the original high-dimensional data (to retrieve true coordinates). It then calculates squared differences between the true and predicted high-dimensional coordinates for each dimension, storing these as `error_square_x1`, `error_square_x2`, ..., up to the dimensionality of the data.
+The function joins this prediction output with both the \pD model and the \pD data (to retrieve true coordinates). It then calculates squared differences between the original and predicted \pD coordinates for each dimension, storing these as `error_square_x1`, `error_square_x2`, ..., up to the dimensionality of the data.
 
 From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RMSE which is the average of the total squared error per point.
 
@@ -995,13 +991,13 @@ glance(
   )
 ```
 
-Furthermore, `augment()` accepts \twoD and \pD model points, and the \pD data and adds information about each observation in the data set. 
+Furthermore, `augment()` requires both the fitted model object returned by `fit_highd_model()` and \pD data to begin. It extends the fitted model by adding prediction results and error diagnostics to the original \pD data.
 
-The function starts with the same process as is used in the `glance()` function to produce a predicted point in \pD for each point in the high-dimensional dataset.
+The function starts with the same process as is used in the `glance()` function to produce a predicted point in \pD for each point in the \pD dataset.
 
 Next, the function computes residuals between each original coordinate (`x1`, `x2`, ..., `xp`) and the corresponding modeled coordinate (`model_high_d_x1`, ..., `model_high_d_xp`) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the `row_wise_total_error` which is the total squared error across all dimensions, and the `row_wise_abs_error` which is the total absolute error across all dimensions.
 
-The final output is a data frame that combines the original IDs, high-dimensional coordinates, predicted bin IDs, modeled coordinates, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error for each observation. The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
+The final output is a data frame that combines the original IDs, high-dimensional data, predicted bin IDs, modeled coordinates, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error for each observation. The augmented dataset is always returned as a `tibble::tibble` with the same number of rows as the passed dataset.
 
 ```{r, echo=TRUE}
 model_error <- augment(
@@ -1092,7 +1088,7 @@ full_hexgrid + data_hexgrid +
 
 #### \pD model visualization
 
-To visualise how well the \pD model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \pD using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` package.
+To visualize how well the \pD model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \pD using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
 
 Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 

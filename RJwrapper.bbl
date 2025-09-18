@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{28}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -40,9 +40,15 @@ J.~P. Gamage, D.~Cook, P.~Harrison, M.~Lydeamore, and T.~S. Talagala.
 \newblock Stop lying to me: New visual tools to choose the most honest nonlinear dimension reduction, 2025.
 \newblock URL \url{https://arxiv.org/abs/2506.22051}.
 
-\bibitem[Gebhardt et~al.(2024)Gebhardt, Bivand, and Sinclair]{albrecht2024}
+\bibitem[Gebhardt et~al.(2024{\natexlab{a}})Gebhardt, Bivand, and Sinclair]{alb2024}
 A.~Gebhardt, R.~Bivand, and D.~Sinclair.
-\newblock \emph{interp: Interpolation Methods}, 2024.
+\newblock \emph{{interp: Interpolation Methods}}, 2024{\natexlab{a}}.
+\newblock URL \url{\url{https://CRAN.R-project.org/package=interp}.}
+\newblock R package version 1.1-6.
+
+\bibitem[Gebhardt et~al.(2024{\natexlab{b}})Gebhardt, Bivand, and Sinclair]{albrecht2024}
+A.~Gebhardt, R.~Bivand, and D.~Sinclair.
+\newblock \emph{interp: Interpolation Methods}, 2024{\natexlab{b}}.
 \newblock URL \url{https://CRAN.R-project.org/package=interp}.
 \newblock R package version 1.1-6.
 
@@ -69,6 +75,12 @@ T.~Konopka.
 \newblock \emph{umap: Uniform Manifold Approximation and Projection}, 2023.
 \newblock URL \url{https://CRAN.R-project.org/package=umap}.
 \newblock R package version 0.2.10.0.
+
+\bibitem[Lee and Schachter(1980)]{lee1980}
+D.~T. Lee and B.~J. Schachter.
+\newblock {Two Algorithms For Constructing a Delaunay Triangulation}.
+\newblock \emph{International Journal of Computer \& Information Sciences}, 9\penalty0 (3):\penalty0 219--242, 1980.
+\newblock URL \url{\url{https://doi.org/10.1007/BF00977785}.}
 
 \bibitem[Maaten and Hinton(2008)]{laurens2008}
 L.~V.~D. Maaten and G.~E. Hinton.

@@ -736,7 +736,6 @@ find_low_dens_hex(
 )
 
 
-
 ## ----echo=TRUE----------------------------------------------------------------
 df_bin_centroids <- df_bin_centroids |>
   dplyr::filter(n_h > 0)
@@ -746,7 +745,6 @@ trimesh <- trimesh |>
                 to_count > 0)
 
 trimesh <- update_trimesh_index(trimesh)
-
 
 
 ## ----echo=TRUE----------------------------------------------------------------
