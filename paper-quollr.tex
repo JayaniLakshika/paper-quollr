@@ -149,13 +149,13 @@ hb_obj <- hex_binning(
 
 The \texttt{gen\_centroids()} function calculates the centroids of a hexagonal grid.
 
-The coordinate limits of the embedding (\texttt{lim1} and \texttt{lim2}) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls \texttt{calc\_bins\_y()}, a helper function that determines the appropriate number of hexagonal rows (\texttt{bin2}) and the width of each hexagon (\texttt{a1}) given the specified number of bins along the x-axis (\texttt{b1}) and buffer (\texttt{q}).
+The coordinate limits of the embedding (\texttt{lim1} and \texttt{lim2}) are used to compute the aspect ratio between the two axes, which informs vertical spacing. The function then calls \texttt{calc\_bins\_y()}, a helper function that determines the appropriate number of hexagons along y-axis (\texttt{b2}) and the width of each hexagon (\texttt{a1}) given the specified number of bins along the x-axis (\texttt{b1}) and buffer (\texttt{q}).
 
-Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (\texttt{a2}) is given by the height of a hexagon, \(\sqrt{3}/2 \times a_1\).
+Then, the centroids are computed iteratively. The x-coordinates for centroids in odd-numbered rows are initialized as a sequence spaced by the hexagon width. Even-numbered rows are staggered by half this width to achieve a hexagonal tiling effect. Vertical spacing (\texttt{vs}) is given by \(\sqrt{3}/2 \times a_1\).
 
 The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
 
-Finally, a tibble is returned containing a unique hexagon ID (\texttt{h}) along with the corresponding x and y centroid coordinates (\texttt{c\_x}, \texttt{c\_y}), which define the layout of the hexagonal grid over the \(2\text{-}D\) space.
+Finally, a tibble is returned containing a unique hexagon ID (\texttt{h}) along with the corresponding x and y centroid coordinates (\texttt{c\_x}, \texttt{c\_y}), which define the layout of the hexagonal grid over the $2\text{-}D$ space.
 
 \begin{verbatim}
 all_centroids_df <- gen_centroids(
@@ -817,7 +817,7 @@ Notation & Description & Variable\\
 \$g\$ & functional mapping from \textbackslash{}pD\{\} to \textbackslash{}kD\{\}, especially as prescribed by NLDR & NA\\
 \$\textbackslash{}mathbfit\{\textbackslash{}theta\}\$ & (Hyper-) parameters for NLDR method & NA\\
 \$r\$ & ranges of the embedding components & NA\\
-\$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers & NA\\
+\$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers & (c\_x, c\_y)\\
 \$(b\_1, b\_2)\$ & number of bins in each direction & (b1, b2) = bins\\
 \addlinespace
 \$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction & a1, a2\\
