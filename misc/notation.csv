@@ -1,21 +1,22 @@
-Notation ,Description
-"\$n, p, k\$","number of observations, variables, embedding dimension, respectively"
-"$\mathbfit{X}, \mathbfit{x}$","$p$-dimensional data (population, sample)"
-$\mathbfit{y}$,$k$-dimensional layout
-$P$,"orthonormal basis, generating a $d\text{-}dimensional$ linear projection of $p$-dimensional data"
-$T$,true  model
-$g$,"functional mapping from \pD{} to \kD{}, especially as prescribed by NLDR"
-$\mathbfit{\theta}$,(Hyper-) parameters for NLDR method
-$r$,ranges of the embedding components
-$C^{(j)}$,$j$-dimensional bin centers
-"$(b_1, b_2)$",number of bins in each direction
-"$(a_1, a_2)$","binwidths, distance between centroids in each direction"
-"$(s_1, \ s_2)$",starting coordinates of the hexagonal grid
-$q$,"buffer to ensure hexgrid covers data, proportion of data range, 0-1"
-$m$,number of non-empty bins
-$b$,number of  hexagons in the grid
-$h$,hexagonal id
-$l$,side length
-$A$,area
-$n_h$,bin count
-$w_h$,standardised bin counts
+Notation ,Description,Variable
+"\$n, p, k\$","number of observations, variables, embedding dimension, respectively",
+"$\mathbfit{X}, \mathbfit{x}$","$p$-dimensional data (population, sample)",
+$\mathbfit{y}$,$k$-dimensional layout,
+$P$,"orthonormal basis, generating a $d\text{-}dimensional$ linear projection of $p$-dimensional data",
+$T$,true  model,
+$g$,"functional mapping from \pD{} to \kD{}, especially as prescribed by NLDR",
+$\mathbfit{\theta}$,(Hyper-) parameters for NLDR method,
+$r$,ranges of the embedding components,
+$C^{(j)}$,$j$-dimensional bin centers,
+"$(b_1, b_2)$",number of bins in each direction,"b1, b2"
+"$(a_1, a_2)$","binwidths, distance between centroids in each direction",
+"$(s_1, \ s_2)$",starting coordinates of the hexagonal grid,
+$q$,"buffer to ensure hexgrid covers data, proportion of data range, 0-1",q
+$m$,number of non-empty bins,
+$b$,number of  hexagons in the grid,
+$h$,hexagonal id,
+$l$,side length,
+$A$,area,
+$n_h$,bin count,
+$w_h$,standardised bin counts,
+,threshold to extract high density hexagons,hd_thresh

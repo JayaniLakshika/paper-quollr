@@ -17,7 +17,7 @@ Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochast
 This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional ($p\text{-}D$) space (Figure \ref{fig:overview}).
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.}\label{fig:overview}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/overview-1} \caption{Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.}\label{fig:overview}
 \end{figure}
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
@@ -67,14 +67,14 @@ This function requires several parameters: the high-dimensional data (\texttt{hi
 fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
-  b1 = 25, 
+  b1 = 21, 
   q = 0.1, 
-  hd_thresh = 1)
+  hd_thresh = 0)
 \end{verbatim}
 
 \subsubsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
 
-Constructing the \(2\text{-}D\) model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
+Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
 
 \paragraph{Scaling the data}\label{scaling-the-data}
 
@@ -804,33 +804,35 @@ This article is created using \CRANpkg{knitr} \citep{knitr} and \CRANpkg{rmarkdo
 
 \caption{\label{tab:notation-tb-pdf}Summary of notation for describing new methodology.}
 \centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{12cm}}
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{10cm}>{\raggedright\arraybackslash}p{3cm}}
 \toprule
-Notation & Description\\
+Notation & Description & Variable\\
 \midrule
-\textbackslash{}\$n, p, k\textbackslash{}\$ & number of observations, variables, embedding dimension, respectively\\
-\$\textbackslash{}mathbfit\{X\}, \textbackslash{}mathbfit\{x\}\$ & \$p\$-dimensional data (population, sample)\\
-\$\textbackslash{}mathbfit\{y\}\$ & \$k\$-dimensional layout\\
-\$P\$ & orthonormal basis, generating a \$d\textbackslash{}text\{-\}dimensional\$ linear projection of \$p\$-dimensional data\\
-\$T\$ & true  model\\
+\textbackslash{}\$n, p, k\textbackslash{}\$ & number of observations, variables, embedding dimension, respectively & NA\\
+\$\textbackslash{}mathbfit\{X\}, \textbackslash{}mathbfit\{x\}\$ & \$p\$-dimensional data (population, sample) & NA\\
+\$\textbackslash{}mathbfit\{y\}\$ & \$k\$-dimensional layout & NA\\
+\$P\$ & orthonormal basis, generating a \$d\textbackslash{}text\{-\}dimensional\$ linear projection of \$p\$-dimensional data & NA\\
+\$T\$ & true  model & NA\\
 \addlinespace
-\$g\$ & functional mapping from \textbackslash{}pD\{\} to \textbackslash{}kD\{\}, especially as prescribed by NLDR\\
-\$\textbackslash{}mathbfit\{\textbackslash{}theta\}\$ & (Hyper-) parameters for NLDR method\\
-\$r\$ & ranges of the embedding components\\
-\$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers\\
-\$(b\_1, b\_2)\$ & number of bins in each direction\\
+\$g\$ & functional mapping from \textbackslash{}pD\{\} to \textbackslash{}kD\{\}, especially as prescribed by NLDR & NA\\
+\$\textbackslash{}mathbfit\{\textbackslash{}theta\}\$ & (Hyper-) parameters for NLDR method & NA\\
+\$r\$ & ranges of the embedding components & NA\\
+\$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers & NA\\
+\$(b\_1, b\_2)\$ & number of bins in each direction & b1, b2\\
 \addlinespace
-\$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction\\
-\$(s\_1, \textbackslash{} s\_2)\$ & starting coordinates of the hexagonal grid\\
-\$q\$ & buffer to ensure hexgrid covers data, proportion of data range, 0-1\\
-\$m\$ & number of non-empty bins\\
-\$b\$ & number of  hexagons in the grid\\
+\$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction & NA\\
+\$(s\_1, \textbackslash{} s\_2)\$ & starting coordinates of the hexagonal grid & NA\\
+\$q\$ & buffer to ensure hexgrid covers data, proportion of data range, 0-1 & q\\
+\$m\$ & number of non-empty bins & NA\\
+\$b\$ & number of  hexagons in the grid & NA\\
 \addlinespace
-\$h\$ & hexagonal id\\
-\$l\$ & side length\\
-\$A\$ & area\\
-\$n\_h\$ & bin count\\
-\$w\_h\$ & standardised bin counts\\
+\$h\$ & hexagonal id & NA\\
+\$l\$ & side length & NA\\
+\$A\$ & area & NA\\
+\$n\_h\$ & bin count & NA\\
+\$w\_h\$ & standardised bin counts & NA\\
+\addlinespace
+NA & threshold to extract high density hexagons & hd\_thresh\\
 \bottomrule
 \end{tabular}
 \end{table}
