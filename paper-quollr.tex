@@ -491,7 +491,7 @@ These metrics are returned in a tibble as \texttt{Error} (absolute error) and \t
 
 \begin{verbatim}
 glance(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 \end{verbatim}
@@ -513,7 +513,7 @@ The final output is a data frame that combines the original IDs, high-dimensiona
 
 \begin{verbatim}
 model_error <- augment(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 

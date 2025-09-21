@@ -768,14 +768,14 @@ head(predict_data, 5)
 
 ## ----echo=TRUE----------------------------------------------------------------
 glance(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 
 
 ## ----echo=TRUE----------------------------------------------------------------
 model_error <- augment(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 

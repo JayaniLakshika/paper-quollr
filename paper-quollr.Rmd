@@ -41,7 +41,6 @@ preamble: >
   \usepackage{float}
   \newcommand{\pD}{$p\text{-}D$}
   \newcommand{\twoD}{$2\text{-}D$}
-  \PassOptionsToPackage{draft}{hyperref}
 output: 
  rjtools::rjournal_article:
     keep_md: true
