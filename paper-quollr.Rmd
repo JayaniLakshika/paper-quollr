@@ -41,6 +41,7 @@ preamble: >
   \usepackage{float}
   \newcommand{\pD}{$p\text{-}D$}
   \newcommand{\twoD}{$2\text{-}D$}
+  \PassOptionsToPackage{draft}{hyperref}
 output: 
  rjtools::rjournal_article:
     keep_md: true
@@ -986,7 +987,7 @@ These metrics are returned in a tibble as `Error` (absolute error) and `RMSE` (r
 
 ```{r, echo=TRUE}
 glance(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 ```
@@ -1001,7 +1002,7 @@ The final output is a data frame that combines the original IDs, high-dimensiona
 
 ```{r, echo=TRUE}
 model_error <- augment(
-  model_object = scurve_model_obj,
+  x = scurve_model_obj,
   highd_data = scurve
   )
 
