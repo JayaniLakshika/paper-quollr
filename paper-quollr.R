@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   message=FALSE, 
   warning=FALSE,
   comment = ">",
-  out.width = "100%")
+  out.width = "100%",
+  htmlwidgets.sizing = TRUE)
 
 
 
