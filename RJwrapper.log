@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.9.21)  3 OCT 2025 13:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.9.21)  3 OCT 2025 14:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -955,21 +955,21 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 80A0CD6B6E86C173E8E985ADABB8CDC8;1806.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: F58487528DEC83B2698C3CDF05F7AD81;1367.
+(rerunfilecheck)             Checksum: C2B78B0D2D5A465209FDACDCA47ED2C0;1371.
  ) 
 Here is how much of TeX's memory you used:
- 27491 strings out of 469778
- 502274 string characters out of 5481336
+ 27494 strings out of 469778
+ 502329 string characters out of 5481336
  926690 words of memory out of 5000000
  54977 multiletter control sequences out of 15000+600000
- 682579 words of font info for 337 fonts, out of 8000000 for 9000
+ 682734 words of font info for 339 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,11n,131p,1487b,1003s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2387639 bytes).
+Output written on RJwrapper.pdf (20 pages, 2387542 bytes).
 PDF statistics:
- 488 PDF objects out of 1000 (max. 8388607)
- 420 compressed objects within 5 object streams
+ 490 PDF objects out of 1000 (max. 8388607)
+ 422 compressed objects within 5 object streams
  70 named destinations out of 1000 (max. 500000)
  75397 words of extra memory for PDF output out of 89155 (max. 10000000)
 
