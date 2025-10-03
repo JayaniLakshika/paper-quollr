@@ -884,9 +884,9 @@ head(df_bin_centroids, 5)
 
 #### Indicating neighbors by line segments connecting centroids
 
-To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation [@lee1980;@alb2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
-The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `tripack::tri.mesh()` function [@albrecht2025]. This triangulation forms the structural basis for identifying adjacent bins.
+The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `interp::tri.mesh()` function [@albrecht2024]. This triangulation forms the structural basis for identifying adjacent bins.
 
 ```{r, echo=TRUE}
 tr_object <- tri_bin_centroids(

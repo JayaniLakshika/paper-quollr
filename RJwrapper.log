@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.9.21)  3 OCT 2025 14:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.9.21)  3 OCT 2025 14:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -851,7 +851,7 @@ Overfull \hbox (0.18141pt too wide) in paragraph at lines 561--562
 
 
 [10]
-<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=162, 1445.4pt x 361.35pt>
+<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=161, 1445.4pt x 361.35pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 615.
@@ -869,7 +869,7 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 626--627
 
 
 [11 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf, id=176, 469.755pt x 118.4425pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf, id=175, 469.755pt x 118.4425pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf  used on input line 650.
@@ -877,7 +877,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf 
 
 
 [12 <./paper-quollr_files/figure-latex/unnamed-chunk-27-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf, id=194, 722.7pt x 722.7pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf, id=193, 722.7pt x 722.7pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 689.
@@ -885,7 +885,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf 
 
 
 [13 <./paper-quollr_files/figure-latex/unnamed-chunk-30-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf, id=213, 941.5175pt x 708.6475pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf, id=212, 941.5175pt x 708.6475pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf  used on input line 727.
@@ -900,12 +900,12 @@ Overfull \hbox (36.27023pt too wide) in paragraph at lines 732--733
 
 
 [15 <./paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>]
-<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=245, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-rmse-1.pdf, id=244, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rmse-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rmse-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rmse-1.pdf  used on input line 751.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=246, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=245, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 755.
@@ -930,16 +930,16 @@ Overfull \hbox (92.9055pt too wide) in paragraph at lines 780--811
 
 
 
-[18]
-
-[19])
+[18])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 823.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
 (Font)              scaled to size 9.18004pt on input line 823.
-)
+
+
+[19])
 
 [20] (./RJwrapper.aux)
  ***********
@@ -955,21 +955,21 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 80A0CD6B6E86C173E8E985ADABB8CDC8;1806.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: C2B78B0D2D5A465209FDACDCA47ED2C0;1371.
+(rerunfilecheck)             Checksum: 7B34185E757DFD54CA276E85F0950B2A;1376.
  ) 
 Here is how much of TeX's memory you used:
- 27494 strings out of 469778
- 502329 string characters out of 5481336
- 926690 words of memory out of 5000000
- 54977 multiletter control sequences out of 15000+600000
- 682734 words of font info for 339 fonts, out of 8000000 for 9000
+ 27477 strings out of 469778
+ 502084 string characters out of 5481336
+ 926544 words of memory out of 5000000
+ 54965 multiletter control sequences out of 15000+600000
+ 682579 words of font info for 337 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,11n,131p,1487b,1003s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2387542 bytes).
+Output written on RJwrapper.pdf (20 pages, 2387194 bytes).
 PDF statistics:
- 490 PDF objects out of 1000 (max. 8388607)
- 422 compressed objects within 5 object streams
- 70 named destinations out of 1000 (max. 500000)
+ 484 PDF objects out of 1000 (max. 8388607)
+ 416 compressed objects within 5 object streams
+ 68 named destinations out of 1000 (max. 500000)
  75397 words of extra memory for PDF output out of 89155 (max. 10000000)
 
