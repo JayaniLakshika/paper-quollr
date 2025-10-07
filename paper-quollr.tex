@@ -30,13 +30,9 @@ Our algorithm includes the following steps: (1) scaling the NLDR data, (2) compu
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
-\section{Implementation}\label{implementation}
-
-\subsection{Availability}\label{availability}
+\section{Usage}\label{usage}
 
 The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
-
-\subsection{Usage}\label{usage}
 
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. The built-in data sets \texttt{scurve} and \texttt{scurve\_umap} are also used throughout.
 
@@ -53,7 +49,7 @@ X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
 
 The remaining variables \(X_4\), \(X_5\), \(X_6\), and \(X_7\) are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: \(X_4, X_5 \sim U(-0.02, 0.02)\), \(X_6 \sim U(-0.1, 0.1)\), and \(X_7 \sim U(-0.01, 0.01)\). These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. \texttt{scurve\_umap} is the UMAP $2\text{-}D$ embedding for \texttt{scurve} data with \texttt{n\_neighbors}\(=46\) and \texttt{min\_dist}\(=0.9\). Each data set contains a unique ID column that maps the \(7\text{-}D\) point in \texttt{scurve} to the corresponding $2\text{-}D$ \texttt{scurve\_umap}.
 
-\subsubsection{Main function}\label{main-function}
+\subsection{Main function}\label{main-function}
 
 The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility.
 
@@ -68,11 +64,11 @@ fit_highd_model(
   hd_thresh = 0)
 \end{verbatim}
 
-\subsubsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
+\subsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
 
 Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
 
-\paragraph{Scaling the data}\label{scaling-the-data}
+\subsubsection{Scaling the data}\label{scaling-the-data}
 
 The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
 
@@ -106,7 +102,7 @@ scurve_umap_obj
 > [1] -10.36686  10.10691
 \end{verbatim}
 
-\paragraph{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
+\subsubsection{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
 
 The function \texttt{calc\_bins\_y()} determines the configuration of the hexagonal grid by computing the number of bins along the y-axis (\texttt{b2}), the hexagon width (\texttt{a1}), and height (\texttt{a2}). This function accepts (1) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
@@ -130,7 +126,7 @@ bin_configs
 > [1] 0.04289005
 \end{verbatim}
 
-\paragraph{Binning the data}\label{binning-the-data}
+\subsubsection{Binning the data}\label{binning-the-data}
 
 Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
@@ -141,7 +137,7 @@ hb_obj <- hex_binning(
   q = 0.1)
 \end{verbatim}
 
-\subparagraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
+\paragraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
 
 The \texttt{gen\_centroids()} function calculates the centroids of a hexagonal grid.
 
@@ -180,7 +176,7 @@ all_centroids_df
 > # i 815 more rows
 \end{verbatim}
 
-\subparagraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
+\paragraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
 
 Following the generation of hexagonal centroids, the \texttt{gen\_hex\_coord()} function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
 
@@ -212,7 +208,7 @@ head(all_hex_coord, 5)
 > 5 1 -0.07523742 -0.12997683
 \end{verbatim}
 
-\subparagraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
+\paragraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
 
 After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The \texttt{assign\_data()} function performs this assignment by calculating the $2\text{-}D$ Euclidean distance between each point in the $2\text{-}D$ embedding and all hexagon centroids.
 
@@ -242,7 +238,7 @@ head(umap_hex_id, 5)
 > 5 0.218 0.983     5   657
 \end{verbatim}
 
-\subparagraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
+\paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
 
@@ -267,7 +263,7 @@ head(std_df, 5)
 > 5    86     1 0.001
 \end{verbatim}
 
-\subparagraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
+\paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
 
 The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
 
@@ -292,7 +288,7 @@ head(pts_df, 5)
 > 5    86 <int [1]>
 \end{verbatim}
 
-\paragraph{Obtaining bin centroids}\label{obtaining-bin-centroids}
+\subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
 The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -316,7 +312,7 @@ head(df_bin_centroids, 5)
 > 5 5  0.0981006503 -0.1156801   0   0
 \end{verbatim}
 
-\paragraph{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
+\subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
 To represent the neighborhood structure of hexagonal bins in a $2\text{-}D$ layout, we employ Delaunay triangulation \citep{lee1980, albrecht2024} on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
@@ -367,7 +363,7 @@ head(trimesh, 5)
 > # i 2 more variables: from_reindexed <int>, to_reindexed <int>
 \end{verbatim}
 
-\paragraph{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
+\subsubsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the $2\text{-}D$ structure, potentially disrupting the continuity of the representation.
 
@@ -418,7 +414,7 @@ trimesh <- trimesh |>
 trimesh <- update_trimesh_index(trimesh)
 \end{verbatim}
 
-\subsubsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
+\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
 
 The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$. This is done by modelling a point in $p\text{-}D$ as the $p\text{-}D$ mean of data points in the $2\text{-}D$ centroid. This is performed using the \texttt{avg\_highd\_data()} function, which takes $p\text{-}D$ data (\texttt{highd\_data}) and embedding data with their corresponding hexagonal bin IDs as inputs (\texttt{scaled\_nldr\_hexid}).
 
@@ -442,7 +438,7 @@ head(df_bin, 5)
 > 5    86 0.255 0.0447  1.97 -0.00862 -0.00733 -0.0826  0.00229
 \end{verbatim}
 
-\subsubsection{Prediction}\label{prediction}
+\subsection{Prediction}\label{prediction}
 
 The \texttt{predict\_emb()} function is used to predict a point in a $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
 
@@ -473,7 +469,7 @@ head(predict_data, 5)
 
 It is worth noting that while \texttt{predict\_emb()} provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP \citep{tomasz2023} supports direct prediction of embeddings for new data once a model is fitted.
 
-\subsubsection{Compute residuals and Root Within Bin Sum of Square (RWBSS)}\label{compute-residuals-and-root-within-bin-sum-of-square-rwbss}
+\subsection{Compute residuals and Root Within Bin Sum of Square (RWBSS)}\label{compute-residuals-and-root-within-bin-sum-of-square-rwbss}
 
 Root Within Bin Sum of Square (RWBSS) are used as goodness of fit metrics for the model. These metrics can be computed using the \texttt{glance()} function, which provides a tidy output for evaluation.
 
@@ -534,7 +530,7 @@ head(model_error, 5)
 > #   abs_error_x3 <dbl>, abs_error_x4 <dbl>, abs_error_x5 <dbl>, ...
 \end{verbatim}
 
-\subsubsection{Visualizations}\label{visualizations}
+\subsection{Visualizations}\label{visualizations}
 
 The package offers several $2\text{-}D$ visualizations, including:
 
@@ -558,7 +554,7 @@ Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \te
 
 Each visualization can be generated using its respective function, as described in this section.
 
-\paragraph{Hexagonal grid}\label{hexagonal-grid}
+\subsubsection{Hexagonal grid}\label{hexagonal-grid}
 
 The \texttt{geom\_hexgrid()} function introduces a custom \texttt{ggplot2} layer designed for visualizing hexagonal grid on a provided set of bin centroids.
 
@@ -582,7 +578,7 @@ data_hexgrid <- ggplot() +
     ) 
 \end{verbatim}
 
-\paragraph{Triangular mesh}\label{triangular-mesh}
+\subsubsection{Triangular mesh}\label{triangular-mesh}
 
 The \texttt{geom\_trimesh()} function introduces a custom \texttt{ggplot2} layer designed for visualizing $2\text{-}D$ wireframe on a provided set of bin centroids.
 
@@ -615,7 +611,7 @@ data_triangulation_grid <- ggplot() +
 \caption{The outputs of `geom\_hexgrid` and `geom\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.}\label{fig:geom-outputs-pdf}
 \end{figure}
 
-\paragraph{\texorpdfstring{$p\text{-}D$ model visualization}{model visualization}}\label{model-visualization}
+\subsubsection{\texorpdfstring{$p\text{-}D$ model visualization}{model visualization}}\label{model-visualization}
 
 To visualize how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in $p\text{-}D$ using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} R package \citep{paul2023}.
 
@@ -646,7 +642,7 @@ show_langevitour(
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-27-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model.}\label{fig:unnamed-chunk-27}
 \end{figure}
 
-\paragraph{Link plots}\label{link-plots}
+\subsubsection{Link plots}\label{link-plots}
 
 There are mainly two interactive link plots can be generated.
 
@@ -723,7 +719,9 @@ errornldrdt_link
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-34}
 \end{figure}
 
-\section{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
+\section{Implementation}\label{implementation}
+
+\subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), $2\text{-}D$ distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 

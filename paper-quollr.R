@@ -1696,3 +1696,47 @@ trimesh_limb + limb_proj_tsne_model1 +
 # 
 # modellimbfig
 
+
+## -----------------------------------------------------------------------------
+df_exe_limb_int <- comb_all_data_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb, 
+  model_highd = df_bin_limb, 
+  model_2d = df_bin_centroids_limb
+)
+
+
+## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+# 
+# tsne_link_limb <- show_link_plots(
+#   point_data = df_exe_limb_int,
+#   edge_data = trimesh_data_limb,
+#   point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
+# )
+# 
+# class(tsne_link_limb) <- c(class(tsne_link_limb), "htmlwidget")
+# 
+# tsne_link_limb
+
+
+## -----------------------------------------------------------------------------
+df_exe_limb_int_best <- comb_all_data_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb2, 
+  model_highd = df_bin_limb, 
+  model_2d = df_bin_centroids_limb
+)
+
+
+## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+# 
+# tsne_link_limb_best <- show_link_plots(
+#   point_data = df_exe_limb_int_best,
+#   edge_data = trimesh_data_limb,
+#   point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
+# )
+# 
+# class(tsne_link_limb_best) <- c(class(tsne_link_limb_best), "htmlwidget")
+# 
+# tsne_link_limb_best
+

@@ -536,13 +536,10 @@ scurve_umap_plt + hex_grid_poly_scurve +
   plot_layout(ncol = 5)
 ```
 
-# Implementation
-
-## Availability
+# Usage
 
 The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
 
-## Usage
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout.
 
@@ -559,7 +556,7 @@ $$
 
 The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: $X_4, X_5 \sim U(-0.02, 0.02)$, $X_6 \sim U(-0.1, 0.1)$, and $X_7 \sim U(-0.01, 0.01)$. These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. `scurve_umap` is the UMAP \twoD embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding \twoD `scurve_umap`.
 
-### Main function
+## Main function
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
 
@@ -574,11 +571,11 @@ fit_highd_model(
   hd_thresh = 0)
 ```
 
-### Constructing the $2\text{-}D$ Model
+## Constructing the $2\text{-}D$ Model
 
 Constructing the \twoD model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
 
-#### Scaling the data
+### Scaling the data
 
 The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
 
@@ -588,7 +585,7 @@ scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 scurve_umap_obj
 ```
 
-#### Computing hexagon grid configuration
+### Computing hexagon grid configuration
 
 The function `calc_bins_y()` determines the configuration of the hexagonal grid by computing the number of bins along the y-axis (`b2`), the hexagon width (`a1`), and height (`a2`). This function accepts (1) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (2) the number of bins along the x-axis (`b1`), and (3) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
@@ -601,7 +598,7 @@ bin_configs <- calc_bins_y(
 bin_configs
 ```
 
-#### Binning the data
+### Binning the data
 
 Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` are the object output from `gen_scaled_data` (`nldr_scaled_obj`); the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`b`), the number of non-empty bins (`m`), and the points within each hexagon (`pts_bins`).  
 
@@ -772,7 +769,7 @@ hex_param_vis <- ggplot() +
 hex_param_vis
 ```
 
-##### Generating all possible centroids in a hexagonal grid
+#### Generating all possible centroids in a hexagonal grid
 
 The `gen_centroids()` function calculates the centroids of a hexagonal grid. 
 
@@ -794,7 +791,7 @@ all_centroids_df <- gen_centroids(
 all_centroids_df
 ```
 
-##### Creating the coordinates of the hexagons
+#### Creating the coordinates of the hexagons
 
 Following the generation of hexagonal centroids, the `gen_hex_coord()` function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
 
@@ -817,7 +814,7 @@ all_hex_coord <- gen_hex_coord(
 head(all_hex_coord, 5)
 ```
 
-##### Assigning data points to their respective hexagons
+#### Assigning data points to their respective hexagons
 
 After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The `assign_data()` function performs this assignment by calculating the \twoD Euclidean distance between each point in the \twoD embedding and all hexagon centroids.
 
@@ -836,7 +833,7 @@ umap_hex_id <- assign_data(
 head(umap_hex_id, 5)
 ```
 
-##### Computing the standardized number of points within each hexagon
+#### Computing the standardized number of points within each hexagon
 
 The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
 
@@ -850,7 +847,7 @@ std_df <- compute_std_counts(
 head(std_df, 5)
 ```
 
-##### Mapping the points to their corresponding hexagonal bins
+#### Mapping the points to their corresponding hexagonal bins
 
 The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
 
@@ -864,7 +861,7 @@ pts_df <- group_hex_pts(
 head(pts_df, 5)
 ```
 
-#### Obtaining bin centroids
+### Obtaining bin centroids
 
 The `merge_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -879,7 +876,7 @@ df_bin_centroids <- merge_hexbin_centroids(
 head(df_bin_centroids, 5)
 ```
 
-#### Indicating neighbors by line segments connecting centroids
+### Indicating neighbors by line segments connecting centroids
 
 To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
@@ -907,7 +904,7 @@ trimesh <- update_trimesh_index(trimesh_data = trimesh)
 head(trimesh, 5)
 ```
 
-#### Identifying and removing low-density hexagons
+### Identifying and removing low-density hexagons
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the \twoD structure, potentially disrupting the continuity of the representation.
 
@@ -936,7 +933,7 @@ trimesh <- trimesh |>
 trimesh <- update_trimesh_index(trimesh)
 ```
 
-### Lifting the model into high dimensions
+## Lifting the model into high dimensions
 
 The final step involves lifting the fitted \twoD model into \pD. This is done by modelling a point in \pD as the  \pD mean of data points in the \twoD centroid. This is performed using the `avg_highd_data()` function, which takes \pD data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 
@@ -949,7 +946,7 @@ df_bin <- avg_highd_data(
 head(df_bin, 5)
 ```
 
-### Prediction
+## Prediction
 
 The `predict_emb()` function is used to predict a point in a \twoD embedding for a new \pD data point using the fitted model. This function is useful to predict \twoD embedding irrespective of the NLDR technique.
 
@@ -969,7 +966,7 @@ head(predict_data, 5)
 
 It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP [@tomasz2023] supports direct prediction of embeddings for new data once a model is fitted.
 
-### Compute residuals and Root Within Bin Sum of Square (RWBSS)
+## Compute residuals and Root Within Bin Sum of Square (RWBSS)
 
 Root Within Bin Sum of Square (RWBSS) are used as goodness of fit metrics for the model. These metrics can be computed using the  `glance()` function, which provides a tidy output for evaluation.
 
@@ -1005,7 +1002,7 @@ model_error <- augment(
 head(model_error, 5)
 ```
 
-### Visualizations
+## Visualizations
 
 The package offers several \twoD visualizations, including:
 
@@ -1021,7 +1018,7 @@ Furthermore, there are two interactive plots, `show_link_plots` and `show_error_
 
 Each visualization can be generated using its respective function, as described in this section.
 
-#### Hexagonal grid
+### Hexagonal grid
 
 The `geom_hexgrid()` function introduces a custom `ggplot2` layer designed for visualizing hexagonal grid on a provided set of bin centroids.
 
@@ -1045,7 +1042,7 @@ data_hexgrid <- ggplot() +
     ) 
 ```
 
-#### Triangular mesh
+### Triangular mesh
 
 The `geom_trimesh()` function introduces a custom `ggplot2` layer designed for visualizing \twoD wireframe on a provided set of bin centroids.
 
@@ -1083,7 +1080,7 @@ full_hexgrid + data_hexgrid +
   plot_layout(ncol = 4)
 ```
 
-#### \pD model visualization
+### \pD model visualization
 
 To visualize how well the \pD model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \pD using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
 
@@ -1118,7 +1115,7 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   plot_layout(ncol = 4)
 ```
 
-#### Link plots
+### Link plots
 
 There are mainly two interactive link plots can be generated. 
 
@@ -1508,7 +1505,9 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-# Computational efficiency and optimization
+# Implementation
+
+## Computational efficiency and optimization
 
 Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
@@ -2004,6 +2003,51 @@ modellimbfig <- htmltools::div(
 class(modellimbfig) <- c(class(modellimbfig), "htmlwidget")
 
 modellimbfig
+```
+
+```{r}
+df_exe_limb_int <- comb_all_data_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb, 
+  model_highd = df_bin_limb, 
+  model_2d = df_bin_centroids_limb
+)
+```
+
+
+```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."}
+
+tsne_link_limb <- show_link_plots(
+  point_data = df_exe_limb_int, 
+  edge_data = trimesh_data_limb, 
+  point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
+)
+
+class(tsne_link_limb) <- c(class(tsne_link_limb), "htmlwidget")
+
+tsne_link_limb
+```
+
+```{r}
+df_exe_limb_int_best <- comb_all_data_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb2, 
+  model_highd = df_bin_limb, 
+  model_2d = df_bin_centroids_limb
+)
+```
+
+```{r tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."}
+
+tsne_link_limb_best <- show_link_plots(
+  point_data = df_exe_limb_int_best, 
+  edge_data = trimesh_data_limb, 
+  point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
+)
+
+class(tsne_link_limb_best) <- c(class(tsne_link_limb_best), "htmlwidget")
+
+tsne_link_limb_best
 ```
 
 # Discussion
