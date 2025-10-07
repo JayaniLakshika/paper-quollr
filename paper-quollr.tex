@@ -473,17 +473,17 @@ head(predict_data, 5)
 
 It is worth noting that while \texttt{predict\_emb()} provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP \citep{tomasz2023} supports direct prediction of embeddings for new data once a model is fitted.
 
-\subsubsection{Compute residuals and Root Mean Square Error (RMSE)}\label{compute-residuals-and-root-mean-square-error-rmse}
+\subsubsection{Compute residuals and Root Within Bin Sum of Square (RWBSS)}\label{compute-residuals-and-root-within-bin-sum-of-square-rwbss}
 
-Residuals and root mean squared error (RMSE) are used as goodness of fit metrics for the model. These metrics can be computed using the \texttt{glance()} function, which provides a tidy output for evaluation.
+Root Within Bin Sum of Square (RWBSS) are used as goodness of fit metrics for the model. These metrics can be computed using the \texttt{glance()} function, which provides a tidy output for evaluation.
 
 The function requires both the fitted model object returned by \texttt{fit\_highd\_model()} and $p\text{-}D$ data to begin. The $p\text{-}D$ model output (\texttt{model\_highd}) is first renamed to avoid naming conflicts during subsequent data joins. It then uses the \texttt{predict\_emb()} function to assign each point in the $p\text{-}D$ dataset to a corresponding hexagon bin in the $2\text{-}D$ model, producing a prediction data frame that contains both the predicted bin assignment (\texttt{pred\_h}) and the original observation \texttt{ID}.
 
 The function joins this prediction output with both the $p\text{-}D$ model and the $p\text{-}D$ data (to retrieve true coordinates). It then calculates squared differences between the original and predicted $p\text{-}D$ coordinates for each dimension, storing these as \texttt{error\_square\_x1}, \texttt{error\_square\_x2}, \ldots, up to the dimensionality of the data.
 
-From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RMSE which is the average of the total squared error per point.
+From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RWBSS which is the average of the total squared error per point.
 
-These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{RMSE} (root mean squared error). The computation of total absolute error and RMSE is performed in C++ for efficiency using the internal \texttt{compute\_errors()} function.
+These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{RWBSS} (root mean squared error). The computation of total absolute error and RWBSS is performed in C++ for efficiency using the internal \texttt{compute\_errors()} function.
 
 \begin{verbatim}
 glance(
@@ -733,7 +733,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to \emph{illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data}.
 
-Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \ref{fig:limb-rmse} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout.
+Limb muscle cells of mice in \citet{tabula2018} are examined. There are \(1067\) single cells, with \(14997\) gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \ref{fig:limb-rwbss} (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout.
 
 \begin{verbatim}
 design <- gen_design(n_right = 6, ncol_right = 2)
@@ -744,20 +744,20 @@ plot_rmse_layouts(plots = list(error_plot_limb, nldr1,
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/limb-rmse-1} \caption{Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RMSE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\label{fig:limb-rmse}}\label{fig:limb-rmse}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/limb-rwbss-1} \caption{Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RWBSS for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\label{fig:limb-rwbss}}\label{fig:limb-rwbss}
 \end{figure}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/model-limb-1} \caption{Compare the published $2-\text{D}$ layout (Figure \ref{fig:limb-rmse}b) and the $2-\text{D}$ layout selected (Figure \ref{fig:limb-rmse}f) by RMSE plot (Figure \ref{fig:limb-rmse}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\text{-}D$.}\label{fig:model-limb}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/model-limb-1} \caption{Compare the published $2-\text{D}$ layout (Figure \ref{fig:limb-rwbss}b) and the $2-\text{D}$ layout selected (Figure \ref{fig:limb-rwbss}f) by RWBSS plot (Figure \ref{fig:limb-rwbss}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\text{-}D$.}\label{fig:model-limb}
 \end{figure}
 
 \section{Discussion}\label{discussion}
 
 The \texttt{quollr} package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in $2\text{-}D$ and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a $2\text{-}D$ layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate $2\text{-}D$ representations.
 
-In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, \texttt{quollr} provides a quantitative route for evaluation. It enables the computation of RMSE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the \texttt{langevitour} package, allowing users to inspect where the model fits well and where it does not.
+In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, \texttt{quollr} provides a quantitative route for evaluation. It enables the computation of RWBSS and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the \texttt{langevitour} package, allowing users to inspect where the model fits well and where it does not.
 
-To support efficient computation, particularly for large-scale datasets, several core functions in \texttt{quollr} are implemented in C++ using \texttt{Rcpp} and \texttt{RcppArmadillo}. These include functions for computing Euclidean distances in high-dimensional and $2\text{-}D$ space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, \texttt{compute\_highd\_dist()} accelerates nearest neighbor lookup in high-dimensional space, \texttt{compute\_errors()} calculates RMSE and total absolute error efficiently, and \texttt{calc\_2d\_dist\_cpp()} speeds up distance calculations in $2\text{-}D$. Additionally, \texttt{gen\_hex\_coord\_cpp()} constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
+To support efficient computation, particularly for large-scale datasets, several core functions in \texttt{quollr} are implemented in C++ using \texttt{Rcpp} and \texttt{RcppArmadillo}. These include functions for computing Euclidean distances in high-dimensional and $2\text{-}D$ space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, \texttt{compute\_highd\_dist()} accelerates nearest neighbor lookup in high-dimensional space, \texttt{compute\_errors()} calculates RWBSS and total absolute error efficiently, and \texttt{calc\_2d\_dist\_cpp()} speeds up distance calculations in $2\text{-}D$. Additionally, \texttt{gen\_hex\_coord\_cpp()} constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
 
 The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function \texttt{fit\_highd\_model()} for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
 
