@@ -769,43 +769,6 @@ The source code for reproducing this paper can be found at: \url{https://github.
 
 This article is created using \CRANpkg{knitr} \citep{yihui2015} and \CRANpkg{rmarkdown} \citep{yihui2018} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr} \citep{hadley2023}, \texttt{ggplot2} \citep{hadley2016}, \texttt{interp} (\textgreater= 1.1-6) \citep{albrecht2024}, \texttt{langevitour} \citep{paul2023}, \texttt{proxy}\citep{david2022}, \texttt{stats} \citep{core2025}, \texttt{tibble} \citep{kirill2023}, \texttt{tidyselect} \citep{lionel2024}, \texttt{crosstalk} \citep{joe2023}, \texttt{plotly} \citep{chapman2020}, \texttt{kableExtra} \citep{hao2024}, \texttt{patchwork} \citep{thomas2024}, and \texttt{readr} \citep{hadley2024}.
 
-\begin{table}
-
-\caption{\label{tab:notation-tb-pdf}Summary of notation for describing new methodology.}
-\centering
-\begin{tabular}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{10cm}>{\raggedright\arraybackslash}p{3cm}}
-\toprule
-Notation & Description & Variable\\
-\midrule
-\textbackslash{}\$n, p, k\textbackslash{}\$ & number of observations, variables, embedding dimension, respectively & NA\\
-\$\textbackslash{}mathbfit\{X\}, \textbackslash{}mathbfit\{x\}\$ & \$p\$-dimensional data (population, sample) & NA\\
-\$\textbackslash{}mathbfit\{y\}\$ & \$k\$-dimensional layout & NA\\
-\$P\$ & orthonormal basis, generating a \$d\textbackslash{}text\{-\}dimensional\$ linear projection of \$p\$-dimensional data & NA\\
-\$T\$ & true  model & NA\\
-\addlinespace
-\$g\$ & functional mapping from \textbackslash{}pD\{\} to \textbackslash{}kD\{\}, especially as prescribed by NLDR & NA\\
-\$\textbackslash{}mathbfit\{\textbackslash{}theta\}\$ & (Hyper-) parameters for NLDR method & NA\\
-\$r\$ & ranges of the embedding components & NA\\
-\$C\textasciicircum{}\{(j)\}\$ & \$j\$-dimensional bin centers & (c\_x, c\_y)\\
-\$(b\_1, b\_2)\$ & number of bins in each direction & (b1, b2) = bins\\
-\addlinespace
-\$(a\_1, a\_2)\$ & binwidths, distance between centroids in each direction & a1, a2\\
-\$(s\_1, \textbackslash{} s\_2)\$ & starting coordinates of the hexagonal grid & start\_point\\
-\$q\$ & buffer to ensure hexgrid covers data, proportion of data range, 0-1 & q\\
-\$m\$ & number of non-empty bins & m\\
-\$b\$ & number of  hexagons in the grid & b\\
-\addlinespace
-\$h\$ & hexagonal id & NA\\
-\$l\$ & side length & NA\\
-\$A\$ & area & NA\\
-\$n\_h\$ & bin count & NA\\
-\$w\_h\$ & standardised bin counts & NA\\
-\addlinespace
-NA & threshold to extract high density hexagons & hd\_thresh\\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \bibliography{paper-quollr.bib}
 
 \address{%

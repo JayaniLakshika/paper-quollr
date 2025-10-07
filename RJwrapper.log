@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.3)  7 OCT 2025 12:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.3)  7 OCT 2025 12:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -919,17 +919,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used 
 
 [16 <./paper-quollr_files/figure-latex/limb-rmse-1.pdf>]
 
-[17 <./paper-quollr_files/figure-latex/model-limb-1.pdf>]
-Overfull \hbox (1.52744pt too wide) in paragraph at lines 787--787
-[]|\T1/ppl/m/n/10 (-20) $\mathbfit{\theta}$|  
- []
-
-
-Overfull \hbox (92.9055pt too wide) in paragraph at lines 776--807
- [][] 
- []
-
-(./RJwrapper.bbl (./RJwrapper.brf)
+[17 <./paper-quollr_files/figure-latex/model-limb-1.pdf>] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
@@ -938,13 +928,13 @@ Overfull \hbox (92.9055pt too wide) in paragraph at lines 776--807
 [18])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 819.
+(Font)              using `T1/zi4/m/n' instead on input line 782.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 819.
+(Font)              scaled to size 9.18004pt on input line 782.
+)
 
-
-[19])
+[19]
 
 [20] (./RJwrapper.aux)
  ***********
@@ -963,18 +953,18 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 7B34185E757DFD54CA276E85F0950B2A;1376.
  ) 
 Here is how much of TeX's memory you used:
- 27478 strings out of 469729
- 502098 string characters out of 5476492
- 926547 words of memory out of 5000000
- 55015 multiletter control sequences out of 15000+600000
- 683475 words of font info for 337 fonts, out of 8000000 for 9000
+ 27466 strings out of 469729
+ 501878 string characters out of 5476492
+ 923466 words of memory out of 5000000
+ 55008 multiletter control sequences out of 15000+600000
+ 683238 words of font info for 334 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,11n,131p,1487b,1002s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2387354 bytes).
+Output written on RJwrapper.pdf (20 pages, 2385579 bytes).
 PDF statistics:
- 486 PDF objects out of 1000 (max. 8388607)
- 418 compressed objects within 5 object streams
- 68 named destinations out of 1000 (max. 500000)
+ 485 PDF objects out of 1000 (max. 8388607)
+ 417 compressed objects within 5 object streams
+ 67 named destinations out of 1000 (max. 500000)
  75397 words of extra memory for PDF output out of 89155 (max. 10000000)
 
