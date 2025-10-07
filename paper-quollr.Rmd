@@ -538,19 +538,15 @@ scurve_umap_plt + hex_grid_poly_scurve +
 
 # Implementation
 
-## Installation
+## Availability
 
-The development version can be installed from GitHub:
-
-```r
-pak::pak("JayaniLakshika/quollr")
-```
+The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
 
 ## Usage
 
 The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout.
 
-`scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from 
+The `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from 
 
 $$
 \begin{aligned}
