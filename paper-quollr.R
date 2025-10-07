@@ -283,7 +283,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="algorithm", fig.pos='H'----
+## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="algorithm", fig.pos='H', layout = "l-page"----
 # 
 # overviewfig <- bscols(
 #   htmltools::div(
@@ -442,7 +442,7 @@ hex_grid_scurve + wrap_plots(
   ncol = 2)
 
 
-## ----algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
+## ----algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
 # 
 # algofig <- crosstalk::bscols(
 #         htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 0;",
@@ -861,7 +861,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1123,7 +1123,7 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
@@ -1706,7 +1706,7 @@ df_exe_limb_int <- comb_all_data_model(
 )
 
 
-## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
 # tsne_link_limb <- show_link_plots(
 #   point_data = df_exe_limb_int,
@@ -1728,7 +1728,7 @@ df_exe_limb_int_best <- comb_all_data_model(
 )
 
 
-## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right)."----
+## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
 # tsne_link_limb_best <- show_link_plots(
 #   point_data = df_exe_limb_int_best,
