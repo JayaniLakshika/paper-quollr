@@ -536,6 +536,12 @@ scurve_umap_plt + hex_grid_poly_scurve +
   plot_layout(ncol = 5)
 ```
 
+# Implementation
+
+## Computational efficiency and optimization
+
+Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+
 # Usage
 
 The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
@@ -1504,12 +1510,6 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_proj_umap_model1_selected2_dp +
   plot_layout(ncol = 3)
 ```
-
-# Implementation
-
-## Computational efficiency and optimization
-
-Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
 # Application
 

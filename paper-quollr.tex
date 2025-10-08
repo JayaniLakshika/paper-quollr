@@ -30,6 +30,12 @@ Our algorithm includes the following steps: (1) scaling the NLDR data, (2) compu
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
+\section{Implementation}\label{implementation}
+
+\subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
+
+Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), $2\text{-}D$ distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+
 \section{Usage}\label{usage}
 
 The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
@@ -718,12 +724,6 @@ errornldrdt_link
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-34}
 \end{figure}
-
-\section{Implementation}\label{implementation}
-
-\subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
-
-Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), $2\text{-}D$ distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
 \section{Application}\label{application}
 
