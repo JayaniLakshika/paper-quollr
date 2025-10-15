@@ -1138,6 +1138,7 @@ detour(
   show_scatter(axes = TRUE, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"))
+
 ```
 
 In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the \twoD wireframe structure mapped to high-dimensional space.

@@ -881,6 +881,7 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
 #   show_scatter(axes = TRUE,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
 #                palette = c("#66B2CC", "#FF7755"))
+# 
 
 
 ## ----echo=TRUE----------------------------------------------------------------
