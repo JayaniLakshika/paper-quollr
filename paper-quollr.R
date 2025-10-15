@@ -470,6 +470,26 @@ scurve_umap_plt + hex_grid_poly_scurve +
   plot_layout(ncol = 5)
 
 
+## ----echo=TRUE----------------------------------------------------------------
+data("scurve")
+
+
+## ----echo=TRUE----------------------------------------------------------------
+library(umap)
+library(dplyr)
+
+scurve_umap <- umap(
+  scurve |> select(-ID),
+  config = modifyList(umap.defaults, list(
+    n_neighbors = 46,
+    n_components = 2,
+    min_dist = 0.9
+  ))
+)$layout |>
+  as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
+  mutate(ID = scurve$ID)
+
+
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 # fit_highd_model(
 #   highd_data = scurve,

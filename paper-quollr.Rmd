@@ -544,11 +544,31 @@ scurve_umap_plt + hex_grid_poly_scurve +
   plot_layout(ncol = 5)
 ```
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout.
+The following demonstration of the package's functionality assumes `quollr` has been loaded. To begin the workflow, users need two inputs: the high-dimensional dataset and the corresponding nonlinear dimensionality reduction (NLDR) layout. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`.
 
-The `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations.
+To illustrate the workflow, we use the built-in example dataset `scurve`, a $7\text{-}D$ simulated dataset consisting of $1000$ observations. The first three variables define a $3\text{-}D$ S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
 
-`scurve_umap` is the UMAP \twoD embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding \twoD `scurve_umap`.
+```{r, echo=TRUE}
+data("scurve")
+```
+
+For this example, we use the UMAP layout, which is produced using `n_neighbors =` $46$ and `min_dist =` $0.9$.
+
+```{r, echo=TRUE}
+library(umap)
+library(dplyr)
+
+scurve_umap <- umap(
+  scurve |> select(-ID),
+  config = modifyList(umap.defaults, list(
+    n_neighbors = 46,
+    n_components = 2,
+    min_dist = 0.9
+  ))
+)$layout |>
+  as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
+  mutate(ID = scurve$ID)
+```
 
 ## Main function
 
