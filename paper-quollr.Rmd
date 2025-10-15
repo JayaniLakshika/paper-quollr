@@ -595,8 +595,6 @@ The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0,
 
 ```{r, echo=TRUE}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
-
-scurve_umap_obj
 ```
 
 ### Computing hexagon grid configuration
@@ -927,7 +925,7 @@ To address this, we propose a more nuanced method that evaluates each hexagon no
 The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their hexagon ID (`h`) and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
 ```{r, echo=TRUE}
-find_low_dens_hex(
+low_density_hex <- find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 25, 
   md_thresh = 0.05
@@ -1012,8 +1010,6 @@ model_error <- augment(
   x = scurve_model_obj,
   highd_data = scurve
   )
-
-head(model_error, 5)
 ```
 
 ## Visualizations

@@ -89,32 +89,6 @@ The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0
 
 \begin{verbatim}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
-
-scurve_umap_obj
-\end{verbatim}
-
-\begin{verbatim}
-> $scaled_nldr
-> # A tibble: 1,000 x 3
->     emb1  emb2    ID
->    <dbl> <dbl> <int>
->  1 0.300 0.985     1
->  2 0.721 0.688     2
->  3 0.722 0.542     3
->  4 0.196 1.01      4
->  5 0.240 1.06      5
->  6 0.621 1.19      6
->  7 0.159 0.160     7
->  8 0.979 0.661     8
->  9 0.870 0.963     9
-> 10 0.885 0.501    10
-> # i 990 more rows
-> 
-> $lim1
-> [1] -8.320406  8.522628
-> 
-> $lim2
-> [1] -11.732897   9.679631
 \end{verbatim}
 
 \subsubsection{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
@@ -387,35 +361,11 @@ To address this, we propose a more nuanced method that evaluates each hexagon no
 The \texttt{find\_low\_dens\_hex()} function relies on a helper, \texttt{compute\_mean\_density\_hex()}, which iterates over all hexagons and computes the average density across neighbors based on their hexagon ID (\texttt{h}) and a defined number of bins along the x-axis (\texttt{b1}). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
 
 \begin{verbatim}
-find_low_dens_hex(
+low_density_hex <- find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 25, 
   md_thresh = 0.05
 )
-\end{verbatim}
-
-\begin{verbatim}
->   [1]  82  83 106 107 108 109 131 132 133 134 135 156 157 158 159 160 161 162
->  [19] 179 180 181 183 184 185 186 188 189 190 204 205 206 207 208 209 210 211
->  [37] 214 215 216 217 228 229 230 231 232 233 234 235 236 238 239 240 241 242
->  [55] 254 255 256 257 258 259 260 261 263 264 265 266 267 268 269 279 280 281
->  [73] 283 284 285 286 287 288 289 290 293 294 305 306 307 308 309 310 311 312
->  [91] 313 314 315 316 317 318 319 320 321 331 332 333 334 335 336 337 339 340
-> [109] 341 342 344 345 346 358 359 360 361 362 363 364 365 366 367 369 370 371
-> [127] 372 386 387 388 389 390 391 392 393 394 395 396 414 415 416 417 418 419
-> [145] 420 421 422 440 441 442 443 444 445 446 447 467 468 469 470 471 472 473
-> [163] 491 492 493 494 495 496 497 498 518 519 520 522 523 541 542 543 544 545
-> [181] 546 547 548 554 558 560 566 567 568 569 570 571 572 573 578 579 580 581
-> [199] 582 583 584 585 586 587 588 590 591 592 593 594 595 596 597 598 603 604
-> [217] 605 606 607 608 609 610 611 612 613 614 615 616 617 618 619 620 621 622
-> [235] 623 629 630 631 633 634 635 636 637 638 639 640 641 642 643 644 645 646
-> [253] 647 653 654 655 656 657 658 659 660 661 662 663 664 665 666 667 668 669
-> [271] 670 671 672 678 679 680 681 682 683 684 685 686 687 688 689 690 691 692
-> [289] 693 694 695 696 703 704 705 706 707 708 709 710 711 712 713 714 716 717
-> [307] 718 719 720 721 728 729 730 731 732 733 734 736 737 738 739 741 742 743
-> [325] 744 754 755 756 757 758 759 760 761 762 763 764 765 766 767 768 779 781
-> [343] 782 783 784 785 786 787 788 789 790 791 792 807 808 809 810 811 812 813
-> [361] 814 837
 \end{verbatim}
 
 For simplicity, we remove low-density hexagons using a threshold of \(0\).
@@ -525,26 +475,6 @@ model_error <- augment(
   x = scurve_model_obj,
   highd_data = scurve
   )
-
-head(model_error, 5)
-\end{verbatim}
-
-\begin{verbatim}
-> # A tibble: 5 x 32
->      ID      x1    x2       x3       x4       x5      x6       x7 pred_h
->   <int>   <dbl> <dbl>    <dbl>    <dbl>    <dbl>   <dbl>    <dbl>  <int>
-> 1     1 -0.120  0.819 -1.99     0.0114   0.00351  0.0334  0.00638    427
-> 2     2 -0.0492 0.166  0.00121  0.0115  -0.0166  -0.0297  0.00509    287
-> 3     3 -0.774  0.651  0.367   -0.0172   0.00600  0.0211  0.00303    226
-> 4     4 -0.606  0.952 -1.80     0.0157  -0.00978 -0.0590 -0.00754    446
-> 5     5 -0.478  1.10  -1.88    -0.00423  0.00495 -0.0482 -0.00982    468
-> # i 23 more variables: model_high_d_x1 <dbl>, model_high_d_x2 <dbl>,
-> #   model_high_d_x3 <dbl>, model_high_d_x4 <dbl>, model_high_d_x5 <dbl>,
-> #   model_high_d_x6 <dbl>, model_high_d_x7 <dbl>, error_square_x1 <dbl>,
-> #   error_square_x2 <dbl>, error_square_x3 <dbl>, error_square_x4 <dbl>,
-> #   error_square_x5 <dbl>, error_square_x6 <dbl>, error_square_x7 <dbl>,
-> #   row_wise_total_error <dbl>, abs_error_x1 <dbl>, abs_error_x2 <dbl>,
-> #   abs_error_x3 <dbl>, abs_error_x4 <dbl>, abs_error_x5 <dbl>, ...
 \end{verbatim}
 
 \subsection{Visualizations}\label{visualizations}

@@ -502,8 +502,6 @@ scurve_umap <- umap(
 ## ----echo=TRUE----------------------------------------------------------------
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 
-scurve_umap_obj
-
 
 ## ----echo=TRUE----------------------------------------------------------------
 bin_configs <- calc_bins_y(
@@ -750,7 +748,7 @@ head(trimesh, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-find_low_dens_hex(
+low_density_hex <- find_low_dens_hex(
   model_2d = df_bin_centroids, 
   b1 = 25, 
   md_thresh = 0.05
@@ -799,8 +797,6 @@ model_error <- augment(
   x = scurve_model_obj,
   highd_data = scurve
   )
-
-head(model_error, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
