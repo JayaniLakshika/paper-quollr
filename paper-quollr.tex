@@ -22,14 +22,6 @@ This paper presents the R package, \texttt{quollr}, which is useful for understa
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
-\section{Algorithm}\label{algorithm}
-
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
-
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
-\end{figure}
-
 \section{Implementation}\label{implementation}
 
 \subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
@@ -40,20 +32,17 @@ Several core computations within \texttt{quollr} are optimized using compiled C+
 
 The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
 
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
+\end{figure}
+
 The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. The built-in data sets \texttt{scurve} and \texttt{scurve\_umap} are also used throughout.
 
-The \texttt{scurve} is a \(7\text{-}D\) simulated dataset. It is constructed by simulating \(1000\) observations from
+The \texttt{scurve} is a \(7\text{-}D\) simulated dataset. It is constructed by simulating \(1000\) observations.
 
-\[
-\begin{aligned}
-\theta &\sim U(-3\pi/2, 3\pi/2), \\
-X_1 &= \sin(\theta), \\
-X_2 &\sim U(0, 2), \text{adding thickness to the S}, \\
-X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
-\end{aligned}
-\]
-
-The remaining variables \(X_4\), \(X_5\), \(X_6\), and \(X_7\) are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: \(X_4, X_5 \sim U(-0.02, 0.02)\), \(X_6 \sim U(-0.1, 0.1)\), and \(X_7 \sim U(-0.01, 0.01)\). These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. \texttt{scurve\_umap} is the UMAP $2\text{-}D$ embedding for \texttt{scurve} data with \texttt{n\_neighbors}\(=46\) and \texttt{min\_dist}\(=0.9\). Each data set contains a unique ID column that maps the \(7\text{-}D\) point in \texttt{scurve} to the corresponding $2\text{-}D$ \texttt{scurve\_umap}.
+\texttt{scurve\_umap} is the UMAP $2\text{-}D$ embedding for \texttt{scurve} data with \texttt{n\_neighbors}\(=46\) and \texttt{min\_dist}\(=0.9\). Each data set contains a unique ID column that maps the \(7\text{-}D\) point in \texttt{scurve} to the corresponding $2\text{-}D$ \texttt{scurve\_umap}.
 
 \subsection{Main function}\label{main-function}
 

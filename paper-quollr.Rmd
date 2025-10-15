@@ -504,7 +504,15 @@ hex_grid_scurve + wrap_plots(
 
 The paper is organized as follows. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
-# Algorithm
+# Implementation
+
+## Computational efficiency and optimization
+
+Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+
+# Usage
+
+The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
 
 Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in @gamage2025c.
 
@@ -536,31 +544,11 @@ scurve_umap_plt + hex_grid_poly_scurve +
   plot_layout(ncol = 5)
 ```
 
-# Implementation
-
-## Computational efficiency and optimization
-
-Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
-
-# Usage
-
-The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
-
-
 The following demonstration of the package's functionality assumes `quollr` has been loaded. The built-in data sets `scurve` and `scurve_umap` are also used throughout.
 
-The `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations from 
+The `scurve` is a $7\text{-}D$ simulated dataset. It is constructed by simulating $1000$ observations.
 
-$$
-\begin{aligned}
-\theta &\sim U(-3\pi/2, 3\pi/2), \\
-X_1 &= \sin(\theta), \\
-X_2 &\sim U(0, 2), \text{adding thickness to the S}, \\
-X_3 &= \text{sign}(\theta) \times (\cos(\theta) - 1).
-\end{aligned}
-$$
-
-The remaining variables $X_4$, $X_5$, $X_6$, and $X_7$ are included as low-magnitude noise dimensions, generated from uniform distributions with narrow ranges around zero: $X_4, X_5 \sim U(-0.02, 0.02)$, $X_6 \sim U(-0.1, 0.1)$, and $X_7 \sim U(-0.01, 0.01)$. These small variances ensure that the added dimensions contribute noise without obscuring the main geometric structure. `scurve_umap` is the UMAP \twoD embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding \twoD `scurve_umap`.
+`scurve_umap` is the UMAP \twoD embedding for `scurve` data with `n_neighbors`$=46$ and `min_dist`$=0.9$. Each data set contains a unique ID column that maps the $7\text{-}D$ point in `scurve` to the corresponding \twoD `scurve_umap`.
 
 ## Main function
 
