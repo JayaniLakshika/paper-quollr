@@ -868,6 +868,21 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   plot_layout(ncol = 4)
 
 
+## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
+# library(detourr)
+# 
+# detour(
+#   df_exe,
+#   tour_aes(
+#     projection = starts_with("x"),
+#     colour = type
+#   )
+# ) |>
+#   show_scatter(axes = TRUE,
+#                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+#                palette = c("#66B2CC", "#FF7755"))
+
+
 ## ----echo=TRUE----------------------------------------------------------------
 df_exe <- comb_all_data_model(
   highd_data = scurve, 

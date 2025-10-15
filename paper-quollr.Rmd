@@ -1108,8 +1108,6 @@ df_exe <- comb_data_model(
 
 The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
 
-In the resulting interactive visualization black points represent the high-dimensional data, green points represent the model centroids from each bin, and the lines between model points reflect the \twoD wireframe structure mapped back to high-dimensional space.
-
 ```{r, echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."}
 
 show_langevitour(
@@ -1124,6 +1122,25 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
   plot_layout(ncol = 4)
 ```
+
+As an alternative to `langevitour`, users can explore the fitted \pD model using the `detourr` [@casper2025]. The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
+
+```{r, echo=TRUE, eval=knitr::is_html_output()}
+library(detourr)
+
+detour(
+  df_exe,
+  tour_aes(
+    projection = starts_with("x"),
+    colour = type
+  )
+) |>
+  show_scatter(axes = TRUE, 
+               edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+               palette = c("#66B2CC", "#FF7755"))
+```
+
+In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the \twoD wireframe structure mapped to high-dimensional space.
 
 ### Link plots
 
