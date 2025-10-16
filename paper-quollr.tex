@@ -24,6 +24,52 @@ The paper is organized as follows. The next section introduces the implementatio
 
 \section{Implementation}\label{implementation}
 
+The implementation of \texttt{quollr} emphasizes modularity, computational efficiency, and interoperability.
+Its design follows a layered architecture that separates \textbf{data preprocessing}, \textbf{model construction}, and \textbf{visualization}, ensuring clarity, extensibility, and compatibility with the wider R ecosystem.
+
+\subsection{Software architecture}\label{software-architecture}
+
+Internally, \texttt{quollr} is organized into five primary modules that correspond to key steps in the analysis pipeline:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Data preparation} --- functions such as \texttt{scale\_highd()} and \texttt{prepare\_data()} standardize the input, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
+\item
+  \textbf{Hexagonal binning} --- the \texttt{hex\_bin\_data()} module constructs a two-dimensional hexagonal grid and aggregates local summaries of the high-dimensional data for each bin.
+\item
+  \textbf{Model fitting} --- the \texttt{fit\_highd\_model()} function computes high-dimensional centroids and pairwise bin connections to build a structured manifold representation.
+\item
+  \textbf{Error computation} --- functions like \texttt{compute\_errors()} and \texttt{aggregate\_bin\_error()} evaluate local and global discrepancies between the model and data, enabling diagnostic visualization.
+\item
+  \textbf{Visualization and linkage} --- plotting and tour functions (\texttt{show\_hex\_model()}, \texttt{show\_link\_plots()}, and \texttt{show\_error\_link\_plots()}) integrate outputs into linked static and dynamic displays using \texttt{ggplot2}, \texttt{langevitour}, and \texttt{crosstalk}.
+\end{enumerate}
+
+Each module is internally independent but communicates through standardized data objects (see next section).
+This modular design simplifies maintenance and allows developers to extend individual components---such as substituting different binning strategies, embedding methods, or visualization tools---without altering the overall workflow.
+
+\subsection{Data objects}\label{data-objects}
+
+The internal data objects in \texttt{quollr} adhere to the \textbf{tidy data} principle, ensuring that every variable forms a column, every observation forms a row, and every type of observational unit forms a table.
+This structure supports compatibility with the \texttt{tidyverse} and other R visualization frameworks.
+
+The main object classes include:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\texttt{highd\_data}} -- a tibble containing the original high-dimensional observations with a unique identifier (\texttt{ID}) and variable columns prefixed with \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, \ldots).
+\item
+  \textbf{\texttt{nldr\_data}} -- a tibble containing two-dimensional embeddings, labeled as \texttt{emb1} and \texttt{emb2}, matched to the same \texttt{ID}s.
+\item
+  \textbf{\texttt{highd\_vis\_model}} -- the primary model object returned by \texttt{fit\_highd\_model()}, containing two key components: the high-dimensional summaries for each bin and their corresponding two-dimensional positions.
+\item
+  \textbf{\texttt{hex\_bin\_obj}} -- the internal representation of the hexagonal grid, including bin coordinates (\texttt{a1}, \texttt{a2}), centroids, and normalized weights (\texttt{w\_h}).
+\end{itemize}
+
+These objects provide a coherent foundation for data transfer across \texttt{quollr}'s modules---from binning to model fitting and visualization---supporting reproducibility and transparency in analyses.
+
 \subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), $2\text{-}D$ distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.

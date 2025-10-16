@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  16 OCT 2025 16:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  16 OCT 2025 18:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -790,7 +790,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<paper-quollr_files/figure-latex/overview-1.pdf, id=75, 469.755pt x 235.88126pt>
+<paper-quollr_files/figure-latex/overview-1.pdf, id=83, 469.755pt x 235.88126pt>
 File: paper-quollr_files/figure-latex/overview-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/overview-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/overview-1.pdf  used on input line 20.
@@ -800,38 +800,55 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/overview-1.pdf  used on
 [1{/Users/jpiy0001/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 {/Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc} <./paper-quollr_files/figure-latex/overview-1.pdf>]
-Overfull \hbox (36.27023pt too wide) in paragraph at lines 29--30
+Overfull \hbox (6.66197pt too wide) in paragraph at lines 46--47
+[]\T1/ppl/b/n/9 (-20) Visualization and link-age \T1/ppl/m/n/9 (-20) --- plot-ting and tour func-tions (\T1/zi4/m/n/9 show_hex_model()\T1/ppl/m/n/9 (-20) , \T1/zi4/m/n/9 show_link_plots()\T1/ppl/m/n/9 (-20) ,
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 62.
+(/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+)
+LaTeX Font Info:    Font shape `T1/zi4/b/n' will be
+(Font)              scaled to size 9.18004pt on input line 62.
+
+Overfull \hbox (1.72874pt too wide) in paragraph at lines 64--66
+[]\T1/zi4/b/n/9 nldr_data \T1/ppl/m/n/9 (-20) -- a tib-ble con-tain-ing two-dimensional em-bed-dings, la-beled as \T1/zi4/m/n/9 emb1 \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 emb2\T1/ppl/m/n/9 (-20) , matched
+ []
+
+
+Overfull \hbox (36.27023pt too wide) in paragraph at lines 75--76
 \OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
 
 
-Overfull \hbox (8.85884pt too wide) in paragraph at lines 33--34
+Overfull \hbox (8.85884pt too wide) in paragraph at lines 79--80
 \T1/ppl/m/n/9 (-20) The pack-age is avail-able on CRAN, and the de-vel-op-ment ver-sion is avail-able at [][]$\T1/zi4/m/n/9 https : / / jayanilakshika .
  []
 
-<paper-quollr_files/figure-latex/algo-steps-1.pdf, id=110, 1806.75pt x 361.35pt>
+
+
+[2]
+<paper-quollr_files/figure-latex/algo-steps-1.pdf, id=128, 1806.75pt x 361.35pt>
 File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used on input line 38.
+Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used on input line 84.
 (pdftex.def)             Requested size: 398.33858pt x 79.66817pt.
 
 
-[2 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>]
+[3 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 82.
+(Font)              scaled to size 10.42007pt on input line 128.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 82.
+(Font)              scaled to size 7.91925pt on input line 128.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 82.
+(Font)              scaled to size 6.25204pt on input line 128.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 82.
+(Font)              scaled to size 10.42007pt on input line 128.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 82.
+(Font)              scaled to size 7.91925pt on input line 128.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 82.
+(Font)              scaled to size 6.25204pt on input line 128.
 
-
-[3]
 
 [4]
 
@@ -844,69 +861,64 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 [8]
 
 [9]
-LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 487.
-(/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
-File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
-)
-Overfull \hbox (0.18141pt too wide) in paragraph at lines 500--501
+
+[10]
+Overfull \hbox (0.18141pt too wide) in paragraph at lines 546--547
 []\T1/ppl/m/n/9 (-20) Furthermore, there are two in-ter-ac-tive plots, \T1/zi4/m/n/9 show_link_plots \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 show_error_link_plots\T1/ppl/m/n/9 (-20) , which
  []
 
-
-
-[10]
-<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=178, 1445.4pt x 361.35pt>
+<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=192, 1445.4pt x 361.35pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 554.
+Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 600.
 (pdftex.def)             Requested size: 398.33858pt x 99.58383pt.
 
-Overfull \hbox (12.52875pt too wide) in paragraph at lines 565--566
+
+[11]
+Overfull \hbox (12.52875pt too wide) in paragraph at lines 611--612
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
  []
 
 
-Overfull \hbox (7.46678pt too wide) in paragraph at lines 565--566
+Overfull \hbox (7.46678pt too wide) in paragraph at lines 611--612
 \T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=181, 469.755pt x 118.4425pt>
+<paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=199, 469.755pt x 118.4425pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 587.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 633.
 (pdftex.def)             Requested size: 398.33858pt x 100.43622pt.
 
 
-[11 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
-
-[12 <./paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf, id=214, 722.7pt x 722.7pt>
+[12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf> <./paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf, id=228, 722.7pt x 722.7pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf  used on input line 645.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf  used on input line 691.
 (pdftex.def)             Requested size: 398.33858pt x 398.33534pt.
 
 
-[13 <./paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf, id=233, 941.5175pt x 708.6475pt>
+[13]
+
+[14 <./paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf, id=251, 941.5175pt x 708.6475pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf  used on input line 683.
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf  used on input line 729.
 (pdftex.def)             Requested size: 398.33858pt x 299.81416pt.
 
 
-[14]
-
 [15 <./paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf>]
-<paper-quollr_files/figure-latex/limb-rwbss-1.pdf, id=265, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-rwbss-1.pdf, id=276, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-rwbss-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-rwbss-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rwbss-1.pdf  used on input line 705.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rwbss-1.pdf  used on input line 751.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=266, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=277, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 709.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 755.
 (pdftex.def)             Requested size: 398.33858pt x 265.55322pt.
 
 
@@ -921,10 +933,10 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used 
 [18])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 740.
+(Font)              using `T1/zi4/m/n' instead on input line 786.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 740.
+(Font)              scaled to size 9.18004pt on input line 786.
 )
 
 [19]
@@ -941,23 +953,23 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
-(rerunfilecheck)             Checksum: 4A2EAF660530B3D5E26B2E7AA2C21309;2859.
+(rerunfilecheck)             Checksum: 67A69231A7E60C41A0C44A57F4350161;3154.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: D6810075EE7132191BDF5872E73E5FFE;1430.
+(rerunfilecheck)             Checksum: 0579D45758480B3132F472DCC10338FB;1431.
  ) 
 Here is how much of TeX's memory you used:
- 27461 strings out of 469729
- 501833 string characters out of 5476491
- 923429 words of memory out of 5000000
- 55006 multiletter control sequences out of 15000+600000
- 681396 words of font info for 328 fonts, out of 8000000 for 9000
+ 27480 strings out of 469729
+ 502099 string characters out of 5476491
+ 923531 words of memory out of 5000000
+ 55014 multiletter control sequences out of 15000+600000
+ 681794 words of font info for 331 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1487b,1009s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2391236 bytes).
+ 117i,12n,131p,1487b,1002s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on RJwrapper.pdf (20 pages, 2412534 bytes).
 PDF statistics:
- 503 PDF objects out of 1000 (max. 8388607)
- 437 compressed objects within 5 object streams
- 72 named destinations out of 1000 (max. 500000)
- 71333 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 525 PDF objects out of 1000 (max. 8388607)
+ 457 compressed objects within 5 object streams
+ 79 named destinations out of 1000 (max. 500000)
+ 71861 words of extra memory for PDF output out of 74296 (max. 10000000)
 

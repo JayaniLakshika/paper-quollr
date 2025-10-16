@@ -506,7 +506,35 @@ The paper is organized as follows. The next section introduces the implementatio
 
 # Implementation
 
+The implementation of `quollr` emphasizes modularity, computational efficiency, and interoperability.
+Its design follows a layered architecture that separates **data preprocessing**, **model construction**, and **visualization**, ensuring clarity, extensibility, and compatibility with the wider R ecosystem.
 
+## Software architecture
+
+Internally, `quollr` is organized into five primary modules that correspond to key steps in the analysis pipeline:
+
+1. **Data preparation** — functions such as `scale_highd()` and `prepare_data()` standardize the input, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
+2. **Hexagonal binning** — the `hex_bin_data()` module constructs a two-dimensional hexagonal grid and aggregates local summaries of the high-dimensional data for each bin.
+3. **Model fitting** — the `fit_highd_model()` function computes high-dimensional centroids and pairwise bin connections to build a structured manifold representation.
+4. **Error computation** — functions like `compute_errors()` and `aggregate_bin_error()` evaluate local and global discrepancies between the model and data, enabling diagnostic visualization.
+5. **Visualization and linkage** — plotting and tour functions (`show_hex_model()`, `show_link_plots()`, and `show_error_link_plots()`) integrate outputs into linked static and dynamic displays using `ggplot2`, `langevitour`, and `crosstalk`.
+
+Each module is internally independent but communicates through standardized data objects (see next section).
+This modular design simplifies maintenance and allows developers to extend individual components—such as substituting different binning strategies, embedding methods, or visualization tools—without altering the overall workflow.
+
+## Data objects
+
+The internal data objects in `quollr` adhere to the **tidy data** principle, ensuring that every variable forms a column, every observation forms a row, and every type of observational unit forms a table.
+This structure supports compatibility with the `tidyverse` and other R visualization frameworks.
+
+The main object classes include:
+
+* **`highd_data`** – a tibble containing the original high-dimensional observations with a unique identifier (`ID`) and variable columns prefixed with `"x"` (e.g., `x1`, `x2`, …).
+* **`nldr_data`** – a tibble containing two-dimensional embeddings, labeled as `emb1` and `emb2`, matched to the same `ID`s.
+* **`highd_vis_model`** – the primary model object returned by `fit_highd_model()`, containing two key components: the high-dimensional summaries for each bin and their corresponding two-dimensional positions.
+* **`hex_bin_obj`** – the internal representation of the hexagonal grid, including bin coordinates (`a1`, `a2`), centroids, and normalized weights (`w_h`).
+
+These objects provide a coherent foundation for data transfer across `quollr`’s modules—from binning to model fitting and visualization—supporting reproducibility and transparency in analyses.
 
 ## Computational efficiency and optimization
 
