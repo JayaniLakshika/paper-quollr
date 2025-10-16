@@ -24,8 +24,6 @@ The paper is organized as follows. The next section introduces the implementatio
 
 \section{Implementation}\label{implementation}
 
-To begin the workflow, users need two inputs: the high-dimensional dataset and the corresponding nonlinear dimensionality reduction (NLDR) layout. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}.
-
 \subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), $2\text{-}D$ distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
@@ -40,7 +38,9 @@ Our algorithm includes the following steps: (1) scaling the NLDR data, (2) compu
 \includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
-The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. To illustrate the workflow, we use the built-in example dataset \texttt{scurve}, a \(7\text{-}D\) simulated dataset consisting of \(1000\) observations. The first three variables define a \(3\text{-}D\) S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
+The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. To begin the workflow, users need two inputs: the high-dimensional dataset and the corresponding nonlinear dimensionality reduction (NLDR) layout. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}.
+
+To illustrate the workflow, we use the built-in example dataset \texttt{scurve}, a \(7\text{-}D\) simulated dataset consisting of \(1000\) observations. The first three variables define a \(3\text{-}D\) S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
 
 \begin{verbatim}
 data("scurve")
