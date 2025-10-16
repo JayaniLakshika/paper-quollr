@@ -1533,7 +1533,7 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-As an alternative, the link plots can be generate with `detourr` as well. we can use `bscols()` function in `crosstalk`.
+As an alternative to generate tour, the link plots can be generate with `detourr` as well. To achieve this, users can construct the linked visualization manually using the `crosstalk` and `htmltools` packages. The two- and three-panel linked layouts are created by arranging the NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and a dynamic high-dimensional projection view (`langevitour_output` or `detourr_output`) side by side within a flexible grid layout. The `bscols()` function from `crosstalk` synchronizes point selection between these plots, ensuring linked brushing across visual components.
 
 # Application
 
