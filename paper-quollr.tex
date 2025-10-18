@@ -24,7 +24,7 @@ The paper is organized as follows. The next section introduces the implementatio
 
 \section{Implementation}\label{implementation}
 
-The implementation of \texttt{quollr} is designed to be modular, efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration. This modular structure makes the code easier to maintain and allows new features to be added without disrupting the existing functionality.
+The implementation of \texttt{quollr} is designed to be efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration. This package structure makes the code easier to maintain and allows new features to be added without disrupting the existing functionality.
 
 \subsection{Software architecture}\label{software-architecture}
 
@@ -45,8 +45,7 @@ Internally, \texttt{quollr} is organized into five primary modules that correspo
   \textbf{Visualization and linkage} --- plotting and tour functions (\texttt{show\_hex\_model()}, \texttt{show\_link\_plots()}, and \texttt{show\_error\_link\_plots()}) integrate outputs into linked static and dynamic displays using \texttt{ggplot2}, \texttt{langevitour}, and \texttt{crosstalk}.
 \end{enumerate}
 
-Each module is internally independent but communicates through standardized data objects (see next section).
-This modular design simplifies maintenance and allows developers to extend individual components---such as substituting different binning strategies, embedding methods, or visualization tools---without altering the overall workflow.
+Each module is internally independent but communicates through standardized data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components---such as substituting different binning strategies, embedding methods, or visualization tools---without altering the overall workflow.
 
 \subsection{Data objects}\label{data-objects}
 
