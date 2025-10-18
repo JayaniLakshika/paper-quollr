@@ -878,10 +878,12 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
 #     colour = type
 #   )
 # ) |>
-#   show_scatter(axes = TRUE,
+#   tour_path(grand_tour(2),
+#                     max_bases=50, fps = 60) |>
+#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
-#                palette = c("#66B2CC", "#FF7755"))
-# 
+#                palette = c("#66B2CC", "#FF7755"),
+#                width = "600px", height = "600px")
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -1246,6 +1248,162 @@ error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected,
 error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_selected1_dp +
   error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_proj_umap_model1_selected2_dp +
   plot_layout(ncol = 3)
+
+
+## -----------------------------------------------------------------------------
+point_colours <- c("#66B2CC", "#FF7755")
+point_sizes <- c(0, 1)
+
+num_highd_col <- df_exe |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+df_all <- df_exe |>
+  dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+shared_df <- crosstalk::SharedData$new(df_exe)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2)) +
+  geom_point(alpha=0.5, colour=point_colours[1], size = 0.5) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+nldr_plt <- ggplotly(nldr_plt, width = 600,
+                     height = 600, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+
+
+## ----echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"---------------
+# 
+# detourr_output <- detour(
+#   shared_df,
+#   tour_aes(
+#     projection = starts_with("x"),
+#     colour = type
+#   )
+# ) |>
+#   tour_path(grand_tour(2),
+#                     max_bases=50, fps = 60) |>
+#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
+#                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+#                palette = c("#66B2CC", "#FF7755"),
+#                 width = "600px", height = "600px")
+# 
+# crosstalk::bscols(
+#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+#                    nldr_plt,
+#                    htmltools::div(style = "margin-top: 20px;", detourr_output)
+#     ),
+#     device = "xs"
+#   )
+
+
+## -----------------------------------------------------------------------------
+
+num_highd_col <- df_exe |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+df_all <- df_exe |>
+  dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+shared_df <- crosstalk::SharedData$new(df_exe)
+
+error_plt <- shared_df |>
+  ggplot(aes(x=sqrt_row_wise_total_error, y = density)) +
+  geom_point(colour = point_colours[1]) +
+  xlab(expression(e[hj])) +
+  ylab("") +
+  theme_bw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+error_plt <- ggplotly(error_plt, width = 400,
+                      height = 400, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2)) +
+  geom_point(alpha=0.5, colour=point_colours[1], size = 0.5) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+nldr_plt <- ggplotly(nldr_plt, width = 400,
+                     height = 400, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+
+## ----echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"---------------
+# 
+# detourr_output <- detour(
+#   shared_df,
+#   tour_aes(
+#     projection = starts_with("x"),
+#     colour = type
+#   )
+# ) |>
+#   tour_path(grand_tour(2),
+#                     max_bases=50, fps = 60) |>
+#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
+#                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+#                palette = c("#66B2CC", "#FF7755"),
+#                 width = "600px", height = "600px")
+# 
+# crosstalk::bscols(
+#   htmltools::div(
+#     style = "display: grid; grid-template-columns: 1fr 1fr 1fr;",
+#     error_plt,
+#     nldr_plt,
+#     htmltools::div(style = "margin-top: 20px;", detourr_output)
+#   ),
+#   device = "xs"
+# )
 
 
 ## -----------------------------------------------------------------------------

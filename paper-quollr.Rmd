@@ -512,13 +512,13 @@ The implementation of `quollr` is designed to be efficient, and easy to extend. 
 
 Internally, `quollr` is organized into five primary modules that correspond to key steps in the analysis pipeline:
 
-1. **Data preparation** — functions such as `scale_highd()` and `prepare_data()` standardize the input, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
-2. **Hexagonal binning** — the `hex_bin_data()` module constructs a two-dimensional hexagonal grid and aggregates local summaries of the high-dimensional data for each bin.
-3. **Model fitting** — the `fit_highd_model()` function computes high-dimensional centroids and pairwise bin connections to build a structured manifold representation.
-4. **Error computation** — functions like `compute_errors()` and `aggregate_bin_error()` evaluate local and global discrepancies between the model and data, enabling diagnostic visualization.
-5. **Visualization and linkage** — plotting and tour functions (`show_hex_model()`, `show_link_plots()`, and `show_error_link_plots()`) integrate outputs into linked static and dynamic displays using `ggplot2`, `langevitour`, and `crosstalk`.
+1. Data preparation — functions such as `gen_scaled_data()` standardize the input, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
+2. Hexagonal binning — the `hex_bin_data()` module constructs a two-dimensional hexagonal grid and aggregates local summaries of the high-dimensional data for each bin.
+3. Model fitting — the `fit_highd_model()` function computes high-dimensional centroids and pairwise bin connections to build a structured manifold representation.
+4. Error computation — functions like `compute_errors()` and `aggregate_bin_error()` evaluate local and global discrepancies between the model and data, enabling diagnostic visualization.
+5. Visualization and linkage — plotting and tour functions (`show_hex_model()`, `show_link_plots()`, and `show_error_link_plots()`) integrate outputs into linked static and dynamic displays using `ggplot2`, `langevitour`, and `crosstalk`.
 
-Each module is internally independent but communicates through standardized data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components—such as substituting different binning strategies, embedding methods, or visualization tools—without altering the overall workflow.
+Each module is internally independent but communicates through standardized data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components such as substituting different binning strategies, embedding methods, or visualization tools without altering the overall workflow.
 
 ## Data objects
 
@@ -1163,10 +1163,12 @@ detour(
     colour = type
   )
 ) |>
-  show_scatter(axes = TRUE, 
+  tour_path(grand_tour(2), 
+                    max_bases=50, fps = 60) |>
+  show_scatter(axes = TRUE, size = 0.5, alpha = 0.5, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
-               palette = c("#66B2CC", "#FF7755"))
-
+               palette = c("#66B2CC", "#FF7755"),
+               width = "600px", height = "600px")
 ```
 
 In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the \twoD wireframe structure mapped to high-dimensional space.
@@ -1561,7 +1563,167 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-As an alternative to generate tour, the link plots can be generate with `detourr` as well. To achieve this, users can construct the linked visualization manually using the `crosstalk` and `htmltools` packages. The two- and three-panel linked layouts are created by arranging the NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and a dynamic high-dimensional projection view (`langevitour_output` or `detourr_output`) side by side within a flexible grid layout. The `bscols()` function from `crosstalk` synchronizes point selection between these plots, ensuring linked brushing across visual components.
+As an alternative to using `langevitour`, link plots can also be generated with the `detourr` package. In this setup, users can manually construct the linked visualization using the `crosstalk` [@joe2023] and `htmltools` [@joe2024] packages. The interactive layout is created by arranging the \twoD NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and the tour view produced with `detourr`, side by side within a flexible grid. The NLDR and error plots are rendered with `ggplotly()` [@chapman2020] to enable interactive linking. The `bscols()` function from `crosstalk` manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
+
+A two-panel linked plot combining the NLDR view and the tour from `detourr` can be created as follows:
+
+```{r}
+point_colours <- c("#66B2CC", "#FF7755")
+point_sizes <- c(0, 1)
+
+num_highd_col <- df_exe |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+df_all <- df_exe |>
+  dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+shared_df <- crosstalk::SharedData$new(df_exe)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2)) +
+  geom_point(alpha=0.5, colour=point_colours[1], size = 0.5) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+nldr_plt <- ggplotly(nldr_plt, width = 600,
+                     height = 600, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+```
+
+```{r, echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"}
+
+detourr_output <- detour(
+  shared_df,
+  tour_aes(
+    projection = starts_with("x"),
+    colour = type
+  )
+) |>
+  tour_path(grand_tour(2), 
+                    max_bases=50, fps = 60) |>
+  show_scatter(axes = TRUE, size = 0.5, alpha = 0.5, 
+               edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+               palette = c("#66B2CC", "#FF7755"),
+                width = "600px", height = "600px")
+
+crosstalk::bscols(
+    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+                   nldr_plt,
+                   htmltools::div(style = "margin-top: 20px;", detourr_output)
+    ),
+    device = "xs"
+  )
+```
+
+For analyses that include model error visualization, a three-panel view can be constructed by adding the error distribution plot (`error_plt`):
+
+```{r}
+
+num_highd_col <- df_exe |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+df_all <- df_exe |>
+  dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+shared_df <- crosstalk::SharedData$new(df_exe)
+
+error_plt <- shared_df |>
+  ggplot(aes(x=sqrt_row_wise_total_error, y = density)) +
+  geom_point(colour = point_colours[1]) +
+  xlab(expression(e[hj])) +
+  ylab("") +
+  theme_bw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+error_plt <- ggplotly(error_plt, width = 400,
+                      height = 400, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2)) +
+  geom_point(alpha=0.5, colour=point_colours[1], size = 0.5) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank()
+  )
+
+nldr_plt <- ggplotly(nldr_plt, width = 400,
+                     height = 400, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+```
+
+```{r, echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"}
+
+detourr_output <- detour(
+  shared_df,
+  tour_aes(
+    projection = starts_with("x"),
+    colour = type
+  )
+) |>
+  tour_path(grand_tour(2), 
+                    max_bases=50, fps = 60) |>
+  show_scatter(axes = TRUE, size = 0.5, alpha = 0.5, 
+               edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+               palette = c("#66B2CC", "#FF7755"),
+                width = "600px", height = "600px")
+
+crosstalk::bscols(
+  htmltools::div(
+    style = "display: grid; grid-template-columns: 1fr 1fr 1fr;",
+    error_plt, 
+    nldr_plt,
+    htmltools::div(style = "margin-top: 20px;", detourr_output)
+  ),
+  device = "xs"
+)
+```
 
 # Application
 
@@ -2118,4 +2280,4 @@ There are several avenues for future development. While hexagonal binning provid
 
 The source code for reproducing this paper can be found at: [https://github.com/JayaniLakshika/paper-quollr](https://github.com/JayaniLakshika/paper-quollr).
 
-This article is created using \CRANpkg{knitr} [@yihui2015] and \CRANpkg{rmarkdown} [@yihui2018] in R with the `rjtools::rjournal_article` template. These `R` packages were used for this work: `cli` [@gabor2025], `dplyr` [@hadley2023], `ggplot2` [@hadley2016], `interp` (>= 1.1-6) [@albrecht2024], `langevitour` [@paul2023], `proxy`[@david2022], `stats` [@core2025], `tibble` [@kirill2023], `tidyselect` [@lionel2024], `crosstalk` [@joe2023], `plotly` [@chapman2020], `kableExtra` [@hao2024], `patchwork` [@thomas2024], and `readr` [@hadley2024].
+This article is created using \CRANpkg{knitr} [@yihui2015] and \CRANpkg{rmarkdown} [@yihui2018] in R with the `rjtools::rjournal_article` template. These `R` packages were used for this work: `cli` [@gabor2025], `dplyr` [@hadley2023], `ggplot2` [@hadley2016], `interp` (>= 1.1-6) [@albrecht2024], `langevitour` [@paul2023], `proxy`[@david2022], `stats` [@core2025], `tibble` [@kirill2023], `tidyselect` [@lionel2024], `crosstalk` [@joe2023], `plotly` [@chapman2020], `htmltools` [@joe2024], `kableExtra` [@hao2024], `patchwork` [@thomas2024], and `readr` [@hadley2024].
