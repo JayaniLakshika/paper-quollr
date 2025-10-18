@@ -506,7 +506,7 @@ The paper is organized as follows. The next section introduces the implementatio
 
 # Implementation
 
-The implementation of `quollr` emphasizes modularity, computational efficiency, and interoperability. Its design follows a layered architecture that separates **data preprocessing**, **model construction**, and **visualization**, ensuring clarity, extensibility, and compatibility with the wider R ecosystem.
+The implementation of `quollr` is designed to be modular, efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration. This modular structure makes the code easier to maintain and allows new features to be added without disrupting the existing functionality.
 
 ## Software architecture
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  16 OCT 2025 18:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  17 OCT 2025 12:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -821,13 +821,12 @@ Overfull \hbox (36.27023pt too wide) in paragraph at lines 74--75
  []
 
 
+
+[2]
 Overfull \hbox (8.85884pt too wide) in paragraph at lines 78--79
 \T1/ppl/m/n/9 (-20) The pack-age is avail-able on CRAN, and the de-vel-op-ment ver-sion is avail-able at [][]$\T1/zi4/m/n/9 https : / / jayanilakshika .
  []
 
-
-
-[2]
 <paper-quollr_files/figure-latex/algo-steps-1.pdf, id=128, 1806.75pt x 361.35pt>
 File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
@@ -955,7 +954,7 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 67A69231A7E60C41A0C44A57F4350161;3154.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 0579D45758480B3132F472DCC10338FB;1431.
+(rerunfilecheck)             Checksum: 894793FF63D3D9EBD61402388DC4E8FE;1431.
  ) 
 Here is how much of TeX's memory you used:
  27480 strings out of 469729
@@ -964,12 +963,12 @@ Here is how much of TeX's memory you used:
  55014 multiletter control sequences out of 15000+600000
  681794 words of font info for 331 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1487b,1002s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,1487b,1002s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2412546 bytes).
+Output written on RJwrapper.pdf (20 pages, 2412785 bytes).
 PDF statistics:
- 525 PDF objects out of 1000 (max. 8388607)
- 457 compressed objects within 5 object streams
+ 524 PDF objects out of 1000 (max. 8388607)
+ 456 compressed objects within 5 object streams
  79 named destinations out of 1000 (max. 500000)
  71861 words of extra memory for PDF output out of 74296 (max. 10000000)
 
