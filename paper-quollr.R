@@ -907,7 +907,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`.", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1169,7 +1169,7 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`.", layout = "l-page"----
 # 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
@@ -1303,7 +1303,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 600,
 
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"---------------
+## ----echo=TRUE, fig.cap="Link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", eval=knitr::is_html_output(), layout = "l-page"----
 # 
 # detourr_output <- detour(
 #   shared_df,
@@ -1326,6 +1326,12 @@ nldr_plt <- ggplotly(nldr_plt, width = 600,
 #     ),
 #     device = "xs"
 #   )
+
+
+## ----out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+
+knitr::include_graphics(c("figures/model_link_proj1_detourr.png",
+                          "figures/model_link_proj2_detourr.png"))
 
 
 ## -----------------------------------------------------------------------------
@@ -1391,7 +1397,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
   config(displayModeBar = FALSE)
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), layout = "l-page"---------------
+## ----echo=TRUE, fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", eval=knitr::is_html_output(), layout = "l-page"----
 # 
 # detourr_output <- detour(
 #   shared_df,
@@ -1402,10 +1408,10 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
 # ) |>
 #   tour_path(grand_tour(2),
 #                     max_bases=50, fps = 60) |>
-#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
+#   show_scatter(axes = TRUE, size = 1, alpha = 0.8,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
 #                palette = c("#66B2CC", "#FF7755"),
-#                 width = "600px", height = "600px")
+#                 width = "500px", height = "500px")
 # 
 # crosstalk::bscols(
 #   htmltools::div(
@@ -1416,6 +1422,12 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
 #   ),
 #   device = "xs"
 # )
+
+
+## ----out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+
+knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
+                          "figures/model_link_error_proj2_detourr.png"))
 
 
 ## -----------------------------------------------------------------------------
