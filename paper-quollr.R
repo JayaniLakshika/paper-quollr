@@ -53,6 +53,7 @@ library(readr)
 library(plotly)
 library(crosstalk)
 library(htmltools)
+library(detourr)
 
 set.seed(20240110)
 
@@ -480,20 +481,20 @@ scurve_umap_plt + hex_grid_poly_scurve +
 data("scurve")
 
 
-## ----echo=TRUE----------------------------------------------------------------
-library(umap)
-library(dplyr)
-
-scurve_umap <- umap(
-  scurve |> select(-ID),
-  config = modifyList(umap.defaults, list(
-    n_neighbors = 46,
-    n_components = 2,
-    min_dist = 0.9
-  ))
-)$layout |>
-  as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
-  mutate(ID = scurve$ID)
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
+# library(umap)
+# library(dplyr)
+# 
+# scurve_umap <- umap(
+#   scurve |> select(-ID),
+#   config = modifyList(umap.defaults, list(
+#     n_neighbors = 46,
+#     n_components = 2,
+#     min_dist = 0.9
+#   ))
+# )$layout |>
+#   as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
+#   mutate(ID = scurve$ID)
 
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
@@ -874,8 +875,13 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   plot_layout(ncol = 4)
 
 
-## ----echo=TRUE, eval=knitr::is_html_output()----------------------------------
-# library(detourr)
+## ----out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+
+knitr::include_graphics(c("figures/model_proj1_detourr.png",
+                          "figures/model_proj2_detourr.png"))
+
+
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout."----
 # 
 # detour(
 #   df_exe,
@@ -1308,7 +1314,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 600,
 # ) |>
 #   tour_path(grand_tour(2),
 #                     max_bases=50, fps = 60) |>
-#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
+#   show_scatter(axes = TRUE, size = 1, alpha = 0.8,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
 #                palette = c("#66B2CC", "#FF7755"),
 #                 width = "600px", height = "600px")

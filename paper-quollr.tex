@@ -160,13 +160,13 @@ bin_configs
 
 \begin{verbatim}
 > $b2
-> [1] 30
+> [1] 28
 > 
 > $a1
-> [1] 0.05966332
+> [1] 0.05869649
 > 
 > $a2
-> [1] 0.05166995
+> [1] 0.05083265
 \end{verbatim}
 
 \subsubsection{Binning the data}\label{binning-the-data}
@@ -206,11 +206,11 @@ head(all_centroids_df, 5)
 > # A tibble: 5 x 3
 >       h     c_x    c_y
 >   <int>   <dbl>  <dbl>
-> 1     1 -0.1    -0.127
-> 2     2 -0.0403 -0.127
-> 3     3  0.0193 -0.127
-> 4     4  0.0790 -0.127
-> 5     5  0.139  -0.127
+> 1     1 -0.1    -0.116
+> 2     2 -0.0413 -0.116
+> 3     3  0.0174 -0.116
+> 4     4  0.0761 -0.116
+> 5     5  0.135  -0.116
 \end{verbatim}
 
 \paragraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
@@ -238,11 +238,11 @@ head(all_hex_coord, 5)
 
 \begin{verbatim}
 >   h           x           y
-> 1 1 -0.10000000 -0.09268324
-> 2 1 -0.12983166 -0.10990656
-> 3 1 -0.12983166 -0.14435320
-> 4 1 -0.10000000 -0.16157652
-> 5 1 -0.07016834 -0.14435320
+> 1 1 -0.10000000 -0.08179171
+> 2 1 -0.12934824 -0.09873593
+> 3 1 -0.12934824 -0.13262436
+> 4 1 -0.10000000 -0.14956858
+> 5 1 -0.07065176 -0.13262436
 \end{verbatim}
 
 \paragraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
@@ -268,11 +268,11 @@ head(umap_hex_id, 5)
 > # A tibble: 5 x 4
 >    emb1  emb2    ID     h
 >   <dbl> <dbl> <int> <int>
-> 1 0.300 0.985     1   448
-> 2 0.721 0.688     2   351
-> 3 0.722 0.542     3   287
-> 4 0.196 1.01      4   468
-> 5 0.240 1.06      5   489
+> 1 0.277 0.913     1   427
+> 2 0.697 0.538     2   287
+> 3 0.779 0.399     3   226
+> 4 0.173 0.953     4   446
+> 5 0.218 0.983     5   468
 \end{verbatim}
 
 \paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
@@ -293,11 +293,11 @@ head(std_df, 5)
 > # A tibble: 5 x 3
 >       h   n_h   w_h
 >   <int> <int> <dbl>
-> 1    49     1 0.001
+> 1    58     4 0.004
 > 2    68     1 0.001
-> 3    69     8 0.008
-> 4    70     5 0.005
-> 5    89     3 0.003
+> 3    69     5 0.005
+> 4    70     6 0.006
+> 5    71     9 0.009
 \end{verbatim}
 
 \paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
@@ -318,11 +318,11 @@ head(pts_df, 5)
 > # A tibble: 5 x 2
 >       h pts_list 
 >   <int> <list>   
-> 1    49 <int [1]>
+> 1    58 <int [4]>
 > 2    68 <int [1]>
-> 3    69 <int [8]>
-> 4    70 <int [5]>
-> 5    89 <int [3]>
+> 3    69 <int [5]>
+> 4    70 <int [6]>
+> 5    71 <int [9]>
 \end{verbatim}
 
 \subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
@@ -342,11 +342,11 @@ head(df_bin_centroids, 5)
 
 \begin{verbatim}
 >   h         c_x        c_y n_h w_h
-> 1 1 -0.10000000 -0.1271299   0   0
-> 2 2 -0.04033668 -0.1271299   0   0
-> 3 3  0.01932665 -0.1271299   0   0
-> 4 4  0.07898997 -0.1271299   0   0
-> 5 5  0.13865330 -0.1271299   0   0
+> 1 1 -0.10000000 -0.1156801   0   0
+> 2 2 -0.04130351 -0.1156801   0   0
+> 3 3  0.01739298 -0.1156801   0   0
+> 4 4  0.07608947 -0.1156801   0   0
+> 5 5  0.13478596 -0.1156801   0   0
 \end{verbatim}
 
 \subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
@@ -373,11 +373,11 @@ head(trimesh, 5)
 > # A tibble: 5 x 8
 >    from    to  x_from  y_from    x_to    y_to from_count to_count
 >   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>
-> 1     1     2 -0.1    -0.127  -0.0403 -0.127           0        0
-> 2    22    23 -0.0702 -0.0755 -0.0105 -0.0755          0        0
-> 3    22    44 -0.0702 -0.0755 -0.0403 -0.0238          0        0
-> 4     3    23  0.0193 -0.127  -0.0105 -0.0755          0        0
-> 5    44    45 -0.0403 -0.0238  0.0193 -0.0238          0        0
+> 1     1     2 -0.1    -0.116  -0.0413 -0.116           0        0
+> 2    22    23 -0.0707 -0.0648 -0.0120 -0.0648          0        0
+> 3    22    44 -0.0707 -0.0648 -0.0413 -0.0140          0        0
+> 4     3    23  0.0174 -0.116  -0.0120 -0.0648          0        0
+> 5    44    45 -0.0413 -0.0140  0.0174 -0.0140          0        0
 \end{verbatim}
 
 The \texttt{update\_trimesh\_index()} function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
@@ -392,11 +392,11 @@ head(trimesh, 5)
 > # A tibble: 5 x 10
 >    from    to  x_from  y_from    x_to    y_to from_count to_count from_reindexed
 >   <int> <int>   <dbl>   <dbl>   <dbl>   <dbl>      <dbl>    <dbl>          <int>
-> 1     1     2 -0.1    -0.127  -0.0403 -0.127           0        0              1
-> 2    22    23 -0.0702 -0.0755 -0.0105 -0.0755          0        0             22
-> 3    22    44 -0.0702 -0.0755 -0.0403 -0.0238          0        0             22
-> 4     3    23  0.0193 -0.127  -0.0105 -0.0755          0        0              3
-> 5    44    45 -0.0403 -0.0238  0.0193 -0.0238          0        0             44
+> 1     1     2 -0.1    -0.116  -0.0413 -0.116           0        0              1
+> 2    22    23 -0.0707 -0.0648 -0.0120 -0.0648          0        0             22
+> 3    22    44 -0.0707 -0.0648 -0.0413 -0.0140          0        0             22
+> 4     3    23  0.0174 -0.116  -0.0120 -0.0648          0        0              3
+> 5    44    45 -0.0413 -0.0140  0.0174 -0.0140          0        0             44
 > # i 1 more variable: to_reindexed <int>
 \end{verbatim}
 
@@ -444,13 +444,13 @@ head(df_bin, 5)
 
 \begin{verbatim}
 > # A tibble: 5 x 8
->       h    x1    x2    x3        x4       x5        x6        x7
->   <int> <dbl> <dbl> <dbl>     <dbl>    <dbl>     <dbl>     <dbl>
-> 1    49 0.999  1.93  1.05  0.00276   0.0133  -0.0530   -0.00270 
-> 2    68 0.997  1.37  1.07  0.00154   0.00687  0.0289    0.00760 
-> 3    69 0.960  1.58  1.27 -0.00709   0.00759 -0.000368 -0.000292
-> 4    70 0.935  1.81  1.35 -0.000338 -0.00713 -0.0278   -0.00474 
-> 5    89 0.985  1.13  1.14 -0.00597  -0.00830  0.0196   -0.00140
+>       h     x1     x2    x3       x4       x5       x6       x7
+>   <int>  <dbl>  <dbl> <dbl>    <dbl>    <dbl>    <dbl>    <dbl>
+> 1    58 -0.371 1.91    1.92 -0.00827 0.00189   0.0170   0.00281
+> 2    68  0.958 0.0854  1.29  0.00265 0.0171    0.0876  -0.00249
+> 3    69  0.855 0.0917  1.51  0.00512 0.000325 -0.0130  -0.00395
+> 4    70  0.731 0.129   1.68 -0.00433 0.00211  -0.0356  -0.00240
+> 5    71  0.474 0.108   1.88 -0.00260 0.000128  0.00785  0.00170
 \end{verbatim}
 
 \subsection{Prediction}\label{prediction}
@@ -475,11 +475,11 @@ head(predict_data, 5)
 > # A tibble: 5 x 4
 >   pred_emb_1 pred_emb_2    ID pred_h
 >        <dbl>      <dbl> <int>  <int>
-> 1      0.318      1.01      1    470
-> 2      0.735      0.700     2    351
-> 3      0.705      0.545     3    287
-> 4      0.198      1.01      4    468
-> 5      0.228      1.06      5    489
+> 1      0.252      0.901     1    427
+> 2      0.692      0.545     2    287
+> 3      0.780      0.393     3    226
+> 4      0.164      0.952     4    446
+> 5      0.193      1.00      5    468
 \end{verbatim}
 
 It is worth noting that while \texttt{predict\_emb()} provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP \citep{tomasz2023} supports direct prediction of embeddings for new data once a model is fitted.
@@ -637,9 +637,11 @@ show_langevitour(
 
 As an alternative to \texttt{langevitour}, users can explore the fitted $p\text{-}D$ model using the \texttt{detourr} \citep{casper2025}. The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
 
-\begin{verbatim}
-library(detourr)
+\begin{figure}[H]
+\includegraphics[width=0.5\linewidth]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`.}\label{fig:unnamed-chunk-30}
+\end{figure}
 
+\begin{verbatim}
 detour(
   df_exe,
   tour_aes(
@@ -693,7 +695,7 @@ nldrdt_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-33-1} \caption{Exploring the correspondence between UMAP layout and `Scurve` structure in $7\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\text{-}D$ space, highlighting distortions introduced by UMAP.}\label{fig:unnamed-chunk-33}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1} \caption{Exploring the correspondence between UMAP layout and `Scurve` structure in $7\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\text{-}D$ space, highlighting distortions introduced by UMAP.}\label{fig:unnamed-chunk-34}
 \end{figure}
 
 \texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern.
@@ -731,7 +733,7 @@ errornldrdt_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-37-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-37}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-38-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-38}
 \end{figure}
 
 As an alternative to using \texttt{langevitour}, link plots can also be generated with the \texttt{detourr} package. In this setup, users can manually construct the linked visualization using the \texttt{crosstalk} \citep{joe2023} and \texttt{htmltools} \citep{joe2024} packages. The interactive layout is created by arranging the $2\text{-}D$ NLDR plot (\texttt{nldr\_plt}), the optional error distribution plot (\texttt{error\_plt}), and the tour view produced with \texttt{detourr}, side by side within a flexible grid. The NLDR and error plots are rendered with \texttt{ggplotly()} \citep{chapman2020} to enable interactive linking. The \texttt{bscols()} function from \texttt{crosstalk} manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
@@ -748,7 +750,7 @@ detourr_output <- detour(
 ) |>
   tour_path(grand_tour(2), 
                     max_bases=50, fps = 60) |>
-  show_scatter(axes = TRUE, size = 0.5, alpha = 0.5, 
+  show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
                 width = "600px", height = "600px")

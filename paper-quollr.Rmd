@@ -101,6 +101,7 @@ library(readr)
 library(plotly)
 library(crosstalk)
 library(htmltools)
+library(detourr)
 
 set.seed(20240110)
 ```
@@ -600,7 +601,7 @@ data("scurve")
 
 For this example, we use the UMAP layout, which is produced using `n_neighbors =` $46$ and `min_dist =` $0.9$.
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, eval=FALSE}
 library(umap)
 library(dplyr)
 
@@ -1171,8 +1172,13 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
 
 As an alternative to `langevitour`, users can explore the fitted \pD model using the `detourr` [@casper2025]. The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
 
-```{r, echo=TRUE, eval=knitr::is_html_output()}
-library(detourr)
+```{r, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+
+knitr::include_graphics(c("figures/model_proj1_detourr.png",
+                          "figures/model_proj2_detourr.png"))
+```
+
+```{r, echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout."}
 
 detour(
   df_exe,
@@ -1637,7 +1643,7 @@ detourr_output <- detour(
 ) |>
   tour_path(grand_tour(2), 
                     max_bases=50, fps = 60) |>
-  show_scatter(axes = TRUE, size = 0.5, alpha = 0.5, 
+  show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
                 width = "600px", height = "600px")

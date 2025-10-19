@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  19 OCT 2025 19:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  19 OCT 2025 20:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -891,59 +891,76 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf 
 
 
 [12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
+<figures/model_proj1_detourr.png, id=219, 724.7075pt x 637.38126pt>
+File: figures/model_proj1_detourr.png Graphic file (type png)
+<use figures/model_proj1_detourr.png>
+Package pdftex.def Info: figures/model_proj1_detourr.png  used on input line 641.
+(pdftex.def)             Requested size: 199.16928pt x 175.16853pt.
+<figures/model_proj2_detourr.png, id=220, 730.73pt x 638.385pt>
+File: figures/model_proj2_detourr.png Graphic file (type png)
+<use figures/model_proj2_detourr.png>
+Package pdftex.def Info: figures/model_proj2_detourr.png  used on input line 641.
+(pdftex.def)             Requested size: 199.16928pt x 173.99298pt.
 
-[13 <./paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf, id=239, 722.7pt x 722.7pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf  used on input line 696.
+Overfull \hbox (1.90001pt too wide) in paragraph at lines 641--641
+[][] [] 
+ []
+
+
+
+[13 <./paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf> <./figures/model_proj1_detourr.png> <./figures/model_proj2_detourr.png>]
+<paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf, id=244, 722.7pt x 722.7pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf  used on input line 698.
 (pdftex.def)             Requested size: 398.33858pt x 398.33534pt.
 
 
-[14 <./paper-quollr_files/figure-latex/unnamed-chunk-33-1.pdf>]
-<paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf, id=257, 941.5175pt x 708.6475pt>
-File: paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf  used on input line 734.
+[14]
+
+[15 <./paper-quollr_files/figure-latex/unnamed-chunk-34-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf, id=266, 941.5175pt x 708.6475pt>
+File: paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf  used on input line 736.
 (pdftex.def)             Requested size: 398.33858pt x 299.81416pt.
 
 
-[15]
-
-[16 <./paper-quollr_files/figure-latex/unnamed-chunk-37-1.pdf>]
-<paper-quollr_files/figure-latex/limb-rwbss-1.pdf, id=297, 469.755pt x 324.21124pt>
-File: paper-quollr_files/figure-latex/limb-rwbss-1.pdf Graphic file (type pdf)
-<use paper-quollr_files/figure-latex/limb-rwbss-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rwbss-1.pdf  used on input line 810.
-(pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
-
+[16 <./paper-quollr_files/figure-latex/unnamed-chunk-38-1.pdf>]
 
 [17]
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=305, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/limb-rwbss-1.pdf, id=307, 469.755pt x 324.21124pt>
+File: paper-quollr_files/figure-latex/limb-rwbss-1.pdf Graphic file (type pdf)
+<use paper-quollr_files/figure-latex/limb-rwbss-1.pdf>
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-rwbss-1.pdf  used on input line 812.
+(pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=308, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 814.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 816.
 (pdftex.def)             Requested size: 398.33858pt x 265.55322pt.
 
 
-[18 <./paper-quollr_files/figure-latex/limb-rwbss-1.pdf> <./paper-quollr_files/figure-latex/model-limb-1.pdf>] (./RJwrapper.bbl (./RJwrapper.brf)
+[18 <./paper-quollr_files/figure-latex/limb-rwbss-1.pdf>]
+
+[19 <./paper-quollr_files/figure-latex/model-limb-1.pdf>] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
 
 
-[19]
-
 [20])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 845.
+(Font)              using `T1/zi4/m/n' instead on input line 847.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 845.
+(Font)              scaled to size 9.18004pt on input line 847.
 )
 
-[21] (./RJwrapper.aux)
+[21]
+
+[22] (./RJwrapper.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
@@ -957,21 +974,21 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 67A69231A7E60C41A0C44A57F4350161;3154.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 2572A6A510D9EA7A576FEC47AEBD43E3;1632.
+(rerunfilecheck)             Checksum: A448548D7B20AD3DF165CF4618486E30;1632.
  ) 
 Here is how much of TeX's memory you used:
- 27505 strings out of 469729
- 502616 string characters out of 5476491
- 926753 words of memory out of 5000000
- 55032 multiletter control sequences out of 15000+600000
+ 27530 strings out of 469729
+ 503472 string characters out of 5476491
+ 923890 words of memory out of 5000000
+ 55055 multiletter control sequences out of 15000+600000
  681700 words of font info for 332 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1487b,1019s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,1487b,986s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (21 pages, 2732937 bytes).
+Output written on RJwrapper.pdf (22 pages, 2822058 bytes).
 PDF statistics:
- 545 PDF objects out of 1000 (max. 8388607)
- 476 compressed objects within 5 object streams
- 84 named destinations out of 1000 (max. 500000)
- 71354 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 555 PDF objects out of 1000 (max. 8388607)
+ 481 compressed objects within 5 object streams
+ 86 named destinations out of 1000 (max. 500000)
+ 71364 words of extra memory for PDF output out of 74296 (max. 10000000)
 
