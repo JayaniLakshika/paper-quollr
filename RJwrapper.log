@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  19 OCT 2025 23:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.15)  20 OCT 2025 00:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -806,17 +806,17 @@ File: figures/quollr_workflow.png Graphic file (type png)
 Package pdftex.def Info: figures/quollr_workflow.png  used on input line 30.
 (pdftex.def)             Requested size: 398.33858pt x 218.02226pt.
 
+Overfull \hbox (58.86774pt too wide) in paragraph at lines 42--44
+[]\T1/ppl/m/n/9 (-20) Construct $\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) model: A se-ries of func-tions \T1/zi4/m/n/9 hex_binning()\T1/ppl/m/n/9 (-20) , \T1/zi4/m/n/9 merge_hexbin_centroids()\T1/ppl/m/n/9 (-20) , \T1/zi4/m/n/9 tri_bin_centroids()\T1/ppl/m/n/9 (-20) ,
+ []
+
+
 
 [2 <./figures/quollr_workflow.png>]
 LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 65.
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
 )
-Overfull \hbox (1.72874pt too wide) in paragraph at lines 67--68
-[]\T1/zi4/m/n/9 nldr_data \T1/ppl/m/n/9 (-20) -- a tib-ble con-tain-ing two-dimensional em-bed-dings, la-beled as \T1/zi4/m/n/9 emb1 \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 emb2\T1/ppl/m/n/9 (-20) , matched
- []
-
-
 Overfull \hbox (36.27023pt too wide) in paragraph at lines 83--84
 \OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
@@ -833,7 +833,7 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used 
 (pdftex.def)             Requested size: 398.33858pt x 79.66817pt.
 
 
-[3 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>]
+[3]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
 (Font)              scaled to size 10.42007pt on input line 136.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
@@ -848,7 +848,7 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 136.
 
 
-[4]
+[4 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>]
 
 [5]
 
@@ -883,14 +883,14 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 613--614
 \T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
  []
 
-<paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=205, 469.755pt x 118.4425pt>
+
+
+[12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
+<paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf, id=216, 469.755pt x 118.4425pt>
 File: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 635.
 (pdftex.def)             Requested size: 398.33858pt x 100.43622pt.
-
-
-[12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
 <figures/model_proj1_detourr.png, id=219, 724.7075pt x 637.38126pt>
 File: figures/model_proj1_detourr.png Graphic file (type png)
 <use figures/model_proj1_detourr.png>
@@ -1001,15 +1001,15 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 2BCFD38E2241EA8061E4D5C09F390A0A;1632.
  ) 
 Here is how much of TeX's memory you used:
- 27582 strings out of 469729
- 505556 string characters out of 5476491
- 927322 words of memory out of 5000000
+ 27579 strings out of 469729
+ 505532 string characters out of 5476491
+ 927320 words of memory out of 5000000
  55101 multiletter control sequences out of 15000+600000
- 681785 words of font info for 334 fonts, out of 8000000 for 9000
+ 681636 words of font info for 332 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1487b,1020s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (23 pages, 3455486 bytes).
+Output written on RJwrapper.pdf (23 pages, 3456035 bytes).
 PDF statistics:
  569 PDF objects out of 1000 (max. 8388607)
  486 compressed objects within 5 object streams
