@@ -436,10 +436,16 @@ scurve_proj_umap_model4 <- plot_proj(
 
 
 ## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different \\twoD projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'----
+
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
   scurve_proj_umap_model3, scurve_proj_umap_model4, 
   ncol = 2)
+
+
+## ----workflow, out.width = "100%", fig.pos="H", fig.cap="Workflow for "-------
+
+knitr::include_graphics("figures/quollr_workflow.png")
 
 
 ## ----algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
@@ -506,7 +512,7 @@ scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 ## ----echo=TRUE----------------------------------------------------------------
 bin_configs <- calc_bins_y(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 25, 
+  b1 = 21, 
   q = 0.1)
 
 bin_configs
@@ -515,7 +521,7 @@ bin_configs
 ## ----echo=TRUE----------------------------------------------------------------
 hb_obj <- hex_binning(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 25, 
+  b1 = 21, 
   q = 0.1)
 
 
@@ -679,11 +685,11 @@ hb_obj <- hex_binning(
 ## ----echo=TRUE----------------------------------------------------------------
 all_centroids_df <- gen_centroids(
   nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 25, 
+  b1 = 21, 
   q = 0.1
   )
 
-all_centroids_df
+head(all_centroids_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -750,7 +756,7 @@ head(trimesh, 5)
 ## ----echo=TRUE----------------------------------------------------------------
 low_density_hex <- find_low_dens_hex(
   model_2d = df_bin_centroids, 
-  b1 = 25, 
+  b1 = 21, 
   md_thresh = 0.05
 )
 
@@ -1557,31 +1563,6 @@ trimesh_limb <- ggplot() +
     aspect.ratio = 1
   )
 
-trimesh_limb_int <- ggplotly(trimesh_limb, 
-                                width = "350", 
-                                height = "350", 
-                                tooltip = "none") |>
-  config(
-    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
-    displayModeBar = FALSE,   # Hides the plotly toolbar
-    editable = FALSE,         # Disables annotations and editing
-    showTips = FALSE,         # Removes tooltip on hover
-    displaylogo = FALSE,      # Hides plotly logo
-    responsive = FALSE        # Disables responsive resizing
-  )
-
-# hex_grid <- tsne_limb_obj$hb_obj$hex_poly
-# counts_df <- tsne_limb_obj$hb_obj$std_cts
-# 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("h" = "h"))
-# 
-# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
-#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-#   coord_fixed() +
-#   theme_minimal()
-
 
 ## -----------------------------------------------------------------------------
 #| label: prep-limb-tsne-author-model-proj
@@ -1612,22 +1593,87 @@ scaled_limb_data_model <- scaled_limb |>
   select(-type)
 
 
-## ----langevitour-limb-tsne-author-proj----------------------------------------
+## -----------------------------------------------------------------------------
 
-data_limb_n <- data_limb_n |>
-  select(-type) |>
-  mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
+df <- inner_join(data_limb, tsne_limb_scaled_with_cluster, by = "ID")
 
-df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
+### Define type column
+df <- df |>
+  select(starts_with("x"), starts_with("emb"), "cluster") |>
+  mutate(type = tsne_limb_scaled_with_cluster$cluster) ## original dataset
 
-limb_highd_vis <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-                         lineFrom = trimesh_data_limb$from_reindexed,
-                         lineTo = trimesh_data_limb$to_reindexed,
-                         group = factor(df_model_data_limb_n$type,
-                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
-                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
-                         enableControls = FALSE,
-                         width = "421px", height = "421px")
+df_b <- df_bin_limb |>
+  filter(h %in% df_bin_centroids_limb$h) |>
+  mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in model_2d
+df_b <- df_b[match(df_bin_centroids_limb$h, df_b$h),] |>
+  tidyr::drop_na() |>
+  select(-h)
+
+df_exe_limb_int <- bind_rows(df_b, df)
+
+point_data <- df_exe_limb_int 
+edge_data <- trimesh_data_limb
+
+num_highd_col <- point_data |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+shared_df <- crosstalk::SharedData$new(point_data)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2, colour = cluster)) +
+  geom_point(alpha=0.5, size = 0.8) +
+  geom_segment(data = trimesh_data_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 0.5) +
+  scale_color_manual(values = c("0" = '#66c2a5',"1" = '#fc8d62',"2" = '#8da0cb',"3" = '#e78ac3',"4" = '#a6d854',"5" = '#ffd92f',"6" = '#e5c494')) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+    legend.position = "none"
+  )
+
+nldr_plt <- ggplotly(nldr_plt, width = 600,
+                     height = 600, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+
+langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
+                                               group = factor(point_data$type,
+                                                              c("0", "1", "2", "3", "4", "5", "6", "model")),
+                                               pointSize = append(rep(point_sizes[1], NROW(df_b)),
+                                                                  rep(point_sizes[2], NROW(df))),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                                               link=shared_df,
+                                               linkFilter=FALSE)
+
+linked_plt_int <- crosstalk::bscols(
+  htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+                 nldr_plt,
+                 htmltools::div(style = "margin-top: 20px;", langevitour_output)
+  ),
+  device = "xs"
+)
 
 
 ## ----plot-proj----------------------------------------------------------------
@@ -1731,30 +1777,88 @@ trimesh_limb_best <- ggplot() +
     aspect.ratio = 1
   )
 
-trimesh_limb_best_int <- ggplotly(trimesh_limb_best, 
-                                width = "350", 
-                                height = "350", 
-                                tooltip = "none") |>
-  config(
-    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
-    displayModeBar = FALSE,   # Hides the plotly toolbar
-    editable = FALSE,         # Disables annotations and editing
-    showTips = FALSE,         # Removes tooltip on hover
-    displaylogo = FALSE,      # Hides plotly logo
-    responsive = FALSE        # Disables responsive resizing
+
+
+## -----------------------------------------------------------------------------
+df <- inner_join(data_limb, tsne_limb_scaled_with_cluster, by = "ID")
+
+### Define type column
+df <- df |>
+  select(starts_with("x"), starts_with("emb"), "cluster") |>
+  mutate(type = tsne_limb_scaled_with_cluster$cluster) ## original dataset
+
+df_b <- df_bin_limb |>
+  filter(h %in% df_bin_centroids_limb$h) |>
+  mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in model_2d
+df_b <- df_b[match(df_bin_centroids_limb$h, df_b$h),] |>
+  tidyr::drop_na() |>
+  select(-h)
+
+df_exe_limb_int <- bind_rows(df_b, df)
+
+point_data <- df_exe_limb_int 
+edge_data <- trimesh_data_limb
+
+num_highd_col <- point_data |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+shared_df <- crosstalk::SharedData$new(point_data)
+
+nldr_plt <- shared_df |>
+  ggplot(aes(x = emb1, y = emb2, colour = cluster)) +
+  geom_point(alpha=0.5, size = 0.8) +
+  geom_segment(data = trimesh_data_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 0.5) +
+  scale_color_manual(values = c("0" = '#66c2a5',"1" = '#fc8d62',"2" = '#8da0cb',"3" = '#e78ac3',"4" = '#a6d854',"5" = '#ffd92f',"6" = '#e5c494')) +
+  theme_linedraw() +
+  theme(
+    #aspect.ratio = 1,
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+    panel.background = element_rect(fill = 'transparent',
+                                    colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.x = element_blank(), axis.title.y = element_blank(),
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+    legend.position = "none"
   )
 
-# hex_grid <- tsne_best_limb_obj$hb_obj$hex_poly
-# counts_df <- tsne_best_limb_obj$hb_obj$std_cts
-# 
-# hex_grid_with_counts <- left_join(hex_grid, counts_df, by = c("hex_poly_id" = "h"))
-# 
-# ggplot(data = hex_grid_with_counts, aes(x = x, y = y)) +
-#   geom_polygon(color = "black", aes(group = hex_poly_id, fill = n_h)) +
-#   #geom_text(data = all_centroids_df, aes(x = c_x, y = c_y, label = h)) +
-#   scale_fill_viridis_c(direction = -1, na.value = "#ffffff") +
-#   coord_fixed() +
-#   theme_minimal()
+nldr_plt <- ggplotly(nldr_plt, width = 600,
+                     height = 600, tooltip = "none") |>
+  style(unselected=list(marker=list(opacity=1))) |>
+  highlight(on="plotly_selected", off="plotly_deselect") |>
+  config(displayModeBar = FALSE)
+
+
+langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
+                                               group = factor(point_data$type,
+                                                              c("0", "1", "2", "3", "4", "5", "6", "model")),
+                                               pointSize = append(rep(point_sizes[1], NROW(df_b)),
+                                                                  rep(point_sizes[2], NROW(df))),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                                               link=shared_df,
+                                               linkFilter=FALSE)
+
+linked_plt_best <- crosstalk::bscols(
+  htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
+                 nldr_plt,
+                 htmltools::div(style = "margin-top: 20px;", langevitour_output)
+  ),
+  device = "xs"
+)
 
 
 ## -----------------------------------------------------------------------------
@@ -1784,24 +1888,6 @@ scaled_limb_data <- scaled_limb |>
 scaled_limb_data_model <- scaled_limb |>
   filter(type == "model") |>
   select(-type)
-
-
-## ----langevitour-limb-tsne-best-proj------------------------------------------
-
-data_limb_n <- data_limb_n |>
-  select(-type) |>
-  mutate(type = as.character(tsne_limb_scaled_with_cluster$cluster.ids))
-
-df_model_data_limb_n <- bind_rows(df_b_limb, data_limb_n)
-
-limb_highd_vis_best <- langevitour::langevitour(df_model_data_limb_n[1:(length(df_model_data_limb_n)-1)],
-                         lineFrom = trimesh_data_limb$from_reindexed,
-                         lineTo = trimesh_data_limb$to_reindexed,
-                         group = factor(df_model_data_limb_n$type,
-                                        c("0", "1", "2", "3", "4", "5", "6", "model")),
-                         levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
-                         enableControls = FALSE,
-                         width = "421px", height = "421px")
 
 
 ## ----plot-proj-best-----------------------------------------------------------
@@ -1871,62 +1957,16 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 
 
-## ----model-limb-html, eval=knitr::is_html_output(), fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\@ref(fig:limb-rwbss) b) and the $2-\\text{D}$ layout selected (Figure \\@ref(fig:limb-rwbss) f) by RWBSS plot (Figure \\@ref(fig:limb-rwbss)) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$."----
-# 
-# 
-# modellimbfig <- htmltools::div(
-#         style = "display: grid; grid-template-columns: 1fr 1fr; row-gap: 0px; justify-items: center;",
-#         trimesh_limb_int,
-#         htmltools::div(style = "margin-top: 13px;", limb_highd_vis),
-#         trimesh_limb_best_int,
-#         htmltools::div(style = "margin-top: 13px;", limb_highd_vis_best)
-#       )
-# 
-# class(modellimbfig) <- c(class(modellimbfig), "htmlwidget")
-# 
-# modellimbfig
-
-
-## -----------------------------------------------------------------------------
-df_exe_limb_int <- comb_all_data_model(
-  highd_data = data_limb, 
-  nldr_data = tsne_limb, 
-  model_highd = df_bin_limb, 
-  model_2d = df_bin_centroids_limb
-)
-
-
 ## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
-# tsne_link_limb <- show_link_plots(
-#   point_data = df_exe_limb_int,
-#   edge_data = trimesh_data_limb,
-#   point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
-# )
+# class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
 # 
-# class(tsne_link_limb) <- c(class(tsne_link_limb), "htmlwidget")
-# 
-# tsne_link_limb
-
-
-## -----------------------------------------------------------------------------
-df_exe_limb_int_best <- comb_all_data_model(
-  highd_data = data_limb, 
-  nldr_data = tsne_limb2, 
-  model_highd = df_bin_limb, 
-  model_2d = df_bin_centroids_limb
-)
+# linked_plt_int
 
 
 ## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"----
 # 
-# tsne_link_limb_best <- show_link_plots(
-#   point_data = df_exe_limb_int_best,
-#   edge_data = trimesh_data_limb,
-#   point_colour = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')
-# )
+# class(linked_plt_best) <- c(class(linked_plt_best), "htmlwidget")
 # 
-# class(tsne_link_limb_best) <- c(class(tsne_link_limb_best), "htmlwidget")
-# 
-# tsne_link_limb_best
+# linked_plt_best
 
