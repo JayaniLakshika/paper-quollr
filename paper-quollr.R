@@ -153,8 +153,8 @@ hex_grid_poly_scurve <- ggplot(
   ylim(sc_ylims)
 
 hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "400", 
+                                height = "380", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -179,8 +179,8 @@ hex_centroids_scurve <- ggplot(
   ylim(sc_ylims)
 
 hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
-                                width = "350", 
-                                height = "350", 
+                                width = "400", 
+                                height = "380", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -208,7 +208,7 @@ wireframe_scurve <- ggplot() +
 
 wireframe_scurve_int <- ggplotly(wireframe_scurve, 
                                 width = "350", 
-                                height = "350", 
+                                height = "320", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -239,7 +239,7 @@ hex_grid_scurve <- ggplot(
 
 hex_grid_scurve_int <- ggplotly(hex_grid_scurve, 
                                 width = "350", 
-                                height = "350", 
+                                height = "380", 
                                 tooltip = "none") |>
   config(
     staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
@@ -280,7 +280,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
-                         width = "300px", height = "350px")
+                         width = "400px", height = "380px")
 
 
 
@@ -466,7 +466,7 @@ hex_grid_scurve + wrap_plots(
 knitr::include_graphics("figures/quollr_workflow.png")
 
 
-## ----algo-step-html, eval=knitr::is_html_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
+## ----algo-step-html, eval=knitr::is_html_output(), fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
 # 
 # algofig <- bscols(
 #   htmltools::div(
@@ -487,10 +487,10 @@ knitr::include_graphics("figures/quollr_workflow.png")
 #         margin: 0;
 #         padding: 0;
 #       ",
-#       htmltools::div(style = 'margin: 0; padding: 0;', hex_grid_poly_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0;', hex_centroids_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0;', wireframe_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0;', scurve_umap_model_vis_n)
+#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 225px;', hex_grid_poly_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 400px;', hex_centroids_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 280px; width: 225px;', wireframe_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; margin-left: 60px; height: 300px;', scurve_umap_model_vis_n)
 #     )
 #   ),
 #   device = "xs"
