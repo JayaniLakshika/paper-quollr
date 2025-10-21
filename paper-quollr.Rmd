@@ -331,7 +331,7 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
-                         width = "400px", height = "350px")
+                         width = "400px", height = "380px")
 
 scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          lineFrom = tr_from_to_df_scurve$from_reindexed,
@@ -365,7 +365,7 @@ overviewfig <- bscols(
         padding: 0;
       ",
       htmltools::div(style = "margin: 0; padding: 0;", hex_grid_scurve_int),
-      htmltools::div(style = "margin: 0; padding: 0;", scurve_umap_model_vis)
+      htmltools::div(style = "margin: 0; margin-top: 13px; padding: 0;", scurve_umap_model_vis)
     )
   ),
   device = "xs"
