@@ -461,7 +461,7 @@ hex_grid_scurve + wrap_plots(
   ncol = 2)
 
 
-## ----workflow, out.width = "100%", fig.pos="H", fig.cap="Workflow for "-------
+## ----workflow, out.width = "100%", fig.pos="H", fig.cap="Overview of the `quollr` workflow and software architecture. The process begins with NLDR and $p\\text{-}D$ data inputs, followed by data preprocessing and hexagonal binning. Centroids are computed and triangulated to form the $2\\text{-}D$ mesh, which is then lifted into the $p\\text{-}D$ space. Predictions and error computations are performed on new data, while interactive functions enable dynamic linking between the $p\\text{-}D$ and $2\\text{-}D$ representations."----
 
 knitr::include_graphics("figures/quollr_workflow.png")
 
