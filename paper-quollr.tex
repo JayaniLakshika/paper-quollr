@@ -632,13 +632,13 @@ show_langevitour(
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (blue) overlaid on `Scurve` data (black) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model.}\label{fig:unnamed-chunk-29}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:unnamed-chunk-29}
 \end{figure}
 
 As an alternative to \texttt{langevitour}, users can explore the fitted $p\text{-}D$ model using the \texttt{detourr} \citep{casper2025}. The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
 
 \begin{figure}[H]
-\includegraphics[width=0.5\linewidth]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`.}\label{fig:unnamed-chunk-30}
+\includegraphics[width=0.5\linewidth]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:unnamed-chunk-30}
 \end{figure}
 
 \begin{verbatim}
