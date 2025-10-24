@@ -2348,7 +2348,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 
 ```
 
-```{r model-limb, fig.cap="Compare the published $2-\\text{D}$ layout (Figure \\ref{fig:limb-rwbss}b) and the $2-\\text{D}$ layout selected (Figure \\ref{fig:limb-rwbss}f) by RWBSS plot (Figure \\ref{fig:limb-rwbss}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
+```{r model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-rwbss}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-rwbss}f) by RWBSS plot (Figure \\ref{fig:limb-rwbss}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
@@ -2356,14 +2356,14 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 ```
 
-```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"}
+```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout b (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", layout = "l-page"}
 
 class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
 
 linked_plt_int
 ```
 
-```{r tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Link plot showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right).", layout = "l-page"}
+```{r tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout f (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", layout = "l-page"}
 
 class(linked_plt_best) <- c(class(linked_plt_best), "htmlwidget")
 
