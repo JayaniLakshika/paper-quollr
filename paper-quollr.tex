@@ -757,13 +757,18 @@ detourr_output <- detour(
 \end{verbatim}
 
 \begin{verbatim}
-crosstalk::bscols(
+lndet_link <- crosstalk::bscols(
     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
                    nldr_plt,
                    htmltools::div(style = "margin-top: 20px;", detourr_output)
     ),
     device = "xs"
   )
+
+
+class(lndet_link) <- c(class(lndet_link), "htmlwidget")
+
+lndet_link
 \end{verbatim}
 
 \begin{figure}[H]
@@ -787,7 +792,7 @@ detourr_output <- detour(
                palette = c("#66B2CC", "#FF7755"),
                 width = "500px", height = "500px")
 
-crosstalk::bscols(
+erlndet_link <- crosstalk::bscols(
   htmltools::div(
     style = "display: grid; grid-template-columns: 1fr 1fr 1fr;",
     error_plt, 
@@ -796,6 +801,10 @@ crosstalk::bscols(
   ),
   device = "xs"
 )
+
+class(erlndet_link) <- c(class(erlndet_link), "htmlwidget")
+
+erlndet_link
 \end{verbatim}
 
 \begin{figure}[H]

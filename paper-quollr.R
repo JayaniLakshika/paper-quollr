@@ -1356,13 +1356,18 @@ detourr_output <- detour(
 
 ## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
-# crosstalk::bscols(
+# lndet_link <- crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
 #                    nldr_plt,
 #                    htmltools::div(style = "margin-top: 20px;", detourr_output)
 #     ),
 #     device = "xs"
 #   )
+# 
+# 
+# class(lndet_link) <- c(class(lndet_link), "htmlwidget")
+# 
+# lndet_link
 
 
 ## ----eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold'----
@@ -1450,7 +1455,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
 #                palette = c("#66B2CC", "#FF7755"),
 #                 width = "500px", height = "500px")
 # 
-# crosstalk::bscols(
+# erlndet_link <- crosstalk::bscols(
 #   htmltools::div(
 #     style = "display: grid; grid-template-columns: 1fr 1fr 1fr;",
 #     error_plt,
@@ -1459,6 +1464,10 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
 #   ),
 #   device = "xs"
 # )
+# 
+# class(erlndet_link) <- c(class(erlndet_link), "htmlwidget")
+# 
+# erlndet_link
 
 
 ## ----out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
