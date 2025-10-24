@@ -148,7 +148,7 @@ hex_grid_poly_scurve <- ggplot(
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
              alpha = 0.2, size = 0.5, color = clr_choice) + 
-  interior_annotation("b", cex = 3) +
+  interior_annotation("a", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -174,7 +174,7 @@ hex_centroids_scurve <- ggplot(
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("c", cex = 3) +
+  interior_annotation("b", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -202,7 +202,7 @@ wireframe_scurve <- ggplot() +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("d", cex = 3) +
+  interior_annotation("c", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -375,7 +375,7 @@ scurve_proj_umap_model1_dp <- plot_proj(
   plot_limits = c(-0.35, 0.35), 
   axis_text_size = 7,
   is_category = FALSE) +
-  interior_annotation(label = "e", cex = 3)
+  interior_annotation(label = "d", cex = 3)
 
 ## Second projection
 
@@ -466,7 +466,7 @@ hex_grid_scurve + wrap_plots(
 knitr::include_graphics("figures/quollr_workflow.png")
 
 
-## ----algo-step-html, eval=knitr::is_html_output(), fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
+## ----algo-step-html, eval=knitr::is_html_output(), fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page"----
 # 
 # algofig <- bscols(
 #   htmltools::div(
@@ -502,7 +502,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 # algofig
 
 
-## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) NLDR data, (b) hexagon bins, (c) bin centroids, (d) triangulated centroids, and (e) lifting the model into high dimensions. The `Scurve` data is shown."----
+## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown."----
 
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
