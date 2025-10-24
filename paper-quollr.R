@@ -914,7 +914,7 @@ knitr::include_graphics(c("figures/model_proj1_detourr.png",
                           "figures/model_proj2_detourr.png"))
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
 # 
 # detour(
 #   df_exe,
