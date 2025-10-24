@@ -632,7 +632,7 @@ show_langevitour(
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model.}\label{fig:unnamed-chunk-29}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (blue) overlaid on `Scurve` data (black) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model.}\label{fig:unnamed-chunk-29}
 \end{figure}
 
 As an alternative to \texttt{langevitour}, users can explore the fitted $p\text{-}D$ model using the \texttt{detourr} \citep{casper2025}. The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
@@ -754,7 +754,9 @@ detourr_output <- detour(
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
                 width = "600px", height = "600px")
+\end{verbatim}
 
+\begin{verbatim}
 crosstalk::bscols(
     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
                    nldr_plt,
@@ -765,7 +767,7 @@ crosstalk::bscols(
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-41}
+\includegraphics[width=1\linewidth]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-42}
 \end{figure}
 
 For analyses that include model error visualization, a three-panel view can be constructed by adding the error distribution plot (\texttt{error\_plt}):
@@ -797,7 +799,7 @@ crosstalk::bscols(
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-44}
+\includegraphics[width=1\linewidth]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-45}
 \end{figure}
 
 \section{Application}\label{application}

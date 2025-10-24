@@ -901,7 +901,7 @@ df_exe <- comb_data_model(
 #   )
 
 
-## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (in purple) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
+## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (blue) overlaid on `Scurve` data (black) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. The two twists visible in the UMAP layout can also be seen in the lifted model."----
 
 scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
@@ -940,7 +940,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`.", layout = "l-page"----
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the NLDR layout preserves the underlying `Scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1336,21 +1336,25 @@ nldr_plt <- ggplotly(nldr_plt, width = 600,
 
 
 
-## ----echo=TRUE, fig.cap="Link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", eval=knitr::is_html_output(), layout = "l-page"----
-# 
-# detourr_output <- detour(
-#   shared_df,
-#   tour_aes(
-#     projection = starts_with("x"),
-#     colour = type
-#   )
-# ) |>
-#   tour_path(grand_tour(2),
-#                     max_bases=50, fps = 60) |>
-#   show_scatter(axes = TRUE, size = 1, alpha = 0.8,
-#                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
-#                palette = c("#66B2CC", "#FF7755"),
-#                 width = "600px", height = "600px")
+## ----echo=TRUE----------------------------------------------------------------
+
+detourr_output <- detour(
+  shared_df,
+  tour_aes(
+    projection = starts_with("x"),
+    colour = type
+  )
+) |>
+  tour_path(grand_tour(2), 
+                    max_bases=50, fps = 60) |>
+  show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
+               edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+               palette = c("#66B2CC", "#FF7755"),
+                width = "600px", height = "600px")
+
+
+
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the NLDR layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
@@ -1361,7 +1365,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 600,
 #   )
 
 
-## ----out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold'----
 
 knitr::include_graphics(c("figures/model_link_proj1_detourr.png",
                           "figures/model_link_proj2_detourr.png"))
@@ -1430,7 +1434,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
   config(displayModeBar = FALSE)
 
 
-## ----echo=TRUE, fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", eval=knitr::is_html_output(), layout = "l-page"----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", layout = "l-page"----
 # 
 # detourr_output <- detour(
 #   shared_df,
