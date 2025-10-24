@@ -940,7 +940,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the NLDR layout preserves the underlying `Scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
+## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1202,7 +1202,7 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`.", layout = "l-page"----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
 # 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
@@ -1354,7 +1354,7 @@ detourr_output <- detour(
 
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the NLDR layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
@@ -1434,7 +1434,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
   config(displayModeBar = FALSE)
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", layout = "l-page"----
+## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
 # 
 # detourr_output <- detour(
 #   shared_df,
