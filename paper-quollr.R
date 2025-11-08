@@ -940,7 +940,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----linkerror, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
+## ----scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1185,7 +1185,7 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
         legend.position = "none")
 
 
-## ----eval=knitr::is_latex_output(), fig.pos='H', fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP."----
+## ----scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos='H', fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP."----
 
 scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
   scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +
@@ -1202,7 +1202,7 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
+## ----scurve-linkerror-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
 # 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
@@ -1288,7 +1288,7 @@ error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected,
         aspect.ratio = 1)
 
 
-## ----eval=knitr::is_latex_output(), fig.pos="H", fig.width=15, fig.height=10, fig.cap="Exploring residuals in relation to UMAP layouts using a $7\\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure."----
+## ----scurve-linkerror-pdf, eval=knitr::is_latex_output(), fig.pos="H", fig.width=15, fig.height=10, fig.cap="Exploring residuals in relation to UMAP layouts using a $7\\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure."----
 
 error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_selected1_dp +
   error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_proj_umap_model1_selected2_dp +
@@ -1354,7 +1354,7 @@ detourr_output <- detour(
 
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
+## ----scurve-nldrlink-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `Scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", layout = "l-page"----
 # 
 # lndet_link <- crosstalk::bscols(
 #     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
@@ -1370,7 +1370,7 @@ detourr_output <- detour(
 # lndet_link
 
 
-## ----eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold'----
+## ----scurve-nldrlink-dtpdf, eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold'----
 
 knitr::include_graphics(c("figures/model_link_proj1_detourr.png",
                           "figures/model_link_proj2_detourr.png"))
@@ -1439,7 +1439,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
   config(displayModeBar = FALSE)
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
+## ----scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", layout = "l-page"----
 # 
 # detourr_output <- detour(
 #   shared_df,
@@ -1470,7 +1470,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
 # erlndet_link
 
 
-## ----out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
 
 knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
                           "figures/model_link_error_proj2_detourr.png"))
