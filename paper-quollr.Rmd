@@ -1168,7 +1168,7 @@ full_hexgrid + data_hexgrid +
 
 ### $p\text{-}D$ model visualization
 
-To visualize how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in $p\text{-}D$ using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
+To visualize how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in $p\text{-}D$ using the `show_langevitour()` function (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-highd-model-html)"} else { "Figure \\@ref(fig:scurve-highd-model-pdf)"})`). This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
 
 Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
@@ -1184,7 +1184,7 @@ df_exe <- comb_data_model(
 
 The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
 
-```{r, echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
+```{r scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
 
 show_langevitour(
   point_data = df_exe, 
@@ -1192,22 +1192,22 @@ show_langevitour(
   )
 ```
 
-```{r, eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
+```{r scurve-highd-model-pdf, eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
 
 scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
   plot_layout(ncol = 4)
 ```
 
-As an alternative to `langevitour`, users can explore the fitted $p\text{-}D$ model using the `detourr` [@casper2025]. The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
+As an alternative to `langevitour`, users can explore the fitted $p\text{-}D$ model using the `detourr` [@casper2025] (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-highd-model-detourrhtml)"} else { "Figure \\@ref(fig:scurve-highd-model-detourrpdf)"})`). The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
 
-```{r, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+```{r scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
 
 knitr::include_graphics(c("figures/model_proj1_detourr.png",
                           "figures/model_proj2_detourr.png"))
 ```
 
-```{r, echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
+```{r scurve-highd-model-detourrhtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."}
 
 detour(
   df_exe,

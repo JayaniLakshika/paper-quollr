@@ -606,7 +606,7 @@ data_triangulation_grid <- ggplot() +
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
 
-To visualize how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \(p\text{-}D\) using the \texttt{show\_langevitour()} function. This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} R package \citep{paul2023}.
+To visualize how well the \(p\text{-}D\) model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \(p\text{-}D\) using the \texttt{show\_langevitour()} function (Figure \ref{fig:scurve-highd-model-pdf}). This function renders a dynamic projection of both the high-dimensional data and the model using the \texttt{langevitour} R package \citep{paul2023}.
 
 Before plotting, the data needs to be organized into a combined format through the \texttt{comb\_data\_model()} function. This function takes three inputs: \texttt{highd\_data} (the high-dimensional observations), \texttt{model\_highd} (high-dimensional summaries for each bin), and \texttt{model\_2d} (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
@@ -630,13 +630,13 @@ show_langevitour(
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-29-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:unnamed-chunk-29}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/scurve-highd-model-pdf-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:scurve-highd-model-pdf}
 \end{figure}
 
-As an alternative to \texttt{langevitour}, users can explore the fitted \(p\text{-}D\) model using the \texttt{detourr} \citep{casper2025}. The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
+As an alternative to \texttt{langevitour}, users can explore the fitted \(p\text{-}D\) model using the \texttt{detourr} \citep{casper2025} (Figure \ref{fig:scurve-highd-model-detourrpdf}). The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
 
 \begin{figure}[H]
-\includegraphics[width=0.5\linewidth]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:unnamed-chunk-30}
+\includegraphics[width=0.5\linewidth]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:scurve-highd-model-detourrpdf}
 \end{figure}
 
 \begin{verbatim}
@@ -693,7 +693,7 @@ nldrdt_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1} \caption{Exploring the correspondence between UMAP layout and `Scurve` structure in $7\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\text{-}D$ space, highlighting distortions introduced by UMAP.}\label{fig:unnamed-chunk-34}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-30-1} \caption{Exploring the correspondence between UMAP layout and `Scurve` structure in $7\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\text{-}D$ space, highlighting distortions introduced by UMAP.}\label{fig:unnamed-chunk-30}
 \end{figure}
 
 \texttt{show\_error\_link\_plots()} helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern.
@@ -731,7 +731,7 @@ errornldrdt_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-38-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-38}
+\includegraphics[width=1\linewidth]{paper-quollr_files/figure-latex/unnamed-chunk-34-1} \caption{Exploring residuals in relation to UMAP layouts using a $7\text{-}D$ `Scurve` model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the `Scurve` in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the `Scurve` in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.}\label{fig:unnamed-chunk-34}
 \end{figure}
 
 As an alternative to using \texttt{langevitour}, link plots can also be generated with the \texttt{detourr} package. In this setup, users can manually construct the linked visualization using the \texttt{crosstalk} \citep{joe2023} and \texttt{htmltools} \citep{joe2024} packages. The interactive layout is created by arranging the \(2\text{-}D\) NLDR plot (\texttt{nldr\_plt}), the optional error distribution plot (\texttt{error\_plt}), and the tour view produced with \texttt{detourr}, side by side within a flexible grid. The NLDR and error plots are rendered with \texttt{ggplotly()} \citep{chapman2020} to enable interactive linking. The \texttt{bscols()} function from \texttt{crosstalk} manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
@@ -770,7 +770,7 @@ lndet_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-42}
+\includegraphics[width=1\linewidth]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-38}
 \end{figure}
 
 For analyses that include model error visualization, a three-panel view can be constructed by adding the error distribution plot (\texttt{error\_plt}):
@@ -806,7 +806,7 @@ erlndet_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-45}
+\includegraphics[width=1\linewidth]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:unnamed-chunk-41}
 \end{figure}
 
 \section{Application}\label{application}

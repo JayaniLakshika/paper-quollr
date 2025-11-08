@@ -893,7 +893,7 @@ df_exe <- comb_data_model(
   )
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
+## ----scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
 # 
 # show_langevitour(
 #   point_data = df_exe,
@@ -901,20 +901,20 @@ df_exe <- comb_data_model(
 #   )
 
 
-## ----eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
+## ----scurve-highd-model-pdf, eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
 
 scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
   plot_layout(ncol = 4)
 
 
-## ----out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
 
 knitr::include_graphics(c("figures/model_proj1_detourr.png",
                           "figures/model_proj2_detourr.png"))
 
 
-## ----echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
+## ----scurve-highd-model-detourrhtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the Scurve data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model."----
 # 
 # detour(
 #   df_exe,
