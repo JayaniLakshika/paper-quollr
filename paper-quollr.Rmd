@@ -1809,7 +1809,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})`). 
 
 <!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
 
