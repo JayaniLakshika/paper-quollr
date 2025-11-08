@@ -527,7 +527,7 @@ model_error <- augment(
 
 \subsection{Visualizations}\label{visualizations}
 
-The package offers several \(2\text{-}D\) visualizations, including:
+The package offers several \(2\text{-}D\) visualizations (Figure \ref{fig:geom-outputs-pdf}), including:
 
 \begin{itemize}
 \tightlist
@@ -545,15 +545,13 @@ The package offers several \(2\text{-}D\) visualizations, including:
 
 The generated \(p\text{-}D\) model, overlaid with the data, can also be visualized using \texttt{show\_langevitour}. Additionally, it features a function for visualizing the \(2\text{-}D\) projection of the fitted model overlaid on the data, called \texttt{plot\_proj}.
 
-Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \texttt{show\_error\_link\_plots}, which are designed to help diagnose the model.
-
-Each visualization can be generated using its respective function, as described in this section.
+Furthermore, there are two interactive plots, \texttt{show\_link\_plots} and \texttt{show\_error\_link\_plots}, which are designed to help diagnose the model. Each visualization can be generated using its respective function, as described in this section.
 
 \subsubsection{Hexagonal grid}\label{hexagonal-grid}
 
 The \texttt{geom\_hexgrid()} function introduces a custom \texttt{ggplot2} layer designed for visualizing hexagonal grid on a provided set of bin centroids.
 
-To display the complete grid, users should supply all available bin centroids.
+To display the complete grid, users should supply all available bin centroids (Figure \ref{fig:geom-outputs-pdf}a).
 
 \begin{verbatim}
 full_hexgrid <- ggplot() + 
@@ -563,7 +561,7 @@ full_hexgrid <- ggplot() +
     ) 
 \end{verbatim}
 
-If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
+If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed (Figure \ref{fig:geom-outputs-pdf}b).
 
 \begin{verbatim}
 data_hexgrid <- ggplot() + 
@@ -577,7 +575,7 @@ data_hexgrid <- ggplot() +
 
 The \texttt{geom\_trimesh()} function introduces a custom \texttt{ggplot2} layer designed for visualizing \(2\text{-}D\) wireframe on a provided set of bin centroids.
 
-To display the complete wireframe, users should supply all available bin centroids.
+To display the complete wireframe, users should supply all available bin centroids (Figure \ref{fig:geom-outputs-pdf}c).
 
 \begin{verbatim}
 full_triangulation_grid <- ggplot() + 
@@ -587,7 +585,7 @@ full_triangulation_grid <- ggplot() +
     ) 
 \end{verbatim}
 
-If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed.
+If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed (Figure \ref{fig:geom-outputs-pdf}d).
 
 \begin{verbatim}
 data_triangulation_grid <- ggplot() + 
