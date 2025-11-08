@@ -284,7 +284,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different \\twoD projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', layout = "l-page"----
+## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', layout = "l-page"----
 # 
 # overviewfig <- bscols(
 #   htmltools::div(
@@ -453,7 +453,7 @@ scurve_proj_umap_model4 <- plot_proj(
   interior_annotation(label = "a4", cex = 1) 
 
 
-## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different \\twoD projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'----
+## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'----
 
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
@@ -1553,7 +1553,7 @@ error_limb <- error_limb |>
   filter(b1 >= 5) |>
   filter(a1 >= 0.03) |>
   group_by(method, a1) |>
-  filter(RMSE == min(RMSE)) |>
+  filter(HBE == min(HBE)) |>
   ungroup()
 
 error_limb <- error_limb |>
@@ -1564,19 +1564,19 @@ error_limb <- error_limb |>
 ## -----------------------------------------------------------------------------
 #| label: error-comp-muscles
 
-error_plot_limb <- plot_rmse(error_limb) +
+error_plot_limb <- plot_hbe(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
   scale_color_manual(values=c('#999999','#a65628','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
 
 
 
-## ----limb-rwbss, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RWBSS for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-rwbss}", fig.pos='H', echo=TRUE----
+## ----limb-hbe, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-hbe}", fig.pos='H', echo=TRUE----
 
 design <- gen_design(n_right = 6, ncol_right = 2)
 
-plot_rmse_layouts(plots = list(error_plot_limb, nldr1, 
-                               nldr2, nldr3, nldr4, 
-                               nldr5, nldr6), design = design)
+plot_hbe_layouts(plots = list(error_plot_limb, nldr1, 
+                             nldr2, nldr3, nldr4, 
+                             nldr5, nldr6), design = design)
 
 
 ## ----data-limb----------------------------------------------------------------
@@ -2013,7 +2013,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 
 
 
-## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-rwbss}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-rwbss}f) by RWBSS plot (Figure \\ref{fig:limb-rwbss}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
+## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +

@@ -39,8 +39,6 @@ preamble: >
   \usepackage{amsmath}
   \usepackage{array}
   \usepackage{float}
-  \newcommand{\pD}{$p\text{-}D$}
-  \newcommand{\twoD}{$2\text{-}D$}
 output: 
  rjtools::rjournal_article:
     keep_md: true
@@ -149,7 +147,7 @@ source("scripts/additional_functions.R")
 
 Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
-This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a \twoD wireframe model representation, that can be lifted and displayed in the high-dimensional (\pD{}) space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional ($p\text{-}D$) space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
 ```{r}
 clr_choice <- "#66B2CC"
@@ -344,7 +342,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 ```
 
-```{r overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different \\twoD projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', layout = "l-page"}
+```{r overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', layout = "l-page"}
 
 overviewfig <- bscols(
   htmltools::div(
@@ -513,7 +511,7 @@ scurve_proj_umap_model4 <- plot_proj(
   interior_annotation(label = "a4", cex = 1) 
 ```
 
-```{r overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different \\twoD projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'}
+```{r overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H'}
 
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
@@ -534,13 +532,13 @@ knitr::include_graphics("figures/quollr_workflow.png")
 
 ## Software architecture
 
-The package is organized into seven core modules corresponding to stages of the analysis workflow: preprocessing, \twoD model construction, lifting into \pD, prediction, error computation, visualization, and interactivity. Each module performs a distinct task and communicates through data objects.
+The package is organized into seven core modules corresponding to stages of the analysis workflow: preprocessing, $2\text{-}D$ model construction, lifting into $p\text{-}D$, prediction, error computation, visualization, and interactivity. Each module performs a distinct task and communicates through data objects.
 
 1. Data preprocessing: The function `gen_scaled_data()` standardizes the embedding data, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
 
-2. Construct \twoD model: A series of functions `hex_binning()`, `merge_hexbin_centroids()`, `tri_bin_centroids()`, `gen_edges()`, and `update_trimesh_index()` generate the hexagonal grid, compute bin centroids, and connect the triangular mesh that defines local neighborhoods in the \twoD space.
+2. Construct $2\text{-}D$ model: A series of functions `hex_binning()`, `merge_hexbin_centroids()`, `tri_bin_centroids()`, `gen_edges()`, and `update_trimesh_index()` generate the hexagonal grid, compute bin centroids, and connect the triangular mesh that defines local neighborhoods in the $2\text{-}D$ space.
 
-3. Lift the model into \pD: The function `avg_highd_data()` computes the average of the high-dimensional variables for each bin, linking the \twoD representation back to the original data space.
+3. Lift the model into $p\text{-}D$: The function `avg_highd_data()` computes the average of the high-dimensional variables for each bin, linking the $2\text{-}D$ representation back to the original data space.
 
 4. Prediction: The function `predict_emb()` estimates the embedding of new high-dimensional observations based on the fitted model.
 
@@ -548,7 +546,7 @@ The package is organized into seven core modules corresponding to stages of the 
 
 6. Visualization: Functions such as `geom_hexgrid()`, `geom_trimesh()`, and `show_langevitour()` provide tools for exploring the fitted models through static and dynamic visualizations.
 
-7. Interactivity: The functions `comb_all_data_model()` and `show_link_plots()` generate interactive linked visualizations that connect the \twoD NLDR layout, the corresponding tour view, and the fitted model. Similarly, `comb_all_data_model_error()` and `show_error_link_plots()` integrate the error distribution with the \twoD embedding and dynamic high-dimensional view, enabling interactivity across multiple visual components.
+7. Interactivity: The functions `comb_all_data_model()` and `show_link_plots()` generate interactive linked visualizations that connect the $2\text{-}D$ NLDR layout, the corresponding tour view, and the fitted model. Similarly, `comb_all_data_model_error()` and `show_error_link_plots()` integrate the error distribution with the $2\text{-}D$ embedding and dynamic high-dimensional view, enabling interactivity across multiple visual components.
 
 Each module is internally independent but connected through data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components such as substituting different binning approaches, extracting centroids, or visualization tools without altering the overall workflow.
 
@@ -568,11 +566,11 @@ The internal data objects follow the tidy data principle: each variable is store
 
 - `hex_bin_obj`: the object created by `hex_binning()`, which defines the structure of the two-dimensional hexagonal grid used in modeling. It includes the grid spacing (`a1`, `a2`), the number of bins along each axis, the centroids of all hexagons, polygon coordinates for plotting, and the mapping of each data point to its assigned hexagon.
 
-- `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted visualization model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin structure (`hb_obj`), the averaged \pD summaries for each bin (`model_highd`), the corresponding \twoD bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
+- `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted visualization model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin structure (`hb_obj`), the averaged $p\text{-}D$ summaries for each bin (`model_highd`), the corresponding $2\text{-}D$ bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
 
 ## Computational efficiency and optimization
 
-Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), \twoD distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), $2\text{-}D$ distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
 # Usage
 
@@ -654,7 +652,7 @@ scurve_umap <- umap(
 
 The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
 
-This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both \twoD (`model_2d`), and \pD (`model_highd`), and triangular mesh (`trimesh_data`).  
+This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
 
 ```{r, echo=TRUE, eval=FALSE}
 fit_highd_model(
@@ -667,7 +665,7 @@ fit_highd_model(
 
 ## Constructing the $2\text{-}D$ Model
 
-Constructing the \twoD model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
+Constructing the $2\text{-}D$ model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
 
 ### Scaling the data
 
@@ -871,7 +869,7 @@ Then, the centroids are computed iteratively. The x-coordinates for centroids in
 
 The y-coordinates for each row are similarly calculated, and paired with the x-coordinates based on whether the total number of rows is even or odd. In the case of an odd number of rows, the final row uses only the odd-row x-coordinates to maintain the alternating pattern.
 
-Finally, a tibble is returned containing a unique hexagon ID (`h`) along with the corresponding x and y centroid coordinates (`c_x`, `c_y`), which define the layout of the hexagonal grid over the \twoD space.
+Finally, a tibble is returned containing a unique hexagon ID (`h`) along with the corresponding x and y centroid coordinates (`c_x`, `c_y`), which define the layout of the hexagonal grid over the $2\text{-}D$ space.
 
 ```{r, echo=TRUE}
 all_centroids_df <- gen_centroids(
@@ -908,13 +906,13 @@ head(all_hex_coord, 5)
 
 #### Assigning data points to their respective hexagons
 
-After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The `assign_data()` function performs this assignment by calculating the \twoD Euclidean distance between each point in the \twoD embedding and all hexagon centroids.
+After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The `assign_data()` function performs this assignment by calculating the $2\text{-}D$ Euclidean distance between each point in the $2\text{-}D$ embedding and all hexagon centroids.
 
-First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the \twoD layout. It then selects the corresponding x and y coordinates of each hexagon’s centroid.
+First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the $2\text{-}D$ layout. It then selects the corresponding x and y coordinates of each hexagon’s centroid.
 
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`h`) to the point.
 
-The result is a `tibble` of the scaled \twoD embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
+The result is a `tibble` of the scaled $2\text{-}D$ embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
@@ -943,7 +941,7 @@ head(std_df, 5)
 
 The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
 
-The function first groups the input data by `h`, which represents the hexagon ID associated with each point in the \twoD layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
+The function first groups the input data by `h`, which represents the hexagon ID associated with each point in the $2\text{-}D$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
 
 ```{r, echo=TRUE}
 pts_df <- group_hex_pts(
@@ -970,7 +968,7 @@ head(df_bin_centroids, 5)
 
 ### Indicating neighbors by line segments connecting centroids
 
-To represent the neighborhood structure of hexagonal bins in a \twoD layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a $2\text{-}D$ layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
 The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `interp::tri.mesh()` function [@albrecht2024]. This triangulation forms the structural basis for identifying adjacent bins.
 
@@ -998,7 +996,7 @@ head(trimesh, 5)
 
 ### Identifying and removing low-density hexagons
 
-Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the \twoD structure, potentially disrupting the continuity of the representation.
+Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the $2\text{-}D$ structure, potentially disrupting the continuity of the representation.
 
 To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., $0.05$), the hexagon is flagged for removal.
 
@@ -1027,7 +1025,7 @@ trimesh <- update_trimesh_index(trimesh)
 
 ## Lifting the model into high dimensions
 
-The final step involves lifting the fitted \twoD model into \pD. This is done by modelling a point in \pD as the  \pD mean of data points in the \twoD centroid. This is performed using the `avg_highd_data()` function, which takes \pD data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$. This is done by modelling a point in $p\text{-}D$ as the  $p\text{-}D$ mean of data points in the $2\text{-}D$ centroid. This is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 
 ```{r, echo=TRUE}
 df_bin <- avg_highd_data(
@@ -1040,9 +1038,9 @@ head(df_bin, 5)
 
 ## Prediction
 
-The `predict_emb()` function is used to predict a point in a \twoD embedding for a new \pD data point using the fitted model. This function is useful to predict \twoD embedding irrespective of the NLDR technique.
+The `predict_emb()` function is used to predict a point in a $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
 
-In the prediction process, first, the nearest \pD model point is identified for the new \pD data point by computing \pD Euclidean distance. Then, the corresponding \twoD bin centroid mapping for the identified \pD model point is determined. Finally, the coordinates of the identified \twoD bin centroid is used as the predicted NLDR embedding for the new \pD data point. 
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for the new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point. 
 
 To accelerate this process, the nearest-neighbor search is implemented in C++ using `Rcpp` via the internal function `compute_highd_dist()`.
 
@@ -1058,17 +1056,17 @@ head(predict_data, 5)
 
 It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP [@tomasz2023] supports direct prediction of embeddings for new data once a model is fitted.
 
-## Compute residuals and Root Within Bin Sum of Square (RWBSS)
+## Compute residuals and hexbin error (HBE)
 
-Root Within Bin Sum of Square (RWBSS) are used as goodness of fit metrics for the model. These metrics can be computed using the  `glance()` function, which provides a tidy output for evaluation.
+Hexbin error (HBE) are used as goodness of fit metrics for the model. These metrics can be computed using the  `glance()` function, which provides a tidy output for evaluation.
 
-The function requires both the fitted model object returned by `fit_highd_model()` and \pD data to begin. The \pD model output (`model_highd`) is first renamed to avoid naming conflicts during subsequent data joins. It then uses the `predict_emb()` function to assign each point in the \pD dataset to a corresponding hexagon bin in the \twoD model, producing a prediction data frame that contains both the predicted bin assignment (`pred_h`) and the original observation `ID`.
+The function requires both the fitted model object returned by `fit_highd_model()` and $p\text{-}D$ data to begin. The $p\text{-}D$ model output (`model_highd`) is first renamed to avoid naming conflicts during subsequent data joins. It then uses the `predict_emb()` function to assign each point in the $p\text{-}D$ dataset to a corresponding hexagon bin in the $2\text{-}D$ model, producing a prediction data frame that contains both the predicted bin assignment (`pred_h`) and the original observation `ID`.
 
-The function joins this prediction output with both the \pD model and the \pD data (to retrieve true coordinates). It then calculates squared differences between the original and predicted \pD coordinates for each dimension, storing these as `error_square_x1`, `error_square_x2`, ..., up to the dimensionality of the data.
+The function joins this prediction output with both the $p\text{-}D$ model and the $p\text{-}D$ data (to retrieve true coordinates). It then calculates squared differences between the original and predicted $p\text{-}D$ coordinates for each dimension, storing these as `error_square_x1`, `error_square_x2`, ..., up to the dimensionality of the data.
 
-From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the RWBSS which is the average of the total squared error per point.
+From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the HBE which is the average of the total squared error per point.
 
-These metrics are returned in a tibble as `Error` (absolute error) and `RWBSS` (root mean squared error). The computation of total absolute error and RWBSS is performed in C++ for efficiency using the internal `compute_errors()` function.
+These metrics are returned in a tibble as `Error` (absolute error) and `HBE` (root mean squared error). The computation of total absolute error and HBE is performed in C++ for efficiency using the internal `compute_errors()` function.
 
 ```{r, echo=TRUE}
 glance(
@@ -1077,9 +1075,9 @@ glance(
   )
 ```
 
-Furthermore, `augment()` requires both the fitted model object returned by `fit_highd_model()` and \pD data to begin. It extends the fitted model by adding prediction results and error diagnostics to the original \pD data.
+Furthermore, `augment()` requires both the fitted model object returned by `fit_highd_model()` and $p\text{-}D$ data to begin. It extends the fitted model by adding prediction results and error diagnostics to the original $p\text{-}D$ data.
 
-The function starts with the same process as is used in the `glance()` function to produce a predicted point in \pD for each point in the \pD dataset.
+The function starts with the same process as is used in the `glance()` function to produce a predicted point in $p\text{-}D$ for each point in the $p\text{-}D$ dataset.
 
 Next, the function computes residuals between each original coordinate (`x1`, `x2`, ..., `xp`) and the corresponding modeled coordinate (`model_high_d_x1`, ..., `model_high_d_xp`) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the `row_wise_total_error` which is the total squared error across all dimensions, and the `row_wise_abs_error` which is the total absolute error across all dimensions.
 
@@ -1094,7 +1092,7 @@ model_error <- augment(
 
 ## Visualizations
 
-The package offers several \twoD visualizations, including:
+The package offers several $2\text{-}D$ visualizations, including:
 
 - A full hexagonal grid,
 - A hexagonal grid that matches the data,
@@ -1102,7 +1100,7 @@ The package offers several \twoD visualizations, including:
 - A centroid triangulation grid that aligns with the data, 
 - A triangular mesh for any provided set of points.
 
-The generated \pD model, overlaid with the data, can also be visualized using `show_langevitour`. Additionally, it features a function for visualizing the \twoD projection of the fitted model overlaid on the data, called `plot_proj`. 
+The generated $p\text{-}D$ model, overlaid with the data, can also be visualized using `show_langevitour`. Additionally, it features a function for visualizing the $2\text{-}D$ projection of the fitted model overlaid on the data, called `plot_proj`. 
 
 Furthermore, there are two interactive plots, `show_link_plots` and `show_error_link_plots`, which are designed to help diagnose the model.
 
@@ -1134,7 +1132,7 @@ data_hexgrid <- ggplot() +
 
 ### Triangular mesh
 
-The `geom_trimesh()` function introduces a custom `ggplot2` layer designed for visualizing \twoD wireframe on a provided set of bin centroids.
+The `geom_trimesh()` function introduces a custom `ggplot2` layer designed for visualizing $2\text{-}D$ wireframe on a provided set of bin centroids.
 
 To display the complete wireframe, users should supply all available bin centroids. 
 
@@ -1170,9 +1168,9 @@ full_hexgrid + data_hexgrid +
   plot_layout(ncol = 4)
 ```
 
-### \pD model visualization
+### $p\text{-}D$ model visualization
 
-To visualize how well the \pD model captures the underlying structure of the high-dimensional data, we provide a tour of the model in \pD using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
+To visualize how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in $p\text{-}D$ using the `show_langevitour()` function. This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
 
 Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
@@ -1203,7 +1201,7 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   plot_layout(ncol = 4)
 ```
 
-As an alternative to `langevitour`, users can explore the fitted \pD model using the `detourr` [@casper2025]. The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
+As an alternative to `langevitour`, users can explore the fitted $p\text{-}D$ model using the `detourr` [@casper2025]. The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
 
 ```{r, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
 
@@ -1228,15 +1226,15 @@ detour(
                width = "600px", height = "600px")
 ```
 
-In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the \twoD wireframe structure mapped to high-dimensional space.
+In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the $2\text{-}D$ wireframe structure mapped to high-dimensional space.
 
 ### Link plots
 
 There are mainly two interactive link plots can be generated. 
 
-To support interactive evaluation of how well the \pD model captures the structure of the high-dimensional data, we introduce `show_link_plots()`. This visualization combines two complementary views: the nonlinear dimension reduction (NLDR) representation and a dynamic tour of the model ovelaid the data in the high-dimensional space. Both views are interactively linked, enabling users to explore.
+To support interactive evaluation of how well the $p\text{-}D$ model captures the structure of the high-dimensional data, we introduce `show_link_plots()`. This visualization combines two complementary views: the nonlinear dimension reduction (NLDR) representation and a dynamic tour of the model ovelaid the data in the high-dimensional space. Both views are interactively linked, enabling users to explore.
 
-Before visualization, the input data must be prepared using the `comb_all_data_model()` function. This function combines the high-dimensional data (`highd_data`), the NLDR data (`nldr_data`), and the bin-averaged high-dimensional model representation (`model_highd`) aligned to the \twoD bin layout (`model_2d`):
+Before visualization, the input data must be prepared using the `comb_all_data_model()` function. This function combines the high-dimensional data (`highd_data`), the NLDR data (`nldr_data`), and the bin-averaged high-dimensional model representation (`model_highd`) aligned to the $2\text{-}D$ bin layout (`model_2d`):
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a `type` variable for distinguishing between them.
 
@@ -1249,7 +1247,7 @@ df_exe <- comb_all_data_model(
   )
 ```
 
-The function `show_link_plots()` generates two side-by-side, interactively linked plots; a \twoD NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the `langevitour` package), displaying both the data and the model. The function takes the output from `comb_all_data_model()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
+The function `show_link_plots()` generates two side-by-side, interactively linked plots; a $2\text{-}D$ NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the `langevitour` package), displaying both the data and the model. The function takes the output from `comb_all_data_model()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
 
 These two views are linked using `crosstalk`, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the `langevitour` output. 
 
@@ -1507,7 +1505,7 @@ scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
 
 `show_error_link_plots()` helps to see investigate whether the model fits the points everywhere or fits better in some places, or simply mismatches the pattern. 
 
-Before visualization, the input data must be prepared using the `comb_all_data_model_error()` function. The function requires several arguments: points data which contain high-dimensional data (`highd_data`), NLDR data (`nldr_data`), high-dimensional model data (`model_highd`), \twoD model data (`model_2d`), and model error (`error_data`).
+Before visualization, the input data must be prepared using the `comb_all_data_model_error()` function. The function requires several arguments: points data which contain high-dimensional data (`highd_data`), NLDR data (`nldr_data`), high-dimensional model data (`model_highd`), $2\text{-}D$ model data (`model_2d`), and model error (`error_data`).
 
 This combined dataset includes both the original observations and the bin-level model averages, labeled with a `type` variable for distinguishing between them.
 
@@ -1521,7 +1519,7 @@ df_exe <- comb_all_data_model_error(
   )
 ```
 
-The function `show_error_link_plots()` generates three side-by-side, interactively linked plots; a error distribution, a \twoD NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the `langevitour` package), displaying both the data and the model. The function takes the output from `comb_all_data_model_error()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
+The function `show_error_link_plots()` generates three side-by-side, interactively linked plots; a error distribution, a $2\text{-}D$ NLDR representation, and a dynamic projection tour in the original high-dimensional space (using the `langevitour` package), displaying both the data and the model. The function takes the output from `comb_all_data_model_error()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
 
 These two views are linked using `crosstalk`, allowing interactive selection of points in the NLDR plot to highlight corresponding structures in the high-dimensional projection. This setup facilitates the diagnosis of local distortion, structural artifacts, and model fit quality.
 
@@ -1620,7 +1618,7 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-As an alternative to using `langevitour`, link plots can also be generated with the `detourr` package. In this setup, users can manually construct the linked visualization using the `crosstalk` [@joe2023] and `htmltools` [@joe2024] packages. The interactive layout is created by arranging the \twoD NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and the tour view produced with `detourr`, side by side within a flexible grid. The NLDR and error plots are rendered with `ggplotly()` [@chapman2020] to enable interactive linking. The `bscols()` function from `crosstalk` manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
+As an alternative to using `langevitour`, link plots can also be generated with the `detourr` package. In this setup, users can manually construct the linked visualization using the `crosstalk` [@joe2023] and `htmltools` [@joe2024] packages. The interactive layout is created by arranging the $2\text{-}D$ NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and the tour view produced with `detourr`, side by side within a flexible grid. The NLDR and error plots are rendered with `ggplotly()` [@chapman2020] to enable interactive linking. The `bscols()` function from `crosstalk` manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
 
 A two-panel linked plot combining the NLDR view and the tour from `detourr` can be created as follows:
 
@@ -1813,7 +1811,7 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-rwbss) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better \twoD layout. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout. 
 
 <!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
 
@@ -1897,7 +1895,7 @@ error_limb <- error_limb |>
   filter(b1 >= 5) |>
   filter(a1 >= 0.03) |>
   group_by(method, a1) |>
-  filter(RMSE == min(RMSE)) |>
+  filter(HBE == min(HBE)) |>
   ungroup()
 
 error_limb <- error_limb |>
@@ -1908,19 +1906,19 @@ error_limb <- error_limb |>
 ```{r}
 #| label: error-comp-muscles
 
-error_plot_limb <- plot_rmse(error_limb) +
+error_plot_limb <- plot_hbe(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
   scale_color_manual(values=c('#999999','#a65628','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
 
 ```
 
-```{r limb-rwbss, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using RWBSS for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-rwbss}", fig.pos='H', echo=TRUE}
+```{r limb-hbe, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d is perform well at large binwidth (where the binwidth is not enough to capture the data struture) and poorly as bin width decreases. Layout f is the best choice.\\label{fig:limb-hbe}", fig.pos='H', echo=TRUE}
 
 design <- gen_design(n_right = 6, ncol_right = 2)
 
-plot_rmse_layouts(plots = list(error_plot_limb, nldr1, 
-                               nldr2, nldr3, nldr4, 
-                               nldr5, nldr6), design = design)
+plot_hbe_layouts(plots = list(error_plot_limb, nldr1, 
+                             nldr2, nldr3, nldr4, 
+                             nldr5, nldr6), design = design)
 ```
 
 ```{r data-limb}
@@ -2357,7 +2355,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 
 ```
 
-```{r model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-rwbss}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-rwbss}f) by RWBSS plot (Figure \\ref{fig:limb-rwbss}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
+```{r model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
@@ -2381,11 +2379,11 @@ linked_plt_best
 
 # Discussion
 
-The `quollr` package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in \twoD and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a \twoD layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate \twoD representations.
+The `quollr` package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in $2\text{-}D$ and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a $2\text{-}D$ layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate $2\text{-}D$ representations.
 
-In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, `quollr` provides a quantitative route for evaluation. It enables the computation of RWBSS and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the `langevitour` package, allowing users to inspect where the model fits well and where it does not.
+In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, `quollr` provides a quantitative route for evaluation. It enables the computation of HBE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the `langevitour` package, allowing users to inspect where the model fits well and where it does not.
 
-To support efficient computation, particularly for large-scale datasets, several core functions in `quollr` are implemented in C++ using `Rcpp` and `RcppArmadillo`. These include functions for computing Euclidean distances in high-dimensional and \twoD space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, `compute_highd_dist()` accelerates nearest neighbor lookup in high-dimensional space, `compute_errors()` calculates RWBSS and total absolute error efficiently, and `calc_2d_dist_cpp()` speeds up distance calculations in \twoD. Additionally, `gen_hex_coord_cpp()` constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
+To support efficient computation, particularly for large-scale datasets, several core functions in `quollr` are implemented in C++ using `Rcpp` and `RcppArmadillo`. These include functions for computing Euclidean distances in high-dimensional and $2\text{-}D$ space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, `compute_highd_dist()` accelerates nearest neighbor lookup in high-dimensional space, `compute_errors()` calculates HBE and total absolute error efficiently, and `calc_2d_dist_cpp()` speeds up distance calculations in $2\text{-}D$. Additionally, `gen_hex_coord_cpp()` constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
 
 The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function `fit_highd_model()` for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
 
