@@ -880,8 +880,10 @@ data_triangulation_grid <- ggplot() +
 
 ## ----geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', fig.height=5, fig.width=20, eval=knitr::is_latex_output()----
 
-full_hexgrid + data_hexgrid + 
-  full_triangulation_grid + data_triangulation_grid +
+full_hexgrid + interior_annotation("a", c(0.95, 0.95), cex = 3) + 
+  data_hexgrid + interior_annotation("b", cex = 3) + 
+  full_triangulation_grid + interior_annotation("c", cex = 3) + 
+  data_triangulation_grid + interior_annotation("d", cex = 3) +
   plot_layout(ncol = 4)
 
 
