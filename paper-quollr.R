@@ -284,7 +284,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', layout = "l-page", fig.alt="The UMAP layout with a triangular mesh on the left and 2-D projections of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
+## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", layout = "l-page", fig.alt="The UMAP layout with a triangular mesh on the left and 2-D projections of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
 # 
 # overviewfig <- bscols(
 #   htmltools::div(
@@ -453,7 +453,7 @@ scurve_proj_umap_model4 <- plot_proj(
   interior_annotation(label = "a4", cex = 1) 
 
 
-## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos='H', fig.alt="The UMAP layout with a triangular mesh on the left and the tour view of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
+## ----overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", fig.alt="The UMAP layout with a triangular mesh on the left and the tour view of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
 
 hex_grid_scurve + wrap_plots(
   scurve_proj_umap_model1, scurve_proj_umap_model2,
@@ -466,7 +466,7 @@ hex_grid_scurve + wrap_plots(
 knitr::include_graphics("figures/quollr_workflow.png")
 
 
-## ----algo-step-html, eval=knitr::is_html_output(), fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
+## ----algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.", layout = "l-page", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
 # 
 # algofig <- bscols(
 #   htmltools::div(
@@ -502,7 +502,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 # algofig
 
 
-## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos='H', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
+## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
 
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
@@ -711,7 +711,7 @@ hb_obj <- hex_binning(
 #   coord_equal()
 
 
-## ----hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos='H', fig.alt="The components of the hexagon grid illustrating notation.", eval=FALSE----
+## ----hex-param, fig.cap="The components of the hexagon grid illustrating notation.", out.width="50%", fig.align='center', fig.pos="!ht", fig.alt="The components of the hexagon grid illustrating notation.", eval=FALSE----
 # 
 # hex_param_vis
 
@@ -889,14 +889,14 @@ data_triangulation_grid <- data_triangulation_grid +
 
 
 
-## ----geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', fig.height=5, fig.width=20, eval=knitr::is_html_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
+## ----geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_html_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
 # 
 # full_hexgrid + data_hexgrid +
 #   full_triangulation_grid + data_triangulation_grid +
 #   plot_layout(ncol = 4)
 
 
-## ----geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
+## ----geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
 
  full_hexgrid + 
   data_hexgrid +  
@@ -913,7 +913,7 @@ df_exe <- comb_data_model(
   )
 
 
-## ----scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos='H', fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."----
+## ----scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."----
 # 
 # show_langevitour(
 #   point_data = df_exe,
@@ -921,7 +921,7 @@ df_exe <- comb_data_model(
 #   )
 
 
-## ----scurve-highd-model-pdf, eval=knitr::is_latex_output(), fig.pos='H', fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Four-panel figure showing 2-D projections of the lifted high-dimensional wireframe model from the S-curve UMAP layout. Each panel displays the black wireframe model overlaid on blue S-curve data points, illustrating how the model captures the curved structure and revealing regions with sparse or no data."----
+## ----scurve-highd-model-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Four-panel figure showing 2-D projections of the lifted high-dimensional wireframe model from the S-curve UMAP layout. Each panel displays the black wireframe model overlaid on blue S-curve data points, illustrating how the model captures the curved structure and revealing regions with sparse or no data."----
 
 scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
   scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
@@ -1205,7 +1205,7 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
         legend.position = "none")
 
 
-## ----scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos='H', fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP.", fig.alt = "Four-panel figure with linked views showing correspondence between the UMAP layout and the S-curve structure in seven dimensions. Panels (a1, b1) show selected regions in the UMAP layout, and panels (a2, b2) display the corresponding points in the high-dimensional tour view. Purple points indicate selected subsets: the lower bridge of the S-curve in (a1, a2) and the upper arm region in (b1, b2). The figure illustrates how continuous structures in the 7-D S-curve appear as separate clusters in the 2-D UMAP layout, revealing distortion effects."----
+## ----scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `Scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP.", fig.alt = "Four-panel figure with linked views showing correspondence between the UMAP layout and the S-curve structure in seven dimensions. Panels (a1, b1) show selected regions in the UMAP layout, and panels (a2, b2) display the corresponding points in the high-dimensional tour view. Purple points indicate selected subsets: the lower bridge of the S-curve in (a1, a2) and the upper arm region in (b1, b2). The figure illustrates how continuous structures in the 7-D S-curve appear as separate clusters in the 2-D UMAP layout, revealing distortion effects."----
 
 scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
   scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +
@@ -1590,7 +1590,7 @@ error_plot_limb <- plot_hbe(error_limb) +
 
 
 
-## ----limb-hbe, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d performs well at large binwidth (where the binwidth is not enough to capture the data structure) and poorly as the bin width decreases. Layout f is the best choice.\\label{fig:limb-hbe}", fig.alt = "Evaluation of six NLDR layouts (a–f) on limb muscle data using HBE across different binwidths (a1). Line and point colors correspond to layouts. Layout d performs well at large binwidths but poorly as binwidth decreases, while layout f consistently provides the best representation.", fig.pos='H', echo=TRUE----
+## ----limb-hbe, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d performs well at large binwidth (where the binwidth is not enough to capture the data structure) and poorly as the bin width decreases. Layout f is the best choice.\\label{fig:limb-hbe}", fig.alt = "Evaluation of six NLDR layouts (a–f) on limb muscle data using HBE across different binwidths (a1). Line and point colors correspond to layouts. Layout d performs well at large binwidths but poorly as binwidth decreases, while layout f consistently provides the best representation.", fig.pos="!ht", echo=TRUE----
 
 design <- gen_design(n_right = 6, ncol_right = 2)
 
@@ -2033,7 +2033,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
 
 
 
-## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published 2-D layout (b) and the HBE-selected 2-D layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in 10-D, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos='H', fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
+## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published 2-D layout (b) and the HBE-selected 2-D layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in 10-D, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +

@@ -16,7 +16,7 @@ Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochast
 
 This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a \(2\text{-}D\) wireframe model representation, that can be lifted and displayed in the high-dimensional (\(p\text{-}D\)) space (Figure \ref{fig:overview}).
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={The UMAP layout with a triangular mesh on the left and the tour view of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data.}]{paper-quollr_files/figure-latex/overview-1} \caption{Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.}\label{fig:overview}
 \end{figure}
 
@@ -88,7 +88,7 @@ The package is available on CRAN, and the development version is available at \u
 
 Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space.}]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `Scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
@@ -133,11 +133,9 @@ fit_highd_model(
   hd_thresh = 0)
 \end{verbatim}
 
-\subsection{\texorpdfstring{Constructing the \(2\text{-}D\) Model}{Constructing the 2\textbackslash text\{-\}D Model}}\label{constructing-the-2text-d-model}
+The model generation involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, (v) removing low-density hexagons, and (vi) lifting the model to high-dimensions.
 
-Constructing the \(2\text{-}D\) model primarily involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, and (v) removing low-density hexagons.
-
-\subsubsection{Scaling the data}\label{scaling-the-data}
+\subsection{Scaling the data}\label{scaling-the-data}
 
 The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
 
@@ -145,7 +143,7 @@ The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 \end{verbatim}
 
-\subsubsection{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
+\subsection{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
 
 The function \texttt{calc\_bins\_y()} determines the configuration of the hexagonal grid by computing the number of bins along the y-axis (\texttt{b2}), the hexagon width (\texttt{a1}), and height (\texttt{a2}). This function accepts (1) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (2) the number of bins along the x-axis (\texttt{b1}), and (3) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
@@ -169,7 +167,7 @@ bin_configs
 > [1] 0.05083265
 \end{verbatim}
 
-\subsubsection{Binning the data}\label{binning-the-data}
+\subsection{Binning the data}\label{binning-the-data}
 
 Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
@@ -180,7 +178,7 @@ hb_obj <- hex_binning(
   q = 0.1)
 \end{verbatim}
 
-\paragraph{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
+\subsubsection{Generating all possible centroids in a hexagonal grid}\label{generating-all-possible-centroids-in-a-hexagonal-grid}
 
 The \texttt{gen\_centroids()} function calculates the centroids of a hexagonal grid.
 
@@ -213,7 +211,7 @@ head(all_centroids_df, 5)
 > 5     5  0.135  -0.116
 \end{verbatim}
 
-\paragraph{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
+\subsubsection{Creating the coordinates of the hexagons}\label{creating-the-coordinates-of-the-hexagons}
 
 Following the generation of hexagonal centroids, the \texttt{gen\_hex\_coord()} function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
 
@@ -245,7 +243,7 @@ head(all_hex_coord, 5)
 > 5 1 -0.07065176 -0.13262436
 \end{verbatim}
 
-\paragraph{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
+\subsubsection{Assigning data points to their respective hexagons}\label{assigning-data-points-to-their-respective-hexagons}
 
 After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The \texttt{assign\_data()} function performs this assignment by calculating the \(2\text{-}D\) Euclidean distance between each point in the \(2\text{-}D\) embedding and all hexagon centroids.
 
@@ -275,7 +273,7 @@ head(umap_hex_id, 5)
 > 5 0.218 0.983     5   468
 \end{verbatim}
 
-\paragraph{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
+\subsubsection{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
 
@@ -300,7 +298,7 @@ head(std_df, 5)
 > 5    71     9 0.009
 \end{verbatim}
 
-\paragraph{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
+\subsubsection{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
 
 The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
 
@@ -325,7 +323,7 @@ head(pts_df, 5)
 > 5    71 <int [9]>
 \end{verbatim}
 
-\subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
+\subsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
 The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -349,7 +347,7 @@ head(df_bin_centroids, 5)
 > 5 5  0.13478596 -0.1156801   0   0
 \end{verbatim}
 
-\subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
+\subsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
 To represent the neighborhood structure of hexagonal bins in a \(2\text{-}D\) layout, we employ Delaunay triangulation \citep{lee1980, albrecht2024} on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
 
@@ -400,7 +398,7 @@ head(trimesh, 5)
 > # i 1 more variable: to_reindexed <int>
 \end{verbatim}
 
-\subsubsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
+\subsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2\text{-}D\) structure, potentially disrupting the continuity of the representation.
 
@@ -595,7 +593,7 @@ data_triangulation_grid <- ggplot() +
     ) 
 \end{verbatim}
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 
 {\centering \includegraphics[width=1\linewidth,alt={Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region.}]{paper-quollr_files/figure-latex/geom-outputs-pdf-1} 
 
@@ -629,7 +627,7 @@ show_langevitour(
   )
 \end{verbatim}
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Four-panel figure showing 2-D projections of the lifted high-dimensional wireframe model from the S-curve UMAP layout. Each panel displays the black wireframe model overlaid on blue S-curve data points, illustrating how the model captures the curved structure and revealing regions with sparse or no data.}]{paper-quollr_files/figure-latex/scurve-highd-model-pdf-1} \caption{$2\text{-}D$ projections of the lifted high-dimensional wireframe model from the `Scurve` UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on `Scurve` data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the `Scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:scurve-highd-model-pdf}
 \end{figure}
 
@@ -686,7 +684,7 @@ class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
 nldrdt_link
 \end{verbatim}
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Four-panel figure with linked views showing correspondence between the UMAP layout and the S-curve structure in seven dimensions. Panels (a1, b1) show selected regions in the UMAP layout, and panels (a2, b2) display the corresponding points in the high-dimensional tour view. Purple points indicate selected subsets: the lower bridge of the S-curve in (a1, a2) and the upper arm region in (b1, b2). The figure illustrates how continuous structures in the 7-D S-curve appear as separate clusters in the 2-D UMAP layout, revealing distortion effects.}]{paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1} \caption{Exploring the correspondence between UMAP layout and `Scurve` structure in $7\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `Scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `Scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\text{-}D$ space, highlighting distortions introduced by UMAP.}\label{fig:scurve-nldrlink-pdf}
 \end{figure}
 
@@ -811,11 +809,11 @@ plot_hbe_layouts(plots = list(error_plot_limb, nldr1,
                              nldr5, nldr6), design = design)
 \end{verbatim}
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Evaluation of six NLDR layouts (a–f) on limb muscle data using HBE across different binwidths (a1). Line and point colors correspond to layouts. Layout d performs well at large binwidths but poorly as binwidth decreases, while layout f consistently provides the best representation.}]{paper-quollr_files/figure-latex/limb-hbe-1} \caption{Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Colour  used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d performs well at large binwidth (where the binwidth is not enough to capture the data structure) and poorly as the bin width decreases. Layout f is the best choice.\label{fig:limb-hbe}}\label{fig:limb-hbe}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Comparison of published 2-D layout (b) and the HBE-selected 2-D layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in 10-D, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.}]{paper-quollr_files/figure-latex/model-limb-1} \caption{Compare the published $2\text{-}D$ layout (Figure \ref{fig:limb-hbe}b) and the $2\text{-}D$ layout selected (Figure \ref{fig:limb-hbe}f) by HBE plot (Figure \ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\text{-}D$.}\label{fig:model-limb}
 \end{figure}
 
