@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.5)  9 NOV 2025 20:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.5)  9 NOV 2025 21:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -955,15 +955,15 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: 261E74A62AEE985C49F11EBE07FBEB6B;1637.
  ) 
 Here is how much of TeX's memory you used:
- 27589 strings out of 469519
- 505867 string characters out of 5468895
+ 27592 strings out of 469519
+ 505894 string characters out of 5468895
  930245 words of memory out of 5000000
  55320 multiletter control sequences out of 15000+600000
- 681615 words of font info for 330 fonts, out of 8000000 for 9000
+ 681764 words of font info for 332 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  117i,12n,131p,1651b,1036s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (22 pages, 3399502 bytes).
+Output written on RJwrapper.pdf (22 pages, 3399489 bytes).
 PDF statistics:
  600 PDF objects out of 1000 (max. 8388607)
  517 compressed objects within 6 object streams
