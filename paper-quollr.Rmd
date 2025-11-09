@@ -1152,6 +1152,24 @@ data_triangulation_grid <- ggplot() +
     ) 
 ```
 
+```{r}
+
+full_hexgrid <- full_hexgrid + 
+  xlim(c(-0.2, 1.32)) +
+  ylim(c(-0.2, 1.32)) + interior_annotation("a", cex = 3)
+
+data_hexgrid <- data_hexgrid + 
+  interior_annotation("b", cex = 3)
+
+full_triangulation_grid <- full_triangulation_grid + 
+  xlim(c(-0.2, 1.32)) +
+  ylim(c(-0.2, 1.32)) + interior_annotation("c", cex = 3)
+
+data_triangulation_grid <- data_triangulation_grid + 
+  interior_annotation("d", cex = 3)
+
+```
+
 ```{r geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', fig.height=5, fig.width=20, eval=knitr::is_html_output()}
 
 full_hexgrid + data_hexgrid + 
@@ -1161,10 +1179,10 @@ full_hexgrid + data_hexgrid +
 
 ```{r geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos='H', fig.height=5, fig.width=20, eval=knitr::is_latex_output()}
 
-full_hexgrid + interior_annotation("a", c(0.95, 0.95), cex = 3) + 
-  data_hexgrid + interior_annotation("b", cex = 3) + 
-  full_triangulation_grid + interior_annotation("c", cex = 3) + 
-  data_triangulation_grid + interior_annotation("d", cex = 3) +
+ full_hexgrid + 
+  data_hexgrid +  
+  full_triangulation_grid + 
+  data_triangulation_grid +
   plot_layout(ncol = 4)
 ```
 
@@ -1618,7 +1636,7 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-As an alternative to using `langevitour`, link plots can also be generated with the `detourr` package. In this setup, users can manually construct the linked visualization using the `crosstalk` [@joe2023] and `htmltools` [@joe2024] packages. The interactive layout is created by arranging the $2\text{-}D$ NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and the tour view produced with `detourr`, side by side within a flexible grid (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-nldrlink-dthtml)"} else { "Figure \\@ref(fig:scurve-nldrlink-dtpdf)"})`). The NLDR and error plots are rendered with `ggplotly()` [@chapman2020] to enable interactive linking. The `bscols()` function from `crosstalk` manages synchronization across these panels, allowing for linked brushing and coordinated selection between these interactive plots.
+As an alternative to using `langevitour`, link plots can also be generated with the `detourr` package. In this setup, users can manually construct the linked visualization using the `crosstalk` [@joe2023] and `htmltools` [@joe2024] packages. The interactive layout is created by arranging the $2\text{-}D$ NLDR plot (`nldr_plt`), the optional error distribution plot (`error_plt`), and the tour view produced with `detourr`, side by side within a flexible grid (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-nldrlink-dthtml)"} else { "Figure \\@ref(fig:scurve-nldrlink-dtpdf)"})`). The NLDR and error plots are rendered with `ggplotly()` [@chapman2020] to enable interactive linking. The `bscols()` function from `crosstalk` manages synchronization across these panels, allowing for linked brushing between these interactive plots.
 
 A two-panel linked plot combining the NLDR view and the tour from `detourr` can be created as follows:
 
