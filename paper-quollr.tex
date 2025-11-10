@@ -32,7 +32,7 @@ The implementation of \texttt{quollr} is designed to be efficient, and easy to e
 
 \subsection{Software architecture}\label{software-architecture}
 
-The package is organized into seven core modules corresponding to stages of the analysis workflow: preprocessing, \(2\text{-}D\) model construction, lifting into \(p\text{-}D\), prediction, error computation, visualization, and interactivity. Each module performs a distinct task and communicates through data objects.
+The package is organized into seven core modules corresponding to stages of the workflow: preprocessing, \(2\text{-}D\) model construction, lifting the model into \(p\text{-}D\), prediction, error computation, visualizations, and interactivity. Each module performs a distinct task and communicates through data objects.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -47,16 +47,16 @@ The package is organized into seven core modules corresponding to stages of the 
 \item
   Error computation: The \texttt{glance()} and \texttt{augment()} function summarizes model performance by comparing the predicted and original embeddings.
 \item
-  Visualization: Functions such as \texttt{geom\_hexgrid()}, \texttt{geom\_trimesh()}, and \texttt{show\_langevitour()} provide tools for exploring the fitted models through static and dynamic visualizations.
+  Visualizations: Functions such as \texttt{geom\_hexgrid()}, \texttt{geom\_trimesh()}, and \texttt{show\_langevitour()} provide tools for exploring the fitted models through static and dynamic visualizations.
 \item
-  Interactivity: The functions \texttt{comb\_all\_data\_model()} and \texttt{show\_link\_plots()} generate interactive linked visualizations that connect the \(2\text{-}D\) NLDR layout, the corresponding tour view, and the fitted model. Similarly, \texttt{comb\_all\_data\_model\_error()} and \texttt{show\_error\_link\_plots()} integrate the error distribution with the \(2\text{-}D\) embedding and dynamic high-dimensional view, enabling interactivity across multiple visual components.
+  Interactivity: The functions \texttt{comb\_all\_data\_model()} and \texttt{show\_link\_plots()} generate interactive linked visualizations that connect the \(2\text{-}D\) NLDR layout, the corresponding tour view, and the fitted model. Similarly, \texttt{comb\_all\_data\_model\_error()} and \texttt{show\_error\_link\_plots()} integrate the error distribution with the \(2\text{-}D\) embedding and tour view, enabling interactivity across multiple plots.
 \end{enumerate}
 
 Each module is internally independent but connected through data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components such as substituting different binning approaches, extracting centroids, or visualization tools without altering the overall workflow.
 
 \subsection{Data objects}\label{data-objects}
 
-The internal data objects follow the tidy data principle: each variable is stored in a column, each observation in a row, and each type of information in its own table. This structure makes the package easy to use with the \texttt{tidyverse} and other R visualization tools.
+The internal data objects follow the tidy data principle: each variable is stored in a column, each observation in a row, and each type of information in its own table. This structure makes the package easy to use with the \texttt{tidyverse} and other visualization tools.
 
 \subsubsection{Input objects}\label{input-objects}
 
@@ -73,9 +73,9 @@ The internal data objects follow the tidy data principle: each variable is store
 \item
   \texttt{scaled\_nldr\_obj}: the output of \texttt{gen\_scaled\_data()}, which rescales the embedding to the range \([0, 1] \times [0, y_{2,\text{max}}]\), where \(y_{2,\text{max}} = r_2 / r_1\) is the ratio of the embedding ranges. It includes the scaled coordinates (\texttt{scaled\_nldr}) and the original limits (\texttt{lim1}, \texttt{lim2}).
 \item
-  \texttt{hex\_bin\_obj}: the object created by \texttt{hex\_binning()}, which defines the structure of the two-dimensional hexagonal grid used in modeling. It includes the grid spacing (\texttt{a1}, \texttt{a2}), the number of bins along each axis, the centroids of all hexagons, polygon coordinates for plotting, and the mapping of each data point to its assigned hexagon.
+  \texttt{hex\_bin\_obj}: the object created by \texttt{hex\_binning()}, which inlcudes hex binning configurations. It includes the binwidth (\texttt{a1}), binheight (\texttt{a2}), the number of bins along each axis (\texttt{b1}, \texttt{b2}), the centroids of all hexagons, polygon coordinates, and the assignment of each data point to the hexagon.
 \item
-  \texttt{highd\_vis\_model}: the main model object returned by \texttt{fit\_highd\_model()}. It stores all components of the fitted visualization model, including the scaled NLDR data (\texttt{nldr\_scaled\_obj}), the hexagonal bin structure (\texttt{hb\_obj}), the averaged \(p\text{-}D\) summaries for each bin (\texttt{model\_highd}), the corresponding \(2\text{-}D\) bin centroids (\texttt{model\_2d}), and the triangulated mesh connecting neighboring bins (\texttt{trimesh\_data}).
+  \texttt{highd\_vis\_model}: the main model object returned by \texttt{fit\_highd\_model()}. It stores all components of the fitted model, including the scaled NLDR data (\texttt{nldr\_scaled\_obj}), the hexagonal bin configurations (\texttt{hb\_obj}), the averaged \(p\text{-}D\) summaries for each bin (\texttt{model\_highd}), the corresponding \(2\text{-}D\) bin centroids (\texttt{model\_2d}), and the triangulated mesh connecting neighboring bins (\texttt{trimesh\_data}).
 \end{itemize}
 
 \subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}

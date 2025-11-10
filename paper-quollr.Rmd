@@ -532,7 +532,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 
 ## Software architecture
 
-The package is organized into seven core modules corresponding to stages of the analysis workflow: preprocessing, $2\text{-}D$ model construction, lifting into $p\text{-}D$, prediction, error computation, visualization, and interactivity. Each module performs a distinct task and communicates through data objects.
+The package is organized into seven core modules corresponding to stages of the workflow: preprocessing, $2\text{-}D$ model construction, lifting the model into $p\text{-}D$, prediction, error computation, visualizations, and interactivity. Each module performs a distinct task and communicates through data objects.
 
 1. Data preprocessing: The function `gen_scaled_data()` standardizes the embedding data, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
 
@@ -544,15 +544,15 @@ The package is organized into seven core modules corresponding to stages of the 
 
 5. Error computation: The `glance()` and `augment()` function summarizes model performance by comparing the predicted and original embeddings.
 
-6. Visualization: Functions such as `geom_hexgrid()`, `geom_trimesh()`, and `show_langevitour()` provide tools for exploring the fitted models through static and dynamic visualizations.
+6. Visualizations: Functions such as `geom_hexgrid()`, `geom_trimesh()`, and `show_langevitour()` provide tools for exploring the fitted models through static and dynamic visualizations.
 
-7. Interactivity: The functions `comb_all_data_model()` and `show_link_plots()` generate interactive linked visualizations that connect the $2\text{-}D$ NLDR layout, the corresponding tour view, and the fitted model. Similarly, `comb_all_data_model_error()` and `show_error_link_plots()` integrate the error distribution with the $2\text{-}D$ embedding and dynamic high-dimensional view, enabling interactivity across multiple visual components.
+7. Interactivity: The functions `comb_all_data_model()` and `show_link_plots()` generate interactive linked visualizations that connect the $2\text{-}D$ NLDR layout, the corresponding tour view, and the fitted model. Similarly, `comb_all_data_model_error()` and `show_error_link_plots()` integrate the error distribution with the $2\text{-}D$ embedding and tour view, enabling interactivity across multiple plots.
 
 Each module is internally independent but connected through data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components such as substituting different binning approaches, extracting centroids, or visualization tools without altering the overall workflow.
 
 ## Data objects
 
-The internal data objects follow the tidy data principle: each variable is stored in a column, each observation in a row, and each type of information in its own table. This structure makes the package easy to use with the `tidyverse` and other R visualization tools.
+The internal data objects follow the tidy data principle: each variable is stored in a column, each observation in a row, and each type of information in its own table. This structure makes the package easy to use with the `tidyverse` and other visualization tools.
 
 ### Input objects
 
@@ -564,9 +564,9 @@ The internal data objects follow the tidy data principle: each variable is store
 
 - `scaled_nldr_obj`: the output of `gen_scaled_data()`, which rescales the embedding to the range $[0, 1] \times [0, y_{2,\text{max}}]$, where $y_{2,\text{max}} = r_2 / r_1$ is the ratio of the embedding ranges. It includes the scaled coordinates (`scaled_nldr`) and the original limits (`lim1`, `lim2`).
 
-- `hex_bin_obj`: the object created by `hex_binning()`, which defines the structure of the two-dimensional hexagonal grid used in modeling. It includes the grid spacing (`a1`, `a2`), the number of bins along each axis, the centroids of all hexagons, polygon coordinates for plotting, and the mapping of each data point to its assigned hexagon.
+- `hex_bin_obj`: the object created by `hex_binning()`, which inlcudes hex binning configurations. It includes the binwidth (`a1`), binheight (`a2`), the number of bins along each axis (`b1`, `b2`), the centroids of all hexagons, polygon coordinates, and the assignment of each data point to the hexagon.
 
-- `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted visualization model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin structure (`hb_obj`), the averaged $p\text{-}D$ summaries for each bin (`model_highd`), the corresponding $2\text{-}D$ bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
+- `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin configurations (`hb_obj`), the averaged $p\text{-}D$ summaries for each bin (`model_highd`), the corresponding $2\text{-}D$ bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
 
 ## Computational efficiency and optimization
 
