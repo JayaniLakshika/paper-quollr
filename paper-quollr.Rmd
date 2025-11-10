@@ -564,7 +564,7 @@ The internal data objects follow the tidy data principle: each variable is store
 
 - `scaled_nldr_obj`: the output of `gen_scaled_data()`, which rescales the embedding to the range $[0, 1] \times [0, y_{2,\text{max}}]$, where $y_{2,\text{max}} = r_2 / r_1$ is the ratio of the embedding ranges. It includes the scaled coordinates (`scaled_nldr`) and the original limits (`lim1`, `lim2`).
 
-- `hex_bin_obj`: the object created by `hex_binning()`, which inlcudes hex binning configurations. It includes the binwidth (`a1`), binheight (`a2`), the number of bins along each axis (`b1`, `b2`), the centroids of all hexagons, polygon coordinates, and the assignment of each data point to the hexagon.
+- `hex_bin_obj`: the object created by `hex_binning()`, which includes hexagon grid configurations. It includes the binwidth (`a1`), binheight (`a2`), the number of bins along each axis (`b1`, `b2`), the centroids of all hexagons, polygon coordinates, and the assignment of each data point to the hexagon.
 
 - `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin configurations (`hb_obj`), the averaged $p\text{-}D$ summaries for each bin (`model_highd`), the corresponding $2\text{-}D$ bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
 
@@ -622,7 +622,7 @@ hex_grid_poly_scurve +
   plot_layout(ncol = 4)
 ```
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. To begin the workflow, users need two inputs: the high-dimensional dataset and the corresponding nonlinear dimensionality reduction (NLDR) layout. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. 
+The following demonstration of the package's functionality assumes `quollr` has been loaded. To begin the workflow, user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. 
 
 To illustrate the workflow, we use the built-in example dataset `scurve`, a $7\text{-}D$ simulated dataset consisting of $1000$ observations. The first three variables define a $3\text{-}D$ S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
 
@@ -630,7 +630,7 @@ To illustrate the workflow, we use the built-in example dataset `scurve`, a $7\t
 data("scurve")
 ```
 
-For this example, we use the UMAP layout, which is produced using `n_neighbors =` $46$ and `min_dist =` $0.9$.
+For this example, we use the UMAP layout, which is used `n_neighbors =` $46$ and `min_dist =` $0.9$ as hyper-parameters.
 
 ```{r, echo=TRUE, eval=FALSE}
 library(umap)
@@ -663,8 +663,6 @@ fit_highd_model(
   hd_thresh = 0)
 ```
 
-The model generation involves (i) scaling the NLDR data, (ii) binning the data, (iii) obtaining bin centroids, (iv) connecting centroids with line segments to indicate neighbors, (v) removing low-density hexagons, and (vi) lifting the model to high-dimensions.
-
 ## Scaling the data
 
 The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
@@ -675,7 +673,7 @@ scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 
 ## Computing hexagon grid configuration
 
-The function `calc_bins_y()` determines the configuration of the hexagonal grid by computing the number of bins along the y-axis (`b2`), the hexagon width (`a1`), and height (`a2`). This function accepts (1) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (2) the number of bins along the x-axis (`b1`), and (3) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
+The function `calc_bins_y()` determines the configuration of the hexagon grid by computing the number of bins along the y-axis (`b2`), the hexagon binwidth (`a1`), and binheight (`a2`). This function accepts (i) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (ii) the number of bins along the x-axis (`b1`), and (iii) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
