@@ -1,0 +1,220 @@
+{
+  "comments": [
+    {
+      "id": "1764479014109",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:03:34.109Z",
+      "text": "Needs to have PDF figures and captions etc sorted.",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 555,
+          "character": 0
+        },
+        "end": {
+          "line": 558,
+          "character": 1
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479059342",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:04:19.342Z",
+      "text": "Can't help but notice the model_highd output has a 2d model in it... which isn't really a highd model. Do we need to change this language in the package?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 549,
+          "character": 0
+        },
+        "end": {
+          "line": 549,
+          "character": 33
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479659759",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:14:19.759Z",
+      "text": "What would be the utility of this? Can't the parameters of this function include all possible combinations of hexbins?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 679,
+          "character": 169
+        },
+        "end": {
+          "line": 679,
+          "character": 238
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479733463",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:15:33.463Z",
+      "text": "Just checking - the only use of this is visualisation right? If so we might want to potentially move this to supplementary material and just keep this focussed on the model implementation.",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 848,
+          "character": 0
+        },
+        "end": {
+          "line": 848,
+          "character": 57
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479812422",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:16:52.422Z",
+      "text": "I'm really confused about the whole ID and h thing. Here you say a corresponding hexagon ID is h, but then what is ID? Is it ID of the point?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 905,
+          "character": 428
+        },
+        "end": {
+          "line": 905,
+          "character": 436
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479892788",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:18:12.788Z",
+      "text": "Very unclear at the moment how this is used. Either needs an explanation of the purpose or to be moved next to where it's being used.",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 933,
+          "character": 0
+        },
+        "end": {
+          "line": 933,
+          "character": 114
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479923067",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:18:43.067Z",
+      "text": "Why is the sorting needed if we're joining by an ID?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 949,
+          "character": 0
+        },
+        "end": {
+          "line": 949,
+          "character": 89
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479954246",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:19:14.246Z",
+      "text": "Can we pick some rows that don't have w_h = 0 to show the function actually works?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 957,
+          "character": 0
+        },
+        "end": {
+          "line": 957,
+          "character": 25
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764479996892",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:19:56.892Z",
+      "text": "This is never used again in the whole paper - what is the purpose of the function in the pipeline?",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 918,
+          "character": 0
+        },
+        "end": {
+          "line": 918,
+          "character": 125
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764480039848",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:20:39.848Z",
+      "text": "I think this one is probably the \"Mapping points to centroids\" section that the previous section can go under - but I haven't replaced it yet in case I've got it the ordering very wrong from earlier comments.",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 945,
+          "character": 0
+        },
+        "end": {
+          "line": 945,
+          "character": 26
+        }
+      },
+      "replies": [],
+      "resolved": false
+    },
+    {
+      "id": "1764480161507",
+      "author": "Michael Lydeamore",
+      "timestamp": "2025-11-30T05:22:41.507Z",
+      "text": "Is this required to be called after gen_edges? If so then IMO it should be baked into gen_edges not left to the user to do.",
+      "filePath": "paper-quollr.Rmd",
+      "range": {
+        "start": {
+          "line": 980,
+          "character": 0
+        },
+        "end": {
+          "line": 980,
+          "character": 160
+        }
+      },
+      "replies": [
+        {
+          "id": "1764480161507-reply-1764480192552",
+          "author": "Michael Lydeamore",
+          "timestamp": "2025-11-30T05:23:12.551Z",
+          "text": "And also I think this will raise implementation questions for reviewers. Why do you require things to be in order later down? Possibly should add a nod to those reasons here."
+        }
+      ],
+      "resolved": false
+    }
+  ]
+}

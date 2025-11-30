@@ -22,6 +22,42 @@ This paper presents the R package, \texttt{quollr}, which is useful for understa
 
 The paper is organized as follows. The next section introduces the implementation of the \texttt{quollr} package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
+\section{Usage}\label{usage}
+
+The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
+
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
+
+The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}. The built-in example datasets, \texttt{scurve} and \texttt{scurve\_umap} demonstrates these structures.
+
+To run the entire model pipeline, we can use the \texttt{fit\_high\_model()} function. This function requires: the high-dimensional data (\texttt{highd\_data}), the embedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{b1}), the buffer amount as a proportion of the data (\texttt{q}), and a benchmark value to identify high-density hexagons (\texttt{hd\_thresh}).
+
+The function returns an object of class \texttt{highd\_vis\_model} containing the scaled NLDR object (\texttt{nldr\_scaled\_obj}) with three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
+
+\begin{verbatim}
+model_highd <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+\end{verbatim}
+
+The resulting model can then be shown in a tour using a two-step process:
+
+\begin{verbatim}
+combined_data <- comb_data_model(
+  highd_data = scurve,
+  model_highd = model_highd$model_highd,
+  model_2d = model_highd$model_2d
+)
+
+tour_view <- show_langevitour(
+  point_data = combined_data,
+  edge_data = model_highd$trimesh_data
+)
+\end{verbatim}
+
 \section{Implementation}\label{implementation}
 
 The implementation of \texttt{quollr} is designed to be efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration (Figure \ref{fig:workflow}). This package structure makes the code easier to maintain and allows new features to be added without changing the existing functionality.
@@ -82,56 +118,13 @@ The internal data objects follow the tidy data principle: each variable is store
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2\text{-}D\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
-\section{Usage}\label{usage}
-
-The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
-
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
+\subsection{Pipeline implementation}\label{pipeline-implementation}
 
 \begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space.}]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
-The following demonstration of the package's functionality assumes \texttt{quollr} has been loaded. To begin the workflow, user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}.
-
-To illustrate the workflow, we use the built-in example dataset \texttt{scurve}, a \(7\text{-}D\) simulated dataset consisting of \(1000\) observations. The first three variables define a \(3\text{-}D\) S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
-
-\begin{verbatim}
-data("scurve")
-\end{verbatim}
-
-For this example, we use the UMAP layout, which is used \texttt{n\_neighbors\ =} \(46\) and \texttt{min\_dist\ =} \(0.9\) as hyper-parameters.
-
-\begin{verbatim}
-library(umap)
-library(dplyr)
-
-scurve_umap <- umap(
-  scurve |> select(-ID),
-  config = modifyList(umap.defaults, list(
-    n_neighbors = 46,
-    n_components = 2,
-    min_dist = 0.9
-  ))
-)$layout |>
-  as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
-  mutate(ID = scurve$ID)
-\end{verbatim}
-
-\subsection{Main function}\label{main-function}
-
-The mains steps for the algorithm can be executed by the main function \texttt{fit\_highd\_model()}, or can be run separately for more flexibility.
-
-This function requires several parameters: the high-dimensional data (\texttt{highd\_data}), the emdedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{b1}), the buffer amount as a proportion of data (\texttt{q}), and benchmark value to extract high density hexagons (\texttt{hd\_thresh}). The function returns an object of class \texttt{highd\_vis\_model} containing the scaled NLDR object (\texttt{nldr\_scaled\_obj}) with three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
-
-\begin{verbatim}
-fit_highd_model(
-  highd_data = scurve, 
-  nldr_data = scurve_umap, 
-  b1 = 21, 
-  q = 0.1, 
-  hd_thresh = 0)
-\end{verbatim}
+In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
 
 \subsection{Scaling the data}\label{scaling-the-data}
 

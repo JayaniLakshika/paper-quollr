@@ -461,6 +461,28 @@ hex_grid_scurve + wrap_plots(
   ncol = 2)
 
 
+## ----echo=TRUE, eval=TRUE-----------------------------------------------------
+model_highd <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+
+
+## ----echo=TRUE, eval=TRUE-----------------------------------------------------
+combined_data <- comb_data_model(
+  highd_data = scurve,
+  model_highd = model_highd$model_highd,
+  model_2d = model_highd$model_2d
+)
+
+tour_view <- show_langevitour(
+  point_data = combined_data,
+  edge_data = model_highd$trimesh_data
+)
+
+
 ## ----workflow, out.width = "100%", fig.pos="H", fig.cap="Overview of the `quollr` workflow and software architecture. The process begins with NLDR and $p\\text{-}D$ data inputs, followed by data preprocessing and hexagonal binning. Centroids are computed and triangulated to form the $2\\text{-}D$ mesh, which is then lifted into the $p\\text{-}D$ space. Predictions and error computations are performed on new data, while interactive functions enable dynamic linking between the $p\\text{-}D$ and $2\\text{-}D$ representations.", fig.alt = "Flowchart diagram illustrating the quollr workflow. It shows inputs of NLDR and high-dimensional data progressing through preprocessing, hexagonal binning, centroid computation, and triangulation to form a 2-D mesh. The mesh is lifted into the high-dimensional space for prediction and error analysis, with interactive tools linking the high- and low-dimensional representations."----
 
 knitr::include_graphics("figures/quollr_workflow.png")
@@ -508,35 +530,6 @@ hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1_dp +
   plot_layout(ncol = 4)
-
-
-## ----echo=TRUE----------------------------------------------------------------
-data("scurve")
-
-
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# library(umap)
-# library(dplyr)
-# 
-# scurve_umap <- umap(
-#   scurve |> select(-ID),
-#   config = modifyList(umap.defaults, list(
-#     n_neighbors = 46,
-#     n_components = 2,
-#     min_dist = 0.9
-#   ))
-# )$layout |>
-#   as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
-#   mutate(ID = scurve$ID)
-
-
-## ----echo=TRUE, eval=FALSE----------------------------------------------------
-# fit_highd_model(
-#   highd_data = scurve,
-#   nldr_data = scurve_umap,
-#   b1 = 21,
-#   q = 0.1,
-#   hd_thresh = 0)
 
 
 ## ----echo=TRUE----------------------------------------------------------------

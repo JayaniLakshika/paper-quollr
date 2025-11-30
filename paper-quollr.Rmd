@@ -521,6 +521,44 @@ hex_grid_scurve + wrap_plots(
 
 The paper is organized as follows. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
 
+# Usage
+
+
+The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
+
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in @gamage2025c.
+
+The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. The built-in example datasets, `scurve` and `scurve_umap` demonstrates these structures.
+
+To run the entire model pipeline, we can use the `fit_high_model()` function. This function requires: the high-dimensional data (`highd_data`), the embedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of the data (`q`), and a benchmark value to identify high-density hexagons (`hd_thresh`). 
+
+The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
+
+
+```{r, echo=TRUE, eval=TRUE}
+model_highd <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+```
+
+The resulting model can then be shown in a tour using a two-step process:
+
+```{r, echo=TRUE, eval=TRUE}
+combined_data <- comb_data_model(
+  highd_data = scurve,
+  model_highd = model_highd$model_highd,
+  model_2d = model_highd$model_2d
+)
+
+tour_view <- show_langevitour(
+  point_data = combined_data,
+  edge_data = model_highd$trimesh_data
+)
+```
+
 # Implementation
 
 The implementation of `quollr` is designed to be efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration (Figure `r '\\@ref(fig:workflow)'`). This package structure makes the code easier to maintain and allows new features to be added without changing the existing functionality.
@@ -572,11 +610,7 @@ The internal data objects follow the tidy data principle: each variable is store
 
 Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), $2\text{-}D$ distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
-# Usage
-
-The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
-
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in @gamage2025c.
+## Pipeline implementation
 
 ```{r algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-page", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."}
 
@@ -622,48 +656,7 @@ hex_grid_poly_scurve +
   plot_layout(ncol = 4)
 ```
 
-The following demonstration of the package's functionality assumes `quollr` has been loaded. To begin the workflow, user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. 
-
-To illustrate the workflow, we use the built-in example dataset `scurve`, a $7\text{-}D$ simulated dataset consisting of $1000$ observations. The first three variables define a $3\text{-}D$ S-shaped manifold, while the remaining four variables introduce low-magnitude uniform noise, yielding a structured yet noisy high-dimensional dataset.
-
-```{r, echo=TRUE}
-data("scurve")
-```
-
-For this example, we use the UMAP layout, which is used `n_neighbors =` $46$ and `min_dist =` $0.9$ as hyper-parameters.
-
-```{r, echo=TRUE, eval=FALSE}
-library(umap)
-library(dplyr)
-
-scurve_umap <- umap(
-  scurve |> select(-ID),
-  config = modifyList(umap.defaults, list(
-    n_neighbors = 46,
-    n_components = 2,
-    min_dist = 0.9
-  ))
-)$layout |>
-  as_tibble(.name_repair = ~ paste0("emb", 1:2)) |>
-  mutate(ID = scurve$ID)
-```
-
-## Main function
-
-The mains steps for the algorithm can be executed by the main function `fit_highd_model()`, or can be run separately for more flexibility. 
-
-This function requires several parameters: the high-dimensional data (`highd_data`), the emdedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of data (`q`), and benchmark value to extract high density hexagons (`hd_thresh`). The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
-
-```{r, echo=TRUE, eval=FALSE}
-fit_highd_model(
-  highd_data = scurve, 
-  nldr_data = scurve_umap, 
-  b1 = 21, 
-  q = 0.1, 
-  hd_thresh = 0)
-```
-
-## Scaling the data
+In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (`fit_highd_model` and `comb_data_model`). Each step can be run independently to ensure flexibility in the modelling aproach.
 
 The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
 
@@ -671,9 +664,9 @@ The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0,
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 ```
 
-## Computing hexagon grid configuration
+### Hexagon binning
 
-The function `calc_bins_y()` determines the configuration of the hexagon grid by computing the number of bins along the y-axis (`b2`), the hexagon binwidth (`a1`), and binheight (`a2`). This function accepts (i) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (ii) the number of bins along the x-axis (`b1`), and (iii) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
+The function `calc_bins_y()` determines the configuration of the hexagon grid by computing the number of bins along the y-axis (`b2`), the hexagon binwidth (`a1`), and hexagon binheight (`a2`). This function accepts (i) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (ii) the number of bins along the x-axis (`b1`), and (iii) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
@@ -683,8 +676,6 @@ bin_configs <- calc_bins_y(
 
 bin_configs
 ```
-
-## Binning the data
 
 Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` are the object output from `gen_scaled_data` (`nldr_scaled_obj`); the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagon IDs (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`b`), the number of non-empty bins (`m`), and the points within each hexagon (`pts_bins`).  
 
@@ -925,6 +916,19 @@ umap_hex_id <- assign_data(
 head(umap_hex_id, 5)
 ```
 
+The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
+
+The function first groups the input data by `h`, which represents the hexagon ID associated with each point in the $2\text{-}D$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
+
+```{r, echo=TRUE}
+pts_df <- group_hex_pts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+head(pts_df, 5)
+```
+
+
 ### Computing the standardized number of points within each hexagon
 
 The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
@@ -939,21 +943,7 @@ std_df <- compute_std_counts(
 head(std_df, 5)
 ```
 
-### Mapping the points to their corresponding hexagonal bins
-
-The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon in the NLDR space.
-
-The function first groups the input data by `h`, which represents the hexagon ID associated with each point in the $2\text{-}D$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
-
-```{r, echo=TRUE}
-pts_df <- group_hex_pts(
-  scaled_nldr_hexid = umap_hex_id
-  )
-
-head(pts_df, 5)
-```
-
-## Obtaining bin centroids
+### Obtaining bin centroids
 
 The `merge_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -968,11 +958,11 @@ df_bin_centroids <- merge_hexbin_centroids(
 head(df_bin_centroids, 5)
 ```
 
-## Indicating neighbors by line segments connecting centroids
+### Indicating neighbors by line segments connecting centroids
 
-To represent the neighborhood structure of hexagonal bins in a $2\text{-}D$ layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a $2\text{-}D$ layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons.
 
-The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `interp::tri.mesh()` function [@albrecht2024]. This triangulation forms the structural basis for identifying adjacent bins.
+The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `interp::tri.mesh()` function [@albrecht2024]. 
 
 ```{r, echo=TRUE}
 tr_object <- tri_bin_centroids(
@@ -980,7 +970,7 @@ tr_object <- tri_bin_centroids(
   )
 ```
 
-The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function `calc_2d_dist()`. 
+The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance between the coordinates.
 
 ```{r, echo=TRUE}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
