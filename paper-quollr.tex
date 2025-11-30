@@ -126,17 +126,15 @@ Several core computations within \texttt{quollr} are optimized using compiled C+
 
 In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
 
-\subsection{Scaling the data}\label{scaling-the-data}
-
 The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
 
 \begin{verbatim}
 scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 \end{verbatim}
 
-\subsection{Computing hexagon grid configuration}\label{computing-hexagon-grid-configuration}
+\subsubsection{Hexagon binning}\label{hexagon-binning}
 
-The function \texttt{calc\_bins\_y()} determines the configuration of the hexagon grid by computing the number of bins along the y-axis (\texttt{b2}), the hexagon binwidth (\texttt{a1}), and binheight (\texttt{a2}). This function accepts (i) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (ii) the number of bins along the x-axis (\texttt{b1}), and (iii) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
+The function \texttt{calc\_bins\_y()} determines the configuration of the hexagon grid by computing the number of bins along the y-axis (\texttt{b2}), the hexagon binwidth (\texttt{a1}), and hexagon binheight (\texttt{a2}). This function accepts (i) an object (\texttt{nldr\_scaled\_obj}) containing three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); (ii) the number of bins along the x-axis (\texttt{b1}), and (iii) the buffer amount as a proportion (\texttt{q}). The buffer ensures that the grid fully covers the data space by extending one hexagon width (\(a_1\)) and height (\(a_2\)) beyond the observed data in all directions. By default, \(q = 0.1\), but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
 
 \begin{verbatim}
 bin_configs <- calc_bins_y(
@@ -157,8 +155,6 @@ bin_configs
 > $a2
 > [1] 0.05083265
 \end{verbatim}
-
-\subsection{Binning the data}\label{binning-the-data}
 
 Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
@@ -269,6 +265,29 @@ head(umap_hex_id, 5)
 > 5 0.218 0.983     5   468
 \end{verbatim}
 
+The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
+
+The function first groups the input data by \texttt{h}, which represents the hexagon ID associated with each point in the \(2\text{-}D\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
+
+\begin{verbatim}
+pts_df <- group_hex_pts(
+  scaled_nldr_hexid = umap_hex_id
+  )
+
+head(pts_df, 5)
+\end{verbatim}
+
+\begin{verbatim}
+> # A tibble: 5 x 2
+>       h pts_list 
+>   <int> <list>   
+> 1    58 <int [4]>
+> 2    68 <int [1]>
+> 3    69 <int [5]>
+> 4    70 <int [6]>
+> 5    71 <int [9]>
+\end{verbatim}
+
 \subsubsection{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
@@ -294,32 +313,7 @@ head(std_df, 5)
 > 5    71     9 0.009
 \end{verbatim}
 
-\subsubsection{Mapping the points to their corresponding hexagonal bins}\label{mapping-the-points-to-their-corresponding-hexagonal-bins}
-
-The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
-
-The function first groups the input data by \texttt{h}, which represents the hexagon ID associated with each point in the \(2\text{-}D\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
-
-\begin{verbatim}
-pts_df <- group_hex_pts(
-  scaled_nldr_hexid = umap_hex_id
-  )
-
-head(pts_df, 5)
-\end{verbatim}
-
-\begin{verbatim}
-> # A tibble: 5 x 2
->       h pts_list 
->   <int> <list>   
-> 1    58 <int [4]>
-> 2    68 <int [1]>
-> 3    69 <int [5]>
-> 4    70 <int [6]>
-> 5    71 <int [9]>
-\end{verbatim}
-
-\subsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
+\subsubsection{Obtaining bin centroids}\label{obtaining-bin-centroids}
 
 The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
@@ -343,11 +337,11 @@ head(df_bin_centroids, 5)
 > 5 5  0.13478596 -0.1156801   0   0
 \end{verbatim}
 
-\subsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
+\subsubsection{Indicating neighbors by line segments connecting centroids}\label{indicating-neighbors-by-line-segments-connecting-centroids}
 
-To represent the neighborhood structure of hexagonal bins in a \(2\text{-}D\) layout, we employ Delaunay triangulation \citep{lee1980, albrecht2024} on the centroids of hexagons. This geometric approach is used to infer which bins are considered neighbors.
+To represent the neighborhood structure of hexagonal bins in a \(2\text{-}D\) layout, we employ Delaunay triangulation \citep{lee1980, albrecht2024} on the centroids of hexagons.
 
-The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{interp::tri.mesh()} function \citep{albrecht2024}. This triangulation forms the structural basis for identifying adjacent bins.
+The \texttt{tri\_bin\_centroids()} function generates a triangulation object from the x and y coordinates of hexagon centroids using the \texttt{interp::tri.mesh()} function \citep{albrecht2024}.
 
 \begin{verbatim}
 tr_object <- tri_bin_centroids(
@@ -355,7 +349,7 @@ tr_object <- tri_bin_centroids(
   )
 \end{verbatim}
 
-The \texttt{gen\_edges()} function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance is computed using the helper function \texttt{calc\_2d\_dist()}.
+The \texttt{gen\_edges()} function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance between the coordinates.
 
 \begin{verbatim}
 trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)

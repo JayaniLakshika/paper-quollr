@@ -738,19 +738,19 @@ head(umap_hex_id, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-std_df <- compute_std_counts(
-  scaled_nldr_h = umap_hex_id
-  )
-
-head(std_df, 5)
-
-
-## ----echo=TRUE----------------------------------------------------------------
 pts_df <- group_hex_pts(
   scaled_nldr_hexid = umap_hex_id
   )
 
 head(pts_df, 5)
+
+
+## ----echo=TRUE----------------------------------------------------------------
+std_df <- compute_std_counts(
+  scaled_nldr_h = umap_hex_id
+  )
+
+head(std_df, 5)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
