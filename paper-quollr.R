@@ -16,26 +16,30 @@ knitr::opts_chunk$set(
 
 ## ----install-libraries, include=FALSE, warning=FALSE, echo=FALSE--------------
 
-options(repos = c(CRAN = "https://cran.rstudio.com")) # Setup mirror
+# Ensure remotes is available
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
 
-packages_to_check <- c("remotes", "quollr", "tibble", "knitr", "kableExtra", "ggplot2", "dplyr", "patchwork", "readr", "plotly", "crosstalk", "htmltools")
+# Read the package list
+pkgs_raw <- readLines("_Rpackages.txt")
+pkgs_raw <- pkgs_raw[nzchar(pkgs_raw)]  # remove empty lines
 
-for (pkg in packages_to_check) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    message(paste("Installing package:", pkg))
-    install.packages(pkg)
-  } else {
-    installed_version <- packageVersion(pkg)
-    available_version <- tryCatch({
-      utils::packageDescription(pkg)$Version
-    }, error = function(e) NA) # Handle cases where package info isn't readily available
+# Split into package and version
+parts <- strsplit(pkgs_raw, "==")
+pkgs <- vapply(parts, `[[`, "", 1)
+versions <- vapply(parts, `[[`, "", 2)
 
-    if (!is.na(available_version) && installed_version < package_version(available_version)) {
-      message(paste("A newer version of package", pkg, "is available. Updating..."))
-      install.packages(pkg)
-    } else {
-      message(paste("Package", pkg, "is up-to-date (version", installed_version, ")."))
-    }
+# Install packages with exact versions
+for (i in seq_along(pkgs)) {
+  pkg <- pkgs[i]
+  ver <- versions[i]
+
+  if (!requireNamespace(pkg, quietly = TRUE) ||
+      as.character(packageVersion(pkg)) != ver) {
+
+    message(sprintf("Installing %s (%s)", pkg, ver))
+    remotes::install_version(pkg, version = ver, upgrade = "never")
   }
 }
 
@@ -462,7 +466,7 @@ hex_grid_scurve + wrap_plots(
 
 
 ## ----echo=TRUE, eval=TRUE-----------------------------------------------------
-model_highd <- fit_highd_model(
+model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
   b1 = 21, 
@@ -473,13 +477,13 @@ model_highd <- fit_highd_model(
 ## ----echo=TRUE, eval=TRUE-----------------------------------------------------
 combined_data <- comb_data_model(
   highd_data = scurve,
-  model_highd = model_highd$model_highd,
-  model_2d = model_highd$model_2d
+  model_highd = model_obj$model_highd,
+  model_2d = model_obj$model_2d
 )
 
 tour_view <- show_langevitour(
   point_data = combined_data,
-  edge_data = model_highd$trimesh_data
+  edge_data = model_obj$trimesh_data
 )
 
 

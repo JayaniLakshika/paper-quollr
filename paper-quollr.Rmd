@@ -1,7 +1,7 @@
 ---
-title: "quollr: An R Package for Visualizing 2-D Models from Non-linear Dimension Reductions in High Dimensional Space"
+title: "quollr: An R Package for Visualizing 2-D Models from Nonlinear Dimension Reductions in High-Dimensional Space"
 abstract: >
-  Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data ($p\text{-}D$) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which hyper-parameter choices provide the most accurate representation of high-dimensional data. The `scurve` data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
+  Nonlinear dimension reduction methods provide a low-dimensional representation of high-dimensional data by applying a Nonlinear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package quollr has been developed as a new visual tool to determine which method and which hyper-parameter choices provide the most accurate representation of high-dimensional data. The scurve data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
 draft: true
 author:  
   - name: Jayani P. Gamage
@@ -62,26 +62,30 @@ knitr::opts_chunk$set(
 
 ```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE}
 
-options(repos = c(CRAN = "https://cran.rstudio.com")) # Setup mirror
+# Ensure remotes is available
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
 
-packages_to_check <- c("remotes", "quollr", "tibble", "knitr", "kableExtra", "ggplot2", "dplyr", "patchwork", "readr", "plotly", "crosstalk", "htmltools")
+# Read the package list
+pkgs_raw <- readLines("_Rpackages.txt")
+pkgs_raw <- pkgs_raw[nzchar(pkgs_raw)]  # remove empty lines
 
-for (pkg in packages_to_check) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    message(paste("Installing package:", pkg))
-    install.packages(pkg)
-  } else {
-    installed_version <- packageVersion(pkg)
-    available_version <- tryCatch({
-      utils::packageDescription(pkg)$Version
-    }, error = function(e) NA) # Handle cases where package info isn't readily available
+# Split into package and version
+parts <- strsplit(pkgs_raw, "==")
+pkgs <- vapply(parts, `[[`, "", 1)
+versions <- vapply(parts, `[[`, "", 2)
 
-    if (!is.na(available_version) && installed_version < package_version(available_version)) {
-      message(paste("A newer version of package", pkg, "is available. Updating..."))
-      install.packages(pkg)
-    } else {
-      message(paste("Package", pkg, "is up-to-date (version", installed_version, ")."))
-    }
+# Install packages with exact versions
+for (i in seq_along(pkgs)) {
+  pkg <- pkgs[i]
+  ver <- versions[i]
+
+  if (!requireNamespace(pkg, quietly = TRUE) ||
+      as.character(packageVersion(pkg)) != ver) {
+
+    message(sprintf("Installing %s (%s)", pkg, ver))
+    remotes::install_version(pkg, version = ver, upgrade = "never")
   }
 }
 
@@ -145,7 +149,7 @@ source("scripts/additional_functions.R")
 <!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
 <!--intro with S-curve with 5 methods-->
 
-Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
+Nonlinear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
 
 This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional ($p\text{-}D$) space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
 
@@ -536,7 +540,7 @@ The function returns an object of class `highd_vis_model` containing the scaled 
 
 
 ```{r, echo=TRUE, eval=TRUE}
-model_highd <- fit_highd_model(
+model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
   b1 = 21, 
@@ -549,13 +553,13 @@ The resulting model can then be shown in a tour using a two-step process:
 ```{r, echo=TRUE, eval=TRUE}
 combined_data <- comb_data_model(
   highd_data = scurve,
-  model_highd = model_highd$model_highd,
-  model_2d = model_highd$model_2d
+  model_highd = model_obj$model_highd,
+  model_2d = model_obj$model_2d
 )
 
 tour_view <- show_langevitour(
   point_data = combined_data,
-  edge_data = model_highd$trimesh_data
+  edge_data = model_obj$trimesh_data
 )
 ```
 
@@ -906,6 +910,7 @@ First, the function extracts the first two dimensions of the scaled NLDR embeddi
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon ID (`h`) to the point.
 
 The result is a `tibble` of the scaled $2\text{-}D$ embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
+  ?
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(

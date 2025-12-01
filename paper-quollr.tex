@@ -1,5 +1,5 @@
 % !TeX root = RJwrapper.tex
-\title{quollr: An R Package for Visualizing 2-D Models from Non-linear Dimension Reductions in High Dimensional Space}
+\title{quollr: An R Package for Visualizing 2-D Models from Nonlinear Dimension Reductions in High-Dimensional Space}
 
 
 \author{by Jayani P. Gamage, Dianne Cook, Paul Harrison, Michael Lydeamore, and Thiyanga S. Talagala}
@@ -7,12 +7,12 @@
 \maketitle
 
 \abstract{%
-Non-linear dimension reduction (NLDR) methods provide a low-dimensional representation of high-dimensional data (\(p\text{-}D\)) by applying a non-linear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package \CRANpkg{quollr} has been developed as a new visual tool to determine which method and which hyper-parameter choices provide the most accurate representation of high-dimensional data. The \texttt{scurve} data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
+Nonlinear dimension reduction methods provide a low-dimensional representation of high-dimensional data by applying a Nonlinear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package quollr has been developed as a new visual tool to determine which method and which hyper-parameter choices provide the most accurate representation of high-dimensional data. The scurve data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
 }
 
 \section{Introduction}\label{introduction}
 
-Non-linear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) \citep{laurens2008}, uniform manifold approximation and projection (UMAP) \citep{leland2018}, potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm \citep{moon2019}, large-scale dimensionality reduction Using triplets (TriMAP) \citep{amid2019}, and pairwise controlled manifold approximation (PaCMAP) \citep{yingfan2021}, can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures.
+Nonlinear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) \citep{laurens2008}, uniform manifold approximation and projection (UMAP) \citep{leland2018}, potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm \citep{moon2019}, large-scale dimensionality reduction Using triplets (TriMAP) \citep{amid2019}, and pairwise controlled manifold approximation (PaCMAP) \citep{yingfan2021}, can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures.
 
 This paper presents the R package, \texttt{quollr}, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a \(2\text{-}D\) wireframe model representation, that can be lifted and displayed in the high-dimensional (\(p\text{-}D\)) space (Figure \ref{fig:overview}).
 
@@ -35,7 +35,7 @@ To run the entire model pipeline, we can use the \texttt{fit\_high\_model()} fun
 The function returns an object of class \texttt{highd\_vis\_model} containing the scaled NLDR object (\texttt{nldr\_scaled\_obj}) with three elements: the first is the scaled NLDR data (\texttt{scaled\_nldr}), and the second and third are the limits of the original NLDR data (\texttt{lim1} and \texttt{lim2}); the hexagonal object (\texttt{hb\_obj}), the fitted model in both \(2\text{-}D\) (\texttt{model\_2d}), and \(p\text{-}D\) (\texttt{model\_highd}), and triangular mesh (\texttt{trimesh\_data}).
 
 \begin{verbatim}
-model_highd <- fit_highd_model(
+model_obj <- fit_highd_model(
   highd_data = scurve, 
   nldr_data = scurve_umap, 
   b1 = 21, 
@@ -48,13 +48,13 @@ The resulting model can then be shown in a tour using a two-step process:
 \begin{verbatim}
 combined_data <- comb_data_model(
   highd_data = scurve,
-  model_highd = model_highd$model_highd,
-  model_2d = model_highd$model_2d
+  model_highd = model_obj$model_highd,
+  model_2d = model_obj$model_2d
 )
 
 tour_view <- show_langevitour(
   point_data = combined_data,
-  edge_data = model_highd$trimesh_data
+  edge_data = model_obj$trimesh_data
 )
 \end{verbatim}
 
@@ -244,6 +244,7 @@ First, the function extracts the first two dimensions of the scaled NLDR embeddi
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the \texttt{proxy::dist()} method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon---and assigns the corresponding hexagon ID (\texttt{h}) to the point.
 
 The result is a \texttt{tibble} of the scaled \(2\text{-}D\) embedding with an additional \texttt{h} column, indicating the hexagonal bin to which each point belongs.
+?
 
 \begin{verbatim}
 umap_hex_id <- assign_data(
