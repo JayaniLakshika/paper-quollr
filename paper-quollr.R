@@ -151,7 +151,7 @@ hex_grid_poly_scurve <- ggplot(
                fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
-             alpha = 0.2, size = 0.5, color = clr_choice) + 
+             alpha = 0.8, size = 0.5, color = clr_choice) + 
   interior_annotation("a", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)

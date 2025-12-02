@@ -120,11 +120,11 @@ Several core computations within \texttt{quollr} are optimized using compiled C+
 
 \subsection{Pipeline implementation}\label{pipeline-implementation}
 
+In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
+
 \begin{figure}[!ht]
 \includegraphics[width=1\linewidth,alt={Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space.}]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
-
-In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
 
 The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
 
@@ -244,7 +244,6 @@ First, the function extracts the first two dimensions of the scaled NLDR embeddi
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the \texttt{proxy::dist()} method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon---and assigns the corresponding hexagon (\texttt{h}) to the point.
 
 The result is a \texttt{tibble} of the scaled \(2\text{-}D\) embedding with an additional \texttt{h} column, indicating the hexagonal bin to which each point belongs.
-?
 
 \begin{verbatim}
 umap_hex_id <- assign_data(
@@ -290,6 +289,8 @@ head(pts_df, 5)
 \end{verbatim}
 
 \subsubsection{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
+
+After assiging data to the hexagons,
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
 

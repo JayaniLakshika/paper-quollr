@@ -209,7 +209,7 @@ hex_grid_poly_scurve <- ggplot(
                fill = "#ffffff") +
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
-             alpha = 0.2, size = 0.5, color = clr_choice) + 
+             alpha = 0.8, size = 0.5, color = clr_choice) + 
   interior_annotation("a", cex = 3) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
@@ -616,6 +616,8 @@ Several core computations within `quollr` are optimized using compiled C++ code 
 
 ## Pipeline implementation
 
+In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (`fit_highd_model` and `comb_data_model`). Each step can be run independently to ensure flexibility in the modelling aproach.
+
 ```{r algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-page", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."}
 
 algofig <- bscols(
@@ -659,8 +661,6 @@ hex_grid_poly_scurve +
   scurve_proj_umap_model1_dp +
   plot_layout(ncol = 4)
 ```
-
-In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (`fit_highd_model` and `comb_data_model`). Each step can be run independently to ensure flexibility in the modelling aproach.
 
 The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
 
@@ -910,7 +910,6 @@ First, the function extracts the first two dimensions of the scaled NLDR embeddi
 Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon (`h`) to the point.
 
 The result is a `tibble` of the scaled $2\text{-}D$ embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
-  ?
 
 ```{r, echo=TRUE}
 umap_hex_id <- assign_data(
@@ -935,6 +934,8 @@ head(pts_df, 5)
 
 
 ### Computing the standardized number of points within each hexagon
+
+After assiging data to the hexagons, 
 
 The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
 
