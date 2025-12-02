@@ -156,7 +156,7 @@ bin_configs
 > [1] 0.05083265
 \end{verbatim}
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagon IDs (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagons (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
 \begin{verbatim}
 hb_obj <- hex_binning(
@@ -266,7 +266,7 @@ head(umap_hex_id, 5)
 > 5 0.218 0.983     5   468
 \end{verbatim}
 
-The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon in the NLDR space.
+The \texttt{group\_hex\_pts()} function extracts the list of data point identifiers (\texttt{ID}) assigned to each hexagon.
 
 The function first groups the input data by \texttt{h}, which represents the hexagon associated with each point in the \(2\text{-}D\) layout. Within each group, it collects the \texttt{ID}s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, \texttt{pts\_list}, contains all point identifiers associated with that hexagon.
 
@@ -318,7 +318,7 @@ head(std_df, 5)
 
 The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
-This function performs a full join with \texttt{centroids\_data}, aligning hexagon IDs (\texttt{h}) between the two datasets to incorporate both hexagonal bin centroids (\texttt{h}) and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{w\_h} or \texttt{n\_h} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (\texttt{n\_h}) and standardized counts (\texttt{w\_h}).
+This function performs a full join with \texttt{centroids\_data}, aligning hexagons (\texttt{h}) between the two datasets to incorporate both hexagonal bin centroids (\texttt{h}) and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{w\_h} or \texttt{n\_h} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (\texttt{n\_h}) and standardized counts (\texttt{w\_h}).
 
 \begin{verbatim}
 df_bin_centroids <- merge_hexbin_centroids(
