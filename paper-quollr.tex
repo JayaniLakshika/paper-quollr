@@ -318,7 +318,7 @@ head(std_df, 5)
 
 The \texttt{merge\_hexbin\_centroids()} function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
 
-This function begins by arranging the \texttt{counts\_data} by \texttt{h} to ensure consistent ordering. It then performs a full join with \texttt{centroids\_data}, aligning hexagon IDs (\texttt{h}) between the two datasets to incorporate both hexagonal bin centroids (\texttt{h}) and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{w\_h} or \texttt{n\_h} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (\texttt{n\_h}) and standardized counts (\texttt{w\_h}).
+This function performs a full join with \texttt{centroids\_data}, aligning hexagon IDs (\texttt{h}) between the two datasets to incorporate both hexagonal bin centroids (\texttt{h}) and count metrics. After merging, the function handles missing values in the count columns: any \texttt{NA} values in \texttt{w\_h} or \texttt{n\_h} are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (\texttt{n\_h}) and standardized counts (\texttt{w\_h}).
 
 \begin{verbatim}
 df_bin_centroids <- merge_hexbin_centroids(
