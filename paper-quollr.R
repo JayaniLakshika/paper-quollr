@@ -288,7 +288,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
 
 
 
-## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", layout = "l-page", fig.alt="The UMAP layout with a triangular mesh on the left and 2-D projections of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
+## ----overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", layout = "l-body", fig.alt="The UMAP layout with a triangular mesh on the left and 2-D projections of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."----
 # 
 # overviewfig <- bscols(
 #   htmltools::div(
@@ -492,7 +492,7 @@ tour_view <- show_langevitour(
 knitr::include_graphics("figures/quollr_workflow.png")
 
 
-## ----algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-page", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
+## ----algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-body", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
 # 
 # algofig <- bscols(
 #   htmltools::div(
@@ -528,7 +528,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 # algofig
 
 
-## ----algo-steps, eval=knitr::is_latex_output(), out.width="100%", fig.height=5, fig.width=25, fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
+## ----algo-steps, eval=knitr::is_latex_output(), out.width="80%", fig.height=5, fig.width=25, fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
 
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
@@ -942,7 +942,7 @@ knitr::include_graphics(c("figures/model_proj1_detourr.png",
 # ) |>
 #   tour_path(grand_tour(2),
 #                     max_bases=50, fps = 60) |>
-#   show_scatter(axes = TRUE, size = 0.5, alpha = 0.5,
+#   show_scatter(axes = TRUE, size = 2, alpha = 0.5,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
 #                palette = c("#66B2CC", "#FF7755"),
 #                width = "600px", height = "600px")
@@ -957,7 +957,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right, displayed using langevitour. Brushing highlights matching points across both views, enabling comparison of structure preservation between the 2-D layout and the high-dimensional data.", layout = "l-page"----
+## ----scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactively linked plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right, displayed using langevitour. Brushing highlights matching points across both views, enabling comparison of structure preservation between the 2-D layout and the high-dimensional data.", layout = "l-page"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1202,7 +1202,7 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
         legend.position = "none")
 
 
-## ----scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `scurve` structure in $7\\text{-}D$. Two sets of plots are linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP.", fig.alt = "Four-panel figure with linked views showing correspondence between the UMAP layout and the S-curve structure in seven dimensions. Panels (a1, b1) show selected regions in the UMAP layout, and panels (a2, b2) display the corresponding points in the high-dimensional tour view. Purple points indicate selected subsets: the lower bridge of the S-curve in (a1, a2) and the upper arm region in (b1, b2). The figure illustrates how continuous structures in the 7-D S-curve appear as separate clusters in the 2-D UMAP layout, revealing distortion effects."----
+## ----scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and `scurve` structure in $7\\text{-}D$. Two sets of plots are interactively linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the `scurve` is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the `scurve` is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP.", fig.alt = "Four-panel figure with linked views showing correspondence between the UMAP layout and the S-curve structure in seven dimensions. Panels (a1, b1) show selected regions in the UMAP layout, and panels (a2, b2) display the corresponding points in the high-dimensional tour view. Purple points indicate selected subsets: the lower bridge of the S-curve in (a1, a2) and the upper arm region in (b1, b2). The figure illustrates how continuous structures in the 7-D S-curve appear as separate clusters in the 2-D UMAP layout, revealing distortion effects."----
 
 scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
   scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +

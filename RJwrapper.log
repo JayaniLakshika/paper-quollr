@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.9.17)  4 DEC 2025 14:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.9.17)  4 DEC 2025 15:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -985,7 +985,7 @@ File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used
  on input line 128.
-(pdftex.def)             Requested size: 398.33858pt x 397.24362pt.
+(pdftex.def)             Requested size: 318.67207pt x 317.796pt.
 
 
 [4]
@@ -1001,15 +1001,16 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used
 [9]
 
 [10]
-
-[11]
 Overfull \hbox (0.18141pt too wide) in paragraph at lines 540--541
 []\T1/ppl/m/n/9 (-20) Furthermore, there are two in-ter-ac-tive plots, \T1/zi4/
 m/n/9 show_link_plots \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 show_error_link_plo
 ts\T1/ppl/m/n/9 (-20) , which
  []
 
-<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=205, 1445.4pt x 361
+
+
+[11]
+<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=206, 1445.4pt x 361
 .35pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type
  pdf)
@@ -1030,8 +1031,6 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 599.
 
-
-[12]
 Overfull \hbox (12.52875pt too wide) in paragraph at lines 603--604
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a
  com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
@@ -1044,7 +1043,10 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 603--604
 4/m/n/9 model_highd
  []
 
-<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=214, 469.755p
+
+
+[12]
+<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=216, 469.755p
 t x 118.4425pt>
 File: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf Graphic file
  (type pdf)
@@ -1052,13 +1054,13 @@ File: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf Graphic file
 Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-highd-model-pdf
 -1.pdf  used on input line 625.
 (pdftex.def)             Requested size: 398.33858pt x 100.43622pt.
-<figures/model_proj1_detourr.png, id=218, 724.7075pt x 637.38126pt>
+<figures/model_proj1_detourr.png, id=220, 724.7075pt x 637.38126pt>
 File: figures/model_proj1_detourr.png Graphic file (type png)
 <use figures/model_proj1_detourr.png>
 Package pdftex.def Info: figures/model_proj1_detourr.png  used on input line 63
 1.
 (pdftex.def)             Requested size: 199.16928pt x 175.16853pt.
-<figures/model_proj2_detourr.png, id=219, 730.73pt x 638.385pt>
+<figures/model_proj2_detourr.png, id=221, 730.73pt x 638.385pt>
 File: figures/model_proj2_detourr.png Graphic file (type png)
 <use figures/model_proj2_detourr.png>
 Package pdftex.def Info: figures/model_proj2_detourr.png  used on input line 63
@@ -1183,14 +1185,14 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 7344171A19F262B1FBC5ADC81F74B8DB;3143.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 6114F4A92FCA6A6E050D68869A36E944;1632.
+(rerunfilecheck)             Checksum: 0BE3716D7999834C0164F7D38DE8A3A4;1632.
  ) 
 Here is how much of TeX's memory you used:
- 27904 strings out of 473190
- 507633 string characters out of 5715800
- 926274 words of memory out of 5000000
+ 27901 strings out of 473190
+ 507609 string characters out of 5715800
+ 926288 words of memory out of 5000000
  50222 multiletter control sequences out of 15000+600000
- 613327 words of font info for 334 fonts, out of 8000000 for 9000
+ 613178 words of font info for 332 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  117i,12n,131p,1651b,976s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/inconsolata/Inconsolat
@@ -1199,7 +1201,7 @@ mr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb
 ></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/
 local/texlive/2025/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (23 pages, 3396370 bytes).
+Output written on RJwrapper.pdf (23 pages, 3396470 bytes).
 PDF statistics:
  581 PDF objects out of 1000 (max. 8388607)
  498 compressed objects within 5 object streams
