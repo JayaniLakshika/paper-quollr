@@ -26,7 +26,7 @@ The paper is organized as follows. The next section introduces the implementatio
 
 The package is available on CRAN, and the development version is available at \url{https://jayanilakshika.github.io/quollr/}.
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (Figure \ref{fig:algo-steps}). A detailed description of the algorithm can be found in \citet{gamage2025c}.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in \citet{gamage2025c}.
 
 The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}. The built-in example datasets, \texttt{scurve} and \texttt{scurve\_umap} demonstrates these structures.
 
@@ -57,6 +57,8 @@ tour_view <- show_langevitour(
   edge_data = model_obj$trimesh_data
 )
 \end{verbatim}
+
+which produces the model and data plot(s) shown in Figure \ref{fig:algo-steps}.
 
 \section{Implementation}\label{implementation}
 

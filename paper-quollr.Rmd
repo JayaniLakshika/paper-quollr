@@ -60,7 +60,7 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE}
+```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE, eval=FALSE}
 
 # Ensure remotes is available
 if (!requireNamespace("remotes", quietly = TRUE)) {
@@ -530,7 +530,7 @@ The paper is organized as follows. The next section introduces the implementatio
 
 The package is available on CRAN, and the development version is available at https://jayanilakshika.github.io/quollr/.
 
-Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`). A detailed description of the algorithm can be found in @gamage2025c.
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in @gamage2025c.
 
 The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. The built-in example datasets, `scurve` and `scurve_umap` demonstrates these structures.
 
@@ -562,6 +562,8 @@ tour_view <- show_langevitour(
   edge_data = model_obj$trimesh_data
 )
 ```
+
+which produces the model and data plot(s) shown in `r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`. 
 
 # Implementation
 
