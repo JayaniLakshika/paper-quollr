@@ -126,7 +126,7 @@ scurve_umap_plt <- ggplot(
   scurve_umap_scaled, 
   aes(x = emb1, y = emb2)) +
   geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
-  interior_annotation("a", cex = 3) +
+  interior_annotation("a", cex = 1) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -152,7 +152,7 @@ hex_grid_poly_scurve <- ggplot(
   geom_point(data = scurve_umap_scaled, 
              aes(x = emb1, y = emb2), 
              alpha = 0.8, size = 0.5, color = clr_choice) + 
-  interior_annotation("a", cex = 3) +
+  interior_annotation("a", cex = 1) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -178,7 +178,7 @@ hex_centroids_scurve <- ggplot(
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("b", cex = 3) +
+  interior_annotation("b", cex = 1) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -206,7 +206,7 @@ wireframe_scurve <- ggplot() +
   geom_point(data = df_bin_centroids_scurve, 
              aes(x = c_x, y = c_y), 
              size = 1, color = "#FF7755") +
-  interior_annotation("c", cex = 3) +
+  interior_annotation("c", cex = 1) +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
@@ -377,9 +377,9 @@ scurve_proj_umap_model1_dp <- plot_proj(
   proj_obj = proj_obj1,
   point_param = c(0.2, 0, clr_choice), # size, alpha, color
   plot_limits = c(-0.35, 0.35), 
-  axis_text_size = 7,
+  axis_text_size = 3,
   is_category = FALSE) +
-  interior_annotation(label = "d", cex = 3)
+  interior_annotation(label = "d", cex = 1)
 
 ## Second projection
 
@@ -528,7 +528,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 # algofig
 
 
-## ----algo-steps, eval=knitr::is_latex_output(), out.width="80%", fig.height=5, fig.width=25, fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
+## ----algo-steps, eval=knitr::is_latex_output(), out.width="80%", fig.height=5, fig.width=25, fig.pos="!ht", fig.align='center', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", fig.alt = "Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space."----
 
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
@@ -942,7 +942,7 @@ knitr::include_graphics(c("figures/model_proj1_detourr.png",
 # ) |>
 #   tour_path(grand_tour(2),
 #                     max_bases=50, fps = 60) |>
-#   show_scatter(axes = TRUE, size = 2, alpha = 0.5,
+#   show_scatter(axes = TRUE, size = 1.5, alpha = 0.5,
 #                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
 #                palette = c("#66B2CC", "#FF7755"),
 #                width = "600px", height = "600px")

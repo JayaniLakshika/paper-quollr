@@ -125,7 +125,12 @@ Several core computations within \texttt{quollr} are optimized using compiled C+
 In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
 
 \begin{figure}[!ht]
-\includegraphics[width=0.8\linewidth,alt={Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space.}]{paper-quollr_files/figure-latex/algo-steps-1} \caption{Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.}\label{fig:algo-steps}
+
+{\centering \includegraphics[width=0.8\linewidth,alt={Four-panel figure showing the main steps in building the model on a UMAP layout using S-curve data: (a) hexagonal binning of points, (b) calculation of bin centroids, (c) triangulation of centroids to form a mesh, and (d) lifting the triangulated model into the high-dimensional space.}]{paper-quollr_files/figure-latex/algo-steps-1} 
+
+}
+
+\caption{Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.}\label{fig:algo-steps}
 \end{figure}
 
 The algorithm starts by scaling the NLDR data to to the range \([0, 1] \times [0, y_{2,max}]\), where \(y_{2,max} = r_2/r_1\) is the ratio of ranges of embedding components. The output includes the scaled NLDR data (\texttt{scaled\_nldr}) along with the original limits of the embeddings (\texttt{lim1}, \texttt{lim2}).
@@ -641,7 +646,7 @@ detour(
 ) |>
   tour_path(grand_tour(2), 
                     max_bases=50, fps = 60) |>
-  show_scatter(axes = TRUE, size = 2, alpha = 0.5, 
+  show_scatter(axes = TRUE, size = 1.5, alpha = 0.5, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
                width = "600px", height = "600px")
