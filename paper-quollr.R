@@ -533,7 +533,7 @@ knitr::include_graphics("figures/quollr_workflow.png")
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1_dp +
-  plot_layout(ncol = 4)
+  plot_layout(ncol = 2)
 
 
 ## ----echo=TRUE----------------------------------------------------------------

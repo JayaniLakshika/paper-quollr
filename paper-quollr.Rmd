@@ -661,7 +661,7 @@ algofig
 hex_grid_poly_scurve +
   hex_centroids_scurve + wireframe_scurve + 
   scurve_proj_umap_model1_dp +
-  plot_layout(ncol = 4)
+  plot_layout(ncol = 2)
 ```
 
 The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
@@ -1246,9 +1246,9 @@ detour(
 
 In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the $2\text{-}D$ wireframe structure mapped to high-dimensional space.
 
-### Link plots
+### Linked plots
 
-Two types of interactive link plots can be generated to assess the model fits everywhere, or better in some subspaces, or completely mismatch the data. The plots are linked using `crosstalk`, which allows interactive brushing: selecting or brushing points in one plot automatically highlights the corresponding points in the other linked views. 
+Two types of interactively linked plots can be generated to assess the model fits everywhere, or better in some subspaces, or completely mismatch the data. The plots are linked using `crosstalk`, which allows interactive brushing: selecting or brushing points in one plot automatically highlights the corresponding points in the other linked views. 
 
 First, the function `show_link_plots()` provides linking a $2\text{-}D$ NLDR layout and a tour (via `langevitour`) of the model overlaid the data (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-nldrlink-html)"} else { "Figure \\@ref(fig:scurve-nldrlink-pdf)"})`).
 

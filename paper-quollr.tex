@@ -649,9 +649,9 @@ detour(
 
 In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the \(2\text{-}D\) wireframe structure mapped to high-dimensional space.
 
-\subsubsection{Link plots}\label{link-plots}
+\subsubsection{Linked plots}\label{linked-plots}
 
-Two types of interactive link plots can be generated to assess the model fits everywhere, or better in some subspaces, or completely mismatch the data. The plots are linked using \texttt{crosstalk}, which allows interactive brushing: selecting or brushing points in one plot automatically highlights the corresponding points in the other linked views.
+Two types of interactively linked plots can be generated to assess the model fits everywhere, or better in some subspaces, or completely mismatch the data. The plots are linked using \texttt{crosstalk}, which allows interactive brushing: selecting or brushing points in one plot automatically highlights the corresponding points in the other linked views.
 
 First, the function \texttt{show\_link\_plots()} provides linking a \(2\text{-}D\) NLDR layout and a tour (via \texttt{langevitour}) of the model overlaid the data (Figure \ref{fig:scurve-nldrlink-pdf}).
 
