@@ -640,10 +640,13 @@ algofig <- bscols(
         margin: 0;
         padding: 0;
       ",
-      htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 300px; text-align: left;', htmltools::h4("a"), hex_grid_poly_scurve_int),
-      htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 400px; text-align: left;', htmltools::h4("b"), hex_centroids_scurve_int),
-      htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 300px;  text-align: left;', htmltools::h4("c"), wireframe_scurve_int),
-      htmltools::div(style = 'margin: 0; padding: 0; margin-left: 60px; height: 300px;  text-align: left;', htmltools::h4("d"), scurve_umap_model_vis_n)
+      htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 370px; text-align: left;', htmltools::h4("a"), hex_grid_poly_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 300px; text-align: left;', htmltools::h4("b"), hex_centroids_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 370px;  text-align: left;', htmltools::h4("c"), wireframe_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 300px; text-align: left;', htmltools::h4("d"), htmltools::div(
+    style = "margin-left: 90px;",
+    scurve_umap_model_vis_n
+  ))
     )
   ),
   device = "xs"
@@ -1640,29 +1643,45 @@ df_b <- df_exe |>
 
 shared_df <- crosstalk::SharedData$new(df_exe)
 
-nldr_plt <- shared_df |>
-  ggplot(aes(x = emb1, y = emb2)) +
-  geom_point(alpha=0.5, colour=point_colours[1], size = 0.5) +
-  theme_linedraw() +
-  theme(
-    #aspect.ratio = 1,
-    plot.background = element_rect(fill = 'transparent', colour = NA),
-    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-    panel.background = element_rect(fill = 'transparent',
-                                    colour = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(), axis.title.y = element_blank(),
-    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-    axis.text.y = element_blank(), axis.ticks.y = element_blank()
-  )
-
-nldr_plt <- ggplotly(nldr_plt, width = 300,
-                     height = 300, tooltip = "none") |>
-  style(unselected=list(marker=list(opacity=1))) |>
-  highlight(on="plotly_selected", off="plotly_deselect") |>
-  config(displayModeBar = FALSE)
-
+nldr_plt <- plot_ly(
+    shared_df,
+    x = ~emb1, y = ~emb2,
+    type = "scatter",
+    mode = "markers",
+    marker = list(
+        color = point_colours[1],
+        size = 3,
+        opacity = 0.5
+    ),
+    hoverinfo = "none"
+) |>
+    layout(
+        width = 300,
+        height = 300,
+        xaxis = list(
+            title = "",
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            linecolor = "black",
+            mirror = TRUE
+        ),
+        yaxis = list(
+            title = "",
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            linecolor = "black",
+            mirror = TRUE
+        ),
+        margin = list(l = 20, r = 20, t = 20, b = 20),
+        dragmode = "select"
+    ) |> 
+    style(selected   = list(marker = list(opacity = 1)), unselected=list(marker=list(opacity=1))) |>
+    highlight(on="plotly_selected", off="plotly_deselect") |>
+    config(displayModeBar = FALSE)
 ```
 
 ```{r, echo=TRUE}
