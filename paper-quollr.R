@@ -513,10 +513,10 @@ knitr::include_graphics("figures/quollr_workflow.png")
 #         margin: 0;
 #         padding: 0;
 #       ",
-#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 300px;', hex_grid_poly_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 400px;', hex_centroids_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 300px;', wireframe_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; margin-left: 60px; height: 300px;', scurve_umap_model_vis_n)
+#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 300px; text-align: left;', htmltools::h4("a"), hex_grid_poly_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 400px; text-align: left;', htmltools::h4("b"), hex_centroids_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 300px;  text-align: left;', htmltools::h4("c"), wireframe_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 300px;  text-align: left;', htmltools::h4("d"), scurve_umap_model_vis_n)
 #     )
 #   ),
 #   device = "xs"
