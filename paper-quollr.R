@@ -957,7 +957,7 @@ df_exe <- comb_all_data_model(
   )
 
 
-## ----scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactively linked plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right, displayed using langevitour. Brushing highlights matching points across both views, enabling comparison of structure preservation between the 2-D layout and the high-dimensional data.", layout = "l-page"----
+## ----scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactively linked plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right, displayed using langevitour. Brushing highlights matching points across both views, enabling comparison of structure preservation between the 2-D layout and the high-dimensional data.", layout = "l-body"----
 # 
 # nldrdt_link <- show_link_plots(
 #   point_data = df_exe,
@@ -1219,7 +1219,7 @@ df_exe <- comb_all_data_model_error(
   )
 
 
-## ----scurve-linkerror-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted model overlaid with S-curve data in seven dimensions (right) using langevitour. Brushing highlights corresponding points across all panels, illustrating how high-residual points align with sparse or bridging regions in the UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-page"----
+## ----scurve-linkerror-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted model overlaid with S-curve data in seven dimensions (right) using langevitour. Brushing highlights corresponding points across all panels, illustrating how high-residual points align with sparse or bridging regions in the UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"----
 # 
 # errornldrdt_link <- show_error_link_plots(
 #   point_data = df_exe,
@@ -1345,8 +1345,8 @@ nldr_plt <- shared_df |>
     axis.text.y = element_blank(), axis.ticks.y = element_blank()
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 600,
-                     height = 600, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 300,
+                     height = 300, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1367,20 +1367,24 @@ detourr_output <- detour(
   show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
-                width = "600px", height = "600px")
+                width = "300px", height = "300px")
 
 
 
-## ----scurve-nldrlink-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right using detourr. Brushing or selecting points in either view highlights the corresponding points in the other panel, allowing assessment of how well the UMAP layout preserves the high-dimensional S-curve structure.", layout = "l-page"----
+## ----scurve-nldrlink-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. To highlight points in `detourr`, use the Select button. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "Interactive two-panel link plot showing the connection between the UMAP layout on the left and the fitted model with S-curve data in seven dimensions on the right using detourr. Brushing or selecting points in either view highlights the corresponding points in the other panel, allowing assessment of how well the UMAP layout preserves the high-dimensional S-curve structure.", layout = "l-body"----
 # 
 # lndet_link <- crosstalk::bscols(
-#     htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-#                    nldr_plt,
-#                    htmltools::div(style = "margin-top: 20px;", detourr_output)
+#     htmltools::div(
+#         style = "display: grid; grid-template-columns: 1fr 1fr;
+#     gap: 0px;
+#     align-items: start;
+#     justify-items: center;
+#     margin: 0;
+#     padding: 0;",
+#         nldr_plt, htmltools::div(style = "margin-top: 20px;", detourr_output)
 #     ),
 #     device = "xs"
-#   )
-# 
+# )
 # 
 # class(lndet_link) <- c(class(lndet_link), "htmlwidget")
 # 
@@ -1456,7 +1460,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 400,
   config(displayModeBar = FALSE)
 
 
-## ----scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-page"----
+## ----scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"----
 # 
 # detourr_output <- detour(
 #   shared_df,
@@ -2044,14 +2048,14 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 
 
-## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the layout b (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel link plot showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-page"----
+## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the layout b (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel link plot showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"----
 # 
 # class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
 # 
 # linked_plt_int
 
 
-## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the layout f (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel link plot showing the HBE-selected $2\\text{-}D$ layout (f) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, showing how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-page"----
+## ----tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the layout f (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel link plot showing the HBE-selected $2\\text{-}D$ layout (f) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, showing how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"----
 # 
 # class(linked_plt_best) <- c(class(linked_plt_best), "htmlwidget")
 # 

@@ -734,18 +734,22 @@ detourr_output <- detour(
   show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
-                width = "600px", height = "600px")
+                width = "300px", height = "300px")
 \end{verbatim}
 
 \begin{verbatim}
 lndet_link <- crosstalk::bscols(
-    htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-                   nldr_plt,
-                   htmltools::div(style = "margin-top: 20px;", detourr_output)
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: start;
+    justify-items: center;
+    margin: 0;
+    padding: 0;",
+        nldr_plt, htmltools::div(style = "margin-top: 20px;", detourr_output)
     ),
     device = "xs"
-  )
-
+)
 
 class(lndet_link) <- c(class(lndet_link), "htmlwidget")
 
