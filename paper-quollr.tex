@@ -28,7 +28,7 @@ The package is available on CRAN, and the development version is available at \u
 
 Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in \citet{gamage2025c}.
 
-The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}. The built-in example datasets, \texttt{scurve} and \texttt{scurve\_umap} demonstrates these structures.
+The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique \texttt{ID} column, with data columns prefixed by the letter \texttt{x} (e.g., \texttt{x1}, \texttt{x2}, etc.). The NLDR dataset should include embedding coordinates labeled as \texttt{emb1} and \texttt{emb2}, ensuring one-to-one correspondence with the high-dimensional data through the shared \texttt{ID}. The built-in example datasets, \texttt{scurve} and \texttt{scurve\_umap} demonstrates these structures.
 
 To run the entire model pipeline, we can use the \texttt{fit\_high\_model()} function. This function requires: the high-dimensional data (\texttt{highd\_data}), the embedding data (\texttt{nldr\_data}), the number of bins along the x-axis (\texttt{b1}), the buffer amount as a proportion of the data (\texttt{q}), and a benchmark value to identify high-density hexagons (\texttt{hd\_thresh}).
 
@@ -100,7 +100,7 @@ The internal data objects follow the tidy data principle: each variable is store
 
 \begin{itemize}
 \item
-  \texttt{highd\_data}: a tibble containing the original high-dimensional observations with a unique identifier (\texttt{ID}) and variable columns prefixed with \texttt{"x"} (e.g., \texttt{x1}, \texttt{x2}, \ldots).
+  \texttt{highd\_data}: a tibble containing the original high-dimensional observations with a unique identifier (\texttt{ID}) and variable columns prefixed with \texttt{x} (e.g., \texttt{x1}, \texttt{x2}, \ldots).
 \item
   \texttt{nldr\_data}: a tibble containing two-dimensional embeddings, labeled as \texttt{emb1} and \texttt{emb2}, matched to the same \texttt{ID}s.
 \end{itemize}
@@ -163,7 +163,7 @@ bin_configs
 > [1] 0.05083265
 \end{verbatim}
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagons (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the \texttt{hex\_binning()} function, or its individual steps can be run separately. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the \texttt{hex\_binning()} function automates this entire workflow. The parameters used within \texttt{hex\_binning()} are the object output from \texttt{gen\_scaled\_data} (\texttt{nldr\_scaled\_obj}); the number of bins along the x-axis (\texttt{b1}), and the buffer amount as a proportion of the data (\texttt{q}). The output is an object of the \texttt{hex\_bin\_obj} class, which contains the bin widths in each direction (\texttt{a1}, \texttt{a2}), the number of bins in each direction (\texttt{bins}), the coordinates of the hexagonal grid starting point (\texttt{start\_point}), the details of bin centroids (\texttt{centroids}), the coordinates of bins (\texttt{hex\_poly}), NLDR components with their corresponding hexagons (\texttt{data\_hb\_id}), hex bins with their corresponding standardized counts (\texttt{std\_cts}), the total number of bins (\texttt{b}), the number of non-empty bins (\texttt{m}), and the points within each hexagon (\texttt{pts\_bins}).
 
 \begin{verbatim}
 hb_obj <- hex_binning(
@@ -296,8 +296,6 @@ head(pts_df, 5)
 \end{verbatim}
 
 \subsubsection{Computing the standardized number of points within each hexagon}\label{computing-the-standardized-number-of-points-within-each-hexagon}
-
-After assiging data to the hexagons,
 
 The \texttt{compute\_std\_counts()} function calculates both the raw and standardized counts of points inside each hexagon.
 
@@ -598,7 +596,7 @@ data_triangulation_grid <- ggplot() +
 
 }
 
-\caption{The outputs of `geom\_hexgrid` and `geom\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.}\label{fig:geom-outputs-pdf}
+\caption{The outputs of \texttt{geom\_hexgrid} and \texttt{geom\_trimesh} include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.}\label{fig:geom-outputs-pdf}
 \end{figure}
 
 \subsubsection{\texorpdfstring{\(p\text{-}D\) model visualization}{p\textbackslash text\{-\}D model visualization}}\label{ptext-d-model-visualization}
@@ -607,7 +605,7 @@ To visualize how well the \(p\text{-}D\) model captures the underlying structure
 
 Before plotting, the data needs to be organized into a combined format through the \texttt{comb\_data\_model()} function. This function takes three inputs: \texttt{highd\_data} (the high-dimensional observations), \texttt{model\_highd} (high-dimensional summaries for each bin), and \texttt{model\_2d} (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
-In this structure, the \texttt{type} variable distinguishes between original observations (\texttt{"data"}) and the bin-averaged model representation (\texttt{"model"}).
+In this structure, the \texttt{type} variable distinguishes between original observations (\texttt{data}) and the bin-averaged model representation (\texttt{model}).
 
 \begin{verbatim}
 df_exe <- comb_data_model(
@@ -633,7 +631,7 @@ show_langevitour(
 As an alternative to \texttt{langevitour}, users can explore the fitted \(p\text{-}D\) model using the \texttt{detourr} \citep{casper2025} (Figure \ref{fig:scurve-highd-model-detourrpdf}). The combined data object from \texttt{comb\_data\_model()} can be passed directly to the \texttt{detour()} function, where \texttt{tour\_aes()} defines the projection variables and color mapping. The visualization is rendered using \texttt{show\_scatter()}, which can display both data points and the model's structural edges via the \texttt{edges} argument.
 
 \begin{figure}[H]
-\includegraphics[width=0.5\linewidth,alt={Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.}]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth,alt={Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.}]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the `scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:scurve-highd-model-detourrpdf}
+\includegraphics[width=0.5\linewidth,alt={Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.}]{figures/model_proj1_detourr} \includegraphics[width=0.5\linewidth,alt={Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.}]{figures/model_proj2_detourr} \caption{Screenshots of the lifted high-dimensional wireframe model from the \texttt{scurve} UMAP layout using \texttt{detourr}. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.}\label{fig:scurve-highd-model-detourrpdf}
 \end{figure}
 
 \begin{verbatim}
@@ -757,7 +755,7 @@ lndet_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth,alt={Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.}]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth,alt={Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.}]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:scurve-nldrlink-dtpdf}
+\includegraphics[width=1\linewidth,alt={Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.}]{figures/model_link_proj1_detourr} \includegraphics[width=1\linewidth,alt={Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.}]{figures/model_link_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\text{-}D$ (right) using \texttt{detourr}.}\label{fig:scurve-nldrlink-dtpdf}
 \end{figure}
 
 Also, a three-panel view (Figure \ref{fig:scurve-linkerror-dtpdf}) can be constructed by adding the error distribution plot (\texttt{error\_plt}):
@@ -798,7 +796,7 @@ erlndet_link
 \end{verbatim}
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth,alt={Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.}]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth,alt={Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.}]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using `detourr`.}\label{fig:scurve-linkerror-dtpdf}
+\includegraphics[width=1\linewidth,alt={Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.}]{figures/model_link_error_proj1_detourr} \includegraphics[width=1\linewidth,alt={Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.}]{figures/model_link_error_proj2_detourr} \caption{Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\text{-}D$ (right) using \texttt{detourr}.}\label{fig:scurve-linkerror-dtpdf}
 \end{figure}
 
 \section{Application}\label{application}

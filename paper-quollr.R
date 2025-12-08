@@ -893,7 +893,7 @@ data_triangulation_grid <- data_triangulation_grid +
 #   plot_layout(ncol = 4)
 
 
-## ----geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
+## ----geom-outputs-pdf, fig.cap="The outputs of \\texttt{geom\\_hexgrid} and \\texttt{geom\\_trimesh} include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."----
 
  full_hexgrid + 
   data_hexgrid +  
@@ -910,7 +910,7 @@ df_exe <- comb_data_model(
   )
 
 
-## ----scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."----
+## ----scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="\\texttt{langevitour} output of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the \\texttt{scurve} data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."----
 # 
 # show_langevitour(
 #   point_data = df_exe,
@@ -925,7 +925,7 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
   plot_layout(ncol = 4)
 
 
-## ----scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout using \\texttt{detourr}. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
 
 knitr::include_graphics(c("figures/model_proj1_detourr.png",
                           "figures/model_proj2_detourr.png"))
@@ -1391,7 +1391,7 @@ detourr_output <- detour(
 # lndet_link
 
 
-## ----scurve-nldrlink-dtpdf, eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.alt = "Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.", fig.pos="H", fig.show='hold'----
+## ----scurve-nldrlink-dtpdf, eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.", fig.pos="H", fig.show='hold'----
 
 knitr::include_graphics(c("figures/model_link_proj1_detourr.png",
                           "figures/model_link_proj2_detourr.png"))
@@ -1496,7 +1496,7 @@ nldr_plt <- ggplotly(nldr_plt, width = 200,
 # erlndet_link
 
 
-## ----scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
 
 knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
                           "figures/model_link_error_proj2_detourr.png"))
@@ -1739,8 +1739,8 @@ nldr_plt <- shared_df |>
     legend.position = "none"
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 600,
-                     height = 600, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 250,
+                     height = 250, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1755,15 +1755,23 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                                   rep(point_sizes[2], NROW(df))),
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
-                                               linkFilter=FALSE)
+                                               linkFilter=FALSE,
+                                               width = "350px", height = "250px")
 
 linked_plt_int <- crosstalk::bscols(
-  htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-                 nldr_plt,
-                 htmltools::div(style = "margin-top: 20px;", langevitour_output)
-  ),
-  device = "xs"
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: center;
+    justify-items: center;
+    margin: 0;
+    padding: 0;",
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 30px;", langevitour_output)
+    ),
+    device = "xs"
 )
+
 
 
 ## ----plot-proj----------------------------------------------------------------
@@ -1924,8 +1932,8 @@ nldr_plt <- shared_df |>
     legend.position = "none"
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 300,
-                     height = 300, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 250,
+                     height = 250, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1941,7 +1949,7 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
-                                               width = "200px", height = "100px")
+                                               width = "350px", height = "250px")
 
 linked_plt_best <- crosstalk::bscols(
     htmltools::div(
@@ -1951,7 +1959,8 @@ linked_plt_best <- crosstalk::bscols(
     justify-items: center;
     margin: 0;
     padding: 0;",
-        nldr_plt, langevitour_output
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 20px;", langevitour_output)
     ),
     device = "xs"
 )

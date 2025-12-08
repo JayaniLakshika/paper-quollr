@@ -531,7 +531,7 @@ The package is available on CRAN, and the development version is available at ht
 
 Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in @gamage2025c.
 
-The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `"x"` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. The built-in example datasets, `scurve` and `scurve_umap` demonstrates these structures.
+The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `x` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. The built-in example datasets, `scurve` and `scurve_umap` demonstrates these structures.
 
 To run the entire model pipeline, we can use the `fit_high_model()` function. This function requires: the high-dimensional data (`highd_data`), the embedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of the data (`q`), and a benchmark value to identify high-density hexagons (`hd_thresh`). 
 
@@ -599,7 +599,7 @@ The internal data objects follow the tidy data principle: each variable is store
 
 ### Input objects
 
-- `highd_data`: a tibble containing the original high-dimensional observations with a unique identifier (`ID`) and variable columns prefixed with `"x"` (e.g., `x1`, `x2`, …).
+- `highd_data`: a tibble containing the original high-dimensional observations with a unique identifier (`ID`) and variable columns prefixed with `x` (e.g., `x1`, `x2`, …).
 
 - `nldr_data`: a tibble containing two-dimensional embeddings, labeled as `emb1` and `emb2`, matched to the same `ID`s.
 
@@ -682,7 +682,7 @@ bin_configs <- calc_bins_y(
 bin_configs
 ```
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual components can be run separately for added flexibility. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` are the object output from `gen_scaled_data` (`nldr_scaled_obj`); the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagons (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`b`), the number of non-empty bins (`m`), and the points within each hexagon (`pts_bins`).  
+Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual steps can be run separately. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` are the object output from `gen_scaled_data` (`nldr_scaled_obj`); the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagons (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`b`), the number of non-empty bins (`m`), and the points within each hexagon (`pts_bins`).  
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
@@ -936,8 +936,6 @@ head(pts_df, 5)
 
 ### Computing the standardized number of points within each hexagon
 
-After assiging data to the hexagons, 
-
 The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
 
 The function begins by grouping the data by hexagon (`h`) and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a standardized bin counts, `w_h`, ranging from $0$ to $1$.
@@ -1176,7 +1174,7 @@ full_hexgrid + data_hexgrid +
   plot_layout(ncol = 4)
 ```
 
-```{r geom-outputs-pdf, fig.cap="The outputs of `geom\\_hexgrid` and `geom\\_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."}
+```{r geom-outputs-pdf, fig.cap="The outputs of \\texttt{geom\\_hexgrid} and \\texttt{geom\\_trimesh} include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "Four-panel figure showing outputs from geom_hexgrid and geom_trimesh functions: (a) the full hexagonal grid, (b) the subset of the grid that overlaps with the data, (c) a complete triangulated grid based on centroids, and (d) the triangulated centroid grid corresponding to the data region."}
 
  full_hexgrid + 
   data_hexgrid +  
@@ -1191,7 +1189,7 @@ To visualize how well the $p\text{-}D$ model captures the underlying structure o
 
 Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
 
-In this structure, the `type` variable distinguishes between original observations (`"data"`) and the bin-averaged model representation (`"model"`).
+In this structure, the `type` variable distinguishes between original observations (`data`) and the bin-averaged model representation (`model`).
 
 ```{r, echo=TRUE}
 df_exe <- comb_data_model(
@@ -1203,7 +1201,7 @@ df_exe <- comb_data_model(
 
 The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
 
-```{r scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="`langevitour` output of the lifted high-dimensional wireframe model from the `scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."}
+```{r scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="\\texttt{langevitour} output of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the \\texttt{scurve} data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Interactive langevitour visualization showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The views reveal how the wireframe follows the underlying S-curve structure and highlight regions with sparse or missing data in the original layout."}
 
 show_langevitour(
   point_data = df_exe, 
@@ -1220,7 +1218,7 @@ scurve_proj_umap_model1 + scurve_proj_umap_model2 +
 
 As an alternative to `langevitour`, users can explore the fitted $p\text{-}D$ model using the `detourr` [@casper2025] (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-highd-model-detourrhtml)"} else { "Figure \\@ref(fig:scurve-highd-model-detourrpdf)"})`). The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
 
-```{r scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the `scurve` UMAP layout using `detourr`. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+```{r scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout using \\texttt{detourr}. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "Screenshots from the detourr interface showing the lifted high-dimensional wireframe model derived from the S-curve UMAP layout. The images highlight how the wireframe represents the data structure and expose regions with sparse or missing data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
 
 knitr::include_graphics(c("figures/model_proj1_detourr.png",
                           "figures/model_proj2_detourr.png"))
@@ -1705,7 +1703,7 @@ class(lndet_link) <- c(class(lndet_link), "htmlwidget")
 lndet_link
 ```
 
-```{r scurve-nldrlink-dtpdf, eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.alt = "Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.", fig.pos="H", fig.show='hold'}
+```{r scurve-nldrlink-dtpdf, eval=knitr::is_latex_output(), out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the NLDR layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the NLDR layout on the left and the fitted high-dimensional model with S-curve data on the right using detourr, illustrating how the 2-D layout corresponds to the 7-D data structure.", fig.pos="H", fig.show='hold'}
 
 knitr::include_graphics(c("figures/model_link_proj1_detourr.png",
                           "figures/model_link_proj2_detourr.png"))
@@ -1812,7 +1810,7 @@ class(erlndet_link) <- c(class(erlndet_link), "htmlwidget")
 erlndet_link
 ```
 
-```{r scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+```{r scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
 
 knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
                           "figures/model_link_error_proj2_detourr.png"))
@@ -2068,8 +2066,8 @@ nldr_plt <- shared_df |>
     legend.position = "none"
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 600,
-                     height = 600, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 250,
+                     height = 250, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -2084,15 +2082,23 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                                   rep(point_sizes[2], NROW(df))),
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
-                                               linkFilter=FALSE)
+                                               linkFilter=FALSE,
+                                               width = "350px", height = "250px")
 
 linked_plt_int <- crosstalk::bscols(
-  htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-                 nldr_plt,
-                 htmltools::div(style = "margin-top: 20px;", langevitour_output)
-  ),
-  device = "xs"
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: center;
+    justify-items: center;
+    margin: 0;
+    padding: 0;",
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 30px;", langevitour_output)
+    ),
+    device = "xs"
 )
+
 ```
 
 ```{r plot-proj}
@@ -2253,8 +2259,8 @@ nldr_plt <- shared_df |>
     legend.position = "none"
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 300,
-                     height = 300, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 250,
+                     height = 250, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -2270,7 +2276,7 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
-                                               width = "200px", height = "100px")
+                                               width = "350px", height = "250px")
 
 linked_plt_best <- crosstalk::bscols(
     htmltools::div(
@@ -2280,7 +2286,8 @@ linked_plt_best <- crosstalk::bscols(
     justify-items: center;
     margin: 0;
     padding: 0;",
-        nldr_plt, langevitour_output
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 20px;", langevitour_output)
     ),
     device = "xs"
 )
