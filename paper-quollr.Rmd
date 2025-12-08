@@ -1746,8 +1746,8 @@ error_plt <- shared_df |>
     axis.text.y = element_blank(), axis.ticks.y = element_blank()
   )
 
-error_plt <- ggplotly(error_plt, width = 400,
-                      height = 400, tooltip = "none") |>
+error_plt <- ggplotly(error_plt, width = 200,
+                      height = 200, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1769,8 +1769,8 @@ nldr_plt <- shared_df |>
     axis.text.y = element_blank(), axis.ticks.y = element_blank()
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 400,
-                     height = 400, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 200,
+                     height = 200, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1790,16 +1790,21 @@ detourr_output <- detour(
   show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
-                width = "500px", height = "500px")
+                width = "200px", height = "200px")
 
 erlndet_link <- crosstalk::bscols(
-  htmltools::div(
-    style = "display: grid; grid-template-columns: 1fr 1fr 1fr;",
-    error_plt, 
-    nldr_plt,
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 0px;
+    align-items: start;
+    justify-items: center;
+    margin: 0;
+    padding: 0;",
+        error_plt, 
+        nldr_plt, 
     htmltools::div(style = "margin-top: 20px;", detourr_output)
-  ),
-  device = "xs"
+    ),
+    device = "xs"
 )
 
 class(erlndet_link) <- c(class(erlndet_link), "htmlwidget")
