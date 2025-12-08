@@ -513,9 +513,9 @@ knitr::include_graphics("figures/quollr_workflow.png")
 #         margin: 0;
 #         padding: 0;
 #       ",
-#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 225px;', hex_grid_poly_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 300px;', hex_grid_poly_scurve_int),
 #       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 400px;', hex_centroids_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 280px; width: 225px;', wireframe_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 300px;', wireframe_scurve_int),
 #       htmltools::div(style = 'margin: 0; padding: 0; margin-left: 60px; height: 300px;', scurve_umap_model_vis_n)
 #     )
 #   ),
@@ -1915,8 +1915,8 @@ nldr_plt <- shared_df |>
     legend.position = "none"
   )
 
-nldr_plt <- ggplotly(nldr_plt, width = 600,
-                     height = 600, tooltip = "none") |>
+nldr_plt <- ggplotly(nldr_plt, width = 300,
+                     height = 300, tooltip = "none") |>
   style(unselected=list(marker=list(opacity=1))) |>
   highlight(on="plotly_selected", off="plotly_deselect") |>
   config(displayModeBar = FALSE)
@@ -1931,14 +1931,20 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                                   rep(point_sizes[2], NROW(df))),
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
-                                               linkFilter=FALSE)
+                                               linkFilter=FALSE,
+                                               width = "200px", height = "100px")
 
 linked_plt_best <- crosstalk::bscols(
-  htmltools::div(style="display: grid; grid-template-columns: 1fr 1fr;",
-                 nldr_plt,
-                 htmltools::div(style = "margin-top: 20px;", langevitour_output)
-  ),
-  device = "xs"
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: center;
+    justify-items: center;
+    margin: 0;
+    padding: 0;",
+        nldr_plt, langevitour_output
+    ),
+    device = "xs"
 )
 
 
