@@ -770,10 +770,10 @@ detourr_output <- detour(
 ) |>
   tour_path(grand_tour(2), 
                     max_bases=50, fps = 60) |>
-  show_scatter(axes = TRUE, size = 1, alpha = 0.8, 
+  show_scatter(axes = TRUE, size = 0.5, alpha = 0.8, 
                edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
                palette = c("#66B2CC", "#FF7755"),
-                width = "200px", height = "200px")
+                width = "250px", height = "250px")
 
 erlndet_link <- crosstalk::bscols(
     htmltools::div(
@@ -782,7 +782,9 @@ erlndet_link <- crosstalk::bscols(
     align-items: start;
     justify-items: center;
     margin: 0;
-    padding: 0;",
+    padding: 0;
+    height: 300px;
+    width: 400px;",
         error_plt, 
         nldr_plt, 
     htmltools::div(style = "margin-top: 20px;", detourr_output)
