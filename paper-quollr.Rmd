@@ -1884,6 +1884,7 @@ Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single c
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
 <!-- https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1 -->
 
+<!--scripts/FACs/02_gen_embeddings.R-->
 ```{r}
 #| label: read-limb-nldr
 # Read a variety of different NLDR representations of limb
@@ -1938,6 +1939,7 @@ nldr6 <- tsne_limb2 |>
   interior_annotation("f")
 ```
 
+<!--scripts/FACs/03_gen_mse_for_diff_methods.R-->
 ```{r}
 #| label: combine-error-data-muscles
 
@@ -1987,6 +1989,7 @@ plot_hbe_layouts(plots = list(error_plot_limb, nldr1,
                              nldr5, nldr6), design = design)
 ```
 
+<!--scripts/FACs/01_data_preprocessing.R-->
 ```{r data-limb}
 data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
 
