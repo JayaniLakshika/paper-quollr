@@ -1765,38 +1765,55 @@ num_highd_col <- point_data |>
 
 shared_df <- crosstalk::SharedData$new(point_data)
 
-nldr_plt <- shared_df |>
-  ggplot(aes(x = emb1, y = emb2, colour = cluster)) +
-  geom_point(alpha=0.5, size = 0.8) +
-  geom_segment(data = trimesh_data_limb, 
-               aes(
-                 x = x_from, 
-                 y = y_from, 
-                 xend = x_to, 
-                 yend = y_to),
-               colour = "#000000",
-               linewidth = 0.5) +
-  scale_color_manual(values = c("0" = '#66c2a5',"1" = '#fc8d62',"2" = '#8da0cb',"3" = '#e78ac3',"4" = '#a6d854',"5" = '#ffd92f',"6" = '#e5c494')) +
-  theme_linedraw() +
-  theme(
-    #aspect.ratio = 1,
-    plot.background = element_rect(fill = 'transparent', colour = NA),
-    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-    panel.background = element_rect(fill = 'transparent',
-                                    colour = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(), axis.title.y = element_blank(),
-    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-    legend.position = "none"
-  )
+cluster_colors <- c(
+    "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#e5c494'
+)
 
-nldr_plt <- ggplotly(nldr_plt, width = 250,
-                     height = 250, tooltip = "none") |>
-  style(unselected=list(marker=list(opacity=1))) |>
-  highlight(on="plotly_selected", off="plotly_deselect") |>
-  config(displayModeBar = FALSE)
+# Scatter points
+nldr_plt <- plot_ly(
+    data = shared_df,
+    x = ~emb1, y = ~emb2,
+    type = "scatter", mode = "markers",
+    color = ~cluster, colors = cluster_colors,
+    marker = list(size = 3, opacity = 0.5),
+    hoverinfo = "skip",  # <-- skip hover completely
+    showlegend = FALSE
+)
+
+# Add line segments
+if (nrow(trimesh_data_limb) > 0) {
+    nldr_plt <- nldr_plt |>
+        add_segments(
+            data = trimesh_data_limb,
+            x = ~x_from, y = ~y_from,
+            xend = ~x_to, yend = ~y_to,
+            line = list(color = "#000000", width = 0.5),
+            inherit = FALSE,
+            showlegend = FALSE,
+            hoverinfo = "skip"  # <-- skip hover
+        )
+}
+
+# Layout: axes, border, no tooltip
+nldr_plt <- nldr_plt |>
+    layout(
+        width = 310, height = 310,
+        margin = list(l = 20, r = 20, t = 20, b = 20),
+        xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE),
+        yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE)
+    ) |>
+    style(
+        selected = list(marker = list(opacity = 1)),
+        unselected = list(marker = list(opacity = 1))
+    ) |>
+    highlight(
+        on = "plotly_selected",
+        off = "plotly_deselect"
+    ) |>
+    config(displayModeBar = FALSE)
 
 
 langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
@@ -1809,18 +1826,20 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
-                                               width = "350px", height = "250px")
+                                               width = "370px", height = "370px")
 
 linked_plt_int <- crosstalk::bscols(
     htmltools::div(
         style = "display: grid; grid-template-columns: 1fr 1fr;
     gap: 0px;
-    align-items: center;
+    align-items: start;
     justify-items: center;
     margin: 0;
-    padding: 0;",
+    padding: 0;
+    height: 380px;
+    width: 500px",
         nldr_plt, 
-        htmltools::div(style = "margin-top: 30px;", langevitour_output)
+        htmltools::div(style = "margin-top: 20px;", langevitour_output)
     ),
     device = "xs"
 )
@@ -1958,38 +1977,55 @@ num_highd_col <- point_data |>
 
 shared_df <- crosstalk::SharedData$new(point_data)
 
-nldr_plt <- shared_df |>
-  ggplot(aes(x = emb1, y = emb2, colour = cluster)) +
-  geom_point(alpha=0.5, size = 0.8) +
-  geom_segment(data = trimesh_data_limb, 
-               aes(
-                 x = x_from, 
-                 y = y_from, 
-                 xend = x_to, 
-                 yend = y_to),
-               colour = "#000000",
-               linewidth = 0.5) +
-  scale_color_manual(values = c("0" = '#66c2a5',"1" = '#fc8d62',"2" = '#8da0cb',"3" = '#e78ac3',"4" = '#a6d854',"5" = '#ffd92f',"6" = '#e5c494')) +
-  theme_linedraw() +
-  theme(
-    #aspect.ratio = 1,
-    plot.background = element_rect(fill = 'transparent', colour = NA),
-    plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
-    panel.background = element_rect(fill = 'transparent',
-                                    colour = NA),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.x = element_blank(), axis.title.y = element_blank(),
-    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-    axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-    legend.position = "none"
-  )
+cluster_colors <- c(
+    "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#e5c494'
+)
 
-nldr_plt <- ggplotly(nldr_plt, width = 250,
-                     height = 250, tooltip = "none") |>
-  style(unselected=list(marker=list(opacity=1))) |>
-  highlight(on="plotly_selected", off="plotly_deselect") |>
-  config(displayModeBar = FALSE)
+# Scatter points
+nldr_plt <- plot_ly(
+    data = shared_df,
+    x = ~emb1, y = ~emb2,
+    type = "scatter", mode = "markers",
+    color = ~cluster, colors = cluster_colors,
+    marker = list(size = 3, opacity = 0.5),
+    hoverinfo = "skip",  # <-- skip hover completely
+    showlegend = FALSE
+)
+
+# Add line segments
+if (nrow(trimesh_data_limb) > 0) {
+    nldr_plt <- nldr_plt |>
+        add_segments(
+            data = trimesh_data_limb,
+            x = ~x_from, y = ~y_from,
+            xend = ~x_to, yend = ~y_to,
+            line = list(color = "#000000", width = 0.5),
+            inherit = FALSE,
+            showlegend = FALSE,
+            hoverinfo = "skip"  # <-- skip hover
+        )
+}
+
+# Layout: axes, border, no tooltip
+nldr_plt <- nldr_plt |>
+    layout(
+        width = 310, height = 310,
+        margin = list(l = 20, r = 20, t = 20, b = 20),
+        xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE),
+        yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE)
+    ) |>
+    style(
+        selected = list(marker = list(opacity = 1)),
+        unselected = list(marker = list(opacity = 1))
+    ) |>
+    highlight(
+        on = "plotly_selected",
+        off = "plotly_deselect"
+    ) |>
+    config(displayModeBar = FALSE)
 
 
 langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
@@ -2002,16 +2038,18 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
-                                               width = "350px", height = "250px")
+                                               width = "370px", height = "370px")
 
 linked_plt_best <- crosstalk::bscols(
     htmltools::div(
         style = "display: grid; grid-template-columns: 1fr 1fr;
     gap: 0px;
-    align-items: center;
+    align-items: start;
     justify-items: center;
     margin: 0;
-    padding: 0;",
+    padding: 0;
+    height: 380px;
+    width: 500px",
         nldr_plt, 
         htmltools::div(style = "margin-top: 20px;", langevitour_output)
     ),
