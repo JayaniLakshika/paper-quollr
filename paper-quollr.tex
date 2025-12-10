@@ -448,21 +448,13 @@ It is worth noting that while \texttt{predict\_emb()} provides a general approac
 
 \subsection{Compute residuals and hexbin error (HBE)}\label{compute-residuals-and-hexbin-error-hbe}
 
-Hexbin error (HBE) are used as goodness of fit metrics for the model. These metrics can be computed using the \texttt{glance()} function, which provides a tidy output for evaluation.
-
-The function requires both the fitted model object returned by \texttt{fit\_highd\_model()} and \(p\text{-}D\) data to begin. The \(p\text{-}D\) model output (\texttt{model\_highd}) is first renamed to avoid naming conflicts during subsequent data joins. It then uses the \texttt{predict\_emb()} function to assign each point in the \(p\text{-}D\) dataset to a corresponding hexagon bin in the \(2\text{-}D\) model, producing a prediction data frame that contains both the predicted bin assignment (\texttt{pred\_h}) and the original observation \texttt{ID}.
-
-The function joins this prediction output with both the \(p\text{-}D\) model and the \(p\text{-}D\) data (to retrieve true coordinates). It then calculates squared differences between the original and predicted \(p\text{-}D\) coordinates for each dimension, storing these as \texttt{error\_square\_x1}, \texttt{error\_square\_x2}, \ldots, up to the dimensionality of the data.
-
-From these per-dimension errors, the function computes absolute error which is the sum of absolute differences across all dimensions and observations and the HBE which is the average of the total squared error per point.
-
-These metrics are returned in a tibble as \texttt{Error} (absolute error) and \texttt{HBE} (root mean squared error). The computation of total absolute error and HBE is performed in C++ for efficiency using the internal \texttt{compute\_errors()} function.
+Hexbin error (HBE) serves as a goodness-of-fit metric for evaluating the high-dimensional to \(2\text{-}D\) mapping. The \texttt{glance()} function computes these summary diagnostics by combining the fitted model returned by \texttt{fit\_highd\_model()} with the \(p\text{-}D\) data. After renaming the model output to avoid join conflicts, \texttt{predict\_emb()} is used to assign each observation to a hexagon in the \(2\text{-}D\) embedding. The resulting bin assignments are joined with both the model output and the \(p\text{-}D\) data, allowing squared and absolute differences between the true and modeled \(p\text{-}D\) coordinates to be computed for every dimension. Total absolute error (\texttt{Error}) and hexbin error (\texttt{HBE}, the root mean squared error) are then obtained using an efficient C++ implementation (\texttt{compute\_errors()}), and returned in a tidy tibble.
 
 \begin{verbatim}
 glance(
   x = scurve_model_obj,
   highd_data = scurve
-  )
+)
 \end{verbatim}
 
 \begin{verbatim}
@@ -472,19 +464,13 @@ glance(
 > 1  196. 0.116
 \end{verbatim}
 
-Furthermore, \texttt{augment()} requires both the fitted model object returned by \texttt{fit\_highd\_model()} and \(p\text{-}D\) data to begin. It extends the fitted model by adding prediction results and error diagnostics to the original \(p\text{-}D\) data.
-
-The function starts with the same process as is used in the \texttt{glance()} function to produce a predicted point in \(p\text{-}D\) for each point in the \(p\text{-}D\) dataset.
-
-Next, the function computes residuals between each original coordinate (\texttt{x1}, \texttt{x2}, \ldots, \texttt{xp}) and the corresponding modeled coordinate (\texttt{model\_high\_d\_x1}, \ldots, \texttt{model\_high\_d\_xp}) across all dimensions. It calculates both squared errors and absolute errors per dimension. These are used to compute two aggregate diagnostic measures per point. First, the \texttt{row\_wise\_total\_error} which is the total squared error across all dimensions, and the \texttt{row\_wise\_abs\_error} which is the total absolute error across all dimensions.
-
-The final output is a data frame that combines the original IDs, high-dimensional data, predicted bin IDs, modeled coordinates, residuals, row wise total error, absolute error for the fitted values, and row wise total absolute error for each observation. The augmented dataset is always returned as a \texttt{tibble::tibble} with the same number of rows as the passed dataset.
+The \texttt{augment()} function provides point-level diagnostics by appending predictions and residuals to the original \(p\text{-}D\) data. Using the same prediction process as \texttt{glance()}, it computes dimension-wise residuals, squared errors, and absolute errors, along with two aggregate measures per observation: the total squared error (\texttt{row\_wise\_total\_error}) and the total absolute error (\texttt{row\_wise\_abs\_error}). The final output is a tibble containing IDs (\texttt{ID}), \(p\text{-}D\) data, predicted hexagons (\texttt{h}), modeled coordinates, and all residual diagnostics, with one row per observation.
 
 \begin{verbatim}
 model_error <- augment(
   x = scurve_model_obj,
   highd_data = scurve
-  )
+)
 \end{verbatim}
 
 \subsection{Visualizations}\label{visualizations}
