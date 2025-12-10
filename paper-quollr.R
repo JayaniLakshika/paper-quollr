@@ -554,18 +554,11 @@ bin_configs
 
 
 ## ----echo=TRUE----------------------------------------------------------------
-hb_obj <- hex_binning(
-  nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 21, 
-  q = 0.1)
-
-
-## ----echo=TRUE----------------------------------------------------------------
 all_centroids_df <- gen_centroids(
   nldr_scaled_obj = scurve_umap_obj, 
   b1 = 21, 
   q = 0.1
-  )
+)
 
 head(all_centroids_df, 5)
 
@@ -574,7 +567,7 @@ head(all_centroids_df, 5)
 all_hex_coord <- gen_hex_coord(
   centroids_data = all_centroids_df, 
   a1 = bin_configs$a1
-  )
+)
 
 head(all_hex_coord, 5)
 
@@ -583,7 +576,7 @@ head(all_hex_coord, 5)
 umap_hex_id <- assign_data(
   nldr_scaled_obj = scurve_umap_obj, 
   centroids_data = all_centroids_df
-  )
+)
 
 head(umap_hex_id, 5)
 
@@ -591,9 +584,16 @@ head(umap_hex_id, 5)
 ## ----echo=TRUE----------------------------------------------------------------
 pts_df <- group_hex_pts(
   scaled_nldr_hexid = umap_hex_id
-  )
+)
 
 head(pts_df, 5)
+
+
+## ----echo=TRUE----------------------------------------------------------------
+hb_obj <- hex_binning(
+  nldr_scaled_obj = scurve_umap_obj, 
+  b1 = 21, 
+  q = 0.1)
 
 
 ## ----echo=TRUE----------------------------------------------------------------
@@ -1362,7 +1362,7 @@ nldr_plt <- plot_ly(
     config(displayModeBar = FALSE)
 
 
-## ----scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"----
+## ----scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the `scurve` data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"----
 # 
 # detourr_output <- detour(
 #   shared_df,
@@ -1394,7 +1394,7 @@ nldr_plt <- plot_ly(
 # erlndet_link
 
 
-## ----scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
+## ----scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the \\texttt{scurve} data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()----
 
 knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
                           "figures/model_link_error_proj2_detourr.png"))

@@ -675,7 +675,9 @@ scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
 
 ### Hexagon binning
 
-The function `calc_bins_y()` determines the configuration of the hexagon grid by computing the number of bins along the y-axis (`b2`), the hexagon binwidth (`a1`), and hexagon binheight (`a2`). This function accepts (i) an object (`nldr_scaled_obj`) containing three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); (ii) the number of bins along the x-axis (`b1`), and (iii) the buffer amount as a proportion (`q`). The buffer ensures that the grid fully covers the data space by extending one hexagon width ($a_1$) and height ($a_2$) beyond the observed data in all directions. By default, $q = 0.1$, but it must be set to a value smaller than the minimum data value to avoid exceeding the data range.
+The hexagon binning process builds a complete hexagonal tessellation over the $2\text{-}D$ NLDR embedding and assigns points to bins for downstream modeling. The workflow proceeds through several steps, beginning with selecting an appropriate grid configurations and ending with assigning NLDR points to their corresponding hexagons.
+
+The first step is to determine the configuration of the hexagonal grid. The function `calc_bins_y()` computes the number of bins along the y-axis (`b2`), the hexagon width (`a1`), and the hexagon height (`a2`), based on three inputs: (i) the scaled NLDR object (`nldr_scaled_obj`, containing the scaled embedding and its $2\text{-}D$ limits), (ii) the chosen number of bins along the x-axis (`b1`), and (iii) a buffer proportion (`q`) that expands the grid slightly beyond the observed data range. This buffer ensures that the tessellation fully covers the embedding. By default, `q = 0.1`, but in practice it must be chosen to avoid exceeding the domain of the scaled NLDR data.
 
 ```{r, echo=TRUE}
 bin_configs <- calc_bins_y(
@@ -686,7 +688,53 @@ bin_configs <- calc_bins_y(
 bin_configs
 ```
 
-Points are allocated to bins based on the nearest centroid of the hexagonal bins. The hexagonal binning algorithm can be executed using the `hex_binning()` function, or its individual steps can be run separately. While running the process step by step would involve generating centroids, constructing hexagon coordinates, assigning points to bins, standardizing counts, and mapping the data back to hexagons, the `hex_binning()` function automates this entire workflow. The parameters used within `hex_binning()` are the object output from `gen_scaled_data` (`nldr_scaled_obj`); the number of bins along the x-axis (`b1`), and the buffer amount as a proportion of the data (`q`). The output is an object of the `hex_bin_obj` class, which contains the bin widths in each direction (`a1`, `a2`), the number of bins in each direction (`bins`), the coordinates of the hexagonal grid starting point (`start_point`), the details of bin centroids (`centroids`), the coordinates of bins (`hex_poly`), NLDR components with their corresponding hexagons (`data_hb_id`), hex bins with their corresponding standardized counts (`std_cts`), the total number of bins (`b`), the number of non-empty bins (`m`), and the points within each hexagon (`pts_bins`).  
+Once the grid configurations are known, the next step is to construct the full set of hexagon centroids. The function `gen_centroids()` uses the bin configuration and the embedding limits to determine the horizontal and vertical spacing of rows, including the staggered row offsets required for hexagonal tiling. Odd rows place centroids directly above one another, while even rows shift by half the hexagon width to create the interlocking structure. Vertical spacing is determined by $v_s = (\sqrt{3}/2) a_1$, with starting positions defined by the buffer-adjusted limits. This produces a complete grid of potential hexagons covering the $2\text{-}D$ space.
+
+```{r, echo=TRUE}
+all_centroids_df <- gen_centroids(
+  nldr_scaled_obj = scurve_umap_obj, 
+  b1 = 21, 
+  q = 0.1
+)
+
+head(all_centroids_df, 5)
+```
+
+After determining the centroid locations, each hexagon’s polygonal boundary is generated using the `gen_hex_coord()` function, which constructs the six vertices of every hexagon by applying fixed geometric offsets derived from the hexagon width, $a_1$. Specifically, the horizontal and vertical offsets are defined as $dx = a_1/2$, $dy = a_1/\sqrt{3}$, and $vf = a_1/(2\sqrt{3})$, and these constants are used to position each vertex relative to the centroid, producing the complete set of hexagon boundaries.
+
+These constants define how far each vertex lies from the centroid in the six characteristic directions. For efficiency, the vertex generation is implemented in C++ and returns a tibble listing all polygon vertices, uniquely indexed by hexagons.
+
+```{r, echo=TRUE}
+all_hex_coord <- gen_hex_coord(
+  centroids_data = all_centroids_df, 
+  a1 = bin_configs$a1
+)
+
+head(all_hex_coord, 5)
+```
+
+The next step is to assign each NLDR point to its closest hexagon. The `assign_data()` function computes all pairwise Euclidean distances between the $2\text{-}D$ NLDR embedding and the centroid coordinates, identifying the nearest centroid for every observation. Each point is assigned a hexagon index (`h`), producing a version of the embedding annotated with bin membership.
+
+```{r, echo=TRUE}
+umap_hex_id <- assign_data(
+  nldr_scaled_obj = scurve_umap_obj, 
+  centroids_data = all_centroids_df
+)
+
+head(umap_hex_id, 5)
+```
+
+Finally, the list of points within each hexagon can be extracted using `group_hex_pts()`. This step collapses the point-level assignments into a hexagon-level summary by grouping by `h` and collecting the IDs of all points belonging to that polygon. The result is a tidy representation of the binning structure.
+
+```{r, echo=TRUE}
+pts_df <- group_hex_pts(
+  scaled_nldr_hexid = umap_hex_id
+)
+
+head(pts_df, 5)
+```
+
+Although each component of the workflow can be run independently, the `hex_binning()` function automates the entire sequence—from grid construction to point assignment—and returns a `hex_bin_obj` containing the bin dimensions (`a1`, `a2`), the full grid geometry (`centroids`, `hex_poly`), bin membership (`data_hb_id`), standardized counts (`std_cts`), the total number of bins (`b`), non-empty bins (`m`), and the list of points per bin (`pts_bins`).
 
 ```{r, echo=TRUE}
 hb_obj <- hex_binning(
@@ -694,89 +742,6 @@ hb_obj <- hex_binning(
   b1 = 21, 
   q = 0.1)
 ```
-
-### Generating all possible centroids in a hexagonal grid
-
-The `gen_centroids()` function computes the centroids of a hexagonal grid. The function first validates the input parameters, ensuring that the number of bins along the x-axis (`b1`) is at least two and that the buffer width (`q`) lies within the recommended range of 0.05–0.2.
-
-The coordinate limits of the embedding (`lim1` and `lim2`) are used to calculate the aspect ratio between the two axes, which determines the vertical scaling of the grid. The helper function `calc_bins_y()` is then called to compute the number of bins along the y-axis (`b2`) and the hexagon binwidth (`a1`) given `b1` and `q`. The hexagon grid starting points are defined by `s1` and `s2`. These are set to $-q$ and $-q \times r2$, where `r2` is the is the aspect ratio between the two axes.
-
-Centroids are generated by alternating the x-coordinates of adjacent rows to create the hexagonal tiling. Odd-numbered rows use x-coordinates spaced by the hexagon width (`a1`), while even-numbered rows are staggered by half this distance (`a1/2`). The vertical spacing between rows is $v_s = (\sqrt{3}/2) a_1$.
-
-The y-coordinates are constructed using this spacing, and paired with x-coordinates depending on whether the total number of rows (`b2`) is even or odd. For an odd number of rows, the final row includes only the odd-row x-coordinates to preserve the alternating pattern.
-
-The output is a tibble containing a unique hexagon (`h`) and centroid coordinates (`c_x`, `c_y`), which together define the layout of the complete hexagonal grid over the $2\text{-}D$ space.
-
-
-```{r, echo=TRUE}
-all_centroids_df <- gen_centroids(
-  nldr_scaled_obj = scurve_umap_obj, 
-  b1 = 21, 
-  q = 0.1
-  )
-
-head(all_centroids_df, 5)
-```
-
-### Creating the coordinates of the hexagons
-
-Following the generation of hexagonal centroids, the `gen_hex_coord()` function constructs the coordinates of each hexagonal bin by defining its six polygonal vertices. These coordinates are used to visualize the hexagonal tessellation.
-
-The function first verifies that the hexagon width (`a1`) is provided, as it determines the overall scale of the grid. Each hexagon is defined relative to its centroid $(C_x, C_y)$, with six vertices positioned symmetrically around the center.
-
-Three constants are derived to define the relative distances to the vertices:
-$dx = a_1/2, \quad dy = a_1/\sqrt{3}, \quad vf = a_1/(2\sqrt{3})$.
-
-Here, `dx` and `dy` define the horizontal and vertical offsets, while `vf` refines vertical positioning to maintain geometric alignment across rows.
-
-Using these constants, two offset vectors are defined for the six vertices relative to the centroid: $x_{\text{add}} = (0, -dx, -dx, 0, dx, dx), \quad y_{\text{add}} = (dy, vf, -vf, -dy, -vf, vf)$.
-
-These offsets correspond to the six directions around each centroid: top, top-left, bottom-left, bottom, bottom-right, and top-right.
-
-For each centroid, the coordinates of its six vertices are computed as $x_i = C_x + x_{\text{add},i}, \quad y_i = C_y + y_{\text{add},i}$, and assigned a polygon ID equal to the centroid identifier (`h`). The resulting coordinates are combined into a tibble containing the polygon ID (`h`) and vertex coordinates (`x`, `y`).
-
-To improve computational efficiency, the vertex generation is implemented in C++ via the helper function `gen_hex_coord_cpp()`. This routine iterates over all centroids, applies the vertex offsets, and returns a tibble that defines the complete set of hexagon geometries in $2\text{-}D$ space.
-
-```{r, echo=TRUE}
-all_hex_coord <- gen_hex_coord(
-  centroids_data = all_centroids_df, 
-  a1 = bin_configs$a1
-  )
-
-head(all_hex_coord, 5)
-```
-
-### Assigning data points to their respective hexagons
-
-After generating the centroids that define the hexagonal grid, the next step is to assign each point in the NLDR embedding to its nearest hexagonal bin. The `assign_data()` function performs this assignment by calculating the $2\text{-}D$ Euclidean distance between each point in the $2\text{-}D$ embedding and all hexagon centroids.
-
-First, the function extracts the first two dimensions of the scaled NLDR embedding, which represent the $2\text{-}D$ layout. It then selects the corresponding x and y coordinates of each hexagon’s centroid.
-
-Both the embedding coordinates and the centroid coordinates are converted to matrices to facilitate distance computations. The function uses the `proxy::dist()` method to compute a pairwise Euclidean distance matrix between all NLDR points and all centroids. For each NLDR point, the function identifies the index of the centroid with the smallest distance representing the closest hexagon—and assigns the corresponding hexagon (`h`) to the point.
-
-The result is a `tibble` of the scaled $2\text{-}D$ embedding with an additional `h` column, indicating the hexagonal bin to which each point belongs. 
-
-```{r, echo=TRUE}
-umap_hex_id <- assign_data(
-  nldr_scaled_obj = scurve_umap_obj, 
-  centroids_data = all_centroids_df
-  )
-
-head(umap_hex_id, 5)
-```
-
-The `group_hex_pts()` function extracts the list of data point identifiers (`ID`) assigned to each hexagon.
-
-The function first groups the input data by `h`, which represents the hexagon associated with each point in the $2\text{-}D$ layout. Within each group, it collects the `ID`s into a list, resulting in a summary where each row corresponds to a single hexagon. The resulting column, `pts_list`, contains all point identifiers associated with that hexagon. 
-
-```{r, echo=TRUE}
-pts_df <- group_hex_pts(
-  scaled_nldr_hexid = umap_hex_id
-  )
-
-head(pts_df, 5)
-```
-
 
 ### Computing the standardized number of points within each hexagon
 
@@ -1667,7 +1632,7 @@ nldr_plt <- plot_ly(
     config(displayModeBar = FALSE)
 ```
 
-```{r scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"}
+```{r scurve-linkerror-dthtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactive link plots showing the link between the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the `scurve` data in $7\\text{-}D$ (right) using `detourr`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the Scurve, whereas low-residual points tend to cluster within denser, well-preserved regions. To highlight points in `detourr`, use the Select button. Double-clicking clears the selection and resets all highlights.", fig.alt = "Interactive three-panel link plot showing the residual distribution (left), UMAP layout (middle), and fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr. Brushing or selecting points in any panel highlights corresponding points across all views, illustrating how high-residual points correspond to sparse or bridging regions in UMAP and less dense ends of the S-curve, while low-residual points cluster in denser regions.", layout = "l-body"}
 
 detourr_output <- detour(
   shared_df,
@@ -1699,7 +1664,7 @@ class(erlndet_link) <- c(class(erlndet_link), "htmlwidget")
 erlndet_link
 ```
 
-```{r scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+```{r scurve-linkerror-dtpdf, out.width=c("100%", "100%"), fig.cap="Screenshots of the link plots showing the relationship between the distribution of residuals (left), NLDR layout (middle) and the fitted model overlaid with the \\texttt{scurve} data in $7\\text{-}D$ (right) using \\texttt{detourr}.", fig.alt = "Screenshots showing the link between the residual distribution (left), NLDR layout (middle), and the fitted high-dimensional model with S-curve data in seven dimensions (right) using detourr, illustrating how residuals correspond to structures in both the 2-D layout and the high-dimensional data.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
 
 knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
                           "figures/model_link_error_proj2_detourr.png"))
