@@ -972,13 +972,8 @@ df_exe <- comb_all_data_model(
 # nldrdt_link <- crosstalk::bscols(
 #     htmltools::div(
 #         style = "display: grid; grid-template-columns: 1fr 1fr;
-#     gap: 0px;
-#     align-items: start;
-#     justify-items: center;
-#     margin: 0;
-#     padding: 0;
-#     height: 380px;
-#     width: 500px",
+#     gap: 0px; align-items: start; justify-items: center; margin: 0; padding: 0;
+#     height: 380px; width: 500px",
 #         nldrdt_link
 #     ),
 #     device = "xs"
@@ -1411,13 +1406,8 @@ detourr_output <- detour(
 # lndet_link <- crosstalk::bscols(
 #     htmltools::div(
 #         style = "display: grid; grid-template-columns: 1fr 1fr;
-#     gap: 0px;
-#     align-items: start;
-#     justify-items: center;
-#     margin: 0;
-#     padding: 0;
-#     height: 350px;
-#     width: 300px;",
+#     gap: 0px; align-items: start; justify-items: center; margin: 0; padding: 0;
+#     height: 350px; width: 300px;",
 #         nldr_plt, htmltools::div(style = "margin-top: 20px;", detourr_output)
 #     ),
 #     device = "xs"
@@ -1548,15 +1538,9 @@ nldr_plt <- plot_ly(
 # erlndet_link <- crosstalk::bscols(
 #     htmltools::div(
 #         style = "display: grid; grid-template-columns: 1fr 1fr 1fr;
-#     gap: 0px;
-#     align-items: start;
-#     justify-items: center;
-#     margin: 0;
-#     padding: 0;
-#     height: 300px;
-#     width: 400px;",
-#         error_plt,
-#         nldr_plt,
+#     gap: 0px; align-items: start; justify-items: center; margin: 0; padding: 0;
+#     height: 300px; width: 400px;",
+#         error_plt, nldr_plt,
 #     htmltools::div(style = "margin-top: 20px;", detourr_output)
 #     ),
 #     device = "xs"
