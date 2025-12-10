@@ -269,8 +269,8 @@ df_b <- df_exe |>
   dplyr::filter(type == "model") ## High-d model
 
 scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = tr_from_to_df_scurve$from,
-                         lineTo = tr_from_to_df_scurve$to,
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
@@ -278,8 +278,8 @@ scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
                          width = "400px", height = "380px")
 
 scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
-                         lineFrom = tr_from_to_df_scurve$from,
-                         lineTo = tr_from_to_df_scurve$to,
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
                          group = df_exe$type,
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
@@ -513,11 +513,12 @@ knitr::include_graphics("figures/quollr_workflow.png")
 #         margin: 0;
 #         padding: 0;
 #       ",
-#       htmltools::div(style = 'margin: 0; padding: 0;  height: 300px; width: 370px; text-align: left;', htmltools::h4("a"), hex_grid_poly_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 300px; text-align: left;', htmltools::h4("b"), hex_centroids_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 300px; width: 370px;  text-align: left;', htmltools::h4("c"), wireframe_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 350px; width: 300px; text-align: left;', htmltools::h4("d"), htmltools::div(
-#     style = "margin-left: 90px;",
+#       htmltools::div(style = 'margin: 0; padding: 0;  height: 450px; width: 200px; text-align: left;', htmltools::h5("a"), hex_grid_poly_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 450px; width: 200px; text-align: left;', htmltools::h5("b"), hex_centroids_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 200px;  text-align: left;', htmltools::h5("c"), wireframe_scurve_int),
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 450px; text-align: left;', htmltools::div(
+#     style = "margin-left: 120px;",
+#     htmltools::h5("d"),
 #     scurve_umap_model_vis_n
 #   ))
 #     )
