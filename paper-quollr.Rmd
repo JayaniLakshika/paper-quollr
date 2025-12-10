@@ -268,18 +268,64 @@ wireframe_scurve <- ggplot() +
   xlim(sc_xlims) +
   ylim(sc_ylims)
 
-wireframe_scurve_int <- ggplotly(wireframe_scurve, 
-                                width = "350", 
-                                height = "320", 
-                                tooltip = "none") |>
-  config(
-    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
-    displayModeBar = FALSE,   # Hides the plotly toolbar
-    editable = FALSE,         # Disables annotations and editing
-    showTips = FALSE,         # Removes tooltip on hover
-    displaylogo = FALSE,      # Hides plotly logo
-    responsive = FALSE        # Disables responsive resizing
-  )
+wireframe_scurve_int <- plot_ly() |>
+    # Wireframe segments
+    add_segments(
+        data = tr_from_to_df_scurve,
+        x = ~x_from, y = ~y_from,
+        xend = ~x_to, yend = ~y_to,
+        line = list(color = "#000000", width = 0.5),
+        hoverinfo = "none",
+        showlegend = FALSE
+    ) |>
+    # Centroid points
+    add_markers(
+        data = df_bin_centroids_scurve,
+        x = ~c_x, y = ~c_y,
+        marker = list(size = 4, color = "#FF7755"),
+        hoverinfo = "none",
+        showlegend = FALSE
+    ) |>
+    # Layout with border
+    layout(
+        width = 350,
+        height = 320,
+        xaxis = list(
+            range = sc_xlims,
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            title = ""
+        ),
+        yaxis = list(
+            range = sc_ylims,
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            title = ""
+        ),
+        
+        # ADD A BOX AROUND THE ENTIRE PLOT PANEL
+        shapes = list(
+            list(
+                type = "rect",
+                xref = "paper", yref = "paper",
+                x0 = 0, y0 = 0,
+                x1 = 1, y1 = 1,
+                line = list(color = "black", width = 1)
+            )
+        )
+    ) |>
+    config(
+        staticPlot = TRUE,
+        displayModeBar = FALSE,
+        editable = FALSE,
+        showTips = FALSE,
+        displaylogo = FALSE,
+        responsive = FALSE
+    )
 
 ## 2-d vis model
 hex_grid_scurve <- ggplot(
