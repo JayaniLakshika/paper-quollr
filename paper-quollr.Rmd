@@ -792,7 +792,7 @@ trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
 head(trimesh, 5)
 ```
 
-The `update_trimesh_index()` function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
+The `update_trimesh_index()` function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis. This sequential ordering of edges is essential because software such as `langevitour` and `detourr` rely on one-to-one mapping between edges and their corresponding vertices to visualize the mesh.
 
 ```{r, echo=TRUE}
 trimesh <- update_trimesh_index(trimesh_data = trimesh)
@@ -800,7 +800,7 @@ trimesh <- update_trimesh_index(trimesh_data = trimesh)
 head(trimesh, 5)
 ```
 
-## Identifying and removing low-density hexagons
+### Identifying and removing low-density hexagons
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the $2\text{-}D$ structure, potentially disrupting the continuity of the representation.
 
@@ -829,7 +829,7 @@ trimesh <- trimesh |>
 trimesh <- update_trimesh_index(trimesh)
 ```
 
-## Lifting the model into high dimensions
+### Lifting the model into high dimensions
 
 The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$. This is done by modelling a point in $p\text{-}D$ as the  $p\text{-}D$ mean of data points in the $2\text{-}D$ centroid. This is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
 

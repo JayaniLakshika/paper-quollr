@@ -342,7 +342,7 @@ head(trimesh, 5)
 > 5    44    45 -0.0413 -0.0140  0.0174 -0.0140          0        0
 \end{verbatim}
 
-The \texttt{update\_trimesh\_index()} function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis.
+The \texttt{update\_trimesh\_index()} function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis. This sequential ordering of edges is essential because software such as \texttt{langevitour} and \texttt{detourr} rely on one-to-one mapping between edges and their corresponding vertices to visualize the mesh.
 
 \begin{verbatim}
 trimesh <- update_trimesh_index(trimesh_data = trimesh)
@@ -362,7 +362,7 @@ head(trimesh, 5)
 > # i 1 more variable: to_reindexed <int>
 \end{verbatim}
 
-\subsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
+\subsubsection{Identifying and removing low-density hexagons}\label{identifying-and-removing-low-density-hexagons}
 
 Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or ``holes'' in the \(2\text{-}D\) structure, potentially disrupting the continuity of the representation.
 
@@ -391,7 +391,7 @@ trimesh <- trimesh |>
 trimesh <- update_trimesh_index(trimesh)
 \end{verbatim}
 
-\subsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
+\subsubsection{Lifting the model into high dimensions}\label{lifting-the-model-into-high-dimensions}
 
 The final step involves lifting the fitted \(2\text{-}D\) model into \(p\text{-}D\). This is done by modelling a point in \(p\text{-}D\) as the \(p\text{-}D\) mean of data points in the \(2\text{-}D\) centroid. This is performed using the \texttt{avg\_highd\_data()} function, which takes \(p\text{-}D\) data (\texttt{highd\_data}) and embedding data with their corresponding hexagonal bin IDs as inputs (\texttt{scaled\_nldr\_hexid}).
 
