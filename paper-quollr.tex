@@ -678,7 +678,20 @@ nldrdt_link <- show_link_plots(
 
 class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
 
-nldrdt_link
+crosstalk::bscols(
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: start;
+    justify-items: center;
+    margin: 0;
+    padding: 0;
+    height: 380px;
+    width: 500px",
+        nldrdt_link
+    ),
+    device = "xs"
+)
 \end{verbatim}
 
 \begin{figure}[!ht]
