@@ -522,21 +522,7 @@ model_error <- augment(
 
 \subsection{Visualizations}\label{visualizations}
 
-The package offers several \(2\text{-}D\) visualizations (Figure \ref{fig:geom-outputs-pdf}), including:
-
-\begin{itemize}
-\tightlist
-\item
-  A full hexagonal grid,
-\item
-  A hexagonal grid that matches the data,
-\item
-  A full grid based on centroid triangulation,
-\item
-  A centroid triangulation grid that aligns with the data,
-\item
-  A triangular mesh for any provided set of points.
-\end{itemize}
+The package offers several \(2\text{-}D\) visualizations (Figure \ref{fig:geom-outputs-pdf}), including a full hexagonal grid, a hexagonal grid that matches the data, a full grid based on centroid triangulation, a centroid triangulation grid that aligns with the data, and a triangular mesh for any provided set of points.
 
 The generated \(p\text{-}D\) model, overlaid with the data, can also be visualized using \texttt{show\_langevitour}. Additionally, it features a function for visualizing the \(2\text{-}D\) projection of the fitted model overlaid on the data, called \texttt{plot\_proj}.
 
@@ -676,9 +662,7 @@ nldrdt_link <- show_link_plots(
   point_colour = clr_choice
   )
 
-class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
-
-crosstalk::bscols(
+nldrdt_link <- crosstalk::bscols(
     htmltools::div(
         style = "display: grid; grid-template-columns: 1fr 1fr;
     gap: 0px;
@@ -692,6 +676,10 @@ crosstalk::bscols(
     ),
     device = "xs"
 )
+
+class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+
+nldrdt_link
 \end{verbatim}
 
 \begin{figure}[!ht]

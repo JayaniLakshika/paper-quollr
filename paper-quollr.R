@@ -969,9 +969,7 @@ df_exe <- comb_all_data_model(
 #   point_colour = clr_choice
 #   )
 # 
-# class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
-# 
-# crosstalk::bscols(
+# nldrdt_link <- crosstalk::bscols(
 #     htmltools::div(
 #         style = "display: grid; grid-template-columns: 1fr 1fr;
 #     gap: 0px;
@@ -985,6 +983,10 @@ df_exe <- comb_all_data_model(
 #     ),
 #     device = "xs"
 # )
+# 
+# class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+# 
+# nldrdt_link
 
 
 ## -----------------------------------------------------------------------------

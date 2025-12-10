@@ -1093,13 +1093,7 @@ model_error <- augment(
 
 ## Visualizations
 
-The package offers several $2\text{-}D$ visualizations (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)"} else { "Figure \\@ref(fig:geom-outputs-pdf)"})`), including:
-
-- A full hexagonal grid,
-- A hexagonal grid that matches the data,
-- A full grid based on centroid triangulation,
-- A centroid triangulation grid that aligns with the data, 
-- A triangular mesh for any provided set of points.
+The package offers several $2\text{-}D$ visualizations (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)"} else { "Figure \\@ref(fig:geom-outputs-pdf)"})`), including a full hexagonal grid, a hexagonal grid that matches the data, a full grid based on centroid triangulation, a centroid triangulation grid that aligns with the data, and a triangular mesh for any provided set of points.
 
 The generated $p\text{-}D$ model, overlaid with the data, can also be visualized using `show_langevitour`. Additionally, it features a function for visualizing the $2\text{-}D$ projection of the fitted model overlaid on the data, called `plot_proj`. 
 
@@ -1272,9 +1266,7 @@ nldrdt_link <- show_link_plots(
   point_colour = clr_choice
   )
 
-class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
-
-crosstalk::bscols(
+nldrdt_link <- crosstalk::bscols(
     htmltools::div(
         style = "display: grid; grid-template-columns: 1fr 1fr;
     gap: 0px;
@@ -1288,6 +1280,10 @@ crosstalk::bscols(
     ),
     device = "xs"
 )
+
+class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+
+nldrdt_link
 ```
 
 ```{r}
