@@ -1833,8 +1833,8 @@ nldr_plt <- nldr_plt |>
 
 
 langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
-                                               lineFrom = edge_data$from,
-                                               lineTo = edge_data$to,
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
                                                group = factor(point_data$type,
                                                               c("0", "1", "2", "3", "4", "5", "6", "model")),
                                                pointSize = append(rep(point_sizes[1], NROW(df_b)),
@@ -2045,8 +2045,8 @@ nldr_plt <- nldr_plt |>
 
 
 langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
-                                               lineFrom = edge_data$from,
-                                               lineTo = edge_data$to,
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
                                                group = factor(point_data$type,
                                                               c("0", "1", "2", "3", "4", "5", "6", "model")),
                                                pointSize = append(rep(point_sizes[1], NROW(df_b)),
