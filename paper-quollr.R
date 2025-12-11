@@ -330,7 +330,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
-                         width = "400px", height = "380px")
+                         width = "400px", height = "450px")
 
 
 
@@ -562,8 +562,8 @@ knitr::include_graphics("figures/quollr_workflow.png")
 #       htmltools::div(style = 'margin: 0; padding: 0;  height: 450px; width: 200px; text-align: left;', htmltools::h5("a"), hex_grid_poly_scurve_int),
 #       htmltools::div(style = 'margin: 0; padding: 0; height: 450px; width: 200px; text-align: left;', htmltools::h5("b"), hex_centroids_scurve_int),
 #       htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 200px;  text-align: left;', htmltools::h5("c"), wireframe_scurve_int),
-#       htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 450px; text-align: left;', htmltools::div(
-#     style = "margin-left: 120px;",
+#       htmltools::div(style = 'margin: 0; padding: 0; height: 600px; width: 450px; text-align: left;', htmltools::div(
+#     style = "margin-left: 120px; margin-top: 50px;",
 #     htmltools::h5("d"),
 #     scurve_umap_model_vis_n
 #   ))
