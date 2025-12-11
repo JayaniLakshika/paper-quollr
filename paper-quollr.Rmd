@@ -388,7 +388,7 @@ scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)]
                          pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
                          levelColors = c(clr_choice, "#FF7755"),
                          enableControls = FALSE,
-                         width = "400px", height = "450px")
+                         width = "400px", height = "550px")
 
 ```
 
@@ -689,10 +689,10 @@ algofig <- bscols(
       htmltools::div(style = 'margin: 0; padding: 0;  height: 450px; width: 200px; text-align: left;', htmltools::h5("a"), hex_grid_poly_scurve_int),
       htmltools::div(style = 'margin: 0; padding: 0; height: 450px; width: 200px; text-align: left;', htmltools::h5("b"), hex_centroids_scurve_int),
       htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 200px;  text-align: left;', htmltools::h5("c"), wireframe_scurve_int),
-      htmltools::div(style = 'margin: 0; padding: 0; height: 600px; width: 450px; text-align: left;', htmltools::div(
-    style = "margin-left: 120px; margin-top: 50px;",
+      htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 485px; text-align: left;', htmltools::div(
+    style = "margin-left: 140px;",
     htmltools::h5("d"),
-    scurve_umap_model_vis_n
+    htmltools::div(style = "margin-left: 30px; margin-top: 47px; height: 360px; width: 360px;", scurve_umap_model_vis_n)
   ))
     )
   ),
