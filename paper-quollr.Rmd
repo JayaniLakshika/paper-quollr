@@ -1708,8 +1708,11 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarise the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. The question is whether this accurately represents the cluster structure in the data. Our method help to provide a better $2\text{-}D$ layout (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})`). 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. XXX This was generated using t-NSNE with perplexity=30, the default hyperparameters. The question is whether this accurately represents the cluster structure in the data. Note that the cluster variable is not used to produce the $2\text{-}D$ layout. 
 
+We illustrate how to use `quollr` to assess whether this is a reasonable layout. Figure \@ref(fig:limb-hbe) shows five alternative layouts, and the HBE plot summarizing the resulting model fits. Layout a is produce by UMAP (neighbors=5, minimum distance=0.1); layout c was produced by phate (knn=5); layout d was produced by trimap (number of inliers=12, outliers=4, random=3); layout e was produced by by pacmap (neighbors=10, init_random_MN-ratio=0.5, FP-ratio=2); layout f was produced by t-SNE (perplexity=15). 
+
+The HBE plot indicates that the two t-SNE layouts outperform all the other methods across a range of binwidths, but that the result with perplexity of 15 outperforms the other. There are small visual difference between the two layouts. Both support that there are 5-6 clusters. Layout b has slightly more space between clusters.  Layout d three small clusters at the top whereas layout f has only two, and another smaller one at the bottom. 
 <!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
 
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
@@ -2067,6 +2070,11 @@ limb_proj_tsne_model2 <- plot_proj(
 
 
 ```
+
+`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})` show how to examine the resulting models of the layouts overlaid on the data in high dimensions. Point color represents the cluster reported in the published paper. In each case the best model is produced using binwidth=XXX (and why). The plots in these figures are  best understand using small steps. 
+
+1. Examine the model in the data space for each, by looking at the tour views. In each case, the clustering doesn't quite match the separations in the data, and both models help see this. For example, the orange cluster (1) should probably be split into more than one cluster because both models show large stretched lines connecting a small group far from the remaining orange points. 
+2. Because 6 clusters are hard to examine together, use the menu to select just one cluster to view at at time. Selecting just cluster 1 might help you see the explanation above, that a small group is quite separate from the main group. This suggests both the layouts and the clustering that groups these together might be wrong. Now change to focus on cluster 5 (yellow). This group is a fairly large sparse cluster but it is separated from the other points. Both layouts are right in separating these points from the others. 3. To examine where the layouts differ, examine clusters 4 (green) and 6 (cream), by selecting just these two. Layout b has them close, but layout f has them far apart. (It might also help to include cluster 5 here because layout b has this group close to the cluster 4 also). In the tour view, we can see that they three clusters are separated clusters in different directions away from the most of the other points. They are both correct in this. It may have been better to place them all in different corners of the layout, but they have preserved the most important aspect that they are separated clusters. That they are all close together in layout b could be incorrectly interpreted as close in high-dimensions though.
 
 ```{r}
 #| label: tsne-best-model-limb
