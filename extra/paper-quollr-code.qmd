@@ -1,0 +1,18 @@
+---
+title: "paper-quollr-code"
+format: html
+---
+
+```{r, fig.cap="Examining the differences in bill sizes of three species of penguins. Colour indicates species. Gentoo bills are smaller in depth but longer. Chinstrap and Adelie bills have similarly large depth but Chinstrap bills are longer."}
+
+library(ggplot2)
+library(palmerpenguins)
+p <- penguins |>  
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, 
+             color = species)) + 
+  geom_point() +
+  scale_x_continuous(breaks = seq(13, 22, 2)) +
+  scale_y_continuous(breaks = seq(30, 60, 10)) +
+  theme(aspect.ratio = 1)
+p
+```

@@ -1561,7 +1561,7 @@ cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
 tsne_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb, 
-  b1 = 19, 
+  b1 = 21, 
   q = 0.1, 
   hd_thresh = 0)
 
@@ -1802,7 +1802,7 @@ limb_proj_tsne_model2 <- plot_proj(
 tsne_best_limb_obj <- fit_highd_model(
   highd_data = data_limb, 
   nldr_data = tsne_limb2, 
-  b1 = 19, 
+  b1 = 21, 
   q = 0.1, 
   hd_thresh = 0)
 
