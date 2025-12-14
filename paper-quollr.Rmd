@@ -2071,7 +2071,7 @@ limb_proj_tsne_model2 <- plot_proj(
 
 ```
 
-`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})` show how to examine the resulting models of the layouts overlaid on the data in high dimensions. Point color represents the cluster reported in the published paper. In each case the best model is produced using $\text{binwidth}=0.06$ (and why). The plots in these figures are best understand using small steps. 
+`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})` show how to examine the resulting models of the layouts overlaid on the data in high dimensions. Point color represents the cluster reported in the published paper. In each case the best model is produced using $\text{binwidth}=0.06$. A binwidth of $0.06$ is used because it is small enough to show local structure and differences between clusters, but large enough to avoid breaking the layout into too many small pieces that would make the plots hard to interpret. The plots in these figures are best understand using small steps. 
 
 1. Examine the model in the data space for each, by looking at the tour views. In each case, the clustering doesn't quite match the separations in the data, and both models help see this. For example, the orange cluster ($1$) should probably be split into more than one cluster because both models show large stretched lines connecting a small group far from the remaining orange points. 
 
