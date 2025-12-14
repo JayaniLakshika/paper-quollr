@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.12.12)  14 DEC 2025 21:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.12.12)  14 DEC 2025 22:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -896,12 +896,12 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.
 <paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=289, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-hbe-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-hbe-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 688.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 690.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
 <paper-quollr_files/figure-latex/model-limb-1.pdf, id=291, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 704.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 706.
 (pdftex.def)             Requested size: 398.33858pt x 265.55322pt.
 [16]
 Overfull \vbox (11.80075pt too high) has occurred while \output is active []
@@ -913,10 +913,10 @@ Overfull \vbox (11.80075pt too high) has occurred while \output is active []
 [18] [19])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 733.
+(Font)              using `T1/zi4/m/n' instead on input line 735.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 733.
+(Font)              scaled to size 9.18004pt on input line 735.
 ) [20] (./RJwrapper.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -940,12 +940,12 @@ Here is how much of TeX's memory you used:
  55261 multiletter control sequences out of 15000+600000
  682999 words of font info for 346 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 117i,12n,131p,1672b,1000s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,1672b,1000s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2766935 bytes).
+Output written on RJwrapper.pdf (20 pages, 2767199 bytes).
 PDF statistics:
- 544 PDF objects out of 1000 (max. 8388607)
- 472 compressed objects within 5 object streams
+ 545 PDF objects out of 1000 (max. 8388607)
+ 473 compressed objects within 5 object streams
  85 named destinations out of 1000 (max. 500000)
  71348 words of extra memory for PDF output out of 74296 (max. 10000000)
 
