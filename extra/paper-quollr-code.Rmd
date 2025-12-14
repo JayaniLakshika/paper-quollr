@@ -1,0 +1,27 @@
+---
+title: "paper-quollr-code"
+format: pdf
+---
+
+```{r, fig.cap="Line plot."}
+#| label: fig-unemployment
+
+library(autoalt)
+library(ggplot2)
+library(dplyr)
+
+# Built-in datasets from ggplot2 and base R
+data("economics", package = "ggplot2")
+data("airquality")
+
+economics |>
+  ggplot(aes(x = date, y = unemploy)) +
+  geom_line(linewidth = 0.6) +
+  labs(
+    title = "Total Number of Unemployed Persons in the US Over Time",
+    x = "Year",
+    y = "Number of Unemployed (thousands)"
+  ) +
+  theme_minimal()
+
+```
