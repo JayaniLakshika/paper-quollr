@@ -1,27 +1,374 @@
 ---
-title: "paper-quollr-code"
+title: "Sample quollr"
+author: "Chat-GPT"
+date: "2025-09-10"
 format: pdf
 ---
 
-```{r, fig.cap="Line plot."}
-#| label: fig-unemployment
-
-library(autoalt)
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+library(quollr)
+library(tibble)
+library(knitr)
+library(kableExtra)
 library(ggplot2)
 library(dplyr)
+library(patchwork)
+library(readr)
 
-# Built-in datasets from ggplot2 and base R
-data("economics", package = "ggplot2")
-data("airquality")
+# Scale high-d data
 
-economics |>
-  ggplot(aes(x = date, y = unemploy)) +
-  geom_line(linewidth = 0.6) +
-  labs(
-    title = "Total Number of Unemployed Persons in the US Over Time",
-    x = "Year",
-    y = "Number of Unemployed (thousands)"
-  ) +
-  theme_minimal()
+# Center the data by subtracting the mean of each column
+center_data <- function(data) {
+  apply(data, 2, function(col) col - mean(col))
+}
 
+# Function to scale data manually
+scale_data_manual <- function(data, type_col) {
+  # Step 1: Center the data (mean 0)
+  data_centered <- center_data(data |> select(-all_of(type_col)))
+
+  # Step 2: Calculate the standard deviation of each dimension
+  sds <- apply(data_centered, 2, sd)
+
+  # Step 3: Scale each dimension to have the range [0, 1]
+  data_scaled <- apply(data_centered, 2, function(col) col / max(abs(col)))
+
+  # Step 4: Scale dimensions according to their variation
+  # The dimension with the highest standard deviation is scaled to [-1, 1]
+  # Other dimensions are scaled to smaller ranges based on their standard deviations
+  max_sd <- max(sds)
+
+  # Normalize the standard deviations to get scaling factors
+  scaling_factors <- sds / max_sd
+
+  for (i in seq_along(scaling_factors)) {
+    data_scaled[, i] <- data_scaled[, i] * scaling_factors[i]
+  }
+
+  # Combine the scaled data with the 'type' column and return as a tibble
+  data_scaled <- as_tibble(data_scaled) %>%
+    mutate(!!type_col := data[[type_col]])
+
+  return(data_scaled)
+}
+
+
+# creating Standardization function
+standardize = function(x){
+  z <- (x - mean(x)) / sd(x)
+  return( z)
+}
+
+
+# Solve quadratic function
+
+quad <- function(a = 3, b = 2 * a2, c = -(a2^2 + a1^2))
+{
+  a <- as.complex(a)
+  answer <- c((-b + sqrt(b^2 - 4 * a * c)) / (2 * a),
+              (-b - sqrt(b^2 - 4 * a * c)) / (2 * a))
+  if(all(Im(answer) == 0)) answer <- Re(answer)
+  if(answer[1] == answer[2]) return(answer[1])
+  answer[answer>0] ## only positive
+}
 ```
+
+```{r}
+#| label: fig-overview
+#| fig-cap: "Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different 2D projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions."
+#| echo: false
+# Plot MSE
+
+plot_hbe <- function(error_df) {
+
+  ggplot(error_df,
+         aes(x = a1,
+             y = HBE,
+             colour = method)) +
+    geom_point(size = 0.8) +
+    geom_line(linewidth = 0.3) +
+    ylab("HBE") +
+    xlab(expression(paste("binwidth (", a[1], ")"))) +
+    theme_minimal() +
+    theme(panel.border = element_rect(fill = 'transparent'),
+          plot.title = element_text(size = 12, hjust = 0.5, vjust = -0.5),
+          axis.ticks.x = element_line(),
+          axis.ticks.y = element_line(),
+          legend.position = "none",
+          axis.text.x = element_text(size = 7),
+          axis.text.y = element_text(size = 7),
+          axis.title.x = element_text(size = 7),
+          axis.title.y = element_text(size = 7),
+          plot.margin = margin(0, 0, 0, 0))
+
+}
+
+set.seed(20240110)
+
+clr_choice <- "#66B2CC"
+
+scurve_model_obj <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+
+scurve_umap_scaled <- scurve_model_obj$nldr_scaled_obj$scaled_nldr
+tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
+df_bin_centroids_scurve <- scurve_model_obj$model_2d
+df_bin_scurve <- scurve_model_obj$model_highd
+hex_grid_scurve <- scurve_model_obj$hb_obj$hex_poly
+counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
+
+hex_grid_with_counts_scurve <- left_join(
+  hex_grid_scurve, counts_df_scurve, 
+  by = c("h" = "h"))
+
+hex_grid_nonempty_scurve <- hex_grid_scurve |>
+  filter(h %in% df_bin_centroids_scurve$h)
+
+sc_xlims <- c(-0.25, 1.35)
+sc_ylims <- c(-0.25, 1.35)
+
+scurve_umap_plt <- ggplot(
+  scurve_umap_scaled, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+hex_grid_poly_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = h), 
+               fill = "#ffffff") +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             alpha = 0.8, size = 0.5, color = clr_choice) + 
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+hex_centroids_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = h), 
+               fill = "#ffffff")  +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755") +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+wireframe_scurve <- ggplot() +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755") +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+## 2-d vis model
+hex_grid_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             size = 0.5, color = clr_choice) +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755")
+
+
+## High-d vis model
+df_exe <- comb_data_model(
+    highd_data = scurve, 
+    model_highd = df_bin_scurve, 
+    model_2d = df_bin_centroids_scurve
+)
+
+df <- df_exe |>
+    dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c(clr_choice, "#FF7755"),
+                         enableControls = FALSE,
+                         width = "400px", height = "380px")
+
+scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c(clr_choice, "#FF7755"),
+                         enableControls = FALSE,
+                         width = "400px", height = "550px")
+
+df_b_scurve <- df_bin_scurve |>
+  dplyr::filter(h %in% df_bin_centroids_scurve$h) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$h, df_b_scurve$h),] |>
+  dplyr::select(-h) 
+
+scurve_labeled <- scurve |>
+  select(-ID) |>
+  mutate(type = "data")
+
+# Apply the scaling
+df_model_data_scurve <- bind_rows(scurve_labeled, df_b_scurve)
+scaled_scurve <- scale_data_manual(df_model_data_scurve, "type") |>
+  as_tibble()
+
+scaled_scurve_data <- scaled_scurve |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_scurve_data_model <- scaled_scurve |>
+  filter(type == "model") |>
+  select(-type)
+
+
+## First projection
+projection <- cbind(
+  c(0.10479,0.06673,0.19430,-0.14763,0.02861,-0.04302,0.06601),
+  c(0.11421,0.18556,-0.16860,-0.05033,-0.00219,0.04159,0.04285))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 2,
+                                              axis_pos_x = -0.25, 
+                                              axis_pos_y = -0.25, 
+                                              threshold = 0.0259))
+
+scurve_proj_umap_model1 <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 2,
+  is_category = FALSE) 
+
+scurve_proj_umap_model1_dp <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.2, 0, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 3,
+  is_category = FALSE) 
+
+## Second projection
+
+projection <- cbind(
+  c(0.01588,-0.13640,-0.17180,-0.15486,-0.09726,0.00858,0.01090),
+  c(0.21443,-0.00390,0.08182,-0.11746,0.06820,-0.05458,-0.08885))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 2,
+                                              axis_pos_x = -0.25, 
+                                              axis_pos_y = -0.25, 
+                                              threshold = 0.0259))
+
+scurve_proj_umap_model2 <- plot_proj(
+  proj_obj = proj_obj2,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 2,
+  is_category = FALSE) 
+
+## Third projection
+
+projection <- cbind(
+  c(0.02727,0.09154,-0.16383,-0.04931,-0.17013,0.11965,-0.01884),
+  c(-0.10510,-0.10971,-0.09084,0.19642,-0.07163,-0.02486,0.07965))
+
+proj_obj3 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 2,
+                                              axis_pos_x = -0.25, 
+                                              axis_pos_y = -0.25, 
+                                              threshold = 0.031))
+
+scurve_proj_umap_model3 <- plot_proj(
+  proj_obj = proj_obj3,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 2,
+  is_category = FALSE) 
+
+## Fourth projection
+
+projection <- cbind(
+  c(0.17174,0.14255,0.11950,0.10344,-0.07148,-0.01656,0.04275),
+  c(0.09270,0.04486,-0.14397,0.08305,0.11783,0.16187,-0.06077))
+
+proj_obj4 <- get_projection(projection = projection, 
+                            proj_scale = 1.23, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 2,
+                                              axis_pos_x = -0.25, 
+                                              axis_pos_y = -0.25, 
+                                              threshold = 0.031))
+
+scurve_proj_umap_model4 <- plot_proj(
+  proj_obj = proj_obj4,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  plot_limits = c(-0.35, 0.35), 
+  axis_text_size = 2,
+  is_category = FALSE) 
+
+hex_grid_scurve + wrap_plots(
+  scurve_proj_umap_model1, scurve_proj_umap_model2,
+  scurve_proj_umap_model3, scurve_proj_umap_model4, 
+  ncol = 2)
+```
+
+# Introduction
+
+This report explores two publicly available datasets: economics from the ggplot2 package and the classic airquality dataset from base R. The economics dataset provides monthly time-series data on the US economy, including variables such as unemployment and personal consumption expenditure. The airquality dataset records daily air quality measurements in New York, including ozone concentration, solar radiation, and temperature.
+
+We use a selection of visualisations to highlight long-term economic trends and seasonal patterns in air quality.
+
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional @fig-overview.
+

@@ -608,7 +608,7 @@ tour_view <- show_langevitour(
 )
 ```
 
-which produces the model and data plot(s) shown in `r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`. 
+which produces the model and data plot shown in `r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`. 
 
 # Implementation
 
@@ -1465,7 +1465,7 @@ error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_
   plot_layout(ncol = 3)
 ```
 
-In addition to `langevitour`, linked plots can also be constructed using tour views generated with the `detourr` package. (see [vignette: 8. Linked plots with `detourr`](https://jayanilakshika.github.io/quollr/articles/quollr8linkeddetourr.html) for details.)
+In the implementation examples, points are shown without cluster-based colouring unless explicitly stated. When points are coloured by cluster, linked plot functionality is currently only partially supported: selections made in the `langevitour` controls are not reflected in the corresponding highlights in the interactive $2\text{-}D$ layout. As a result, cluster-specific exploration must be carried out separately in the tour view and the interactive $2\text{-}D$ layout. In addition to `langevitour`, linked plots can also be constructed using tour views generated with the `detourr` package. (see [vignette: 8. Linked plots with `detourr`](https://jayanilakshika.github.io/quollr/articles/quollr8linkeddetourr.html) for details.)
 
 # Application
 
@@ -2118,7 +2118,7 @@ To support efficient computation, particularly for large-scale datasets, several
 
 The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function `fit_highd_model()` for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
 
-There are several avenues for future development. While hexagonal binning provides a regular structure conducive to modeling, alternative spatial discretizations (e.g., adaptive binning or density-aware tessellations) could be explored to better capture varying data densities. Expanding support for additional distance metrics in the lifting and prediction steps may improve performance across different domains. Additionally, statistical inference tools could be introduced to assess the stability and robustness of the fitted model, which would enhance interpretability and confidence in the outcomes. Currently, linked plot functionality is limited: selecting a cluster in the `langevitour` controls does not yet highlight the corresponding cluster in the $2\text{-}D$ layout. Implementing this feature in the future would allow users to clearly explore cluster-specific relationships between the `langevitour` and $2\text{-}D$ layout.
+There are several avenues for future development. While hexagonal binning provides a regular structure conducive to modeling, alternative spatial discretizations (e.g., adaptive binning or density-aware tessellations) could be explored to better capture varying data densities. Expanding support for additional distance metrics in the lifting and prediction steps may improve performance across different domains. Additionally, statistical inference tools could be introduced to assess the stability and robustness of the fitted model, which would enhance interpretability and confidence in the outcomes. A potential extension of the current implementation would be to synchronize cluster selections between the tour view and the linked $2\text{-}D$ layout, enabling more direct cluster-specific comparisons across views.
 
 # Acknowledgements
 
