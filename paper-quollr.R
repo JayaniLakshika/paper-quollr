@@ -1451,20 +1451,20 @@ knitr::include_graphics(c("figures/model_link_error_proj1_detourr.png",
 # Read a variety of different NLDR representations of limb
 # and plot them on same aspect ratio
 
-umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
-
-nldr1 <- umap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#999999') +
-  interior_annotation("a")
-
 tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
 
-nldr2 <- tsne_limb |>
+nldr1 <- tsne_limb |>
   ggplot(aes(x = emb1,
              y = emb2)) +
   geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("a")
+
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+
+nldr2 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
   interior_annotation("b")
 
 phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
@@ -1528,7 +1528,7 @@ error_limb <- error_limb |>
 
 error_limb <- error_limb |>
   mutate(method = factor(method,
-                         levels = c("UMAP_15_min_dist_0.1", "tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
+                         levels = c("tsne_30", "UMAP_15_min_dist_0.1", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
 
 
 ## -----------------------------------------------------------------------------
@@ -1536,7 +1536,7 @@ error_limb <- error_limb |>
 
 error_plot_limb <- plot_hbe(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
-  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
+  scale_color_manual(values=c('#a65628','#999999','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
 
 
 
@@ -1833,7 +1833,7 @@ trimesh_limb_best <- ggplot() +
                colour = "#000000",
                linewidth = 1) +
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
-  interior_annotation("b1", cex = 2) +
+  interior_annotation("f1", cex = 2) +
   theme(
     aspect.ratio = 1
   )
@@ -2003,7 +2003,7 @@ limb_proj_tsne_best_model1 <- plot_proj(
   plot_limits = c(-0.05, 0.03), 
   axis_text_size = 4,
   is_category = TRUE) +
-  interior_annotation(label = "b2", cex = 2) + 
+  interior_annotation(label = "f2", cex = 2) + 
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
 
 ## Second projection
@@ -2030,13 +2030,13 @@ limb_proj_tsne_best_model2 <- plot_proj(
   plot_limits = c(-0.04, 0.04), 
   axis_text_size = 4,
   is_category = TRUE) +
-  interior_annotation(label = "b3", cex = 2) + 
+  interior_annotation(label = "f3", cex = 2) + 
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
 
 
 
 
-## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published $2\\text{-}D$ layout (b) and the HBE-selected $2\\text{-}D$ layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in $10\\text{-}D$, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
+## ----model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}a) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published $2\\text{-}D$ layout (b) and the HBE-selected $2\\text{-}D$ layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in $10\\text{-}D$, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()----
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
@@ -2044,7 +2044,7 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 
 
-## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout b (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel linked plots showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"----
+## ----tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout a (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel linked plots showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"----
 # 
 # class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
 # 

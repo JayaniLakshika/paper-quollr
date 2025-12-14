@@ -1708,11 +1708,11 @@ Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that
 
 Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarize the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
 
-Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (b) is the reproduction of the published plot. This was generated using tSNE with $\text{perplexity}=30$, the default hyper-parameters. The question is whether this accurately represents the cluster structure in the data. Note that the cluster variable is not used to produce the $2\text{-}D$ layout. 
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (a) is the reproduction of the published plot. This was generated using tSNE with $\text{perplexity}=30$, the default hyper-parameters. The question is whether this accurately represents the cluster structure in the data. Note that the cluster variable is not used to produce the $2\text{-}D$ layout. 
 
-We illustrate how to use `quollr` to assess whether this is a reasonable layout. Figure \@ref(fig:limb-hbe) shows five alternative layouts, and the HBE plot summarizing the resulting model fits. Layout a is produce by UMAP ($\text{neighbors}=5, ~\text{minimum distance}=0.1$); layout c was produced by PHATE ($\text{knn}=5$); layout d was produced by TriMAP ($\text{number of inliers}=12,~\text{outliers}=4,~\text{random}=3$); layout e was produced by by PaCMAP ($\text{neighbors}=10,~\text{init = "random"}~\text{MN-ratio}=0.5,~\text{FP-ratio}=2$); layout f was produced by tSNE ($\text{perplexity}=15$). 
+We illustrate how to use `quollr` to assess whether this is a reasonable layout. Figure \@ref(fig:limb-hbe) shows five alternative layouts, and the HBE plot summarizing the resulting model fits. Layout b is produce by UMAP ($\text{neighbors}=5, ~\text{minimum distance}=0.1$); layout c was produced by PHATE ($\text{knn}=5$); layout d was produced by TriMAP ($\text{number of inliers}=12,~\text{outliers}=4,~\text{random}=3$); layout e was produced by by PaCMAP ($\text{neighbors}=10,~\text{init = "random"}~\text{MN-ratio}=0.5,~\text{FP-ratio}=2$); layout f was produced by tSNE ($\text{perplexity}=15$). 
 
-The HBE plot indicates that the two tSNE layouts outperform all the other methods across a range of binwidths, but that the result with perplexity of $15$ outperforms the other. There are small visual difference between the two layouts. Both support that there are $5-6$ clusters. Layout b has slightly more space between clusters.  Layout d three small clusters at the top whereas layout f has only two, and another smaller one at the bottom. 
+The HBE plot indicates that the two tSNE layouts outperform all the other methods across a range of binwidths, but that the result with perplexity of $15$ outperforms the other. There are small visual difference between the two layouts. Both support that there are $5-6$ clusters. Layout a has slightly more space between clusters.  Layout d three small clusters at the top whereas layout f has only two, and another smaller one at the bottom. 
 <!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
 
 <!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
@@ -1724,20 +1724,20 @@ The HBE plot indicates that the two tSNE layouts outperform all the other method
 # Read a variety of different NLDR representations of limb
 # and plot them on same aspect ratio
 
-umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
-
-nldr1 <- umap_limb |>
-  ggplot(aes(x = emb1,
-             y = emb2)) +
-  geom_point(alpha=0.1, size=1, colour='#999999') +
-  interior_annotation("a")
-
 tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
 
-nldr2 <- tsne_limb |>
+nldr1 <- tsne_limb |>
   ggplot(aes(x = emb1,
              y = emb2)) +
   geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("a")
+
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+
+nldr2 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
   interior_annotation("b")
 
 phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
@@ -1802,7 +1802,7 @@ error_limb <- error_limb |>
 
 error_limb <- error_limb |>
   mutate(method = factor(method,
-                         levels = c("UMAP_15_min_dist_0.1", "tsne_30", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
+                         levels = c("tsne_30", "UMAP_15_min_dist_0.1", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
 ```
 
 ```{r}
@@ -1810,7 +1810,7 @@ error_limb <- error_limb |>
 
 error_plot_limb <- plot_hbe(error_limb) +
   scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
-  scale_color_manual(values=c('#999999','#a65628','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
+  scale_color_manual(values=c('#a65628','#999999','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
 
 ```
 
@@ -2077,7 +2077,7 @@ limb_proj_tsne_model2 <- plot_proj(
 
 2. Because 6 clusters are hard to examine together, use the menu to select just one cluster to view at at time. Selecting just cluster 1 might help you see the explanation above, that a small group is quite separate from the main group. This suggests both the layouts and the clustering that groups these together might be wrong. Now change to focus on cluster 5 (yellow). This group is a fairly large sparse cluster but it is separated from the other points. Both layouts are right in separating these points from the others. 
 
-3. To examine where the layouts differ, examine clusters 4 (green) and 6 (cream), by selecting just these two. Layout b has them close, but layout f has them far apart. (It might also help to include cluster 5 here because layout b has this group close to the cluster 4 also). In the tour view, we can see that they three clusters are separated clusters in different directions away from the most of the other points. They are both correct in this. It may have been better to place them all in different corners of the layout, but they have preserved the most important aspect that they are separated clusters. That they are all close together in layout b could be incorrectly interpreted as close in high-dimensions though.
+3. To examine where the layouts differ, examine clusters 4 (green) and 6 (cream), by selecting just these two. Layout a has them close, but layout f has them far apart. (It might also help to include cluster 5 here because layout b has this group close to the cluster 4 also). In the tour view, we can see that they three clusters are separated clusters in different directions away from the most of the other points. They are both correct in this. It may have been better to place them all in different corners of the layout, but they have preserved the most important aspect that they are separated clusters. That they are all close together in layout a could be incorrectly interpreted as close in high-dimensions though.
 
 ```{r}
 #| label: tsne-best-model-limb
@@ -2116,7 +2116,7 @@ trimesh_limb_best <- ggplot() +
                colour = "#000000",
                linewidth = 1) +
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
-  interior_annotation("b1", cex = 2) +
+  interior_annotation("f1", cex = 2) +
   theme(
     aspect.ratio = 1
   )
@@ -2286,7 +2286,7 @@ limb_proj_tsne_best_model1 <- plot_proj(
   plot_limits = c(-0.05, 0.03), 
   axis_text_size = 4,
   is_category = TRUE) +
-  interior_annotation(label = "b2", cex = 2) + 
+  interior_annotation(label = "f2", cex = 2) + 
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
 
 ## Second projection
@@ -2313,13 +2313,13 @@ limb_proj_tsne_best_model2 <- plot_proj(
   plot_limits = c(-0.04, 0.04), 
   axis_text_size = 4,
   is_category = TRUE) +
-  interior_annotation(label = "b3", cex = 2) + 
+  interior_annotation(label = "f3", cex = 2) + 
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
 
 
 ```
 
-```{r model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}b) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published $2\\text{-}D$ layout (b) and the HBE-selected $2\\text{-}D$ layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in $10\\text{-}D$, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
+```{r model-limb, fig.cap="Compare the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}a) and the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) by HBE plot (Figure \\ref{fig:limb-hbe}) from the tSNE, UMAP, PHATE, TriMAP, and PaCMAP with different hyper-parameters. The Limb muscle data ($n =  1067$) has seven close different shaped clusters in $10\\text{-}D$.", fig.alt = "Comparison of published $2\\text{-}D$ layout (b) and the HBE-selected $2\\text{-}D$ layout (f) for the limb muscle data (n = 1067) with seven differently shaped clusters in $10\\text{-}D$, using tSNE, UMAP, PHATE, TriMAP, and PaCMAP with various hyper-parameters.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
 
 trimesh_limb + limb_proj_tsne_model1 +
   limb_proj_tsne_model2 + trimesh_limb_best +
@@ -2327,7 +2327,7 @@ trimesh_limb + limb_proj_tsne_model1 +
   plot_layout(nrow = 2)
 ```
 
-```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout b (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel linked plots showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"}
+```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout a (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "Interactive two-panel linked plots showing the published $2\\text{-}D$ layout (b) of limb muscle data on the left and the fitted high-dimensional model in $10\\text{-}D$ on the right using langevitour. Colors indicate different muscle groups. Brushing or selecting points in either panel highlights the corresponding points in the other, illustrating how clusters in the $2\\text{-}D$ embedding correspond to structures in the original $10\\text{-}D$ space.", layout = "l-body"}
 
 class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
 
