@@ -383,8 +383,9 @@ scurve_labeled <- scurve |>
 
 # Apply the scaling
 df_model_data_scurve <- bind_rows(scurve_labeled, df_b_scurve)
-scaled_scurve <- scale_data_manual(df_model_data_scurve, "type") |>
-  as_tibble()
+scaled_scurve <- center_data(df_model_data_scurve[,-8]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_scurve$type)
 
 scaled_scurve_data <- scaled_scurve |>
   filter(type == "data") |>
@@ -1384,8 +1385,9 @@ df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
-scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
-  as_tibble()
+scaled_limb <- center_data(df_model_data_limb[,-11]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_limb$type)
 
 scaled_limb_data <- scaled_limb |>
   filter(type == "data") |>
@@ -1736,8 +1738,9 @@ df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
 
 # Apply the scaling
 df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
-scaled_limb <- scale_data_manual(df_model_data_limb, "type") |>
-  as_tibble()
+scaled_limb <- center_data(df_model_data_limb[,-11]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_limb$type)
 
 scaled_limb_data <- scaled_limb |>
   filter(type == "data") |>

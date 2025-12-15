@@ -10,38 +10,40 @@ interior_annotation <- function(label, position = c(0.9, 0.9), cex = 1, col="gre
 
 # Center the data by subtracting the mean of each column
 center_data <- function(data) {
-  apply(data, 2, function(col) col - mean(col))
+  center_values <- colMeans(data)
+  data_centered <- sweep(data, 2, center_values, FUN = "-")  # subtract means
+  data_centered
 }
 
 # Function to scale data manually
-scale_data_manual <- function(data, type_col) {
-  # Step 1: Center the data (mean 0)
-  data_centered <- center_data(data |> select(-all_of(type_col)))
-
-  # Step 2: Calculate the standard deviation of each dimension
-  sds <- apply(data_centered, 2, sd)
-
-  # Step 3: Scale each dimension to have the range [0, 1]
-  data_scaled <- apply(data_centered, 2, function(col) col / max(abs(col)))
-
-  # Step 4: Scale dimensions according to their variation
-  # The dimension with the highest standard deviation is scaled to [-1, 1]
-  # Other dimensions are scaled to smaller ranges based on their standard deviations
-  max_sd <- max(sds)
-
-  # Normalize the standard deviations to get scaling factors
-  scaling_factors <- sds / max_sd
-
-  for (i in seq_along(scaling_factors)) {
-    data_scaled[, i] <- data_scaled[, i] * scaling_factors[i]
-  }
-
-  # Combine the scaled data with the 'type' column and return as a tibble
-  data_scaled <- as_tibble(data_scaled) %>%
-    mutate(!!type_col := data[[type_col]])
-
-  return(data_scaled)
-}
+# scale_data_manual <- function(data, type_col) {
+#   # Step 1: Center the data (mean 0)
+#   data_centered <- center_data(data |> select(-all_of(type_col)))
+#
+#   # Step 2: Calculate the standard deviation of each dimension
+#   sds <- apply(data_centered, 2, sd)
+#
+#   # Step 3: Scale each dimension to have the range [0, 1]
+#   data_scaled <- apply(data_centered, 2, function(col) col / max(abs(col)))
+#
+#   # Step 4: Scale dimensions according to their variation
+#   # The dimension with the highest standard deviation is scaled to [-1, 1]
+#   # Other dimensions are scaled to smaller ranges based on their standard deviations
+#   max_sd <- max(sds)
+#
+#   # Normalize the standard deviations to get scaling factors
+#   scaling_factors <- sds / max_sd
+#
+#   for (i in seq_along(scaling_factors)) {
+#     data_scaled[, i] <- data_scaled[, i] * scaling_factors[i]
+#   }
+#
+#   # Combine the scaled data with the 'type' column and return as a tibble
+#   data_scaled <- as_tibble(data_scaled) %>%
+#     mutate(!!type_col := data[[type_col]])
+#
+#   return(data_scaled)
+# }
 
 # Plot MSE
 
