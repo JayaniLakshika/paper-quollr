@@ -402,20 +402,20 @@ projection <- cbind(
   c(0.11421,0.18556,-0.16860,-0.05033,-0.00219,0.04159,0.04285))
 
 proj_obj1 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_scurve_data, 
                             model_highd = scaled_scurve_data_model, 
                             trimesh_data = tr_from_to_df_scurve, 
-                            axis_param = list(limits = 0.5, 
-                                              axis_scaled = 2,
-                                              axis_pos_x = -0.25, 
-                                              axis_pos_y = -0.25, 
-                                              threshold = 0.0259))
+                            axis_param = list(limits = 0.8, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.0623))
 
 scurve_proj_umap_model1 <- plot_proj(
   proj_obj = proj_obj1,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
-  plot_limits = c(-0.35, 0.35), 
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.5, 0.55), 
   axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a1", cex = 1)
@@ -423,7 +423,8 @@ scurve_proj_umap_model1 <- plot_proj(
 scurve_proj_umap_model1_dp <- plot_proj(
   proj_obj = proj_obj1,
   point_param = c(0.2, 0, clr_choice), # size, alpha, color
-  plot_limits = c(-0.35, 0.35), 
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.5, 0.55), 
   axis_text_size = 3,
   is_category = FALSE) +
   interior_annotation(label = "d", cex = 1)
@@ -435,20 +436,20 @@ projection <- cbind(
   c(0.21443,-0.00390,0.08182,-0.11746,0.06820,-0.05458,-0.08885))
 
 proj_obj2 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_scurve_data, 
                             model_highd = scaled_scurve_data_model, 
                             trimesh_data = tr_from_to_df_scurve, 
-                            axis_param = list(limits = 0.5, 
-                                              axis_scaled = 2,
-                                              axis_pos_x = -0.25, 
-                                              axis_pos_y = -0.25, 
-                                              threshold = 0.0259))
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.05))
 
 scurve_proj_umap_model2 <- plot_proj(
   proj_obj = proj_obj2,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
-  plot_limits = c(-0.35, 0.35), 
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.45, 0.4), 
   axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a2", cex = 1) 
@@ -460,20 +461,20 @@ projection <- cbind(
   c(-0.10510,-0.10971,-0.09084,0.19642,-0.07163,-0.02486,0.07965))
 
 proj_obj3 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_scurve_data, 
                             model_highd = scaled_scurve_data_model, 
                             trimesh_data = tr_from_to_df_scurve, 
                             axis_param = list(limits = 0.5, 
-                                              axis_scaled = 2,
-                                              axis_pos_x = -0.25, 
-                                              axis_pos_y = -0.25, 
-                                              threshold = 0.031))
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.34, 
+                                              axis_pos_y = -0.34, 
+                                              threshold = 0.0462))
 
 scurve_proj_umap_model3 <- plot_proj(
   proj_obj = proj_obj3,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
-  plot_limits = c(-0.35, 0.35), 
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.43, 0.35), 
   axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a3", cex = 1) 
@@ -485,20 +486,20 @@ projection <- cbind(
   c(0.09270,0.04486,-0.14397,0.08305,0.11783,0.16187,-0.06077))
 
 proj_obj4 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_scurve_data, 
                             model_highd = scaled_scurve_data_model, 
                             trimesh_data = tr_from_to_df_scurve, 
-                            axis_param = list(limits = 0.5, 
-                                              axis_scaled = 2,
-                                              axis_pos_x = -0.25, 
-                                              axis_pos_y = -0.25, 
-                                              threshold = 0.031))
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.048))
 
 scurve_proj_umap_model4 <- plot_proj(
   proj_obj = proj_obj4,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
-  plot_limits = c(-0.35, 0.35), 
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.45, 0.46), 
   axis_text_size = 2,
   is_category = FALSE) +
   interior_annotation(label = "a4", cex = 1) 
@@ -1518,7 +1519,6 @@ projection <- cbind(
   c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
 
 proj_obj1 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_limb_data, 
                             model_highd = scaled_limb_data_model, 
                             trimesh_data = trimesh_data_limb, 
@@ -1545,7 +1545,6 @@ projection <- cbind(
   c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
 
 proj_obj2 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_limb_data, 
                             model_highd = scaled_limb_data_model, 
                             trimesh_data = trimesh_data_limb, 
@@ -1759,7 +1758,6 @@ projection <- cbind(
   c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
 
 proj_obj1 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_limb_data, 
                             model_highd = scaled_limb_data_model, 
                             trimesh_data = trimesh_data_limb, 
@@ -1786,7 +1784,6 @@ projection <- cbind(
   c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
 
 proj_obj2 <- get_projection(projection = projection, 
-                            proj_scale = 1.23, 
                             highd_data = scaled_limb_data, 
                             model_highd = scaled_limb_data_model, 
                             trimesh_data = trimesh_data_limb, 
