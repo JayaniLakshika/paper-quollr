@@ -1371,42 +1371,13 @@ trimesh_limb <- ggplot() +
                  xend = x_to, 
                  yend = y_to),
                colour = "#000000",
-               linewidth = 1) +
+               linewidth = 1,
+               alpha = 0.3) +
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
   interior_annotation("a1", cex = 2) +
   theme(
     aspect.ratio = 1
   )
-
-
-## -----------------------------------------------------------------------------
-#| label: prep-limb-tsne-author-model-proj
-
-data_limb_n <- data_limb |> 
-  select(-ID) |>
-  mutate(type = "data")
-
-df_b_limb <- df_bin_limb |>
-  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
-  dplyr::mutate(type = "model") ## Data with summarized mean
-
-## Reorder the rows of df_b according to the h order in df_b_with_center_data
-df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
-  dplyr::select(-h) 
-
-# Apply the scaling
-df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
-scaled_limb <- center_data(df_model_data_limb[,-11]) |>
-  as_tibble() |>
-  mutate(type = df_model_data_limb$type)
-
-scaled_limb_data <- scaled_limb |>
-  filter(type == "data") |>
-  select(-type)
-
-scaled_limb_data_model <- scaled_limb |>
-  filter(type == "model") |>
-  select(-type)
 
 
 ## -----------------------------------------------------------------------------
@@ -1519,6 +1490,36 @@ linked_plt_int <- crosstalk::bscols(
 
 
 
+## -----------------------------------------------------------------------------
+#| label: prep-limb-tsne-author-model-proj
+
+data_limb_n <- data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
+scaled_limb <- center_data(df_model_data_limb[,-11]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_limb$type)
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
+
+
 ## ----plot-proj----------------------------------------------------------------
 
 ## First projection
@@ -1613,7 +1614,8 @@ trimesh_limb_best <- ggplot() +
                  xend = x_to, 
                  yend = y_to),
                colour = "#000000",
-               linewidth = 1) +
+               linewidth = 1,
+               alpha = 0.3) +
   scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
   interior_annotation("f1", cex = 2) +
   theme(
