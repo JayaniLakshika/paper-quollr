@@ -1372,7 +1372,7 @@ trimesh_limb <- ggplot() +
                  yend = y_to),
                colour = "#000000",
                linewidth = 1) +
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
   interior_annotation("a1", cex = 2) +
   theme(
     aspect.ratio = 1
@@ -1440,7 +1440,7 @@ shared_df <- crosstalk::SharedData$new(point_data)
 
 cluster_colors <- c(
     "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
-    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#e5c494'
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#a6cee3'
 )
 
 point_sizes <- c(0, 1)
@@ -1457,18 +1457,16 @@ nldr_plt <- plot_ly(
 )
 
 # Add line segments
-if (nrow(trimesh_data_limb) > 0) {
-    nldr_plt <- nldr_plt |>
-        add_segments(
-            data = trimesh_data_limb,
-            x = ~x_from, y = ~y_from,
-            xend = ~x_to, yend = ~y_to,
-            line = list(color = "#000000", width = 0.5),
-            inherit = FALSE,
-            showlegend = FALSE,
-            hoverinfo = "skip"  # <-- skip hover
-        )
-}
+nldr_plt <- nldr_plt |>
+    add_segments(
+        data = trimesh_data_limb,
+        x = ~x_from, y = ~y_from,
+        xend = ~x_to, yend = ~y_to,
+        line = list(color = "#000000", width = 0.5),
+        inherit = FALSE,
+        showlegend = FALSE,
+        hoverinfo = "skip"  # <-- skip hover
+    )
 
 # Layout: axes, border, no tooltip
 nldr_plt <- nldr_plt |>
@@ -1498,7 +1496,7 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                               c("0", "1", "2", "3", "4", "5", "6", "model")),
                                                pointSize = append(rep(point_sizes[1], NROW(df_b)),
                                                                   rep(point_sizes[2], NROW(df))),
-                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
                                                width = "370px", height = "370px")
@@ -1548,7 +1546,7 @@ limb_proj_tsne_model1 <- plot_proj(
   axis_text_size = 4,
   is_category = TRUE) +
   interior_annotation(label = "a2", cex = 2) + 
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
 
 ## Second projection
 projection <- cbind(
@@ -1575,7 +1573,7 @@ limb_proj_tsne_model2 <- plot_proj(
   axis_text_size = 4,
   is_category = TRUE) +
   interior_annotation(label = "a3", cex = 2) + 
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
 
 
 
@@ -1616,7 +1614,7 @@ trimesh_limb_best <- ggplot() +
                  yend = y_to),
                colour = "#000000",
                linewidth = 1) +
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494')) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
   interior_annotation("f1", cex = 2) +
   theme(
     aspect.ratio = 1
@@ -1654,7 +1652,7 @@ shared_df <- crosstalk::SharedData$new(point_data)
 
 cluster_colors <- c(
     "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
-    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#e5c494'
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#a6cee3'
 )
 
 # Scatter points
@@ -1710,7 +1708,7 @@ langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
                                                               c("0", "1", "2", "3", "4", "5", "6", "model")),
                                                pointSize = append(rep(point_sizes[1], NROW(df_b)),
                                                                   rep(point_sizes[2], NROW(df))),
-                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494', "#000000"),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3', "#000000"),
                                                link=shared_df,
                                                linkFilter=FALSE,
                                                width = "370px", height = "370px")
@@ -1788,7 +1786,7 @@ limb_proj_tsne_best_model1 <- plot_proj(
   axis_text_size = 4,
   is_category = TRUE) +
   interior_annotation(label = "f2", cex = 2) + 
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
 
 ## Second projection
 projection <- cbind(
@@ -1814,7 +1812,7 @@ limb_proj_tsne_best_model2 <- plot_proj(
   axis_text_size = 4,
   is_category = TRUE) +
   interior_annotation(label = "f3", cex = 2) + 
-  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#e5c494'))
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
 
 
 
