@@ -445,6 +445,16 @@ proj_obj2 <- get_projection(projection = projection,
                                               axis_pos_y = -0.35, 
                                               threshold = 0.05))
 
+proj_obj2_cp <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.4, 
+                                              axis_pos_y = -0.4, 
+                                              threshold = 0.05))
+
 scurve_proj_umap_model2 <- plot_proj(
   proj_obj = proj_obj2,
   point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
@@ -900,16 +910,16 @@ scurve_umap_plt_select1_lk <- scurve_umap_plt_select1 +
 scurve_umap_plt_select1_lk2 <- scurve_umap_plt_select1 +
   interior_annotation("a2", cex = 3) 
 
-proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select1$select_area,
+proj_obj2_cp[["cluster"]] <- factor(scurve_umap_scaled_select1$select_area,
                                  levels=c("deselected", "selected"))
 
-projected_df <- proj_obj2$projected_df
-model_df <- proj_obj2$model_df
-axes <- proj_obj2$axes
-circle <- proj_obj2$circle
+projected_df <- proj_obj2_cp$projected_df
+model_df <- proj_obj2_cp$model_df
+axes <- proj_obj2_cp$axes
+circle <- proj_obj2_cp$circle
 
 projected_df <- projected_df |>
-  dplyr::mutate(cluster = proj_obj2$cluster)
+  dplyr::mutate(cluster = proj_obj2_cp$cluster)
 
 scurve_proj_umap_model1_selected1 <- ggplot() +
       geom_point(
@@ -928,8 +938,8 @@ scurve_proj_umap_model1_selected1 <- ggplot() +
           xend = proj1_to,
           yend = proj2_to),
         colour = "#000000",
-        linewidth = 0.8,
-        alpha = 0.4) +
+        linewidth = 0.5,
+        alpha = 0.3) +
       geom_segment(
           data=axes,
           aes(x=x1, y=y1, xend=x2, yend=y2),
@@ -943,8 +953,8 @@ scurve_proj_umap_model1_selected1 <- ggplot() +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
-        xlim(c(-0.35, 0.35)) +
-        ylim(c(-0.35, 0.35)) +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
   interior_annotation(label = "a2", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
@@ -968,8 +978,8 @@ scurve_proj_umap_model1_selected1_dp <- ggplot() +
           xend = proj1_to,
           yend = proj2_to),
         colour = "#000000",
-        linewidth = 0.8,
-        alpha = 0.4) +
+        linewidth = 0.5,
+        alpha = 0.3) +
       geom_segment(
           data=axes,
           aes(x=x1, y=y1, xend=x2, yend=y2),
@@ -983,8 +993,8 @@ scurve_proj_umap_model1_selected1_dp <- ggplot() +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
-        xlim(c(-0.35, 0.35)) +
-        ylim(c(-0.35, 0.35)) +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
   interior_annotation(label = "a3", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
@@ -1015,16 +1025,16 @@ scurve_umap_plt_select2_lk <- scurve_umap_plt_select2 +
 scurve_umap_plt_select2_lk2 <- scurve_umap_plt_select2 +
     interior_annotation("b2", cex = 3) 
 
-proj_obj2[["cluster"]] <- factor(scurve_umap_scaled_select2$select_area,
+proj_obj2_cp[["cluster"]] <- factor(scurve_umap_scaled_select2$select_area,
                                  levels=c("deselected", "selected"))
 
-projected_df <- proj_obj2$projected_df
-model_df <- proj_obj2$model_df
-axes <- proj_obj2$axes
-circle <- proj_obj2$circle
+projected_df <- proj_obj2_cp$projected_df
+model_df <- proj_obj2_cp$model_df
+axes <- proj_obj2_cp$axes
+circle <- proj_obj2_cp$circle
 
 projected_df <- projected_df |>
-  dplyr::mutate(cluster = proj_obj2$cluster)
+  dplyr::mutate(cluster = proj_obj2_cp$cluster)
 
 scurve_proj_umap_model1_selected2 <- ggplot() +
       geom_point(
@@ -1043,8 +1053,8 @@ scurve_proj_umap_model1_selected2 <- ggplot() +
           xend = proj1_to,
           yend = proj2_to),
         colour = "#000000",
-        linewidth = 0.8,
-        alpha = 0.4) +
+        linewidth = 0.5,
+        alpha = 0.3) +
       geom_segment(
           data=axes,
           aes(x=x1, y=y1, xend=x2, yend=y2),
@@ -1058,8 +1068,8 @@ scurve_proj_umap_model1_selected2 <- ggplot() +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
-        xlim(c(-0.35, 0.35)) +
-        ylim(c(-0.35, 0.35)) +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
   interior_annotation(label = "b2", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
@@ -1083,8 +1093,8 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
           xend = proj1_to,
           yend = proj2_to),
         colour = "#000000",
-        linewidth = 0.8,
-        alpha = 0.4) +
+        linewidth = 0.5,
+        alpha = 0.3) +
       geom_segment(
           data=axes,
           aes(x=x1, y=y1, xend=x2, yend=y2),
@@ -1098,8 +1108,8 @@ scurve_proj_umap_model1_selected2_dp <- ggplot() +
         geom_path(
           data=circle,
           aes(x=c1, y=c2), colour="grey70") +
-        xlim(c(-0.35, 0.35)) +
-        ylim(c(-0.35, 0.35)) +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
   interior_annotation(label = "b3", cex = 3) +
   scale_color_manual(values = c(clr_choice, '#756bb1')) +
   scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
