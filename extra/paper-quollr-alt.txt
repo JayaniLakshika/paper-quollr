@@ -1,7 +1,7 @@
-# Chunk label: fig-overview --------------------
-## Alt-text: A conceptual schematic showing a 2D wireframe surface (a grid-like mesh) laid out in a plane and then smoothly lifted or distorted into a higher-dimensional space. In the flat 2D view, the horizontal and vertical axes represent the two coordinates of an existing nonlinear dimensionality reduction (NLDR) layout, each spanning an arbitrary unit range (assumed roughly from 0 to 1). In the lifted view, the same grid lines are bent and warped to illustrate how the original high-dimensional structure underlies the 2D embedding. Individual data points (not clearly distinguished by colour or shape in the description) are implied to lie on or near this warped surface, demonstrating that quollr treats the 2D layout as a deformable wireframe model embedded in higher dimensions, rather than as a flat projection.
+# Chunk label: limb-hbe --------------------
+## Alt-text: A multi-panel figure shows five alternative 2D embeddings of the same high-dimensional data, arranged side by side (panels b–f). Each panel is a scatterplot with two unlabeled embedding axes (dimension 1 on the horizontal axis and dimension 2 on the vertical axis, each spanning a similar, roughly symmetric range around zero). Points represent the same set of observations in every panel, plotted with identical colour or marker scheme so that corresponding observations can be visually compared across layouts. Panel b shows a UMAP layout (neighbors = 5, minimum distance = 0.1), panel c a PHATE layout (knn = 5), panel d a TriMAP layout (inliers = 12, outliers = 4, random = 3), panel e a PaCMAP layout (neighbors = 10, init = "random", MN-ratio = 0.5, FP-ratio = 2), and panel f a t-SNE layout (perplexity = 15). Across panels, similar clusters of points appear but are arranged differently in space: some layouts show more clearly separated compact clusters, while others show overlapping or elongated groups, reflecting how each method balances local versus global structure. The accompanying HBE plot (typically a separate panel) summarizes model fit quality for each layout, with one value per method indicating that some embeddings provide a more faithful representation of the original data structure than others.
 
-Assumptions: The underlying figure is assumed to be a conceptual 3D or multi-dimensional schematic with a regular grid, minimal or unlabeled axes, and no explicit colour or faceting, based on the brief reference description.
+Assumptions: Axis labels are not explicitly provided, so they are assumed to be generic embedding coordinates (e.g., “dimension 1” and “dimension 2”) on a roughly symmetric numeric scale. Cluster shapes and degrees of separation are inferred qualitatively, as precise positions, colours, and HBE metric values are not specified in the prompt.
 
 Checklist:
 1. Identified chart type. YES  
@@ -9,6 +9,24 @@ Checklist:
 3. Mentioned approximate ranges or scales (where meaningful). YES  
 4. Described data mappings (e.g. colour/shape/size/facets). YES  
 5. Described main patterns, trends, or clusters. YES  
+6. Explicitly noted any assumptions. YES
+
+## Caption (for reference): We illustrate how to use `quollr` to assess whether this is a reasonable layout. Figure \@ref(fig:limb-hbe) shows five alternative layouts, and the HBE plot summarizing the resulting model fits. Layout b is produce by UMAP ($\text{neighbors}=5, ~\text{minimum distance}=0.1$); layout c was produced by PHATE ($\text{knn}=5$); layout d was produced by TriMAP ($\text{number of inliers}=12,~\text{outliers}=4,~\text{random}=3$); layout e was produced by by PaCMAP ($\text{neighbors}=10,~\text{init = "random"}, ~\text{MN-ratio}=0.5,~\text{FP-ratio}=2$); layout f was produced by tSNE ($\text{perplexity}=15$).
+
+## Usage: BrailleR, Cummulated cost: NA, Cummulated token usage: 0
+
+
+# Chunk label: fig-overview --------------------
+## Alt-text: A schematic overview figure illustrates the quollr workflow as a multi-panel diagram rather than a standard statistical graph. One panel shows a 2‑dimensional NLDR layout (a scatterplot with two generic embedding axes, each spanning an arbitrary but comparable numeric range) where points represent high-dimensional observations and their spatial arrangement encodes the low-dimensional embedding. Over this layout, a 2‑D “wireframe” surface or mesh is drawn, partitioning the plane into a grid-like structure. Arrows or linking lines then indicate how this 2‑D wireframe is “lifted” back into the original high-dimensional space to form a corresponding high-dimensional model, conveying how quollr connects distortions in the NLDR layout to structure in the source space. Colours, line types, or facets differentiate the original NLDR layout, the wireframe representation, and the high-dimensional depiction, emphasizing that the same underlying data are being viewed in different but related forms; no specific numeric values or measured variables are shown, as the figure is conceptual and focuses on process rather than exact quantities.
+
+Assumptions: The NLDR axes are assumed to be generic embedding coordinates (e.g., “dimension 1” and “dimension 2”) with unspecified but roughly similar scales, and the figure is assumed to be a conceptual workflow diagram containing at least one scatterplot panel and one high-dimensional schematic, since no explicit R code or BrailleR structure was provided.
+
+Checklist:
+1. Identified chart type. YES  
+2. Named axes and variables. YES  
+3. Mentioned approximate ranges or scales (where meaningful). YES  
+4. Described data mappings (e.g. colour/shape/size/facets). YES  
+5. Described main patterns, trends, or clusters. NO  
 6. Explicitly noted any assumptions. YES
 
 ## Caption (for reference): This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional @fig-overview.
