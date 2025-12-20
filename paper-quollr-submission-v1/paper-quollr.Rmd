@@ -1,0 +1,2138 @@
+---
+title: "quollr: An R Package for Visualizing 2-D Models from Nonlinear Dimension Reductions in High-Dimensional Space"
+abstract: >
+  Nonlinear dimension reduction methods provide a low-dimensional representation of high-dimensional data by applying a Nonlinear transformation. However, the complexity of the transformations and data structures can create wildly different representations depending on the method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. The R package quollr has been developed as a new visual tool to determine which method and which hyper-parameter choices provide the most accurate representation of high-dimensional data. The scurve data from the package is used to illustrate the algorithm. Single-cell RNA sequencing (scRNA-seq) data from mouse limb muscles are used to demonstrate the usability of the package.
+draft: true
+author:  
+  - name: Jayani P. Gamage
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    url: https://jayanilakshika.netlify.app/
+    orcid: 0000-0002-6265-6481
+    email: jayani.piyadigamage@monash.edu
+  - name: Dianne Cook
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    url: http://www.dicook.org/
+    email: dicook@monash.edu
+    orcid: 0000-0002-3813-7155
+  - name: Paul Harrison
+    affiliation: Monash University
+    address: MGBP, BDInstitute, VIC 3800 Australia
+    email: paul.harrison@monash.edu
+    orcid: 0000-0002-3980-268X
+  - name: Michael Lydeamore
+    affiliation: Monash University
+    address: Department of Econometrics and Business Statistics, VIC 3800 Australia
+    email: michael.lydeamore@monash.edu
+    orcid: 0000-0001-6515-827X
+  - name: Thiyanga S. Talagala
+    affiliation: University of Sri Jayewardenepura
+    address: Department of Statistics, Gangodawila, Nugegoda 10100 Sri Lanka
+    url: https://thiyanga.netlify.app/
+    email: ttalagala@sjp.ac.lk
+    orcid: 0000-0002-0656-9789
+type: package
+creative_commons: CC BY
+date: "`r Sys.Date()`"
+preamble: >
+  \usepackage{amsmath}
+  \usepackage{array}
+  \usepackage{float}
+output: 
+ rjtools::rjournal_article:
+    keep_md: true
+bibliography: paper-quollr.bib
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(repos = "https://cloud.r-project.org") ## set up CRAN mirror
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  cache=FALSE, 
+  message=FALSE, 
+  warning=FALSE,
+  comment = ">",
+  out.width = "100%",
+  htmlwidgets.sizing = TRUE)
+
+```
+
+```{r install-libraries, include=FALSE, warning=FALSE, echo=FALSE, eval=FALSE}
+
+# Ensure remotes is available
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+
+# Read the package list
+pkgs_raw <- readLines("_Rpackages.txt")
+pkgs_raw <- pkgs_raw[nzchar(pkgs_raw)]  # remove empty lines
+
+# Split into package and version
+parts <- strsplit(pkgs_raw, "==")
+pkgs <- vapply(parts, `[[`, "", 1)
+versions <- vapply(parts, `[[`, "", 2)
+
+# Install packages with exact versions
+for (i in seq_along(pkgs)) {
+  pkg <- pkgs[i]
+  ver <- versions[i]
+
+  if (!requireNamespace(pkg, quietly = TRUE) ||
+      as.character(packageVersion(pkg)) != ver) {
+
+    message(sprintf("Installing %s (%s)", pkg, ver))
+    remotes::install_version(pkg, version = ver, upgrade = "never")
+  }
+}
+
+```
+
+```{r load-libraries}
+library(quollr)
+library(tibble)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+library(readr)
+library(plotly)
+library(crosstalk)
+library(htmltools)
+library(detourr)
+
+set.seed(20240110)
+```
+
+```{r plot-theme}
+theme_set(theme_linedraw() +
+   theme(
+     aspect.ratio = 1,
+     plot.background = element_rect(fill = 'transparent', colour = NA),
+     plot.title = element_text(size = 7, hjust = 0.5, vjust = -0.5),
+     panel.background = element_rect(fill = 'transparent', 
+                                     colour = NA),
+     panel.grid.major = element_blank(), 
+     panel.grid.minor = element_blank(), 
+     axis.title.x = element_blank(), axis.title.y = element_blank(),
+     axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+     axis.text.y = element_blank(), axis.ticks.y = element_blank(),
+     legend.background = element_rect(fill = 'transparent', 
+                                      colour = NA),
+     legend.key = element_rect(fill = 'transparent', 
+                               colour = NA),
+     legend.position = "none", 
+     legend.title = element_text(size=5), 
+     legend.text = element_text(size=4),
+     legend.key.height = unit(0.25, 'cm'),
+     legend.key.width = unit(0.25, 'cm'),
+     plot.margin = margin(0, 0, 0, 0)
+   )
+
+)
+```
+
+```{r}
+#| label: import-scripts
+source("scripts/additional_functions.R")
+```
+
+<!-- 20 pages-->
+
+# Introduction
+
+<!-- research gap: add about hexbin pkg, and emphasize that in our package provide regular hexagons-->
+<!-- objective: introduce a new tool to help to determine which method, which parameter choice provide the most useful representation of high-D data.--> 
+<!--intro with S-curve with 5 methods-->
+
+Nonlinear dimension reduction (NLDR) techniques, such as t-distributed stochastic neighbor embedding (tSNE) [@laurens2008], uniform manifold approximation and projection (UMAP) [@leland2018], potential of heat-diffusion for affinity-based trajectory embedding (PHATE) algorithm [@moon2019], large-scale dimensionality reduction Using triplets (TriMAP) [@amid2019], and pairwise controlled manifold approximation (PaCMAP) [@yingfan2021], can create hugely different representations depending on the selected method and hyper-parameter choices. It is difficult to determine whether any of these representations are accurate, which one is the best, or whether they have missed important structures. 
+
+This paper presents the R package, `quollr`, which is useful for understanding how NLDR warps high-dimensional space and fits the data. Starting with an NLDR layout, our approach is to create a $2\text{-}D$ wireframe model representation, that can be lifted and displayed in the high-dimensional ($p\text{-}D$) space (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:overviewhtml)"} else { "Figure \\@ref(fig:overview)"})`).
+
+```{r}
+clr_choice <- "#66B2CC"
+
+scurve_model_obj <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+
+scurve_umap_scaled <- scurve_model_obj$nldr_scaled_obj$scaled_nldr
+tr_from_to_df_scurve <- scurve_model_obj$trimesh_data
+df_bin_centroids_scurve <- scurve_model_obj$model_2d
+df_bin_scurve <- scurve_model_obj$model_highd
+hex_grid_scurve <- scurve_model_obj$hb_obj$hex_poly
+counts_df_scurve <- scurve_model_obj$hb_obj$std_cts
+
+hex_grid_with_counts_scurve <- left_join(
+  hex_grid_scurve, counts_df_scurve, 
+  by = c("h" = "h"))
+
+hex_grid_nonempty_scurve <- hex_grid_scurve |>
+  filter(h %in% df_bin_centroids_scurve$h)
+
+sc_xlims <- c(-0.25, 1.35)
+sc_ylims <- c(-0.25, 1.35)
+
+scurve_umap_plt <- ggplot(
+  scurve_umap_scaled, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  interior_annotation("a", cex = 1) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+scurve_umap_plt_int <- ggplotly(scurve_umap_plt, 
+                                width = "350", 
+                                height = "350", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
+hex_grid_poly_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = h), 
+               fill = "#ffffff") +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             alpha = 0.8, size = 0.5, color = clr_choice) + 
+  interior_annotation("a", cex = 1) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+hex_grid_poly_scurve_int <- ggplotly(hex_grid_poly_scurve, 
+                                width = "400", 
+                                height = "380", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
+hex_centroids_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_polygon(color = "grey70", 
+               aes(group = h), 
+               fill = "#ffffff")  +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755") +
+  interior_annotation("b", cex = 1) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+hex_centroids_scurve_int <- ggplotly(hex_centroids_scurve, 
+                                width = "400", 
+                                height = "380", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
+wireframe_scurve <- ggplot() +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755") +
+  interior_annotation("c", cex = 1) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+wireframe_scurve_int <- plot_ly() |>
+    # Wireframe segments
+    add_segments(
+        data = tr_from_to_df_scurve,
+        x = ~x_from, y = ~y_from,
+        xend = ~x_to, yend = ~y_to,
+        line = list(color = "#000000", width = 0.5),
+        hoverinfo = "none",
+        showlegend = FALSE
+    ) |>
+    # Centroid points
+    add_markers(
+        data = df_bin_centroids_scurve,
+        x = ~c_x, y = ~c_y,
+        marker = list(size = 4, color = "#FF7755"),
+        hoverinfo = "none",
+        showlegend = FALSE
+    ) |>
+    # Layout with border
+    layout(
+        width = 350,
+        height = 320,
+        xaxis = list(
+            range = sc_xlims,
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            title = ""
+        ),
+        yaxis = list(
+            range = sc_ylims,
+            showgrid = FALSE,
+            zeroline = FALSE,
+            showticklabels = FALSE,
+            ticks = "",
+            title = ""
+        ),
+        
+        # ADD A BOX AROUND THE ENTIRE PLOT PANEL
+        shapes = list(
+            list(
+                type = "rect",
+                xref = "paper", yref = "paper",
+                x0 = 0, y0 = 0,
+                x1 = 1, y1 = 1,
+                line = list(color = "black", width = 1)
+            )
+        )
+    ) |>
+    config(
+        staticPlot = TRUE,
+        displayModeBar = FALSE,
+        editable = FALSE,
+        showTips = FALSE,
+        displaylogo = FALSE,
+        responsive = FALSE
+    )
+
+## 2-d vis model
+hex_grid_scurve <- ggplot(
+  data = hex_grid_with_counts_scurve, 
+  aes(x = x, y = y)) +
+  geom_point(data = scurve_umap_scaled, 
+             aes(x = emb1, y = emb2), 
+             size = 0.5, color = clr_choice) +
+  geom_segment(data = tr_from_to_df_scurve,
+               aes(
+                 x = x_from,
+                 y = y_from,
+                 xend = x_to,
+                 yend = y_to),
+               colour = "#000000") +
+  geom_point(data = df_bin_centroids_scurve, 
+             aes(x = c_x, y = c_y), 
+             size = 1, color = "#FF7755")
+
+hex_grid_scurve_int <- ggplotly(hex_grid_scurve, 
+                                width = "350", 
+                                height = "380", 
+                                tooltip = "none") |>
+  config(
+    staticPlot = TRUE,        # Disables all interactivity (no hover, zoom, pan)
+    displayModeBar = FALSE,   # Hides the plotly toolbar
+    editable = FALSE,         # Disables annotations and editing
+    showTips = FALSE,         # Removes tooltip on hover
+    displaylogo = FALSE,      # Hides plotly logo
+    responsive = FALSE        # Disables responsive resizing
+  )
+
+
+## High-d vis model
+df_exe <- comb_data_model(
+    highd_data = scurve, 
+    model_highd = df_bin_scurve, 
+    model_2d = df_bin_centroids_scurve
+)
+
+df <- df_exe |>
+    dplyr::filter(type == "data") ## original dataset
+
+df_b <- df_exe |>
+  dplyr::filter(type == "model") ## High-d model
+
+scurve_umap_model_vis <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c(clr_choice, "#FF7755"),
+                         enableControls = FALSE,
+                         width = "400px", height = "380px")
+
+scurve_umap_model_vis_n <- langevitour::langevitour(df_exe[1:(length(df_exe)-1)],
+                         lineFrom = tr_from_to_df_scurve$from_reindexed,
+                         lineTo = tr_from_to_df_scurve$to_reindexed,
+                         group = df_exe$type,
+                         pointSize = append(rep(2, NROW(df_b)), rep(1, NROW(df))),
+                         levelColors = c(clr_choice, "#FF7755"),
+                         enableControls = FALSE,
+                         width = "400px", height = "550px")
+
+```
+
+```{r overviewhtml, eval=knitr::is_html_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", layout = "l-body", fig.alt="The UMAP layout with a triangular mesh on the left and 2-D projections of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."}
+
+overviewfig <- bscols(
+  htmltools::div(
+    style = "
+      display: flex;
+      justify-content: center;  /* centers the whole grid */
+      margin: 0 auto;
+      padding: 0;
+    ",
+    htmltools::div(
+      style = "
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0px;
+        align-items: start;
+        justify-items: center;
+        margin: 0;
+        padding: 0;
+      ",
+      htmltools::div(style = "margin: 0; padding: 0;", hex_grid_scurve_int),
+      htmltools::div(style = "margin: 0; margin-top: 13px; padding: 0;", scurve_umap_model_vis)
+    )
+  ),
+  device = "xs"
+)
+
+# Ensure it's treated as a widget
+class(overviewfig) <- c(class(overviewfig), "htmlwidget")
+
+overviewfig
+```
+
+```{r scurve-projections}
+
+df_b_scurve <- df_bin_scurve |>
+  dplyr::filter(h %in% df_bin_centroids_scurve$h) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_scurve <- df_b_scurve[match(df_bin_centroids_scurve$h, df_b_scurve$h),] |>
+  dplyr::select(-h) 
+
+scurve_labeled <- scurve |>
+  select(-ID) |>
+  mutate(type = "data")
+
+# Apply the scaling
+df_model_data_scurve <- bind_rows(scurve_labeled, df_b_scurve)
+scaled_scurve <- center_data(df_model_data_scurve[,-8]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_scurve$type)
+
+scaled_scurve_data <- scaled_scurve |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_scurve_data_model <- scaled_scurve |>
+  filter(type == "model") |>
+  select(-type)
+
+
+## First projection
+projection <- cbind(
+  c(0.10479,0.06673,0.19430,-0.14763,0.02861,-0.04302,0.06601),
+  c(0.11421,0.18556,-0.16860,-0.05033,-0.00219,0.04159,0.04285))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.8, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.0623))
+
+scurve_proj_umap_model1 <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.5, 0.55), 
+  axis_text_size = 2,
+  is_category = FALSE) +
+  interior_annotation(label = "a1", cex = 1)
+
+scurve_proj_umap_model1_dp <- plot_proj(
+  proj_obj = proj_obj1,
+  point_param = c(0.2, 0, clr_choice), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.5, 0.55), 
+  axis_text_size = 3,
+  is_category = FALSE) +
+  interior_annotation(label = "d", cex = 1)
+
+## Second projection
+
+projection <- cbind(
+  c(0.01588,-0.13640,-0.17180,-0.15486,-0.09726,0.00858,0.01090),
+  c(0.21443,-0.00390,0.08182,-0.11746,0.06820,-0.05458,-0.08885))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.05))
+
+proj_obj2_cp <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.4, 
+                                              axis_pos_y = -0.4, 
+                                              threshold = 0.05))
+
+scurve_proj_umap_model2 <- plot_proj(
+  proj_obj = proj_obj2,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.45, 0.4), 
+  axis_text_size = 2,
+  is_category = FALSE) +
+  interior_annotation(label = "a2", cex = 1) 
+
+## Third projection
+
+projection <- cbind(
+  c(0.02727,0.09154,-0.16383,-0.04931,-0.17013,0.11965,-0.01884),
+  c(-0.10510,-0.10971,-0.09084,0.19642,-0.07163,-0.02486,0.07965))
+
+proj_obj3 <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.5, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.34, 
+                                              axis_pos_y = -0.34, 
+                                              threshold = 0.0462))
+
+scurve_proj_umap_model3 <- plot_proj(
+  proj_obj = proj_obj3,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.43, 0.35), 
+  axis_text_size = 2,
+  is_category = FALSE) +
+  interior_annotation(label = "a3", cex = 1) 
+
+## Fourth projection
+
+projection <- cbind(
+  c(0.17174,0.14255,0.11950,0.10344,-0.07148,-0.01656,0.04275),
+  c(0.09270,0.04486,-0.14397,0.08305,0.11783,0.16187,-0.06077))
+
+proj_obj4 <- get_projection(projection = projection, 
+                            highd_data = scaled_scurve_data, 
+                            model_highd = scaled_scurve_data_model, 
+                            trimesh_data = tr_from_to_df_scurve, 
+                            axis_param = list(limits = 0.6, 
+                                              axis_scaled = 3,
+                                              axis_pos_x = -0.35, 
+                                              axis_pos_y = -0.35, 
+                                              threshold = 0.048))
+
+scurve_proj_umap_model4 <- plot_proj(
+  proj_obj = proj_obj4,
+  point_param = c(0.5, 0.2, clr_choice), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-0.45, 0.46), 
+  axis_text_size = 2,
+  is_category = FALSE) +
+  interior_annotation(label = "a4", cex = 1) 
+```
+
+```{r overview, eval=knitr::is_latex_output(), fig.cap="Wireframe model representation of the NLDR layout, lifted and displayed in high-dimensional space. The left panel shows the NLDR layout with a triangular mesh overlay, forming the wireframe structure. This mesh can be lifted into higher dimensions and projected to examine how the geometric structure of the data is preserved. Panels (a1–a4) display different $2\\text{-}D$ projections of the lifted wireframe, where the underlying curved sheet structure of the data is more clearly visible. The triangulated mesh highlights how local neighborhoods in the layout correspond to relationships in the high-dimensional space, enabling diagnostics of distortion and preservation across dimensions.", fig.pos="!ht", fig.alt="The UMAP layout with a triangular mesh on the left and the tour view of the lifted wireframe overlaying the data on the right. The mesh illustrates how local neighborhoods in the 2-D embedding correspond to curved sheet structures in the original high-dimensional S-curve data."}
+
+hex_grid_scurve + wrap_plots(
+  scurve_proj_umap_model1, scurve_proj_umap_model2,
+  scurve_proj_umap_model3, scurve_proj_umap_model4, 
+  ncol = 2)
+```
+
+The paper is organized as follows. The usage section explains how users can fit a complete model pipeline from hexagonal binning of a $2\text{-}D$ layout to lifting the representation back into $p\text{-}D$ and how the resulting objects can be explored interactively using tour. The next section introduces the implementation of the `quollr` package on CRAN, including a demonstration of the package's key functions and visualization capabilities. In the application section, we illustrate the algorithm's functionality for studying a clustering data structure. Finally, we conclude the paper with a brief summary and discuss potential opportunities for using our algorithm.
+
+# Usage
+
+The package is available on CRAN, and the development version is available at [github.com/JayaniLakshika/quollr](https://github.com/JayaniLakshika/quollr).
+
+Our algorithm includes the following steps: (1) scaling the NLDR data, (2) computing configurations of a hexagon grid, (3) binning the data, (4) obtaining the centroids of each bin, (5) indicating neighboring bins with line segments that connect the centroids, and (6) lifting the model into high dimensions. A detailed description of the algorithm can be found in @gamage2025c.
+
+The user needs two inputs: the high-dimensional dataset and the corresponding NLDR data. The high-dimensional data must contain a unique `ID` column, with data columns prefixed by the letter `x` (e.g., `x1`, `x2`, etc.). The NLDR dataset should include embedding coordinates labeled as `emb1` and `emb2`, ensuring one-to-one correspondence with the high-dimensional data through the shared `ID`. The built-in example datasets, `scurve` and `scurve_umap` demonstrates these structures.
+
+To run the entire model pipeline, we can use the `fit_high_model()` function. This function requires: the high-dimensional data (`highd_data`), the embedding data (`nldr_data`), the number of bins along the x-axis (`b1`), the buffer amount as a proportion of the data (`q`), and a benchmark value to identify high-density hexagons (`hd_thresh`). 
+
+The function returns an object of class `highd_vis_model` containing the scaled NLDR object (`nldr_scaled_obj`) with three elements: the first is the scaled NLDR data (`scaled_nldr`), and the second and third are the limits of the original NLDR data (`lim1` and `lim2`); the hexagonal object (`hb_obj`), the fitted model in both $2\text{-}D$ (`model_2d`), and $p\text{-}D$ (`model_highd`), and triangular mesh (`trimesh_data`).  
+
+
+```{r, echo=TRUE, eval=TRUE}
+model_obj <- fit_highd_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  b1 = 21, 
+  q = 0.1, 
+  hd_thresh = 0)
+```
+
+The resulting model can then be shown in a tour using a two-step process:
+
+```{r, echo=TRUE, eval=TRUE}
+combined_data <- comb_data_model(
+  highd_data = scurve,
+  model_highd = model_obj$model_highd,
+  model_2d = model_obj$model_2d
+)
+
+tour_view <- show_langevitour(
+  point_data = combined_data,
+  edge_data = model_obj$trimesh_data
+)
+```
+
+which produces the model and data plot shown in `r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:algo-step-html)"} else { "Figure \\@ref(fig:algo-steps)"})`. 
+
+# Implementation
+
+The implementation of `quollr` is designed to be efficient, and easy to extend. The package is organized into a series of logical components that reflect the main stages of the workflow: data preprocessing, model fitting, low-density bin removal, prediction, visualization, and interactive exploration (Figure `r '\\@ref(fig:workflow)'`). This package structure makes the code easier to maintain and allows new features to be added without changing the existing functionality.
+
+```{r workflow, out.width = "100%", fig.pos="H", fig.cap="Overview of the \\texttt{quollr} workflow and software architecture. The process begins with NLDR and $p\\text{-}D$ data inputs, followed by data preprocessing and hexagonal binning. Centroids are computed and triangulated to form the $2\\text{-}D$ mesh, which is then lifted into the $p\\text{-}D$ space. Predictions and error computations are performed on new data, while interactive functions enable dynamic linking between the $p\\text{-}D$ and $2\\text{-}D$ representations.", fig.alt = "The figure is a schematic diagram illustrating the quollr workflow and software architecture. Rectangular boxes represent processing steps and data objects, including NLDR and p-D data inputs, data preprocessing, hexagonal binning, centroid computation, triangulation, and construction of a 2-D mesh. Arrows indicate the flow of information between steps, from the input data through the 2-D mesh, and then from the mesh being lifted into the p-D space. Additional boxes show prediction and error computation for new data, as well as interactive components that link the p-D and 2-D representations. The diagram is laid out sequentially, showing how data move through the system from input to interactive output."}
+
+knitr::include_graphics("figures/quollr_workflow.png")
+```
+
+## Software architecture
+
+The package is organized into seven core modules corresponding to stages of the workflow: preprocessing, $2\text{-}D$ model construction, lifting the model into $p\text{-}D$, prediction, error computation, visualizations, and interactivity. Each module performs a distinct task and communicates through data objects.
+
+1. Data preprocessing: The function `gen_scaled_data()` standardizes the embedding data, manage variable naming, and ensure consistent identifiers across high-dimensional and embedded datasets.
+
+2. Construct $2\text{-}D$ model: A series of functions `hex_binning()`, `merge_hexbin_centroids()`, `tri_bin_centroids()`, `gen_edges()`, and `update_trimesh_index()` generate the hexagonal grid, compute bin centroids, and connect the triangular mesh that defines local neighborhoods in the $2\text{-}D$ space.
+
+3. Lift the model into $p\text{-}D$: The function `avg_highd_data()` computes the average of the high-dimensional variables for each bin, linking the $2\text{-}D$ representation back to the original data space.
+
+4. Prediction: The function `predict_emb()` estimates the embedding of new high-dimensional observations based on the fitted model.
+
+5. Error computation: The `glance()` and `augment()` function summarizes model performance by comparing the predicted and original embeddings.
+
+6. Visualizations: Functions such as `geom_hexgrid()`, `geom_trimesh()`, and `show_langevitour()` provide tools for exploring the fitted models through static and dynamic visualizations.
+
+7. Interactivity: The functions `comb_all_data_model()` and `show_link_plots()` generate interactive linked visualizations that connect the $2\text{-}D$ NLDR layout, the corresponding tour view, and the fitted model. Similarly, `comb_all_data_model_error()` and `show_error_link_plots()` integrate the error distribution with the $2\text{-}D$ embedding and tour view, enabling interactivity across multiple plots.
+
+Each module is internally independent but connected through data objects (see next section). This modular design simplifies maintenance and allows developers to extend individual components such as substituting different binning approaches, extracting centroids, or visualization tools without altering the overall workflow.
+
+## Data objects
+
+The internal data objects follow the tidy data principle: each variable is stored in a column, each observation in a row, and each type of information in its own table. This structure makes the package easy to use with the `tidyverse` and other visualization tools.
+
+### Input objects
+
+- `highd_data`: a tibble containing the original high-dimensional observations with a unique identifier (`ID`) and variable columns prefixed with `x` (e.g., `x1`, `x2`, …).
+
+- `nldr_data`: a tibble containing two-dimensional embeddings, labeled as `emb1` and `emb2`, matched to the same `ID`s.
+
+### Generated objects
+
+- `scaled_nldr_obj`: the output of `gen_scaled_data()`, which rescales the embedding to the range $[0, 1] \times [0, y_{2,\text{max}}]$, where $y_{2,\text{max}} = r_2 / r_1$ is the ratio of the embedding ranges. It includes the scaled coordinates (`scaled_nldr`) and the original limits (`lim1`, `lim2`).
+
+- `hex_bin_obj`: the object created by `hex_binning()`, which includes hexagon grid configurations. It includes the binwidth (`a1`), binheight (`a2`), the number of bins along each axis (`b1`, `b2`), the centroids of all hexagons, polygon coordinates, and the assignment of each data point to the hexagon.
+
+- `highd_vis_model`: the main model object returned by `fit_highd_model()`. It stores all components of the fitted model, including the scaled NLDR data (`nldr_scaled_obj`), the hexagonal bin configurations (`hb_obj`), the averaged $p\text{-}D$ summaries for each bin (`model_highd`), the corresponding $2\text{-}D$ bin centroids (`model_2d`), and the triangulated mesh connecting neighboring bins (`trimesh_data`). 
+
+## Computational efficiency and optimization
+
+Several core computations within `quollr` are optimized using compiled C++ code via the `Rcpp` and `RcppArmadillo` packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (`compute_highd_dist()`), error metrics (`compute_errors()`), $2\text{-}D$ distance calculations (`calc_2d_dist_cpp()`), and generation of hexagon coordinates (`gen_hex_coord_cpp()`) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+
+## Pipeline implementation
+
+In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (`fit_highd_model` and `comb_data_model`). Each step can be run independently to ensure flexibility in the modelling aproach.
+
+```{r algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-body", fig.alt = "The figure consists of four panels illustrating steps in constructing a model on a UMAP layout using the scurve data. Panel (a) is a static 2-D scatter plot of the UMAP embedding with points grouped into hexagonal bins. Panel (b) shows the same 2-D layout with a single centroid point displayed for each hexagonal bin. Panel (c) shows the centroids connected by straight line segments to form a triangulated mesh across the 2-D layout. Panel (d) is atour view in which the triangulated 2-D mesh is lifted into the original high-dimensional space and displayed as a continuously changing 2-D projection; the axes represent linear combinations of the original dimensions, and the mesh rotates and changes orientation as the view updates. The 2-D panels use bounded numeric axes with roughly square aspect ratios, while the tour view shows the lifted structure from multiple viewing angles."}
+
+algofig <- bscols(
+  htmltools::div(
+    style = "
+      display: flex;
+      justify-content: center;     /* centers the grid horizontally */
+      align-items: center;          /* optional: centers vertically if space allows */
+      margin: 0 auto;
+      padding: 0;
+    ",
+    htmltools::div(
+      style = "
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0px;
+        align-items: start;
+        justify-items: center;
+        margin: 0;
+        padding: 0;
+      ",
+      htmltools::div(style = 'margin: 0; padding: 0;  height: 450px; width: 200px; text-align: left;', htmltools::h5("a"), hex_grid_poly_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 450px; width: 200px; text-align: left;', htmltools::h5("b"), hex_centroids_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 200px;  text-align: left;', htmltools::h5("c"), wireframe_scurve_int),
+      htmltools::div(style = 'margin: 0; padding: 0; height: 400px; width: 485px; text-align: left;', htmltools::div(
+    style = "margin-left: 140px;",
+    htmltools::h5("d"),
+    htmltools::div(style = "margin-left: 30px; margin-top: 47px; height: 360px; width: 360px;", scurve_umap_model_vis_n)
+  ))
+    )
+  ),
+  device = "xs"
+)
+
+# Treat as HTML widget
+class(algofig) <- c(class(algofig), "htmlwidget")
+
+algofig
+```
+
+```{r algo-steps, eval=knitr::is_latex_output(), out.width="80%", fig.height=5, fig.width=25, fig.pos="!ht", fig.align='center', fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The \\texttt{scurve} data is shown.", fig.alt = "The figure is a multi-panel diagram illustrating four steps in constructing a model on a UMAP layout using the scurve data. Panel (a) shows a 2-D UMAP scatter plot with points grouped into hexagonal bins covering the layout. Panel (b) shows the same layout with a centroid point displayed for each hexagon bin. Panel (c) shows the centroids connected by straight line segments to form a triangulated mesh across the 2-D layout. Panel (d) shows this 2-D triangulated mesh lifted into the original high-dimensional space, where the mesh appears as a curved surface. The horizontal and vertical axes in the 2-D panels represent the two UMAP coordinates with bounded numeric ranges, while the lifted view represents coordinates in the higher-dimensional space without explicit axis scales."}
+
+hex_grid_poly_scurve +
+  hex_centroids_scurve + wireframe_scurve + 
+  scurve_proj_umap_model1_dp +
+  plot_layout(ncol = 2)
+```
+
+The algorithm starts by scaling the NLDR data to to the range $[0, 1] \times [0, y_{2,max}]$, where $y_{2,max} = r_2/r_1$ is the ratio of ranges of embedding components. The output includes the scaled NLDR data (`scaled_nldr`) along with the original limits of the embeddings (`lim1`, `lim2`).
+
+```{r, echo=TRUE}
+scurve_umap_obj <- gen_scaled_data(nldr_data = scurve_umap)
+```
+
+### Hexagon binning
+
+The hexagon binning process builds a complete hexagonal tessellation over the $2\text{-}D$ NLDR embedding and assigns points to bins for downstream modeling. The workflow proceeds through several steps, beginning with selecting an appropriate grid configurations and ending with assigning NLDR points to their corresponding hexagons.
+
+The first step is to determine the configuration of the hexagonal grid. The function `calc_bins_y()` computes the number of bins along the y-axis (`b2`), the hexagon width (`a1`), and the hexagon height (`a2`), based on three inputs: (i) the scaled NLDR object (`nldr_scaled_obj`, containing the scaled embedding and its $2\text{-}D$ limits), (ii) the chosen number of bins along the x-axis (`b1`), and (iii) a buffer proportion (`q`) that expands the grid slightly beyond the observed data range. This buffer ensures that the tessellation fully covers the embedding. By default, `q = 0.1`, but in practice it must be chosen to avoid exceeding the domain of the scaled NLDR data.
+
+```{r, echo=TRUE}
+bin_configs <- calc_bins_y(
+  nldr_scaled_obj = scurve_umap_obj, 
+  b1 = 21, 
+  q = 0.1)
+
+bin_configs
+```
+
+Once the grid configurations are known, the next step is to construct the full set of hexagon centroids. The function `gen_centroids()` uses the bin configuration and the embedding limits to determine the horizontal and vertical spacing of rows, including the staggered row offsets required for hexagonal tiling. Odd rows place centroids directly above one another, while even rows shift by half the hexagon width to create the interlocking structure. Vertical spacing is determined by $v_s = (\sqrt{3}/2) a_1$, with starting positions defined by the buffer-adjusted limits. This produces a complete grid of potential hexagons covering the $2\text{-}D$ space.
+
+```{r, echo=TRUE}
+all_centroids_df <- gen_centroids(
+  nldr_scaled_obj = scurve_umap_obj, 
+  b1 = 21, 
+  q = 0.1
+)
+
+head(all_centroids_df, 5)
+```
+
+After determining the centroid locations, each hexagon’s polygonal boundary is generated using the `gen_hex_coord()` function, which constructs the six vertices of every hexagon by applying fixed geometric offsets derived from the hexagon width, $a_1$. Specifically, the horizontal and vertical offsets are defined as $dx = a_1/2$, $dy = a_1/\sqrt{3}$, and $vf = a_1/(2\sqrt{3})$, and these constants are used to position each vertex relative to the centroid, producing the complete set of hexagon boundaries.
+
+These constants define how far each vertex lies from the centroid in the six characteristic directions. For efficiency, the vertex generation is implemented in C++ and returns a tibble listing all polygon vertices, uniquely indexed by hexagons.
+
+```{r, echo=TRUE}
+all_hex_coord <- gen_hex_coord(
+  centroids_data = all_centroids_df, 
+  a1 = bin_configs$a1
+)
+
+head(all_hex_coord, 5)
+```
+
+The next step is to assign each NLDR point to its closest hexagon. The `assign_data()` function computes all pairwise Euclidean distances between the $2\text{-}D$ NLDR embedding and the centroid coordinates, identifying the nearest centroid for every observation. Each point is assigned a hexagon index (`h`), producing a version of the embedding annotated with bin membership.
+
+```{r, echo=TRUE}
+umap_hex_id <- assign_data(
+  nldr_scaled_obj = scurve_umap_obj, 
+  centroids_data = all_centroids_df
+)
+
+head(umap_hex_id, 5)
+```
+
+Finally, the list of points within each hexagon can be extracted using `group_hex_pts()`. This step collapses the point-level assignments into a hexagon-level summary by grouping by `h` and collecting the IDs of all points belonging to that polygon. The result is a tidy representation of the binning structure.
+
+```{r, echo=TRUE}
+pts_df <- group_hex_pts(
+  scaled_nldr_hexid = umap_hex_id
+)
+
+head(pts_df, 5)
+```
+
+Although each component of the workflow can be run independently, the `hex_binning()` function automates the entire sequence—from grid construction to point assignment—and returns a `hex_bin_obj` containing the bin dimensions (`a1`, `a2`), the full grid geometry (`centroids`, `hex_poly`), bin membership (`data_hb_id`), standardized counts (`std_cts`), the total number of bins (`b`), non-empty bins (`m`), and the list of points per bin (`pts_bins`).
+
+```{r, echo=TRUE}
+hb_obj <- hex_binning(
+  nldr_scaled_obj = scurve_umap_obj, 
+  b1 = 21, 
+  q = 0.1)
+```
+
+### Computing the standardized number of points within each hexagon
+
+The `compute_std_counts()` function calculates both the raw and standardized counts of points inside each hexagon.
+
+The function begins by grouping the data by hexagon (`h`) and counting the number of NLDR points falling within each bin. These raw counts are stored as `n_h`. To enable comparisons across bins with varying densities, the function then standardizes these counts by dividing each bin’s count by the maximum count across all bins. This yields a standardized bin counts, `w_h`, ranging from $0$ to $1$.
+
+```{r, echo=TRUE}
+std_df <- compute_std_counts(
+  scaled_nldr_h = umap_hex_id
+  )
+
+head(std_df, 5)
+```
+
+### Obtaining bin centroids
+
+The `merge_hexbin_centroids()` function combines hexagonal bin coordinates, raw and standardized counts within each hexagons.
+
+This function performs a full join with `centroids_data`, aligning hexagons (`h`) between the two datasets to incorporate both hexagonal bin centroids (`h`) and count metrics. After merging, the function handles missing values in the count columns: any `NA` values in `w_h` or `n_h` are replaced with zeros. This ensures that hexagons with no assigned data points are retained in the output, with zero values for count-related fields. The resulting data contains the full set of hexagon centroids along with associated bin counts (`n_h`) and standardized counts (`w_h`).
+
+```{r, echo=TRUE}
+df_bin_centroids <- merge_hexbin_centroids(
+  centroids_data = all_centroids_df, 
+  counts_data = hb_obj$std_cts
+  )
+
+head(df_bin_centroids, 5)
+```
+
+### Indicating neighbors by line segments connecting centroids
+
+To represent the neighborhood structure of hexagonal bins in a $2\text{-}D$ layout, we employ Delaunay triangulation [@lee1980;@albrecht2024] on the centroids of hexagons.
+
+The `tri_bin_centroids()` function generates a triangulation object from the x and y coordinates of hexagon centroids using the `interp::tri.mesh()` function [@albrecht2024]. 
+
+```{r, echo=TRUE}
+tr_object <- tri_bin_centroids(
+  centroids_data = df_bin_centroids
+  )
+```
+
+The `gen_edges()` function uses this triangulation object to extract line segments between neighboring bins. It constructs a unique set of bin-to-bin connections by identifying the triangle edges and filtering duplicate or reversed links. Each edge is then annotated with its start and end coordinates, and a Euclidean distance between the coordinates.
+
+```{r, echo=TRUE}
+trimesh <- gen_edges(tri_object = tr_object, a1 = hb_obj$a1)
+
+head(trimesh, 5)
+```
+
+The `update_trimesh_index()` function re-indexes the node IDs to ensure that edge identifiers are sequentially numbered and consistent with downstream analysis. This sequential ordering of edges is essential because software such as `langevitour` and `detourr` rely on one-to-one mapping between edges and their corresponding vertices to visualize the mesh.
+
+```{r, echo=TRUE}
+trimesh <- update_trimesh_index(trimesh_data = trimesh)
+
+head(trimesh, 5)
+```
+
+### Identifying and removing low-density hexagons
+
+Not all hexagons contain meaningful information. Some may have very few or no data points due to the sparsity or shape of the underlying structure. Simply removing hexagons with low counts (e.g., fewer than a fixed threshold) can lead to gaps or "holes" in the $2\text{-}D$ structure, potentially disrupting the continuity of the representation.
+
+To address this, we propose a more nuanced method that evaluates each hexagon not only based on its own density, but also in the context of its immediate neighbors. The `find_low_dens_hex()` function identifies hexagonal bins with insufficient local support by calculating the average standardized count across their six neighboring bins. If this mean neighborhood density is below a user-defined threshold (e.g., $0.05$), the hexagon is flagged for removal.
+
+The `find_low_dens_hex()` function relies on a helper, `compute_mean_density_hex()`, which iterates over all hexagons and computes the average density across neighbors based on their hexagon (`h`) and a defined number of bins along the x-axis (`b1`). The hexagonal layout assumes a fixed grid structure, so neighbor IDs are computed by positional offsets.
+
+```{r, echo=TRUE}
+low_density_hex <- find_low_dens_hex(
+  model_2d = df_bin_centroids, 
+  b1 = 21, 
+  md_thresh = 0.05
+)
+```
+
+For simplicity, we remove low-density hexagons using a threshold of $0$.
+
+```{r, echo=TRUE}
+df_bin_centroids <- df_bin_centroids |>
+  dplyr::filter(n_h > 0)
+
+trimesh <- trimesh |>
+  dplyr::filter(from_count > 0,
+                to_count > 0)
+
+trimesh <- update_trimesh_index(trimesh)
+```
+
+### Lifting the model into high dimensions
+
+The final step involves lifting the fitted $2\text{-}D$ model into $p\text{-}D$. This is done by modelling a point in $p\text{-}D$ as the  $p\text{-}D$ mean of data points in the $2\text{-}D$ centroid. This is performed using the `avg_highd_data()` function, which takes $p\text{-}D$ data (`highd_data`) and embedding data with their corresponding hexagonal bin IDs as inputs (`scaled_nldr_hexid`).
+
+```{r, echo=TRUE}
+df_bin <- avg_highd_data(
+  highd_data = scurve, 
+  scaled_nldr_hexid = hb_obj$data_hb_id
+)
+
+head(df_bin, 5)
+```
+
+## Prediction
+
+The `predict_emb()` function is used to predict a point in a $2\text{-}D$ embedding for a new $p\text{-}D$ data point using the fitted model. This function is useful to predict $2\text{-}D$ embedding irrespective of the NLDR technique.
+
+In the prediction process, first, the nearest $p\text{-}D$ model point is identified for the new $p\text{-}D$ data point by computing $p\text{-}D$ Euclidean distance. Then, the corresponding $2\text{-}D$ bin centroid mapping for the identified $p\text{-}D$ model point is determined. Finally, the coordinates of the identified $2\text{-}D$ bin centroid is used as the predicted NLDR embedding for the new $p\text{-}D$ data point. 
+
+To accelerate this process, the nearest-neighbor search is implemented in C++ using `Rcpp` via the internal function `compute_highd_dist()`.
+
+```{r, echo=TRUE}
+predict_data <- predict_emb(
+  highd_data = scurve, 
+  model_2d = df_bin_centroids, 
+  model_highd = df_bin
+  )
+
+head(predict_data, 5)
+```
+
+It is worth noting that while `predict_emb()` provides a general approach that works across methods, some NLDR techniques have their own built-in prediction mechanisms. For example, UMAP [@tomasz2023] supports direct prediction of embeddings for new data once a model is fitted.
+
+## Compute residuals and hexbin error (HBE)
+
+Hexbin error (HBE) serves as a goodness-of-fit metric for evaluating the high-dimensional to $2\text{-}D$ mapping. The `glance()` function computes these summary diagnostics by combining the fitted model returned by `fit_highd_model()` with the $p\text{-}D$ data. After renaming the model output to avoid join conflicts, `predict_emb()` is used to assign each observation to a hexagon in the $2\text{-}D$ embedding. The resulting bin assignments are joined with both the model output and the $p\text{-}D$ data, allowing squared and absolute differences between the true and modeled $p\text{-}D$ coordinates to be computed for every dimension. Total absolute error (`Error`) and hexbin error (`HBE`, the root mean squared error) are then obtained using an efficient C++ implementation (`compute_errors()`), and returned in a tidy tibble.
+
+```{r, echo=TRUE}
+glance(
+  x = scurve_model_obj,
+  highd_data = scurve
+)
+```
+
+The `augment()` function provides point-level diagnostics by appending predictions and residuals to the original $p\text{-}D$ data. Using the same prediction process as `glance()`, it computes dimension-wise residuals, squared errors, and absolute errors, along with two aggregate measures per observation: the total squared error (`row_wise_total_error`) and the total absolute error (`row_wise_abs_error`). The final output is a tibble containing IDs (`ID`), $p\text{-}D$ data, predicted hexagons (`h`), modeled coordinates, and all residual diagnostics, with one row per observation.
+
+```{r, echo=TRUE}
+model_error <- augment(
+  x = scurve_model_obj,
+  highd_data = scurve
+)
+```
+
+## Visualizations
+
+The package offers several $2\text{-}D$ visualizations (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)"} else { "Figure \\@ref(fig:geom-outputs-pdf)"})`), including a full hexagonal grid, a hexagonal grid that matches the data, a full grid based on centroid triangulation, a centroid triangulation grid that aligns with the data, and a triangular mesh for any provided set of points.
+
+The generated $p\text{-}D$ model, overlaid with the data, can also be visualized using `show_langevitour`. Additionally, it features a function for visualizing the $2\text{-}D$ projection of the fitted model overlaid on the data, called `plot_proj`. 
+
+Furthermore, there are two interactive plots, `show_link_plots` and `show_error_link_plots`, which are designed to help diagnose the model. Each visualization can be generated using its respective function, as described in this section.
+
+### Hexagonal grid
+
+The `geom_hexgrid()` function introduces a custom `ggplot2` layer designed for visualizing hexagonal grid on a provided set of bin centroids.
+
+To display the complete grid, users should supply all available bin centroids (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)a"} else { "Figure \\@ref(fig:geom-outputs-pdf)a"})`). 
+
+```{r, echo=TRUE}
+full_hexgrid <- ggplot() + 
+  geom_hexgrid(
+    data = hb_obj$centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+```
+
+If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)b"} else { "Figure \\@ref(fig:geom-outputs-pdf)b"})`).
+
+```{r, echo=TRUE}
+data_hexgrid <- ggplot() + 
+  geom_hexgrid(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+```
+
+### Triangular mesh
+
+The `geom_trimesh()` function introduces a custom `ggplot2` layer designed for visualizing $2\text{-}D$ wireframe on a provided set of bin centroids.
+
+To display the complete wireframe, users should supply all available bin centroids (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)c"} else { "Figure \\@ref(fig:geom-outputs-pdf)c"})`). 
+
+```{r, echo=TRUE}
+full_triangulation_grid <- ggplot() + 
+  geom_trimesh(
+    data = hb_obj$centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+```
+
+If the goal is to plot only the subset of hexagons that correspond to bins containing data points, then only the centroids associated with those bins should be passed (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:geom-outputs)d"} else { "Figure \\@ref(fig:geom-outputs-pdf)d"})`).
+
+```{r, echo=TRUE}
+data_triangulation_grid <- ggplot() + 
+  geom_trimesh(
+    data = df_bin_centroids, 
+    aes(x = c_x, y = c_y)
+    ) 
+```
+
+```{r}
+
+full_hexgrid <- full_hexgrid + 
+  xlim(c(-0.2, 1.32)) +
+  ylim(c(-0.2, 1.32)) + interior_annotation("a", cex = 3)
+
+data_hexgrid <- data_hexgrid + 
+  interior_annotation("b", cex = 3)
+
+full_triangulation_grid <- full_triangulation_grid + 
+  xlim(c(-0.2, 1.32)) +
+  ylim(c(-0.2, 1.32)) + interior_annotation("c", cex = 3)
+
+data_triangulation_grid <- data_triangulation_grid + 
+  interior_annotation("d", cex = 3)
+
+```
+
+```{r geom-outputs, fig.cap="The outputs of `geom_hexgrid` and `geom_trimesh` include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_html_output(), fig.alt = "The figure consists of four 2-D panels illustrating hexagonal grids and triangulated meshes. Panel (a) shows a complete hexagonal grid covering a rectangular 2-D region, with all hexagons drawn regardless of whether data are present. Panel (b) shows a hexagonal grid restricted to bins that contain data points, with only those hexagons displayed and gaps where bins are empty. Panel (c) shows a full triangulated mesh constructed from centroids across the entire grid region, with centroids connected by straight line segments to form triangles. Panel (d) shows a triangulated mesh constructed only from centroids corresponding to non-empty bins, aligned with the data layout and leaving open areas where no centroids are present. In all panels, the horizontal and vertical axes represent continuous 2-D coordinates with bounded numeric ranges, and the grids and meshes are drawn with uniform line styles and colors."}
+
+full_hexgrid + data_hexgrid + 
+  full_triangulation_grid + data_triangulation_grid +
+  plot_layout(ncol = 4)
+```
+
+```{r geom-outputs-pdf, fig.cap="The outputs of \\texttt{geom\\_hexgrid} and \\texttt{geom\\_trimesh} include: (a) a complete hexagonal grid, (b) a hexagonal grid that corresponds with the data, (c) a full grid based on centroid triangulation, and (d) a centroid triangulation grid that aligns with the data.", fig.align='center', fig.pos="!ht", fig.height=5, fig.width=20, eval=knitr::is_latex_output(), fig.alt = "The figure consists of four 2-D panels illustrating hexagonal grids and triangulated meshes. Panel (a) shows a complete hexagonal grid covering a rectangular 2-D region, with all hexagons drawn regardless of whether data are present. Panel (b) shows a hexagonal grid restricted to bins that contain data points, with only those hexagons displayed and gaps where bins are empty. Panel (c) shows a full triangulated mesh constructed from centroids across the entire grid region, with centroids connected by straight line segments to form triangles. Panel (d) shows a triangulated mesh constructed only from centroids corresponding to non-empty bins, aligned with the data layout and leaving open areas where no centroids are present. In all panels, the horizontal and vertical axes represent continuous 2-D coordinates with bounded numeric ranges, and the grids and meshes are drawn with uniform line styles and colors."}
+
+ full_hexgrid + 
+  data_hexgrid +  
+  full_triangulation_grid + 
+  data_triangulation_grid +
+  plot_layout(ncol = 4)
+```
+
+### $p\text{-}D$ model visualization
+
+To visualize how well the $p\text{-}D$ model captures the underlying structure of the high-dimensional data, we provide a tour of the model in $p\text{-}D$ using the `show_langevitour()` function (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-highd-model-html)"} else { "Figure \\@ref(fig:scurve-highd-model-pdf)"})`). This function renders a dynamic projection of both the high-dimensional data and the model using the `langevitour` R package [@paul2023].
+
+Before plotting, the data needs to be organized into a combined format through the `comb_data_model()` function. This function takes three inputs: `highd_data` (the high-dimensional observations), `model_highd` (high-dimensional summaries for each bin), and `model_2d` (the hexagonal bin centroids of the model). It returns a tidy data frame combining both the data and the model.
+
+In this structure, the `type` variable distinguishes between original observations (`data`) and the bin-averaged model representation (`model`).
+
+```{r, echo=TRUE}
+df_exe <- comb_data_model(
+  highd_data = scurve, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids
+  )
+```
+
+The `show_langevitour()` function then renders the visualization using the `langevitour` interface, displaying both types of points in a dynamic tour. The `edge_data` input defines connections between neighboring bins (i.e., the hexagonal edges) to visualize the model’s structure.
+
+```{r scurve-highd-model-html, echo=TRUE, eval=knitr::is_html_output(), fig.pos="!ht", fig.width=20, fig.height=5, fig.cap="\\texttt{langevitour} output of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the \\texttt{scurve} data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "The figure shows an animated langevitour of the lifted high-dimensional wireframe model derived from the scurve UMAP layout. At each moment, a 2-D projection is displayed in which the horizontal and vertical axes represent linear combinations of the original high-dimensional coordinates, with continuous numeric ranges. The wireframe model appears as a network of connected line segments drawn in black, while the scurve data points are overlaid in blue as individual markers. As the projection changes smoothly over time, the wireframe and data rotate and change orientation together, revealing different alignments between the model and the data. In some views, parts of the wireframe extend into areas with few or no data points, leaving visible gaps. The display maintains a roughly square aspect ratio throughout the tour."}
+
+show_langevitour(
+  point_data = df_exe, 
+  edge_data = trimesh
+  )
+```
+
+```{r scurve-highd-model-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.cap="$2\\text{-}D$ projections of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout. Each panel (a1–a4) shows the model (black) overlaid on \\texttt{scurve} data (blue) in different projections. These views illustrate how the lifted wireframe model captures the structure of the \\texttt{scurve} data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "The figure shows four panels of 2-D scatter plots (a1–a4), each displaying a different projection of the lifted high-dimensional wireframe model derived from the scurve UMAP layout. In each panel, the horizontal and vertical axes represent two projected coordinates with continuous numeric ranges. The wireframe model is drawn in black as a wireframe of connected line segments, and the scurve data points are overlaid in blue as individual markers. The relative positions and orientations of the wireframe and data points vary across panels as different projections are shown. In some regions, the wireframe extends into areas with few or no data points, leaving visible gaps between the model and the data. All panels have similar aspect ratios and use consistent color and symbol encodings to distinguish the model from the data."}
+
+scurve_proj_umap_model1 + scurve_proj_umap_model2 + 
+  scurve_proj_umap_model3 + scurve_proj_umap_model4 + 
+  plot_layout(ncol = 4)
+```
+
+As an alternative to `langevitour`, users can explore the fitted $p\text{-}D$ model using the `detourr` [@casper2025] (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-highd-model-detourrhtml)"} else { "Figure \\@ref(fig:scurve-highd-model-detourrpdf)"})`). The combined data object from `comb_data_model()` can be passed directly to the `detour()` function, where `tour_aes()` defines the projection variables and color mapping. The visualization is rendered using `show_scatter()`, which can display both data points and the model’s structural edges via the `edges` argument.
+
+```{r scurve-highd-model-detourrpdf, out.width=c("50%", "50%"), fig.cap="Screenshots of the lifted high-dimensional wireframe model from the \\texttt{scurve} UMAP layout using \\texttt{detourr}. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "The figure shows several screenshots of 2-D projections of the lifted high-dimensional wireframe model derived from the scurve UMAP layout using detourr. In each screenshot, the horizontal and vertical axes represent projected coordinates with continuous numeric ranges. The wireframe model is displayed as a set of connected line segments, and the scurve data points are shown as individual markers overlaid on the wireframe. The orientation and shape of the wireframe and point cloud differ across screenshots as different projections are shown. In some views, parts of the wireframe extend into areas with few or no data points, leaving visible gaps between the model and the data. All screenshots use consistent color and line styles and have similar aspect ratios.", fig.pos="H", fig.show='hold', eval=knitr::is_latex_output()}
+
+knitr::include_graphics(c("figures/model_proj1_detourr.png",
+                          "figures/model_proj2_detourr.png"))
+```
+
+```{r scurve-highd-model-detourrhtml, echo=TRUE, eval=knitr::is_html_output(), fig.cap="`detourr` output of the lifted high-dimensional wireframe model from the `scurve` UMAP layout. These views illustrate how the lifted wireframe model captures the structure of the `scurve` data. Regions with sparse or no data in the UMAP layout are also visible in the lifted model.", fig.alt = "The figure shows an animated detourr tour of the lifted high-dimensional wireframe model derived from the scurve UMAP layout. The display presents a sequence of changing 2-D projections, where the horizontal and vertical axes represent linear combinations of the original high-dimensional coordinates with continuous numeric ranges. The wireframe model appears as a network of connected line segments, and the scurve data points are overlaid as individual markers. As the tour progresses, the orientation and shape of the wireframe and point cloud change smoothly, revealing different alignments between the model and the data. In some views, sections of the wireframe extend into regions with few or no data points, leaving visible gaps. The visualization maintains a roughly square aspect ratio and consistent visual encodings throughout the tour."}
+
+detour(
+  df_exe,
+  tour_aes(
+    projection = starts_with("x"),
+    colour = type
+  )
+) |>
+  tour_path(grand_tour(2), 
+                    max_bases=50, fps = 60) |>
+  show_scatter(axes = TRUE, size = 1.5, alpha = 0.5, 
+               edges = as.matrix(trimesh[, c("from_reindexed", "to_reindexed")]),
+               palette = c("#66B2CC", "#FF7755"),
+               width = "600px", height = "600px")
+```
+
+In the resulting interactive visualization, blue points represent the high-dimensional data, orange points represent the model centroids from each bin, and the lines between model points reflect the $2\text{-}D$ wireframe structure mapped to high-dimensional space.
+
+### Linked plots
+
+Two types of interactively linked plots can be generated to assess the model fits everywhere, or better in some subspaces, or completely mismatch the data. The plots are linked using `crosstalk`, which allows interactive brushing: selecting or brushing points in one plot automatically highlights the corresponding points in the other linked views. 
+
+First, the function `show_link_plots()` provides linking a $2\text{-}D$ NLDR layout and a tour (via `langevitour`) of the model overlaid the data (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-nldrlink-html)"} else { "Figure \\@ref(fig:scurve-nldrlink-pdf)"})`).
+
+The `point_data` for `show_link_plots()` can be prepared using the `comb_all_data_model()` function. This function combines the high-dimensional data (`highd_data`), the NLDR data (`nldr_data`), and the bin-averaged high-dimensional model representation (`model_highd`) aligned to the $2\text{-}D$ bin layout (`model_2d`). This combined dataset includes both the original observations and the bin-level model averages, labeled with a `type` variable for distinguishing between them. Also, the `show_link_plots()` function takes `edge_data`, which defines connections between neighboring bins.
+
+```{r, echo=TRUE}
+df_exe <- comb_all_data_model(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids
+  )
+```
+
+```{r scurve-nldrlink-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting the UMAP layout (left) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in either view highlights the corresponding subset of points across both representations, allowing examination of how well the UMAP layout preserves the underlying `scurve` structure. Double-clicking on either view clears the selection and dehighlights all points.", fig.alt = "The figure shows two interactively linked panels. The left panel displays a 2-D UMAP layout of the scurve data, with horizontal and vertical axes representing the UMAP coordinates on continuous numeric scales. The right panel shows a 2-D projection of the 7-D data and fitted model using langevitour, where each axis represents a linear combination of the original seven dimensions. Data points are plotted as individual markers, and brushing a subset of points in either panel highlights the corresponding points in the other panel using a distinct color. The highlighted points update dynamically as selections change, and double-clicking on either panel clears all highlights. The display maintains roughly square aspect ratios in both panels and uses consistent visual encodings for data and selected subsets throughout the interactive view.", layout = "l-body"}
+
+nldrdt_link <- show_link_plots(
+  point_data = df_exe, 
+  edge_data = trimesh, 
+  point_colour = clr_choice
+  )
+
+nldrdt_link <- crosstalk::bscols(
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px; align-items: start; justify-items: center; margin: 0; padding: 0;
+    height: 380px; width: 500px",
+        nldrdt_link
+    ),
+    device = "xs"
+)
+
+class(nldrdt_link) <- c(class(nldrdt_link), "htmlwidget")
+
+nldrdt_link
+```
+
+```{r}
+## Create the first row of selection
+scurve_umap_scaled_select1 <- scurve_umap_scaled |>
+  mutate(select_area = if_else(emb1 <= 0.7 & emb1 >= 0.4 & emb2 <= 0.25 & emb2 >= 0, "selected", "deselected"))
+
+scurve_umap_scaled_select1_selected <- scurve_umap_scaled_select1 |>
+  filter(select_area == "selected")
+
+scurve_umap_scaled_select1_deselected <- scurve_umap_scaled_select1 |>
+  filter(select_area == "deselected")
+
+scurve_umap_plt_select1 <- ggplot(
+  scurve_umap_scaled_select1_deselected, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  geom_point(data = scurve_umap_scaled_select1_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+scurve_umap_plt_select1_lk <- scurve_umap_plt_select1 +
+  interior_annotation("a1", cex = 3)
+
+scurve_umap_plt_select1_lk2 <- scurve_umap_plt_select1 +
+  interior_annotation("a2", cex = 3) 
+
+proj_obj2_cp[["cluster"]] <- factor(scurve_umap_scaled_select1$select_area,
+                                 levels=c("deselected", "selected"))
+
+projected_df <- proj_obj2_cp$projected_df
+model_df <- proj_obj2_cp$model_df
+axes <- proj_obj2_cp$axes
+circle <- proj_obj2_cp$circle
+
+projected_df <- projected_df |>
+  dplyr::mutate(cluster = proj_obj2_cp$cluster)
+
+scurve_proj_umap_model1_selected1 <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.5,
+        alpha = 0.3) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
+  interior_annotation(label = "a2", cex = 3) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+
+scurve_proj_umap_model1_selected1_dp <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.5,
+        alpha = 0.3) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
+  interior_annotation(label = "a3", cex = 3) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+
+## Create the second row of selection
+scurve_umap_scaled_select2 <- scurve_umap_scaled |>
+  mutate(select_area = if_else(emb1 <= 0.55 & emb1 >= 0.25 & emb2 <= 1.25 & emb2 >= 0.75, "selected", "deselected"))
+
+scurve_umap_scaled_select2_selected <- scurve_umap_scaled_select2 |>
+  filter(select_area == "selected")
+
+scurve_umap_scaled_select2_deselected <- scurve_umap_scaled_select2 |>
+  filter(select_area == "deselected")
+
+scurve_umap_plt_select2 <- ggplot(
+  scurve_umap_scaled_select2_deselected, 
+  aes(x = emb1, y = emb2)) +
+  geom_point(alpha = 0.5, color = clr_choice, size = 0.5) +
+  geom_point(data = scurve_umap_scaled_select2_selected, aes(x = emb1, y = emb2), alpha = 0.5, color = "#756bb1", size = 0.5) +
+  xlim(sc_xlims) +
+  ylim(sc_ylims)
+
+scurve_umap_plt_select2_lk <- scurve_umap_plt_select2 +
+    interior_annotation("b1", cex = 3) 
+
+scurve_umap_plt_select2_lk2 <- scurve_umap_plt_select2 +
+    interior_annotation("b2", cex = 3) 
+
+proj_obj2_cp[["cluster"]] <- factor(scurve_umap_scaled_select2$select_area,
+                                 levels=c("deselected", "selected"))
+
+projected_df <- proj_obj2_cp$projected_df
+model_df <- proj_obj2_cp$model_df
+axes <- proj_obj2_cp$axes
+circle <- proj_obj2_cp$circle
+
+projected_df <- projected_df |>
+  dplyr::mutate(cluster = proj_obj2_cp$cluster)
+
+scurve_proj_umap_model1_selected2 <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.5,
+        alpha = 0.3) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
+  interior_annotation(label = "b2", cex = 3) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+
+scurve_proj_umap_model1_selected2_dp <- ggplot() +
+      geom_point(
+        data = projected_df,
+        aes(
+          x = proj1,
+          y = proj2,
+          colour = factor(cluster, levels = c("deselected", "selected")),
+          size = factor(cluster, levels = c("deselected", "selected"))),
+        alpha = 0.5) +
+      geom_segment(
+        data = model_df,
+        aes(
+          x = proj1_from,
+          y = proj2_from,
+          xend = proj1_to,
+          yend = proj2_to),
+        colour = "#000000",
+        linewidth = 0.5,
+        alpha = 0.3) +
+      geom_segment(
+          data=axes,
+          aes(x=x1, y=y1, xend=x2, yend=y2),
+          colour="grey70") +
+        geom_text(
+          data=axes,
+          aes(x=x2, y=y2),
+          label=rownames(axes),
+          colour="grey50",
+          size = 5) +
+        geom_path(
+          data=circle,
+          aes(x=c1, y=c2), colour="grey70") +
+        xlim(c(-0.5, 0.47)) +
+        ylim(c(-0.5, 0.47)) +
+  interior_annotation(label = "b3", cex = 3) +
+  scale_color_manual(values = c(clr_choice, '#756bb1')) +
+  scale_size_manual(values = c('deselected' = 1.0, 'selected' = 1.5)) +
+  theme(aspect.ratio = 1,
+        legend.position = "none")
+```
+
+```{r scurve-nldrlink-pdf, eval=knitr::is_latex_output(), fig.pos="!ht", fig.width=10, fig.height=10, fig.cap="Exploring the correspondence between UMAP layout and \\texttt{scurve} structure in $7\\text{-}D$. Two sets of plots are interactively linked: UMAP layout (a1, b1) and projection of $7\\text{-}D$ model and data (a2, b2). The purple points indicate the selected subsets, which differ between rows. In (a1), the lower bridge of the \\texttt{scurve} is highlighted, which corresponds in (a2) to points spanning across both arms of the high-dimensional structure. In (b1), a different region near the upper arm of the \\texttt{scurve} is selected, and in (b2) these points map onto one side of the curved manifold in $7\\text{-}D$ projection. While the UMAP layout suggests distinct local clusters, the linked tour views reveal how these selections trace continuous structures in the $7\\text{-}D$ space, highlighting distortions introduced by UMAP.", fig.alt = "The figure consists of four linked panels arranged in two rows and two columns. Panels (a1) and (b1) show 2-D scatter plots of a UMAP layout, with the horizontal and vertical axes representing the two UMAP coordinates on continuous numeric scales. Panels (a2) and (b2) show corresponding 2-D projections from a tour of the 7-D data and model, where each axis represents a linear combination of the original seven dimensions. Data points are plotted as individual markers, and selected subsets are highlighted in purple while unselected points appear in a contrasting color. In the top row, a set of points highlighted in the lower region of the UMAP layout in (a1) is linked to highlighted points in the tour view in (a2). In the bottom row, a different highlighted region in the UMAP layout in (b1) is linked to a different set of highlighted points in the tour view in (b2). The linked selections update consistently across panels, showing how the same subsets of observations appear in the UMAP layout and in different projections of the high-dimensional space."}
+
+scurve_umap_plt_select1_lk + scurve_proj_umap_model1_selected1 +
+  scurve_umap_plt_select2_lk + scurve_proj_umap_model1_selected2 +
+  plot_layout(ncol = 2)
+```
+
+The function `show_error_link_plots()` generates three side-by-side, interactively linked plots; a error distribution, a $2\text{-}D$ NLDR layout, and a tour (via `langevitour`) of the model overlaid the data (`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:scurve-linkerror-html)"} else { "Figure \\@ref(fig:scurve-linkerror-pdf)"})`). The function takes the output from `comb_all_data_model_error()` (`point_data`) and `edge_data` which defines connections between neighboring bins.
+
+The `point_data` can be generated using the `comb_all_data_model_error()` function. The function requires several arguments: points data which contain high-dimensional data (`highd_data`), NLDR data (`nldr_data`), high-dimensional model data (`model_highd`), $2\text{-}D$ model data (`model_2d`), and model error (`error_data`). This combined dataset includes both the original observations and the bin-level model averages, labeled with a `type` variable for distinguishing between them.
+
+```{r, echo=TRUE}
+df_exe <- comb_all_data_model_error(
+  highd_data = scurve, 
+  nldr_data = scurve_umap, 
+  model_highd = df_bin, 
+  model_2d = df_bin_centroids, 
+  error_data = model_error
+  )
+```
+
+
+```{r scurve-linkerror-html, echo=TRUE, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting the residual distribution (left), the UMAP layout (middle) and the fitted model overlaid with the data in $7\\text{-}D$ (right) using `langevitour`. Brushing in any view highlights the corresponding subset across all panels, allowing detailed inspection of how residuals relate to both the UMAP embedding and the $p\\text{-}D$ structure. Points with higher residuals typically correspond to sparse or bridging regions in the UMAP layout and the less dense ends of the `scurve`, whereas low-residual points tend to cluster within denser, well-preserved regions. Double-clicking clears the selection and resets all highlights.", fig.alt = "The figure shows three interactively linked panels. The left panel displays a univariate plot of model residuals, with the horizontal axis representing residual values and the vertical axis representing density. The middle panel shows a 2-D UMAP layout of the scurve data, with horizontal and vertical axes representing the two UMAP coordinates. The right panel shows a 2-D projection of the 7-D data and fitted model using langevitour, where each axis represents a linear combination of the original dimensions. Points are plotted as individual markers in all panels, and brushing a subset of points in any panel highlights the corresponding points across the other two panels using a distinct color. Selections update dynamically as the user interacts with any panel, and double-clicking clears all highlights. All panels maintain roughly square aspect ratios and consistent visual encodings for selected and unselected points throughout the interactive view.", layout = "l-body"}
+
+errornldrdt_link <- show_error_link_plots(
+  point_data = df_exe, 
+  edge_data = trimesh, 
+  point_colour = clr_choice
+)
+
+class(errornldrdt_link) <- c(class(errornldrdt_link), "htmlwidget")
+
+errornldrdt_link
+```
+
+```{r}
+model_error <- model_error |>
+  bind_cols(scurve_umap_scaled |>
+              select(-ID))
+
+model_error <- model_error |>
+  mutate(sqrt_row_wise_total_error = sqrt(row_wise_total_error))
+
+# Compute density
+density_data <- density(model_error$sqrt_row_wise_total_error)
+density_df <- data.frame(x = density_data$x, y = density_data$y)
+
+# Add density values to the original dataset
+model_error <- model_error |>
+  mutate(density = approx(density_df$x, density_df$y, xout = sqrt_row_wise_total_error)$y)
+
+## Create the first row of selection
+model_error_select1 <- model_error |>
+  mutate(select_area = if_else(emb1 <= 0.7 & emb1 >= 0.4 & emb2 <= 0.25 & emb2 >= 0, "selected", "deselected"))
+
+model_error_select1_selected <- model_error_select1 |>
+  filter(select_area == "selected")
+
+model_error_select1_deselected <- model_error_select1 |>
+  filter(select_area == "deselected")
+
+error_plot_scurve_hist1 <- ggplot(model_error_select1_deselected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density)) +
+  geom_point(alpha=0.7, colour = "#d9d9d9") +
+  geom_point(data = model_error_select1_selected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density),
+      alpha=0.7, colour = "#756bb1", size = 3) +
+  xlab(paste("residual")) +
+  ylab("") +
+  interior_annotation("a1", cex = 3) +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank(),
+        aspect.ratio = 1)
+
+## Create the second row of selection
+model_error_select2 <- model_error |>
+  mutate(select_area = if_else(emb1 <= 0.55 & emb1 >= 0.25 & emb2 <= 1.25 & emb2 >= 0.75, "selected", "deselected"))
+
+model_error_select2_selected <- model_error_select2 |>
+  filter(select_area == "selected")
+
+model_error_select2_deselected <- model_error_select2 |>
+  filter(select_area == "deselected")
+
+error_plot_scurve_hist2 <- ggplot(model_error_select2_deselected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density)) +
+  geom_point(alpha=0.7, colour = "#d9d9d9") +
+  geom_point(data = model_error_select2_selected, 
+      aes(x = sqrt_row_wise_total_error, 
+          y = density),
+      alpha=0.7, colour = "#756bb1", size = 3) +
+  xlab(paste("residual")) +
+  ylab("") +
+  interior_annotation("b1", cex = 3) +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_blank(),
+        aspect.ratio = 1)
+```
+
+```{r scurve-linkerror-pdf, eval=knitr::is_latex_output(), fig.pos="H", fig.width=15, fig.height=10, fig.cap="Exploring residuals in relation to UMAP layouts using a $7\\text{-}D$ \\texttt{scurve} model. Three views are linked: distribution of residuals (a1, b1), UMAP layout (a2, b2), and projection of the $7\\text{-}D$ model with data (a3, b3). The purple points highlight selected subsets of the data, which differ across rows. In the top row (a1–a3), points with higher residuals (a1) are selected, corresponding to the sparse bridging region in the UMAP layout (a2) and the less dense end of the \\texttt{scurve} in the high-dimensional projection (a3). In the bottom row (b1–b3), points with lower residuals (b1) are highlighted, which map to one side of the dense region in the NLDR layout (b2) and to a thicker band of the \\texttt{scurve} in the projection (b3). This comparison illustrates how residuals can help diagnose distortions in UMAP, with high-residual points often concentrated in sparse or stretched regions of the structure.", fig.alt = "The figure consists of six panels arranged in two rows and three columns, showing residuals and their correspondence between UMAP and high-dimensional projections of the scurve data. In each row, the left panel (a1, b1) is a univariate plot of model residuals, with the horizontal axis representing residual values and the vertical axis representing frequency or density; points selected for highlighting appear in purple. The middle panel (a2, b2) shows a 2-D UMAP layout, with horizontal and vertical axes representing the two UMAP coordinates; the selected points from the left panel are highlighted in purple, while unselected points appear in a contrasting color. The right panel (a3, b3) shows a 2-D projection of the 7-D data and model using a tour view, where axes represent linear combinations of the original dimensions; highlighted points correspond to those selected in the residuals and UMAP panels, while unselected points are shown in a contrasting color. Across the panels, the purple highlights differ between the top and bottom rows, showing different subsets of points. All panels maintain roughly square aspect ratios and use consistent visual encodings for selection and non-selection."}
+
+error_plot_scurve_hist1 + scurve_umap_plt_select1_lk2 + scurve_proj_umap_model1_selected1_dp +
+  error_plot_scurve_hist2 + scurve_umap_plt_select2_lk2 + scurve_proj_umap_model1_selected2_dp +
+  plot_layout(ncol = 3)
+```
+
+In the implementation examples, points are shown without cluster-based coloring unless explicitly stated. When points are colored by cluster, linked plot functionality is currently only partially supported: selections made in the `langevitour` controls are not reflected in the corresponding highlights in the interactive $2\text{-}D$ layout. As a result, cluster-specific exploration must be carried out separately in the tour view and the interactive $2\text{-}D$ layout. In addition to `langevitour`, linked plots can also be constructed using tour views generated with the `detourr` package. (see [vignette: 8. Linked plots with `detourr`](https://jayanilakshika.github.io/quollr/articles/quollr8linkeddetourr.html) for details.)
+
+# Application
+
+Single-cell RNA sequencing (scRNA-seq) is a popular and powerful technology that allows you to profile the whole transcriptome of a large number of individual cells [@andrews2021]. 
+
+Clustering of single-cell data is used to identify groups of cells with similar expression profiles. NLDR often used to summarize the discovered clusters, and help to understand the results. The purpose of this example is to *illustrate how to use our method to help decide on an appropriate NLDR layout that accurately represents the data*.
+
+Limb muscle cells of mice in @tabula2018 are examined. There are $1067$ single cells, with $14997$ gene expressions. Following their pre-processing, different NLDR methods were performed using ten principal components. Figure \@ref(fig:limb-hbe) (a) is the reproduction of the published plot. This was generated using tSNE with $\text{perplexity}=30$, the default hyper-parameters. The question is whether this accurately represents the cluster structure in the data. Note that the cluster variable is not used to produce the $2\text{-}D$ layout. 
+
+We illustrate how to use `quollr` to assess whether this is a reasonable layout. Figure \@ref(fig:limb-hbe) shows five alternative layouts, and the HBE plot summarizing the resulting model fits. Layout b is produce by UMAP ($\text{neighbors}=5, ~\text{minimum distance}=0.1$); layout c was produced by PHATE ($\text{knn}=5$); layout d was produced by TriMAP ($\text{number of inliers}=12,~\text{outliers}=4,~\text{random}=3$); layout e was produced by by PaCMAP ($\text{neighbors}=10,~\text{init = "random"}, ~\text{MN-ratio}=0.5,~\text{FP-ratio}=2$); layout f was produced by tSNE ($\text{perplexity}=15$). 
+
+The HBE plot indicates that the two tSNE layouts outperform all the other methods across a range of binwidths, but that the result with perplexity of $15$ outperforms the other. There are small visual difference between the two layouts. Both support that there are $5-6$ clusters. Layout a has slightly more space between clusters.  Layout d three small clusters at the top whereas layout f has only two, and another smaller one at the bottom. 
+<!-- add function to generate 2D trimesh and the projections (PDF) and langevitour (HTML)-->
+
+<!-- https://www.nature.com/articles/s41586-018-0590-4#data-availability -->
+<!-- https://figshare.com/articles/dataset/Robject_files_for_tissues_processed_by_Seurat/5821263/1 -->
+
+<!--scripts/FACs/02_gen_embeddings.R-->
+```{r}
+#| label: read-limb-nldr
+# Read a variety of different NLDR representations of limb
+# and plot them on same aspect ratio
+
+tsne_limb <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_30.rds")
+
+nldr1 <- tsne_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#a65628') +
+  interior_annotation("a")
+
+umap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+
+nldr2 <- umap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#999999') +
+  interior_annotation("b")
+
+phate_limb <- read_rds("data/limb_muscles/facs_limb_muscles_phate_knn_5.rds")
+
+nldr3 <- phate_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#e41a1c') +
+  interior_annotation("c")
+
+trimap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+
+nldr4 <- trimap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#984ea3') +
+  interior_annotation("d")
+
+pacmap_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+nldr5 <- pacmap_limb |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#4daf4a') +
+  interior_annotation("e")
+
+tsne_limb2 <- read_rds("data/limb_muscles/facs_limb_muscles_tsne_perplexity_15.rds")
+
+nldr6 <- tsne_limb2 |>
+  ggplot(aes(x = emb1,
+             y = emb2)) +
+  geom_point(alpha=0.1, size=1, colour='#ff7f00') +
+  interior_annotation("f")
+```
+
+<!--scripts/FACs/03_gen_mse_for_diff_methods.R-->
+```{r}
+#| label: combine-error-data-muscles
+
+error_limb_umap <- read_rds("data/limb_muscles/error_limb_muscles_umap_n-neigbors_15_min-dist_0.1.rds")
+error_limb_tsne <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_30.rds")
+error_limb_phate <- read_rds("data/limb_muscles/error_limb_muscles_phate_knn_5.rds")
+error_limb_trimap <- read_rds("data/limb_muscles/error_limb_muscles_trimap_n-inliers_12_n-outliers_4_n-random_3.rds")
+error_limb_pacmap <- read_rds("data/limb_muscles/error_limb_muscles_pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2.rds")
+
+error_limb_tsne2 <- read_rds("data/limb_muscles/error_limb_muscles_tsne_perplexity_15.rds")
+
+error_limb <- bind_rows(error_limb_umap, 
+                        error_limb_tsne,
+                        error_limb_phate,
+                        error_limb_trimap,
+                        error_limb_pacmap,
+                        error_limb_tsne2)
+
+error_limb <- error_limb |>
+  mutate(a1 = round(a1, 2)) |>
+  filter(b1 >= 5) |>
+  filter(a1 >= 0.03) |>
+  group_by(method, a1) |>
+  filter(HBE == min(HBE)) |>
+  ungroup()
+
+error_limb <- error_limb |>
+  mutate(method = factor(method,
+                         levels = c("tsne_30", "UMAP_15_min_dist_0.1", "phate_5", "trimap_n-inliers_12_n-outliers_4_n-random_3", "pacmap_n-neighbors_10_init_random_MN-ratio_0.5_FP-ratio_2", "tsne_15")))
+```
+
+```{r}
+#| label: error-comp-muscles
+
+error_plot_limb <- plot_hbe(error_limb) +
+  scale_x_continuous(breaks = sort(unique(error_limb$a1))[c(1, 5, 9, 13, 17, 21, 26)]) +
+  scale_color_manual(values=c('#a65628','#999999','#e41a1c','#984ea3','#4daf4a','#ff7f00')) 
+
+```
+
+```{r limb-hbe, fig.cap="Assessing which of the 6 NLDR layouts on the limb muscle data is the better representation using HBE for varying binwidth ($a_1$). Color used for the lines and points in the left plot and in the scatterplots represents NLDR layout (a-f). Layout d performs well at large binwidth (where the binwidth is not enough to capture the data structure) and poorly as the bin width decreases. Layout f is the best choice.\\label{fig:limb-hbe}", fig.alt = "A multi-panel figure shows five alternative 2D embeddings of the same high-dimensional data, arranged side by side (panels b–f). Each panel is a scatterplot with two unlabeled embedding axes (dimension 1 on the horizontal axis and dimension 2 on the vertical axis, each spanning a similar, roughly symmetric range around zero). Points represent the same set of observations in every panel, plotted with identical color or marker scheme so that corresponding observations can be visually compared across layouts. Panel b shows a UMAP layout (neighbors = 5, minimum distance = 0.1), panel c a PHATE layout (knn = 5), panel d a TriMAP layout (inliers = 12, outliers = 4, random = 3), panel e a PaCMAP layout (neighbors = 10, init = random, MN-ratio = 0.5, FP-ratio = 2), and panel f a tSNE layout (perplexity = 15). Across panels, similar clusters of points appear but are arranged differently in space: some layouts show more clearly separated compact clusters, while others show overlapping or elongated groups, reflecting how each method balances local versus global structure. The accompanying HBE plot (typically a separate panel) summarizes model fit quality for each layout, with one value per method indicating that some embeddings provide a more faithful representation of the original data structure than others.", fig.pos="!ht", echo=TRUE}
+
+design <- gen_design(n_right = 6, ncol_right = 2)
+
+plot_hbe_layouts(plots = list(error_plot_limb, nldr1, 
+                             nldr2, nldr3, nldr4, 
+                             nldr5, nldr6), design = design)
+```
+
+<!--scripts/FACs/01_data_preprocessing.R-->
+```{r data-limb}
+data_limb <- read_rds("data/limb_muscles/facs_limb_muscles_pcs_10.rds")
+
+cluster_df <- read_rds("data/limb_muscles/facs_limb_muscles_cluster_df.rds")
+```
+
+```{r}
+#| label: tsne-model-limb
+
+tsne_limb_obj <- fit_highd_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb, 
+  b1 = 28, 
+  q = 0.1, 
+  hd_thresh = 0)
+
+df_bin_centroids_limb <- tsne_limb_obj$model_2d
+df_bin_limb <- tsne_limb_obj$model_highd
+trimesh_data_limb <- tsne_limb_obj$trimesh_data
+tsne_limb_scaled <- tsne_limb_obj$nldr_scaled_obj$scaled_nldr
+
+tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+  mutate(cluster = as.character(cluster.ids))
+
+trimesh_limb <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_with_cluster,
+    aes(
+      x = emb1,
+      y = emb2,
+      color = cluster
+    ),
+    alpha = 0.3
+  ) +
+  geom_segment(data = trimesh_data_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1,
+               alpha = 0.3) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
+  interior_annotation("a1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
+```
+
+```{r}
+
+df <- inner_join(data_limb, tsne_limb_scaled_with_cluster, by = "ID")
+
+### Define type column
+df <- df |>
+  select(starts_with("x"), starts_with("emb"), "cluster") |>
+  mutate(type = tsne_limb_scaled_with_cluster$cluster) ## original dataset
+
+df_b <- df_bin_limb |>
+  filter(h %in% df_bin_centroids_limb$h) |>
+  mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in model_2d
+df_b <- df_b[match(df_bin_centroids_limb$h, df_b$h),] |>
+  tidyr::drop_na() |>
+  select(-h)
+
+df_exe_limb_int <- bind_rows(df_b, df)
+
+point_data <- df_exe_limb_int 
+edge_data <- trimesh_data_limb
+
+num_highd_col <- point_data |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+shared_df <- crosstalk::SharedData$new(point_data)
+
+cluster_colors <- c(
+    "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#a6cee3'
+)
+
+point_sizes <- c(0, 1)
+
+# Scatter points
+nldr_plt <- plot_ly(
+    data = shared_df,
+    x = ~emb1, y = ~emb2,
+    type = "scatter", mode = "markers",
+    color = ~cluster, colors = cluster_colors,
+    marker = list(size = 3, opacity = 0.5),
+    hoverinfo = "skip",  # <-- skip hover completely
+    showlegend = FALSE
+)
+
+# Add line segments
+nldr_plt <- nldr_plt |>
+    add_segments(
+        data = trimesh_data_limb,
+        x = ~x_from, y = ~y_from,
+        xend = ~x_to, yend = ~y_to,
+        line = list(color = "#000000", width = 0.5),
+        inherit = FALSE,
+        showlegend = FALSE,
+        hoverinfo = "skip"  # <-- skip hover
+    )
+
+# Layout: axes, border, no tooltip
+nldr_plt <- nldr_plt |>
+    layout(
+        width = 310, height = 310,
+        margin = list(l = 20, r = 20, t = 20, b = 20),
+        xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE),
+        yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE)
+    ) |>
+    style(
+        selected = list(marker = list(opacity = 1)),
+        unselected = list(marker = list(opacity = 1))
+    ) |>
+    highlight(
+        on = "plotly_selected",
+        off = "plotly_deselect"
+    ) |>
+    config(displayModeBar = FALSE)
+
+
+langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
+                                               group = factor(point_data$type,
+                                                              c("0", "1", "2", "3", "4", "5", "6", "model")),
+                                               pointSize = append(rep(point_sizes[1], NROW(df_b)),
+                                                                  rep(point_sizes[2], NROW(df))),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3', "#000000"),
+                                               link=shared_df,
+                                               linkFilter=FALSE,
+                                               width = "370px", height = "370px")
+
+linked_plt_int <- crosstalk::bscols(
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: start;
+    justify-items: center;
+    margin: 0;
+    padding: 0;
+    height: 380px;
+    width: 500px",
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 20px;", langevitour_output)
+    ),
+    device = "xs"
+)
+
+```
+
+```{r}
+#| label: prep-limb-tsne-author-model-proj
+
+data_limb_n <- data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
+scaled_limb <- center_data(df_model_data_limb[,-11]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_limb$type)
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
+```
+
+
+```{r plot-proj}
+
+## First projection
+projection <- cbind(
+  c(-0.021068,0.007018,0.008770,0.016884,-0.008135,0.011458,-0.022323,0.007231,0.004976,-0.019298),
+  c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 1.5,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -1, 
+                                              axis_pos_y = -1, 
+                                              threshold = 0.13))
+
+proj_obj1[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_model1 <- plot_proj(
+  proj_obj = proj_obj1, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-1.3, 1.4), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "a2", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
+
+## Second projection
+projection <- cbind(
+  c(-0.025678,-0.017472,0.015634,-0.014868,-0.000752,0.001050,-0.019524,-0.008076,-0.010808,-0.002319),
+  c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 1.5,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -1, 
+                                              axis_pos_y = -1, 
+                                              threshold = 0.14))
+
+proj_obj2[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_model2 <- plot_proj(
+  proj_obj = proj_obj2, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  line_param = c(0.5, 0.3, "#000000"),
+  plot_limits = c(-1.3, 1.3), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "a3", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
+
+
+```
+
+`r knitr::asis_output(if (knitr::is_html_output()) { "Figure \\@ref(fig:tsne-link-limb), \\@ref(fig:tsne-link-limb-best)"} else { "Figure \\@ref(fig:model-limb)"})` show how to examine the resulting models of the layouts overlaid on the data in high dimensions. Point color represents the cluster reported in the published paper. In each case the best model is produced using $\text{binwidth}=0.06$. A binwidth of $0.06$ is used because it is small enough to show local structure and differences between clusters, but large enough to avoid breaking the layout into too many small pieces that would make the plots hard to interpret. The plots in these figures are best understand using small steps. 
+
+1. Examine the model in the data space for each, by looking at the tour views. In each case, the clustering doesn't quite match the separations in the data, and both models help see this. For example, the orange cluster ($1$) should probably be split into more than one cluster because both models show large stretched lines connecting a small group far from the remaining orange points. 
+
+2. Because $6$ clusters are hard to examine together, use the menu to select just one cluster to view at at time. Selecting just cluster $1$ might help you see the explanation above, that a small group is quite separate from the main group. This suggests both the layouts and the clustering that groups these together might be wrong. Now change to focus on cluster $5$ (yellow). This group is a fairly large sparse cluster but it is separated from the other points. Both layouts are right in separating these points from the others but the fit for layout f is slightly better. 
+
+3. To examine where the layouts differ, examine clusters $4$ (green) and $6$ (blue), by selecting just these two. Layout a has them close, but layout f has them far apart. (It might also help to include cluster $5$ here because layout a has this group close to the cluster $4$ also). In the tour view, we can see that they three clusters are separated clusters in different directions away from the most of the other points. They are both correct in this. It may have been better to place them all in different corners of the layout, but they have preserved the most important aspect that they are separated clusters. That they are all close together in layout a could be incorrectly interpreted as close in high-dimensions though.
+
+```{r}
+#| label: tsne-best-model-limb
+
+tsne_best_limb_obj <- fit_highd_model(
+  highd_data = data_limb, 
+  nldr_data = tsne_limb2, 
+  b1 = 28, 
+  q = 0.1, 
+  hd_thresh = 0)
+
+df_bin_centroids_limb <- tsne_best_limb_obj$model_2d
+df_bin_limb <- tsne_best_limb_obj$model_highd
+trimesh_data_limb <- tsne_best_limb_obj$trimesh_data
+tsne_limb_scaled <- tsne_best_limb_obj$nldr_scaled_obj$scaled_nldr
+
+tsne_limb_scaled_with_cluster <- inner_join(tsne_limb_scaled, cluster_df, by = "ID") |>
+  mutate(cluster = as.character(cluster.ids))
+
+trimesh_limb_best <- ggplot() + 
+  geom_point(
+    data = tsne_limb_scaled_with_cluster,
+    aes(
+      x = emb1,
+      y = emb2,
+      color = cluster
+    ),
+    alpha = 0.3
+  ) +
+  geom_segment(data = trimesh_data_limb, 
+               aes(
+                 x = x_from, 
+                 y = y_from, 
+                 xend = x_to, 
+                 yend = y_to),
+               colour = "#000000",
+               linewidth = 1,
+               alpha = 0.3) +
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3')) +
+  interior_annotation("f1", cex = 2) +
+  theme(
+    aspect.ratio = 1
+  )
+
+```
+
+```{r}
+df <- inner_join(data_limb, tsne_limb_scaled_with_cluster, by = "ID")
+
+### Define type column
+df <- df |>
+  select(starts_with("x"), starts_with("emb"), "cluster") |>
+  mutate(type = tsne_limb_scaled_with_cluster$cluster) ## original dataset
+
+df_b <- df_bin_limb |>
+  filter(h %in% df_bin_centroids_limb$h) |>
+  mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in model_2d
+df_b <- df_b[match(df_bin_centroids_limb$h, df_b$h),] |>
+  tidyr::drop_na() |>
+  select(-h)
+
+df_exe_limb_int <- bind_rows(df_b, df)
+
+point_data <- df_exe_limb_int 
+edge_data <- trimesh_data_limb
+
+num_highd_col <- point_data |>
+  dplyr::select(starts_with("x")) |>
+  NCOL()
+
+shared_df <- crosstalk::SharedData$new(point_data)
+
+cluster_colors <- c(
+    "0" = '#66c2a5', "1" = '#fc8d62', "2" = '#8da0cb',
+    "3" = '#e78ac3', "4" = '#a6d854', "5" = '#ffd92f', "6" = '#a6cee3'
+)
+
+# Scatter points
+nldr_plt <- plot_ly(
+    data = shared_df,
+    x = ~emb1, y = ~emb2,
+    type = "scatter", mode = "markers",
+    color = ~cluster, colors = cluster_colors,
+    marker = list(size = 3, opacity = 0.5),
+    hoverinfo = "skip",  # <-- skip hover completely
+    showlegend = FALSE
+)
+
+# Add line segments
+if (nrow(trimesh_data_limb) > 0) {
+    nldr_plt <- nldr_plt |>
+        add_segments(
+            data = trimesh_data_limb,
+            x = ~x_from, y = ~y_from,
+            xend = ~x_to, yend = ~y_to,
+            line = list(color = "#000000", width = 0.5),
+            inherit = FALSE,
+            showlegend = FALSE,
+            hoverinfo = "skip"  # <-- skip hover
+        )
+}
+
+# Layout: axes, border, no tooltip
+nldr_plt <- nldr_plt |>
+    layout(
+        width = 310, height = 310,
+        margin = list(l = 20, r = 20, t = 20, b = 20),
+        xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE),
+        yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE,
+                     showticklabels = FALSE, ticks = "", linecolor = "black", mirror = TRUE)
+    ) |>
+    style(
+        selected = list(marker = list(opacity = 1)),
+        unselected = list(marker = list(opacity = 1))
+    ) |>
+    highlight(
+        on = "plotly_selected",
+        off = "plotly_deselect"
+    ) |>
+    config(displayModeBar = FALSE)
+
+
+langevitour_output <- langevitour::langevitour(point_data[1:num_highd_col],
+                                               lineFrom = edge_data$from_reindexed,
+                                               lineTo = edge_data$to_reindexed,
+                                               group = factor(point_data$type,
+                                                              c("0", "1", "2", "3", "4", "5", "6", "model")),
+                                               pointSize = append(rep(point_sizes[1], NROW(df_b)),
+                                                                  rep(point_sizes[2], NROW(df))),
+                                               levelColors = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3', "#000000"),
+                                               link=shared_df,
+                                               linkFilter=FALSE,
+                                               width = "370px", height = "370px")
+
+linked_plt_best <- crosstalk::bscols(
+    htmltools::div(
+        style = "display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    align-items: start;
+    justify-items: center;
+    margin: 0;
+    padding: 0;
+    height: 380px;
+    width: 500px",
+        nldr_plt, 
+        htmltools::div(style = "margin-top: 20px;", langevitour_output)
+    ),
+    device = "xs"
+)
+```
+
+```{r}
+#| label: prep-limb-tsne-best-model-proj
+
+data_limb_n <- data_limb |> 
+  select(-ID) |>
+  mutate(type = "data")
+
+df_b_limb <- df_bin_limb |>
+  dplyr::filter(h %in% df_bin_centroids_limb$h) |>
+  dplyr::mutate(type = "model") ## Data with summarized mean
+
+## Reorder the rows of df_b according to the h order in df_b_with_center_data
+df_b_limb <- df_b_limb[match(df_bin_centroids_limb$h, df_b_limb$h),] |>
+  dplyr::select(-h) 
+
+# Apply the scaling
+df_model_data_limb <- bind_rows(data_limb_n, df_b_limb)
+scaled_limb <- center_data(df_model_data_limb[,-11]) |>
+  as_tibble() |>
+  mutate(type = df_model_data_limb$type)
+
+scaled_limb_data <- scaled_limb |>
+  filter(type == "data") |>
+  select(-type)
+
+scaled_limb_data_model <- scaled_limb |>
+  filter(type == "model") |>
+  select(-type)
+```
+
+```{r plot-proj-best}
+
+## First projection
+projection <- cbind(
+  c(-0.021068,0.007018,0.008770,0.016884,-0.008135,0.011458,-0.022323,0.007231,0.004976,-0.019298),
+  c(-0.017371,-0.008514,0.003231,-0.022945,-0.026264,-0.001571,0.008007,-0.001268,-0.016923,-0.006700))
+
+proj_obj1 <- get_projection(projection = projection, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 1.5,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -1, 
+                                              axis_pos_y = -1, 
+                                              threshold = 0.13))
+
+proj_obj1[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_best_model1 <- plot_proj(
+  proj_obj = proj_obj1, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-1.3, 1.4), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "f2", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
+
+## Second projection
+projection <- cbind(
+  c(-0.025678,-0.017472,0.015634,-0.014868,-0.000752,0.001050,-0.019524,-0.008076,-0.010808,-0.002319),
+  c(0.014526,-0.013526,-0.005147,-0.027612,-0.016919,0.005198,0.010710,0.004623,-0.007055,0.017842))
+
+proj_obj2 <- get_projection(projection = projection, 
+                            highd_data = scaled_limb_data, 
+                            model_highd = scaled_limb_data_model, 
+                            trimesh_data = trimesh_data_limb, 
+                            axis_param = list(limits = 1.5,
+                                              axis_scaled = 20, 
+                                              axis_pos_x = -1, 
+                                              axis_pos_y = -1, 
+                                              threshold = 0.14))
+
+proj_obj2[["cluster"]] <- as.character(tsne_limb_scaled_with_cluster$cluster)
+
+limb_proj_tsne_best_model2 <- plot_proj(
+  proj_obj = proj_obj2, 
+  point_param = c(1.5, 0.2), # size, alpha, color
+  plot_limits = c(-1.3, 1.3), 
+  axis_text_size = 4,
+  is_category = TRUE) +
+  interior_annotation(label = "f3", cex = 2) + 
+  scale_color_manual(values = c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f','#a6cee3'))
+
+
+```
+
+```{r model-limb, fig.cap="Representative views of two selected NLDR layouts for the Limb muscle dataset ($n=1067$), shown row-wise. The top row (a1–a3) corresponds to the published $2\\text{-}D$ layout (Figure \\ref{fig:limb-hbe}a), and the bottom row (f1–f3) corresponds to the $2\\text{-}D$ layout selected (Figure \\ref{fig:limb-hbe}f) selected using the HBE plot. In each row, the left panel (a1, f1) shows the NLDR embedding with points colored by muscle group and overlaid with triangulated hexagon centroids. The middle (a2, f2) and right (a3, f3) panels show two different $2\\text{-}D$ projections of the fitted model and data in the original $10\\text{-}D$ space, with the same triangular mesh displayed. Together, these panels summarize how the low-dimensional layouts relate to the underlying high-dimensional structure across different viewing directions.", fig.alt = "The figure consists of six panels arranged in two rows and three columns, showing representative views of two NLDR layouts for the Limb muscle dataset (n=1067). In the top row (a1–a3), the left panel (a1) shows the published 2-D NLDR embedding with points colored by muscle group and overlaid with triangulated hexagon centroids. The middle (a2) and right (a3) panels show two different 2-D projections of the corresponding 10-D data and fitted model, with points plotted as individual markers and the same triangular mesh connecting centroids. In the bottom row (f1–f3), the left panel (f1) shows the 2-D NLDR layout selected using the HBE plot, again with colored points and triangulated centroids, while panels (f2) and (f3) show two different 2-D projections of the associated 10-D structure with the same mesh displayed. Across all panels, axes represent continuous numeric coordinates, color encodes muscle group, and the triangular mesh is used consistently to show correspondence between the low-dimensional layouts and the high-dimensional projections.", fig.pos="!ht", fig.width=15, fig.height=10, eval=knitr::is_latex_output()}
+
+trimesh_limb + limb_proj_tsne_model1 +
+  limb_proj_tsne_model2 + trimesh_limb_best +
+  limb_proj_tsne_best_model1 + limb_proj_tsne_best_model2 +
+  plot_layout(nrow = 2)
+```
+
+```{r tsne-link-limb, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout a (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "The figure shows two interactively linked panels. The left panel displays a 2-D NLDR layout of the Limb muscle dataset (n=1067), with each point representing an observation and colored according to its muscle group. The right panel shows a 2-D projection of the 10-D data and fitted model using langevitour, where each axis represents a linear combination of the original dimensions. Triangulated hexagon centroids on the NLDR layout are connected to their corresponding regions in the high-dimensional projection. Brushing a subset of points in either panel highlights the corresponding points in both panels using a distinct color, and double-clicking clears all selections. Both panels maintain roughly square aspect ratios and consistent visual encodings for selected and unselected points throughout the interactive view.", layout = "l-body"}
+
+class(linked_plt_int) <- c(class(linked_plt_int), "htmlwidget")
+
+linked_plt_int
+```
+
+```{r tsne-link-limb-best, eval=knitr::is_html_output(), fig.cap="Interactively linked plots connecting layout f (left) and the fitted model overlaid with the limb muscle data in $10\\text{-}D$ (right). Each color represents a different muscle group, with triangulated hexagon centroids on the NLDR layout connected to their corresponding regions in the high-dimensional projection using `langevitour`. Brushing in either view highlights the same subset of points across both panels, enabling exploration of how clusters in the low-dimensional embedding align with structures in the original high-dimensional space. Double-clicking clears the selection and removes highlights.", fig.alt = "The figure shows two interactively linked panels. The left panel displays a 2-D NLDR layout (layout f) of the Limb muscle dataset (n=1067), with each point representing an observation and colored by muscle group. The right panel shows a 2-D projection of the 10-D data and fitted model using langevitour, where each axis represents a linear combination of the original dimensions. Triangulated hexagon centroids on the NLDR layout are connected to their corresponding regions in the high-dimensional projection. Brushing a subset of points in either panel highlights the same points in both panels using a distinct color, and double-clicking clears all selections. Both panels maintain roughly square aspect ratios and consistent visual encodings for selected and unselected points throughout the interactive view.", layout = "l-body"}
+
+class(linked_plt_best) <- c(class(linked_plt_best), "htmlwidget")
+
+linked_plt_best
+```
+
+# Discussion
+
+The `quollr` package introduces a new framework for interpreting NLDR outputs by fitting a geometric wireframe model in $2\text{-}D$ and lifting it into high-dimensional space. This lifted model provides a direct way to assess how well a $2\text{-}D$ layout, produced by methods such as tSNE, UMAP, PHATE, TriMAP, or PaCMAP, preserves the structure of the original high-dimensional data. The approach offers both numerical and visual diagnostics to support the selection of NLDR methods and tuning hyper-parameters that produce the most accurate $2\text{-}D$ representations.
+
+In contrast to the common practice of visually inspecting scatterplots for clusters or patterns, `quollr` provides a quantitative route for evaluation. It enables the computation of HBE and residuals between the original high-dimensional data and the lifted model, offering interpretable diagnostics. These diagnostics are complemented by interactive linked plots and high-dimensional dynamic visualizations using the `langevitour` package, allowing users to inspect where the model fits well and where it does not.
+
+To support efficient computation, particularly for large-scale datasets, several core functions in `quollr` are implemented in C++ using `Rcpp` and `RcppArmadillo`. These include functions for computing Euclidean distances in high-dimensional and $2\text{-}D$ space, identifying nearest centroids, calculating residual errors, and generating polygonal coordinates of hexagons. For instance, `compute_highd_dist()` accelerates nearest neighbor lookup in high-dimensional space, `compute_errors()` calculates HBE and total absolute error efficiently, and `calc_2d_dist_cpp()` speeds up distance calculations in $2\text{-}D$. Additionally, `gen_hex_coord_cpp()` constructs the coordinates for hexagonal bins based on their centroids with minimal overhead. These optimizations result in substantial performance gains compared to native R implementations, making the package responsive even when used in interactive contexts or on large datasets such as single-cell transcriptomic profiles.
+
+The modular structure of the package is designed to support both flexibility and reproducibility. Users can access individual functions to control each step of the pipeline such as scaling, binning, and triangulation or use the main function `fit_highd_model()` for end-to-end model construction. The diagnostics can be used not only to compare NLDR methods but also to tune binning parameters, assess layout stability, and detect local distortions in the embedding.
+
+There are several avenues for future development. While hexagonal binning provides a regular structure conducive to modeling, alternative spatial discretizations (e.g., adaptive binning or density-aware tessellations) could be explored to better capture varying data densities. Expanding support for additional distance metrics in the lifting and prediction steps may improve performance across different domains. Additionally, statistical inference tools could be introduced to assess the stability and robustness of the fitted model, which would enhance interpretability and confidence in the outcomes. A potential extension of the current implementation would be to synchronize cluster selections between the tour view and the linked $2\text{-}D$ layout, enabling more direct cluster-specific comparisons across views.
+
+# Acknowledgements
+
+The source code for reproducing this paper can be found at: [github.com/JayaniLakshika/paper-quollr](https://github.com/JayaniLakshika/paper-quollr). This article is created using \CRANpkg{knitr} [@yihui2015] and \CRANpkg{rmarkdown} [@yihui2018] in R with the `rjtools::rjournal_article` template. These `R` packages were used for this work: `cli` [@gabor2025], `dplyr` [@hadley2023], `ggplot2` [@hadley2016], `interp` (>= 1.1-6) [@albrecht2024], `langevitour` [@paul2023], `detourr` [@casper2025], `proxy`[@david2022], `stats` [@core2025], `tibble` [@kirill2023], `tidyselect` [@lionel2024], `crosstalk` [@joe2023], `plotly` [@chapman2020], `htmltools` [@joe2024], `kableExtra` [@hao2024], `patchwork` [@thomas2024], and `readr` [@hadley2024].
