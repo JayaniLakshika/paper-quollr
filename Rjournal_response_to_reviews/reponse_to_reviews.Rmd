@@ -1,0 +1,71 @@
+---
+title: "Response to reviews: 2025-156"
+output: pdf_document
+---
+
+We thank the editor, associate editor and reviewers for their careful assessment of our paper. What follows is a point by point response to the reviewers' comments. The original reviewer comment is in normal font and *our response is in italic text*.
+
+# Reviewer 1
+
+## General
+
+A short summary of the article's main contributions and shortcomings. Is the
+article important to the R the community? Is the approach sensible? Are technology
+and methods up-to-date?
+
+
+The article presents the `quollr` package dealing with visualization of high-dimensional datasets, outlining the package architecture, mathematical methodology, and a few practical applications to artificial and real data. The article handles an important topic in data analysis that has attracted attention in recent years, but that has also generated uncertainty about appropriate methods to use in this space. The `quollr` package promises to shed light in this area by providing tools to quantify the quality of specific embeddings. The proposed method is not restricted to one embedding type (tsne, umap, etc) but can handle arbitrary techniques, and this makes the work relevant to a large audience. The package also recommends metrics and visualizations to assess embeddings, and as such `quollr` has the potential to help data analysts working in this space.
+
+The article is well organized and clearly explains its motivations, methods, and practical workflows. Of particular note are the clear modular architecture of the codebase (Figure 2), the transparency about intermediate steps in the workflow that enable users to understand/validate the calculations, and the appropriate mix of R/C++ implementations for interactive/computationally-intensive parts of the workflow. The code attempts to use interactive elements as well, relying on third-party packages for these parts.
+
+
+## Detailed comments
+
+- The article is, in general, didactic and comprehensive. Some parts may benefit from general proof-reading, especially section 4 page 16
+  - In the paragraph beginning "Limb muscle cells in mice", the reference is malformed
+  - Figure 9 lacks labels for its key elements (meanings for colors in the main panel, meanings of individual panels on the right-hand-side). The figure is  explained in the article body, but arguably the figure should be comprehensible from the graphics alone, or with the aid of the figure legend)
+  - Last sentence before the numbered list, "best understand" is grammatically unclear
+  - The numbered list explains steps for interactive data analysis. I appreciate the difficulty in conveying such information in a static document, but I feel this could be improved or expanded to better showcase insights from the interactive analysis. Perhaps this section could use an additional figure that supports the insights from the numbered list? Alternatively, could the article summarize another real-world dataset of an intermediate complexity between the toy s-curve and the single-cell transcriptomic data?
+  
+- The technique for evaluating embedding quality as a function of the bin size is interesting, but I worry that the presented data merely suggest that decreasing the bin size consistently decreases the error metric (apart from small fluctuations which may be noise). There is no obvious/convincing optimal bin size to use for decision making. For example, in Figure 9, the same HBE value "6" can be achieved by any of the studied methods, albeit at different bin width. This makes it hard to impartially rank embeddings, and thus I worry that the choice of a "good" embedding will remain subjective. Vignette 6 in the package states "The goal is to identify a bin width that minimizes HBE while avoiding overly coarse or fine binning" but does not provide a recipe to balance the HBE and bin size. Would it be possible to calculate an additional quantitative metric, so that a chart like Figure 9 would show clear minima in the lines and thus evaluate capabilities of the various approaches, irrespective of their hyperparameters used?
+
+
+## Code
+
+In the case of an R package, review the code with 'the eye of the expert'.
+That is, not a line-by-line analyses for correctness, but look for obvious
+pitfalls. In particular, you could look at the following.
+
+Usability:
+
+- Does the package have a clear and user-friendly workflow?
+- Is the documentation well-written and user-focused?
+
+The package has html vignettes, which is great for newcomers to glimpse what the package is about. However, the vignettes are quite short and granular.
+As such, individually the vignettes are not comprehensive and do not convey strong punchlines; they only become meaningful when read altogether. This means that newcomers may click on a few pages and nonetheless miss the main functionalities of the package, which only become apparent in the content at the end. I would suggest to improve the documentation in one of several directions: elaborate each vignette so that they carry standalone introductions and conclusions, or consolidate the documentation into just one or two documents that would be easy to scroll through, or add a separate short "overview" vignette that could showcase all main features without technical details.  
+
+
+Code:
+
+- Are there obvious edge cases that are missed?
+- Could the functions presented be improved? 
+- Is the code well-organized and understandable?
+
+The code appears nearly organized and formatted, and the github repository is well-presented, including README and documentation website. The article explains the package design clearly, and the codebase makes appropriate use of R and Rcpp capabilities, which is helpful and appropriate in this domain. It is great that the package passes CRAN checks, and that the package provides several code examples to follow.
+
+# Reviewer 2
+
+## General
+
+* The manuscript presents a software package designed for advanced multivariate visualisation methods. It is generally well-written, maintains a clear focus on software documentation and implementation, and serves as a valuable resource for users of the R package.
+* The methodological approach underlying the package is well referenced and briefly highlighted in the manuscript.
+* The primary implementation algorithm is derived from an unpublished working paper by [Gamage, Harrison, Lydeamore, and Talagala (2025)](https://doi.org/10.48550/arXiv.2506.22051), which warrants explicit acknowledgment here. However, since the implemented methods also draw upon several published works, the risks associated with reliance on unpublished material are partially mitigated.
+* The manuscript targets a specialized audience and may be challenging for general readers to approach. Its presentation is highly technical and systematically details each analytical step using the package.
+
+## Code
+
+* The R code is implemented expertly within the ggplot universe.
+* Core computational tasks are delegated to C++ via Rcpp and RcppArmadillo, aligning with current best practices. However, the manuscript does not document the computational gains achieved through code profiling and C++ delegation, making these benefits unclear.
+* Overall, the package's function documentation, the package website, vignettes, and the current manuscript are state-of-the-art.
+* It is recommended to include comprehensive package documentation, ensuring that users who enter `?quollr` receive a detailed summary accompanied by implementation examples.
+
