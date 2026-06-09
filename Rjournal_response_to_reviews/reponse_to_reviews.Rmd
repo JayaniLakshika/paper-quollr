@@ -85,3 +85,5 @@ The code appears nearly organized and formatted, and the github repository is we
 * Overall, the package's function documentation, the package website, vignettes, and the current manuscript are state-of-the-art.
 * It is recommended to include comprehensive package documentation, ensuring that users who enter `?quollr` receive a detailed summary accompanied by implementation examples.
 
+*Fixed.*
+
