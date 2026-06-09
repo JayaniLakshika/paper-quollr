@@ -13,7 +13,6 @@ A short summary of the article's main contributions and shortcomings. Is the
 article important to the R the community? Is the approach sensible? Are technology
 and methods up-to-date?
 
-
 The article presents the `quollr` package dealing with visualization of high-dimensional datasets, outlining the package architecture, mathematical methodology, and a few practical applications to artificial and real data. The article handles an important topic in data analysis that has attracted attention in recent years, but that has also generated uncertainty about appropriate methods to use in this space. The `quollr` package promises to shed light in this area by providing tools to quantify the quality of specific embeddings. The proposed method is not restricted to one embedding type (tsne, umap, etc) but can handle arbitrary techniques, and this makes the work relevant to a large audience. The package also recommends metrics and visualizations to assess embeddings, and as such `quollr` has the potential to help data analysts working in this space.
 
 The article is well organized and clearly explains its motivations, methods, and practical workflows. Of particular note are the clear modular architecture of the codebase (Figure 2), the transparency about intermediate steps in the workflow that enable users to understand/validate the calculations, and the appropriate mix of R/C++ implementations for interactive/computationally-intensive parts of the workflow. The code attempts to use interactive elements as well, relying on third-party packages for these parts.
@@ -23,6 +22,9 @@ The article is well organized and clearly explains its motivations, methods, and
 
 - The article is, in general, didactic and comprehensive. Some parts may benefit from general proof-reading, especially section 4 page 16
   - In the paragraph beginning "Limb muscle cells in mice", the reference is malformed
+  
+  *Fixed.*
+  
   - Figure 9 lacks labels for its key elements (meanings for colors in the main panel, meanings of individual panels on the right-hand-side). The figure is  explained in the article body, but arguably the figure should be comprehensible from the graphics alone, or with the aid of the figure legend)
   - Last sentence before the numbered list, "best understand" is grammatically unclear
   
