@@ -23,9 +23,12 @@ The article is well organized and clearly explains its motivations, methods, and
 - The article is, in general, didactic and comprehensive. Some parts may benefit from general proof-reading, especially section 4 page 16
   - In the paragraph beginning "Limb muscle cells in mice", the reference is malformed
   
-  *Fixed.*
+    *Fixed.*
   
   - Figure 9 lacks labels for its key elements (meanings for colors in the main panel, meanings of individual panels on the right-hand-side). The figure is  explained in the article body, but arguably the figure should be comprehensible from the graphics alone, or with the aid of the figure legend)
+  
+    *Fixed.*
+  
   - Last sentence before the numbered list, "best understand" is grammatically unclear
   
     *Fixed.*
