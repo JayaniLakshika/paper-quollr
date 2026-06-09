@@ -550,6 +550,129 @@ tour_view <- show_langevitour(
 knitr::include_graphics("figures/quollr_workflow.png")
 
 
+## -----------------------------------------------------------------------------
+# Prepare inputs using the built-in scurve data
+model_obj <- fit_highd_model(
+  highd_data = scurve,
+  nldr_data  = scurve_umap,
+  b1 = 21, q = 0.1, hd_thresh = 0
+)
+
+# Extract the inputs each C++ function actually receives
+highd_data  <- scurve
+model_data  <- model_obj$model_highd
+
+highd_mat  <- as.matrix(scurve |> select(starts_with("x")))
+model_mat  <- as.matrix(model_obj$model_highd |> select(starts_with("x")))
+centroids  <- model_obj$hb_obj$centroids
+
+# --- 1. compute_highd_dist: nearest neighbour search ---
+fun_compute_highd_dist <- bench::mark(
+  cpp = quollr:::compute_highd_dist(highd_mat, model_mat),
+  r   = proxy::dist(highd_mat, model_mat, method = "euclidean"),
+  iterations = 50, check = FALSE
+)
+
+# --- 2. calc_2d_dist_cpp: 2-D distance ---
+tr_from_to_df <- scurve_model_obj$trimesh_data
+
+fun_calc_2d_dist <- bench::mark(
+  cpp = quollr:::calc_2d_dist_cpp(
+    x_from = tr_from_to_df$x_from,
+    y_from = tr_from_to_df$y_from,
+    x_to   = tr_from_to_df$x_to,
+    y_to   = tr_from_to_df$y_to
+  ),
+  r = {
+    dx <- tr_from_to_df$x_from - tr_from_to_df$x_to
+    dy <- tr_from_to_df$y_from - tr_from_to_df$y_to
+    sqrt(dx^2 + dy^2)
+  },
+  iterations = 50,
+  check = FALSE
+)
+
+# --- 3. gen_hex_coord_cpp: hexagon vertex generation ---
+
+all_centroids_df <- scurve_model_obj$hb_obj$centroids
+width <- scurve_model_obj$hb_obj$a1
+
+# Prepare inputs
+centroids_data <- model_obj$hb_obj$centroids
+a1 <- model_obj$hb_obj$a1
+
+fun_gen_hex_coord <- bench::mark(
+  cpp = quollr:::gen_hex_coord_cpp(
+    hexID = as.integer(centroids_data$h),
+    c_x   = centroids_data$c_x,
+    c_y   = centroids_data$c_y,
+    a1    = a1
+  ),
+  r = {
+    n        <- nrow(centroids_data)
+    n_coords <- 6
+    dx <- a1 / 2
+    dy <- a1 / sqrt(3)
+    vf <- a1 / (2 * sqrt(3))
+    x_add <- c(0, -dx, -dx,   0,  dx,  dx)
+    y_add <- c(dy,  vf, -vf, -dy, -vf,  vf)
+    
+    hex_poly_id <- integer(n * n_coords)
+    x_out       <- numeric(n * n_coords)
+    y_out       <- numeric(n * n_coords)
+    
+    for (i in seq_len(n)) {
+      idx <- ((i - 1) * n_coords + 1):(i * n_coords)
+      hex_poly_id[idx] <- centroids_data$h[i]
+      x_out[idx]       <- centroids_data$c_x[i] + x_add
+      y_out[idx]       <- centroids_data$c_y[i] + y_add
+    }
+    
+    data.frame(h = hex_poly_id, x = x_out, y = y_out)
+  },
+  iterations = 50,
+  check = FALSE
+)
+
+# --- 4. compute_errors: compute errors in high-dimension ---
+
+names(model_data)[-1] <- paste0("model_high_d_", names(model_data)[-1])
+
+prediction_df <- predict_emb(highd_data = highd_data,
+                             model_2d = centroids,
+                             model_highd = model_data)
+
+prediction_df <- prediction_df |>
+  left_join(model_data, by = c("pred_h" = "h")) |>
+  left_join(highd_data, by = "ID")
+
+cols <- paste0("x", 1:(NCOL(model_data) - 1))
+high_d_model_cols <- paste0("model_high_d_x", 1:(NCOL(model_data) - 1))
+
+fun_compute_errors <- bench::mark(
+  cpp = quollr:::compute_errors(
+    as.matrix(prediction_df[, cols]),
+    as.matrix(prediction_df[, high_d_model_cols])
+  ),
+  r = {
+    true_mat <- as.matrix(prediction_df[, cols])
+    pred_mat <- as.matrix(prediction_df[, high_d_model_cols])
+    diff_mat <- true_mat - pred_mat
+    total_abs_error <- sum(abs(diff_mat))
+    total_squared_error <- sum(diff_mat^2)
+    hbe <- sqrt(total_squared_error / nrow(diff_mat))
+    list(Error = total_abs_error, HBE = hbe)
+  },
+  iterations = 50,
+  check = FALSE
+)
+
+fun_efficacy <- bind_rows(
+  fun_compute_highd_dist, fun_calc_2d_dist, 
+  fun_gen_hex_coord, fun_compute_errors)
+
+
+
 ## ----algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-body", fig.alt = "The figure consists of four panels illustrating steps in constructing a model on a UMAP layout using the scurve data. Panel (a) is a static 2-D scatter plot of the UMAP embedding with points grouped into hexagonal bins. Panel (b) shows the same 2-D layout with a single centroid point displayed for each hexagonal bin. Panel (c) shows the centroids connected by straight line segments to form a triangulated mesh across the 2-D layout. Panel (d) is atour view in which the triangulated 2-D mesh is lifted into the original high-dimensional space and displayed as a continuously changing 2-D projection; the axes represent linear combinations of the original dimensions, and the mesh rotates and changes orientation as the view updates. The 2-D panels use bounded numeric axes with roughly square aspect ratios, while the tour view shows the lifted structure from multiple viewing angles."----
 # 
 # algofig <- bscols(
