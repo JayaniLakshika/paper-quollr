@@ -25,6 +25,9 @@ The article is well organized and clearly explains its motivations, methods, and
   - In the paragraph beginning "Limb muscle cells in mice", the reference is malformed
   - Figure 9 lacks labels for its key elements (meanings for colors in the main panel, meanings of individual panels on the right-hand-side). The figure is  explained in the article body, but arguably the figure should be comprehensible from the graphics alone, or with the aid of the figure legend)
   - Last sentence before the numbered list, "best understand" is grammatically unclear
+  
+    *Fixed.*
+    
   - The numbered list explains steps for interactive data analysis. I appreciate the difficulty in conveying such information in a static document, but I feel this could be improved or expanded to better showcase insights from the interactive analysis. Perhaps this section could use an additional figure that supports the insights from the numbered list? Alternatively, could the article summarize another real-world dataset of an intermediate complexity between the toy s-curve and the single-cell transcriptomic data?
   
 - The technique for evaluating embedding quality as a function of the bin size is interesting, but I worry that the presented data merely suggest that decreasing the bin size consistently decreases the error metric (apart from small fluctuations which may be noise). There is no obvious/convincing optimal bin size to use for decision making. For example, in Figure 9, the same HBE value "6" can be achieved by any of the studied methods, albeit at different bin width. This makes it hard to impartially rank embeddings, and thus I worry that the choice of a "good" embedding will remain subjective. Vignette 6 in the package states "The goal is to identify a bin width that minimizes HBE while avoiding overly coarse or fine binning" but does not provide a recipe to balance the HBE and bin size. Would it be possible to calculate an additional quantitative metric, so that a chart like Figure 9 would show clear minima in the lines and thus evaluate capabilities of the various approaches, irrespective of their hyperparameters used?
@@ -60,6 +63,9 @@ The code appears nearly organized and formatted, and the github repository is we
 * The manuscript presents a software package designed for advanced multivariate visualisation methods. It is generally well-written, maintains a clear focus on software documentation and implementation, and serves as a valuable resource for users of the R package.
 * The methodological approach underlying the package is well referenced and briefly highlighted in the manuscript.
 * The primary implementation algorithm is derived from an unpublished working paper by [Gamage, Harrison, Lydeamore, and Talagala (2025)](https://doi.org/10.48550/arXiv.2506.22051), which warrants explicit acknowledgment here. However, since the implemented methods also draw upon several published works, the risks associated with reliance on unpublished material are partially mitigated.
+
+*Added.*
+
 * The manuscript targets a specialized audience and may be challenging for general readers to approach. Its presentation is highly technical and systematically details each analytical step using the package.
 
 ## Code
