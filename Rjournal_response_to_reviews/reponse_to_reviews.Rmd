@@ -35,8 +35,11 @@ The article is well organized and clearly explains its motivations, methods, and
     
   - The numbered list explains steps for interactive data analysis. I appreciate the difficulty in conveying such information in a static document, but I feel this could be improved or expanded to better showcase insights from the interactive analysis. Perhaps this section could use an additional figure that supports the insights from the numbered list? Alternatively, could the article summarize another real-world dataset of an intermediate complexity between the toy s-curve and the single-cell transcriptomic data?
   
+  *---Need to discuss---*
+  
 - The technique for evaluating embedding quality as a function of the bin size is interesting, but I worry that the presented data merely suggest that decreasing the bin size consistently decreases the error metric (apart from small fluctuations which may be noise). There is no obvious/convincing optimal bin size to use for decision making. For example, in Figure 9, the same HBE value "6" can be achieved by any of the studied methods, albeit at different bin width. This makes it hard to impartially rank embeddings, and thus I worry that the choice of a "good" embedding will remain subjective. Vignette 6 in the package states "The goal is to identify a bin width that minimizes HBE while avoiding overly coarse or fine binning" but does not provide a recipe to balance the HBE and bin size. Would it be possible to calculate an additional quantitative metric, so that a chart like Figure 9 would show clear minima in the lines and thus evaluate capabilities of the various approaches, irrespective of their hyperparameters used?
 
+  *---Need to discuss---*
 
 ## Code
 
@@ -72,6 +75,8 @@ The code appears nearly organized and formatted, and the github repository is we
 *Added.*
 
 * The manuscript targets a specialized audience and may be challenging for general readers to approach. Its presentation is highly technical and systematically details each analytical step using the package.
+
+*The paper targets R users working with NLDR methods who need implementation details to use the package effectively. To partially lower the barrier, we have added a brief contextualizing sentence at the start of the Application section and an overview vignette as a high-level entry point to the package.*
 
 ## Code
 
