@@ -55,6 +55,7 @@ Usability:
 The package has html vignettes, which is great for newcomers to glimpse what the package is about. However, the vignettes are quite short and granular.
 As such, individually the vignettes are not comprehensive and do not convey strong punchlines; they only become meaningful when read altogether. This means that newcomers may click on a few pages and nonetheless miss the main functionalities of the package, which only become apparent in the content at the end. I would suggest to improve the documentation in one of several directions: elaborate each vignette so that they carry standalone introductions and conclusions, or consolidate the documentation into just one or two documents that would be easy to scroll through, or add a separate short "overview" vignette that could showcase all main features without technical details.  
 
+*Added a separate short "overview" vignette.*
 
 Code:
 
