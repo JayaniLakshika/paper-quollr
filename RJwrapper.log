@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.9)  9 JUN 2026 17:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.9)  11 JUN 2026 10:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -822,87 +822,92 @@ Overfull \hbox (36.27023pt too wide) in paragraph at lines 121--122
 \OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
 
+
+Overfull \hbox (7.54723pt too wide) in paragraph at lines 127--137
+ [][] 
+ []
+
 <paper-quollr_files/figure-latex/algo-steps-1.pdf, id=131, 362.35374pt x 361.35pt>
 File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used on input line 129.
+Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used on input line 145.
 (pdftex.def)             Requested size: 318.67207pt x 317.796pt.
-[4] [5 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>] [6] [7] [8] [9]
-Overfull \hbox (0.18141pt too wide) in paragraph at lines 482--483
+[4] [5 <./paper-quollr_files/figure-latex/algo-steps-1.pdf>] [6] [7] [8] [9] [10]
+Overfull \hbox (0.18141pt too wide) in paragraph at lines 498--499
 []\T1/ppl/m/n/9 (-20) Furthermore, there are two in-ter-ac-tive plots, \T1/zi4/m/n/9 show_link_plots \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 show_error_link_plots\T1/ppl/m/n/9 (-20) , which
  []
 
-[10]
 <paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=193, 1445.4pt x 361.35pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 534.
+Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 550.
 (pdftex.def)             Requested size: 398.33858pt x 99.58383pt.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 541.
+(Font)              scaled to size 10.42007pt on input line 557.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 541.
+(Font)              scaled to size 7.91925pt on input line 557.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 541.
+(Font)              scaled to size 6.25204pt on input line 557.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 541.
+(Font)              scaled to size 10.42007pt on input line 557.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 541.
+(Font)              scaled to size 7.91925pt on input line 557.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 541.
-[11 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>]
-Overfull \hbox (12.52875pt too wide) in paragraph at lines 545--546
+(Font)              scaled to size 6.25204pt on input line 557.
+
+Overfull \hbox (12.52875pt too wide) in paragraph at lines 561--562
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
  []
 
 
-Overfull \hbox (7.46678pt too wide) in paragraph at lines 545--546
+Overfull \hbox (7.46678pt too wide) in paragraph at lines 561--562
 \T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
  []
 
-<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=208, 469.755pt x 118.4425pt>
+[11]
+<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=204, 469.755pt x 118.4425pt>
 File: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf  used on input line 567.
+Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf  used on input line 583.
 (pdftex.def)             Requested size: 398.33858pt x 100.43622pt.
-<figures/model_proj1_detourr.png, id=212, 724.7075pt x 637.38126pt>
+<figures/model_proj1_detourr.png, id=208, 724.7075pt x 637.38126pt>
 File: figures/model_proj1_detourr.png Graphic file (type png)
 <use figures/model_proj1_detourr.png>
-Package pdftex.def Info: figures/model_proj1_detourr.png  used on input line 573.
+Package pdftex.def Info: figures/model_proj1_detourr.png  used on input line 589.
 (pdftex.def)             Requested size: 199.16928pt x 175.16853pt.
-<figures/model_proj2_detourr.png, id=213, 730.73pt x 638.385pt>
+<figures/model_proj2_detourr.png, id=209, 730.73pt x 638.385pt>
 File: figures/model_proj2_detourr.png Graphic file (type png)
 <use figures/model_proj2_detourr.png>
-Package pdftex.def Info: figures/model_proj2_detourr.png  used on input line 573.
+Package pdftex.def Info: figures/model_proj2_detourr.png  used on input line 589.
 (pdftex.def)             Requested size: 199.16928pt x 173.99298pt.
 
-Overfull \hbox (1.90001pt too wide) in paragraph at lines 573--573
+Overfull \hbox (1.90001pt too wide) in paragraph at lines 589--589
 [][] [] 
  []
 
-[12 <./paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf>] [13 <./figures/model_proj1_detourr.png> <./figures/model_proj2_detourr.png>]
-<paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf, id=244, 722.7pt x 722.7pt>
+[12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf> <./paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf>] [13 <./figures/model_proj1_detourr.png> <./figures/model_proj2_detourr.png>]
+<paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf, id=245, 722.7pt x 722.7pt>
 File: paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf  used on input line 634.
+Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf  used on input line 650.
 (pdftex.def)             Requested size: 398.33858pt x 398.33534pt.
 [14 <./paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf, id=262, 941.5175pt x 708.6475pt>
+<paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf, id=263, 941.5175pt x 708.6475pt>
 File: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf  used on input line 664.
+Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf  used on input line 680.
 (pdftex.def)             Requested size: 398.33858pt x 299.81416pt.
 [15 <./paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=289, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=291, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-hbe-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-hbe-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 690.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 706.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
 [16]
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=303, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=304, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 714.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 730.
 (pdftex.def)             Requested size: 398.33858pt x 265.55322pt.
 [17 <./paper-quollr_files/figure-latex/limb-hbe-1.pdf>] [18 <./paper-quollr_files/figure-latex/model-limb-1.pdf>] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
@@ -911,10 +916,10 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used 
 [19])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 743.
+(Font)              using `T1/zi4/m/n' instead on input line 759.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 743.
+(Font)              scaled to size 9.18004pt on input line 759.
 ) [20] (./RJwrapper.aux)
  ***********
 LaTeX2e <2026-06-01>
@@ -929,21 +934,21 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 778A1EC0D50D6E59515FFE79751C5B99;2577.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 5E980B29638C6FCAC7752BD82B663BCC;1522.
+(rerunfilecheck)             Checksum: 2CF83588CC41213201293812CC652A06;1566.
  ) 
 Here is how much of TeX's memory you used:
- 27581 strings out of 469114
- 505294 string characters out of 5458033
- 938976 words of memory out of 5000000
- 55668 multiletter control sequences out of 15000+600000
- 682701 words of font info for 342 fonts, out of 8000000 for 9000
+ 27599 strings out of 469114
+ 505594 string characters out of 5458033
+ 940088 words of memory out of 5000000
+ 55681 multiletter control sequences out of 15000+600000
+ 682856 words of font info for 344 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 117i,11n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,12n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2757026 bytes).
+Output written on RJwrapper.pdf (20 pages, 2757814 bytes).
 PDF statistics:
- 544 PDF objects out of 1000 (max. 8388607)
- 473 compressed objects within 5 object streams
- 85 named destinations out of 1000 (max. 500000)
+ 552 PDF objects out of 1000 (max. 8388607)
+ 481 compressed objects within 5 object streams
+ 87 named destinations out of 1000 (max. 500000)
  71348 words of extra memory for PDF output out of 74296 (max. 10000000)
 

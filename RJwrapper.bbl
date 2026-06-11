@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -69,6 +69,12 @@ L.~Henry and H.~Wickham.
 \newblock \emph{tidyselect: Select from a Set of Strings}, 2024.
 \newblock URL \url{https://CRAN.R-project.org/package=tidyselect}.
 \newblock R package version 1.2.1.
+
+\bibitem[Hester and Vaughan(2025)]{jim2025}
+J.~Hester and D.~Vaughan.
+\newblock \emph{bench: High Precision Timing of R Expressions}, 2025.
+\newblock URL \url{https://CRAN.R-project.org/package=bench}.
+\newblock R package version 1.1.4.
 
 \bibitem[Konopka(2023)]{tomasz2023}
 T.~Konopka.

@@ -82,6 +82,9 @@ The code appears nearly organized and formatted, and the github repository is we
 
 * The R code is implemented expertly within the ggplot universe.
 * Core computational tasks are delegated to C++ via Rcpp and RcppArmadillo, aligning with current best practices. However, the manuscript does not document the computational gains achieved through code profiling and C++ delegation, making these benefits unclear.
+
+*Added.*
+
 * Overall, the package's function documentation, the package website, vignettes, and the current manuscript are state-of-the-art.
 * It is recommended to include comprehensive package documentation, ensuring that users who enter `?quollr` receive a detailed summary accompanied by implementation examples.
 

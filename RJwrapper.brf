@@ -4,12 +4,12 @@
 \backcite {amid2019}{{1}{2.1}{section.2.1}}
 \backcite {yingfan2021}{{1}{2.1}{section.2.1}}
 \backcite {gamage2025c}{{2}{2.2}{section.2.2}}
-\backcite {lee1980}{{8}{2.3.4}{figure.caption.4}}
-\backcite {albrecht2024}{{8}{2.3.4}{figure.caption.4}}
-\backcite {albrecht2024}{{8}{2.3.4}{figure.caption.4}}
+\backcite {lee1980}{{8}{2.3.4}{figure.caption.5}}
+\backcite {albrecht2024}{{8}{2.3.4}{figure.caption.5}}
+\backcite {albrecht2024}{{8}{2.3.4}{figure.caption.5}}
 \backcite {tomasz2023}{{10}{2.3.5}{subsection.2.3.5}}
-\backcite {paul2023}{{12}{2.3.7}{figure.caption.5}}
-\backcite {casper2025}{{12}{2.3.7}{figure.caption.6}}
+\backcite {paul2023}{{11}{2.3.7}{figure.caption.6}}
+\backcite {casper2025}{{12}{2.3.7}{figure.caption.7}}
 \backcite {andrews2021}{{16}{2.4}{section.2.4}}
 \backcite {tabula2018}{{16}{2.4}{section.2.4}}
 \backcite {yihui2015}{{18}{2.6}{section.2.6}}
@@ -30,3 +30,4 @@
 \backcite {hao2024}{{19}{2.6}{section.2.6}}
 \backcite {thomas2024}{{19}{2.6}{section.2.6}}
 \backcite {hadley2024}{{19}{2.6}{section.2.6}}
+\backcite {jim2025}{{19}{2.6}{section.2.6}}

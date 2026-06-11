@@ -120,6 +120,22 @@ The internal data objects follow the tidy data principle: each variable is store
 
 Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2\text{-}D\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
 
+\begin{table}
+
+\caption{\label{tab:main-tb-pdf}The main arguments for \texttt{gen\_multicluster()}.}
+\centering
+\begin{tabular}[t]{>{\raggedleft\arraybackslash}p{2cm}>{\raggedleft\arraybackslash}p{3cm}>{\raggedleft\arraybackslash}p{8cm}}
+\toprule
+Function & C++ time & R time\\
+\midrule
+1 & 1.57ms & 2.36ms\\
+2 & 6.7us & 7.81us\\
+3 & 99.83us & 2.75ms\\
+4 & 104.57us & 137.15us\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Pipeline implementation}\label{pipeline-implementation}
 
 In this section, we demonstrate the implementation of each step of the pipeline discussed in the Usage section (\texttt{fit\_highd\_model} and \texttt{comb\_data\_model}). Each step can be run independently to ensure flexibility in the modelling aproach.
@@ -728,7 +744,7 @@ There are several avenues for future development. While hexagonal binning provid
 
 \section{Acknowledgements}\label{acknowledgements}
 
-The source code for reproducing this paper can be found at: \href{https://github.com/JayaniLakshika/paper-quollr}{github.com/JayaniLakshika/paper-quollr}. This article is created using \CRANpkg{knitr} \citep{yihui2015} and \CRANpkg{rmarkdown} \citep{yihui2018} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr} \citep{hadley2023}, \texttt{ggplot2} \citep{hadley2016}, \texttt{interp} (\textgreater= 1.1-6) \citep{albrecht2024}, \texttt{langevitour} \citep{paul2023}, \texttt{detourr} \citep{casper2025}, \texttt{proxy}\citep{david2022}, \texttt{stats} \citep{core2025}, \texttt{tibble} \citep{kirill2023}, \texttt{tidyselect} \citep{lionel2024}, \texttt{crosstalk} \citep{joe2023}, \texttt{plotly} \citep{chapman2020}, \texttt{htmltools} \citep{joe2024}, \texttt{kableExtra} \citep{hao2024}, \texttt{patchwork} \citep{thomas2024}, and \texttt{readr} \citep{hadley2024}.
+The source code for reproducing this paper can be found at: \href{https://github.com/JayaniLakshika/paper-quollr}{github.com/JayaniLakshika/paper-quollr}. This article is created using \CRANpkg{knitr} \citep{yihui2015} and \CRANpkg{rmarkdown} \citep{yihui2018} in R with the \texttt{rjtools::rjournal\_article} template. These \texttt{R} packages were used for this work: \texttt{cli} \citep{gabor2025}, \texttt{dplyr} \citep{hadley2023}, \texttt{ggplot2} \citep{hadley2016}, \texttt{interp} (\textgreater= 1.1-6) \citep{albrecht2024}, \texttt{langevitour} \citep{paul2023}, \texttt{detourr} \citep{casper2025}, \texttt{proxy}\citep{david2022}, \texttt{stats} \citep{core2025}, \texttt{tibble} \citep{kirill2023}, \texttt{tidyselect} \citep{lionel2024}, \texttt{crosstalk} \citep{joe2023}, \texttt{plotly} \citep{chapman2020}, \texttt{htmltools} \citep{joe2024}, \texttt{kableExtra} \citep{hao2024}, \texttt{patchwork} \citep{thomas2024}, \texttt{readr} \citep{hadley2024}, and \texttt{bench} \citep{jim2025}.
 
 \bibliography{paper-quollr.bib}
 
