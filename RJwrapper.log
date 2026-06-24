@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.9)  11 JUN 2026 10:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.9)  11 JUN 2026 15:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -901,13 +901,13 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.
 <paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=291, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-hbe-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-hbe-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 706.
+Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 710.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
 [16]
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=304, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=303, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
-Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 730.
+Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 734.
 (pdftex.def)             Requested size: 398.33858pt x 265.55322pt.
 [17 <./paper-quollr_files/figure-latex/limb-hbe-1.pdf>] [18 <./paper-quollr_files/figure-latex/model-limb-1.pdf>] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
@@ -916,10 +916,10 @@ Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used 
 [19])
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 759.
+(Font)              using `T1/zi4/m/n' instead on input line 763.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 9.18004pt on input line 759.
+(Font)              scaled to size 9.18004pt on input line 763.
 ) [20] (./RJwrapper.aux)
  ***********
 LaTeX2e <2026-06-01>
@@ -934,18 +934,18 @@ LaTeX Warning: There were multiply-defined labels.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 778A1EC0D50D6E59515FFE79751C5B99;2577.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: 2CF83588CC41213201293812CC652A06;1566.
+(rerunfilecheck)             Checksum: A890A1C59FF980D6254470D610656413;1566.
  ) 
 Here is how much of TeX's memory you used:
  27599 strings out of 469114
  505594 string characters out of 5458033
- 940088 words of memory out of 5000000
+ 938650 words of memory out of 5000000
  55681 multiletter control sequences out of 15000+600000
  682856 words of font info for 344 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  117i,12n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2757814 bytes).
+Output written on RJwrapper.pdf (20 pages, 2757672 bytes).
 PDF statistics:
  552 PDF objects out of 1000 (max. 8388607)
  481 compressed objects within 5 object streams
