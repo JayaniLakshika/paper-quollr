@@ -118,7 +118,7 @@ The internal data objects follow the tidy data principle: each variable is store
 
 \subsection{Computational efficiency and optimization}\label{computational-efficiency-and-optimization}
 
-Several core computations within \texttt{quollr} are optimized using compiled C++ code via the \texttt{Rcpp} and \texttt{RcppArmadillo} packages. While the user interacts with high-level R functions, performance-critical steps such as nearest-neighbor searches (\texttt{compute\_highd\_dist()}), error metrics (\texttt{compute\_errors()}), \(2\text{-}D\) distance calculations (\texttt{calc\_2d\_dist\_cpp()}), and generation of hexagon coordinates (\texttt{gen\_hex\_coord\_cpp()}) are handled internally in C++. This design provides significant speedups when analyzing large datasets while maintaining a user-friendly R interface. These C++ functions are not exported but are bundled within the package and fully accessible for inspection in the source code.
+Several computationally intensive steps in \texttt{quollr} are implemented in C++ using the \texttt{Rcpp} and \texttt{RcppArmadillo} packages to improve performance. Table \ref{main-tb-pdf} compares the execution times of these C++ implementations with equivalent R code on the \texttt{scurve} dataset, based on \(50\) benchmark iterations using the \texttt{bench} package \citep{jim2025}. The largest improvement is observed for \texttt{gen\_hex\_coord\_cpp()}, which generates the polygon coordinates of the hexagonal bins and is substantially faster than the corresponding R implementation. Smaller but consistent gains are also achieved for the nearest-neighbour search (\texttt{compute\_highd\_dist()}) and error calculation (\texttt{compute\_errors()}) functions. In contrast, \texttt{calc\_2d\_dist\_cpp()} provides only a modest improvement because the equivalent vectorised R code is already efficient. These optimizations help reduce computation time throughout the modelling workflow, making the package more responsive for interactive visualization and more practical for analyzing larger datasets.
 
 \begin{table}
 
@@ -128,10 +128,10 @@ Several core computations within \texttt{quollr} are optimized using compiled C+
 \toprule
 Function & C++ time & R time & Speedup\\
 \midrule
-\texttt{compute\_highd\_dist()} & 1.56ms & 2.38ms & 1.5\\
-\texttt{calc\_2d\_dist\_cpp()} & 6.99us & 6.93us & 1.0\\
-\texttt{gen\_hex\_coord\_cpp()} & 99.42us & 2.88ms & 29.0\\
-\texttt{compute\_errors()} & 107.83us & 139.95us & 1.3\\
+\texttt{compute\_highd\_dist()} & 1.57ms & 2.39ms & 1.5\\
+\texttt{calc\_2d\_dist\_cpp()} & 6.52us & 7.24us & 1.1\\
+\texttt{gen\_hex\_coord\_cpp()} & 97.97us & 2.84ms & 29.0\\
+\texttt{compute\_errors()} & 104.57us & 137.86us & 1.3\\
 \bottomrule
 \end{tabular}
 \end{table}

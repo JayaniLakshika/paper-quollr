@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.24)  24 JUN 2026 20:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.24)  24 JUN 2026 20:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -818,13 +818,12 @@ LaTeX Font Info:    Trying to load font information for TS1+ppl on input line 10
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/psnfss/ts1ppl.fd
 File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
 )
-Overfull \hbox (36.27023pt too wide) in paragraph at lines 121--122
-\OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
- []
+
+LaTeX Warning: Reference `main-tb-pdf' on page 4 undefined on input line 121.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
 (Font)              scaled to size 10.20004pt on input line 131.
-<paper-quollr_files/figure-latex/algo-steps-1.pdf, id=131, 362.35374pt x 361.35pt>
+<paper-quollr_files/figure-latex/algo-steps-1.pdf, id=133, 362.35374pt x 361.35pt>
 File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/algo-steps-1.pdf  used on input line 145.
@@ -834,7 +833,7 @@ Overfull \hbox (0.18141pt too wide) in paragraph at lines 498--499
 []\T1/ppl/m/n/9 (-20) Furthermore, there are two in-ter-ac-tive plots, \T1/zi4/m/n/9 show_link_plots \T1/ppl/m/n/9 (-20) and \T1/zi4/m/n/9 show_error_link_plots\T1/ppl/m/n/9 (-20) , which
  []
 
-<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=193, 1445.4pt x 361.35pt>
+<paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf, id=196, 1445.4pt x 361.35pt>
 File: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf  used on input line 550.
@@ -851,7 +850,7 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 7.91925pt on input line 557.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 557.
-
+[11]
 Overfull \hbox (12.52875pt too wide) in paragraph at lines 561--562
 []\T1/ppl/m/n/9 (-20) Before plot-ting, the data needs to be or-ga-nized into a com-bined for-mat through the \T1/zi4/m/n/9 comb_data_model()
  []
@@ -861,18 +860,17 @@ Overfull \hbox (7.46678pt too wide) in paragraph at lines 561--562
 \T1/ppl/m/n/9 (-20) func-tion. This func-tion takes three in-puts: \T1/zi4/m/n/9 highd_data \T1/ppl/m/n/9 (-20) (the high-dimensional ob-ser-va-tions), \T1/zi4/m/n/9 model_highd
  []
 
-[11]
-<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=204, 469.755pt x 118.4425pt>
+<paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf, id=205, 469.755pt x 118.4425pt>
 File: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf  used on input line 583.
 (pdftex.def)             Requested size: 398.33858pt x 100.43622pt.
-<figures/model_proj1_detourr.png, id=208, 724.7075pt x 637.38126pt>
+<figures/model_proj1_detourr.png, id=209, 724.7075pt x 637.38126pt>
 File: figures/model_proj1_detourr.png Graphic file (type png)
 <use figures/model_proj1_detourr.png>
 Package pdftex.def Info: figures/model_proj1_detourr.png  used on input line 589.
 (pdftex.def)             Requested size: 199.16928pt x 175.16853pt.
-<figures/model_proj2_detourr.png, id=209, 730.73pt x 638.385pt>
+<figures/model_proj2_detourr.png, id=210, 730.73pt x 638.385pt>
 File: figures/model_proj2_detourr.png Graphic file (type png)
 <use figures/model_proj2_detourr.png>
 Package pdftex.def Info: figures/model_proj2_detourr.png  used on input line 589.
@@ -883,25 +881,25 @@ Overfull \hbox (1.90001pt too wide) in paragraph at lines 589--589
  []
 
 [12 <./paper-quollr_files/figure-latex/geom-outputs-pdf-1.pdf> <./paper-quollr_files/figure-latex/scurve-highd-model-pdf-1.pdf>] [13 <./figures/model_proj1_detourr.png> <./figures/model_proj2_detourr.png>]
-<paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf, id=245, 722.7pt x 722.7pt>
+<paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf, id=248, 722.7pt x 722.7pt>
 File: paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf  used on input line 650.
 (pdftex.def)             Requested size: 398.33858pt x 398.33534pt.
 [14 <./paper-quollr_files/figure-latex/scurve-nldrlink-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf, id=263, 941.5175pt x 708.6475pt>
+<paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf, id=266, 941.5175pt x 708.6475pt>
 File: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf  used on input line 680.
 (pdftex.def)             Requested size: 398.33858pt x 299.81416pt.
 [15 <./paper-quollr_files/figure-latex/scurve-linkerror-pdf-1.pdf>]
-<paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=291, 469.755pt x 324.21124pt>
+<paper-quollr_files/figure-latex/limb-hbe-1.pdf, id=294, 469.755pt x 324.21124pt>
 File: paper-quollr_files/figure-latex/limb-hbe-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/limb-hbe-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/limb-hbe-1.pdf  used on input line 710.
 (pdftex.def)             Requested size: 398.33858pt x 274.9229pt.
 [16]
-<paper-quollr_files/figure-latex/model-limb-1.pdf, id=303, 1084.05pt x 722.7pt>
+<paper-quollr_files/figure-latex/model-limb-1.pdf, id=306, 1084.05pt x 722.7pt>
 File: paper-quollr_files/figure-latex/model-limb-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/model-limb-1.pdf>
 Package pdftex.def Info: paper-quollr_files/figure-latex/model-limb-1.pdf  used on input line 734.
@@ -926,26 +924,29 @@ L3 programming layer <2026-06-18>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 
+LaTeX Warning: There were undefined references.
+
+
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 778A1EC0D50D6E59515FFE79751C5B99;2577.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: A890A1C59FF980D6254470D610656413;1566.
+(rerunfilecheck)             Checksum: 512A31A76107E95D5904CA76FB16C173;1616.
  ) 
 Here is how much of TeX's memory you used:
- 27606 strings out of 469115
- 505756 string characters out of 5458046
- 940464 words of memory out of 5000000
- 55687 multiletter control sequences out of 15000+600000
+ 27607 strings out of 469115
+ 505769 string characters out of 5458046
+ 939465 words of memory out of 5000000
+ 55688 multiletter control sequences out of 15000+600000
  683164 words of font info for 345 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 117i,11n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,2396b,1000s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2757820 bytes).
+Output written on RJwrapper.pdf (20 pages, 2758736 bytes).
 PDF statistics:
- 552 PDF objects out of 1000 (max. 8388607)
- 481 compressed objects within 5 object streams
+ 555 PDF objects out of 1000 (max. 8388607)
+ 484 compressed objects within 5 object streams
  87 named destinations out of 1000 (max. 500000)
  71860 words of extra memory for PDF output out of 74296 (max. 10000000)
 
