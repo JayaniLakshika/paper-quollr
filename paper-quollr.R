@@ -682,26 +682,53 @@ fun_efficacy <- fun_efficacy |>
   mutate(expression = as.character(expression)) |>
   select(id, expression, median) |>
   pivot_wider(
-      id_cols = id,
-      names_from = expression,
-      values_from = median
-  )
+    id_cols     = id,
+    names_from  = expression,
+    values_from = median
+  ) |>
+  mutate(
+    func = c(
+      "compute_highd_dist()",
+      "calc_2d_dist_cpp()",
+      "gen_hex_coord_cpp()",
+      "compute_errors()"
+    ),
+    speedup = as.numeric(r) / as.numeric(cpp),
+    speedup = round(speedup, 1)
+  ) |>
+  select(func, cpp, r, speedup) |> 
+   mutate(func = gsub("_", "\\\\_", func)) 
 
 
 
 ## ----main-tb-html, eval=knitr::is_html_output()-------------------------------
 # fun_efficacy |>
-#   #mutate(arg = paste0("<code>", arg, "</code>")) |>
-#   kable(caption = "The main arguments for `gen_multicluster()`.", col.names = c("Function", "C++ time", "R time"), linesep = "", escape = FALSE, table.pos = "!ht")
+#   mutate(func = paste0("<code>", func, "</code>")) |>
+#   kable(
+#     caption   = "Benchmark timings for C++ vs pure R implementations of four performance-critical functions in \\texttt{quollr}, evaluated on the \\texttt{scurve} dataset ($n = 1000$, $p = 7$) using 50 iterations.",
+#     col.names = c("Function", "C++ time", "R time", "Speedup"),
+#     linesep   = "",
+#     escape    = FALSE,
+#     table.pos = "!ht"
+#   )
 
 
 ## ----main-tb-pdf, eval=knitr::is_latex_output()-------------------------------
-fun_efficacy |> 
-    #mutate(arg = paste0("\\texttt{", arg, "}")) |> 
-  kable(caption = "The main arguments for \\texttt{gen\\_multicluster()}.", format="latex", col.names = c("Function", "C++ time", "R time"), booktabs = T, table.pos = "!ht", linesep = "", escape = FALSE)  |>
-  column_spec(1, width = "2cm") |>
-  column_spec(2, width = "3cm") |>
-  column_spec(3, width = "8cm")
+fun_efficacy |>
+  mutate(func = paste0("\\texttt{", func, "}")) |> 
+  kable(
+    caption   = "Benchmark timings for C++ vs pure R implementations of four performance-critical functions in \\texttt{quollr}, evaluated on the \\texttt{scurve} dataset ($n = 1000$, $p = 7$) using 50 iterations.",
+    format    = "latex",
+    col.names = c("Function", "C++ time", "R time", "Speedup"),
+    booktabs  = TRUE,
+    table.pos = "!ht",
+    linesep   = "",
+    escape    = FALSE
+  ) |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "2cm") |>
+  column_spec(3, width = "2cm") |>
+  column_spec(4, width = "2cm")
 
 
 ## ----algo-step-html, eval=knitr::is_html_output(), fig.pos="!ht", fig.cap="Key steps for constructing the model on the UMAP layout: (a) hexagon bins, (b) bin centroids, (c) triangulated centroids, and (d) lifting the model into high dimensions. The `scurve` data is shown.", layout = "l-body", fig.alt = "The figure consists of four panels illustrating steps in constructing a model on a UMAP layout using the scurve data. Panel (a) is a static 2-D scatter plot of the UMAP embedding with points grouped into hexagonal bins. Panel (b) shows the same 2-D layout with a single centroid point displayed for each hexagonal bin. Panel (c) shows the centroids connected by straight line segments to form a triangulated mesh across the 2-D layout. Panel (d) is atour view in which the triangulated 2-D mesh is lifted into the original high-dimensional space and displayed as a continuously changing 2-D projection; the axes represent linear combinations of the original dimensions, and the mesh rotates and changes orientation as the view updates. The 2-D panels use bounded numeric axes with roughly square aspect ratios, while the tour view shows the lifted structure from multiple viewing angles."----

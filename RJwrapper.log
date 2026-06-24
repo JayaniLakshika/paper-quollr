@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.9)  11 JUN 2026 15:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.24)  24 JUN 2026 20:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **RJwrapper.tex
 (./RJwrapper.tex
 LaTeX2e <2026-06-01>
-L3 programming layer <2026-05-26>
+L3 programming layer <2026-06-18>
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/base/size10.clo
@@ -338,7 +338,7 @@ File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
-Package: hyperref 2026-04-24 v7.01q Hypertext links for LaTeX
+Package: hyperref 2026-06-17 v7.01r Hypertext links for LaTeX
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
@@ -374,7 +374,7 @@ Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 \Hy@linkcounter=\count315
 \Hy@pagecounter=\count316
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
-File: pd1enc.def 2026-04-24 v7.01q Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2026-06-17 v7.01r Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 ) (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
@@ -382,7 +382,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
 \Hy@SavedSpaceFactor=\count317
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
-File: puenc.def 2026-04-24 v7.01q Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2026-06-17 v7.01r Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
@@ -426,7 +426,7 @@ Package hyperref Info: PDF/A mode OFF on input line 6121.
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (/Users/jpiy0001/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
-File: hpdftex.def 2026-04-24 v7.01q Hyperref driver for pdfTeX
+File: hpdftex.def 2026-06-17 v7.01r Hyperref driver for pdfTeX
 \Fld@listcount=\count323
 \c@bookmark@seq@number=\count324
 \Hy@SectionHShift=\skip66
@@ -822,11 +822,8 @@ Overfull \hbox (36.27023pt too wide) in paragraph at lines 121--122
 \OT1/ppl/m/n/9 (-20) 2[]\OML/zplm/m/it/9 D$ \T1/ppl/m/n/9 (-20) dis-tance cal-cu-la-tions (\T1/zi4/m/n/9 calc_2d_dist_cpp()\T1/ppl/m/n/9 (-20) ), and gen-er-a-tion of hexagon co-or-di-nates (\T1/zi4/m/n/9 gen_hex_coord_cpp()\T1/ppl/m/n/9 (-20) )
  []
 
-
-Overfull \hbox (7.54723pt too wide) in paragraph at lines 127--137
- [][] 
- []
-
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 10.20004pt on input line 131.
 <paper-quollr_files/figure-latex/algo-steps-1.pdf, id=131, 362.35374pt x 361.35pt>
 File: paper-quollr_files/figure-latex/algo-steps-1.pdf Graphic file (type pdf)
 <use paper-quollr_files/figure-latex/algo-steps-1.pdf>
@@ -923,7 +920,7 @@ LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
 ) [20] (./RJwrapper.aux)
  ***********
 LaTeX2e <2026-06-01>
-L3 programming layer <2026-05-26>
+L3 programming layer <2026-06-18>
  ***********
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -937,18 +934,18 @@ Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
 (rerunfilecheck)             Checksum: A890A1C59FF980D6254470D610656413;1566.
  ) 
 Here is how much of TeX's memory you used:
- 27599 strings out of 469114
- 505594 string characters out of 5458033
- 938650 words of memory out of 5000000
- 55681 multiletter control sequences out of 15000+600000
- 682856 words of font info for 344 fonts, out of 8000000 for 9000
+ 27606 strings out of 469115
+ 505756 string characters out of 5458046
+ 940464 words of memory out of 5000000
+ 55687 multiletter control sequences out of 15000+600000
+ 683164 words of font info for 345 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 117i,12n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,11n,131p,2396b,999s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></Users/jpiy0001/Library/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (20 pages, 2757672 bytes).
+Output written on RJwrapper.pdf (20 pages, 2757820 bytes).
 PDF statistics:
  552 PDF objects out of 1000 (max. 8388607)
  481 compressed objects within 5 object streams
  87 named destinations out of 1000 (max. 500000)
- 71348 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 71860 words of extra memory for PDF output out of 74296 (max. 10000000)
 

@@ -809,26 +809,53 @@ fun_efficacy <- fun_efficacy |>
   mutate(expression = as.character(expression)) |>
   select(id, expression, median) |>
   pivot_wider(
-      id_cols = id,
-      names_from = expression,
-      values_from = median
-  )
+    id_cols     = id,
+    names_from  = expression,
+    values_from = median
+  ) |>
+  mutate(
+    func = c(
+      "compute_highd_dist()",
+      "calc_2d_dist_cpp()",
+      "gen_hex_coord_cpp()",
+      "compute_errors()"
+    ),
+    speedup = as.numeric(r) / as.numeric(cpp),
+    speedup = round(speedup, 1)
+  ) |>
+  select(func, cpp, r, speedup) |> 
+   mutate(func = gsub("_", "\\\\_", func)) 
 
 ```
 
 ```{r main-tb-html, eval=knitr::is_html_output()}
-fun_efficacy |> 
-  #mutate(arg = paste0("<code>", arg, "</code>")) |> 
-  kable(caption = "The main arguments for `gen_multicluster()`.", col.names = c("Function", "C++ time", "R time"), linesep = "", escape = FALSE, table.pos = "!ht") 
+fun_efficacy |>
+  mutate(func = paste0("<code>", func, "</code>")) |> 
+  kable(
+    caption   = "Benchmark timings for C++ vs pure R implementations of four performance-critical functions in \\texttt{quollr}, evaluated on the \\texttt{scurve} dataset ($n = 1000$, $p = 7$) using 50 iterations.",
+    col.names = c("Function", "C++ time", "R time", "Speedup"),
+    linesep   = "",
+    escape    = FALSE,
+    table.pos = "!ht"
+  )
 ```
 
 ```{r main-tb-pdf, eval=knitr::is_latex_output()}
-fun_efficacy |> 
-    #mutate(arg = paste0("\\texttt{", arg, "}")) |> 
-  kable(caption = "The main arguments for \\texttt{gen\\_multicluster()}.", format="latex", col.names = c("Function", "C++ time", "R time"), booktabs = T, table.pos = "!ht", linesep = "", escape = FALSE)  |>
-  column_spec(1, width = "2cm") |>
-  column_spec(2, width = "3cm") |>
-  column_spec(3, width = "8cm")
+fun_efficacy |>
+  mutate(func = paste0("\\texttt{", func, "}")) |> 
+  kable(
+    caption   = "Benchmark timings for C++ vs pure R implementations of four performance-critical functions in \\texttt{quollr}, evaluated on the \\texttt{scurve} dataset ($n = 1000$, $p = 7$) using 50 iterations.",
+    format    = "latex",
+    col.names = c("Function", "C++ time", "R time", "Speedup"),
+    booktabs  = TRUE,
+    table.pos = "!ht",
+    linesep   = "",
+    escape    = FALSE
+  ) |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "2cm") |>
+  column_spec(3, width = "2cm") |>
+  column_spec(4, width = "2cm")
 ```
 
 ## Pipeline implementation
